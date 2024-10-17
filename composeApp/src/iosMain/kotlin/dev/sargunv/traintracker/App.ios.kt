@@ -10,7 +10,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import platform.MapKit.MKMapView
 
 @Composable
-actual fun NativeMap() {
+actual fun NativeMap(darkMode: Boolean) {
     UIKitView(
         factory = {
             MKMapView()
