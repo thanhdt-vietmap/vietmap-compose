@@ -37,10 +37,13 @@ kotlin {
             implementation(libs.google.maps.compose)
             implementation(libs.sqldelight.driver.android)
             implementation(libs.ktor.client.android)
+            implementation(libs.koin.core)
+            implementation(libs.koin.android)
         }
         iosMain.dependencies {
             implementation(libs.sqldelight.driver.native)
             implementation(libs.ktor.client.darwin)
+            implementation(libs.koin.core)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -53,7 +56,14 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.sqldelight.runtime)
             implementation(libs.ktor.client.core)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
         }
+    }
+
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 }
 

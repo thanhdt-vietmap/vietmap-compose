@@ -1,6 +1,7 @@
 package dev.sargunv.traintracker.ui
 
 import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.ColorScheme
@@ -16,8 +17,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-actual fun getColorScheme(darkMode: Boolean): ColorScheme {
+actual fun getColorScheme(): ColorScheme {
     val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    val darkMode = isSystemInDarkTheme()
     return when {
         dynamicColor && darkMode -> dynamicDarkColorScheme(LocalContext.current)
         dynamicColor && !darkMode -> dynamicLightColorScheme(LocalContext.current)

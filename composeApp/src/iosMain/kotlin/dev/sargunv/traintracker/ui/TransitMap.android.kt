@@ -7,7 +7,7 @@ import androidx.compose.ui.viewinterop.UIKitView
 import platform.MapKit.MKMapView
 
 @Composable
-actual fun TransitMap(darkMode: Boolean) {
+actual fun TransitMap() {
     UIKitView(
         factory = {
             MKMapView()

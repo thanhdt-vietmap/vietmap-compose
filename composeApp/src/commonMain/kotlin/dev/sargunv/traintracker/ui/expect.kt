@@ -5,10 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 
 @Composable
-expect fun TransitMap(darkMode: Boolean)
+expect fun TransitMap()
 
 @Composable
 expect fun getSheetHeight(): Dp
 
 @Composable
-expect fun getColorScheme(darkMode: Boolean): ColorScheme
+expect fun getColorScheme(): ColorScheme

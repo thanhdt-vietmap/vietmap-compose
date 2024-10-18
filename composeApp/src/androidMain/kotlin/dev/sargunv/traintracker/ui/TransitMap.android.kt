@@ -7,7 +7,7 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 
 @Composable
-actual fun TransitMap(darkMode: Boolean) {
+actual fun TransitMap() {
     GoogleMap(
         properties = MapProperties(
             mapStyleOptions = MapStyleOptions(
@@ -17,7 +17,7 @@ actual fun TransitMap(darkMode: Boolean) {
         uiSettings = MapUiSettings(
             zoomControlsEnabled = false,
         )
-    ) { }
+    )
 }
 
 
