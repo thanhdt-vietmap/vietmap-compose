@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package dev.sargunv.traintracker
+package dev.sargunv.traintracker.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,13 +28,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Composable
 @Preview
+@Composable
 fun App() {
     val darkMode = isSystemInDarkTheme()
 
@@ -99,17 +97,8 @@ fun App() {
                 }
             },
             content = { _ ->
-                NativeMap(darkMode = darkMode)
+                TransitMap(darkMode = darkMode)
             }
         )
     }
 }
-
-@Composable
-expect fun NativeMap(darkMode: Boolean)
-
-@Composable
-expect fun getSheetHeight(): Dp
-
-@Composable
-expect fun getColorScheme(darkMode: Boolean): ColorScheme
