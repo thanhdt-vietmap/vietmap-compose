@@ -46,7 +46,8 @@ fun MainScreen() {
         sheetContent = { SheetContent() },
         content = { sheetPadding ->
             val insetsPadding = WindowInsets.safeDrawing.asPaddingValues(LocalDensity.current)
-            NativeMap(
+            MapView(
+                styleUrl = "https://tiles.openfreemap.org/styles/positron",
                 uiPadding = PaddingValues(
                     start = max(
                         8.dp + sheetPadding.calculateLeftPadding(LayoutDirection.Ltr),
