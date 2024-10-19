@@ -1,20 +1,18 @@
 package dev.sargunv.traintracker.ui
 
+import android.view.Gravity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
-import kotlin.math.roundToInt
 
 @Composable
 actual fun NativeMap(modifier: Modifier, uiPadding: PaddingValues) {
@@ -22,7 +20,6 @@ actual fun NativeMap(modifier: Modifier, uiPadding: PaddingValues) {
     val (mapView, setMapView) = remember { mutableStateOf<MapView?>(null) }
 
     val (leftUiPadding, topUiPadding, rightUiPadding, bottomUiPadding) = paddingValuesToPx(uiPadding)
-    val logoWidth = with(LocalDensity.current) { 88.dp.toPx().roundToInt() }
 
     AndroidView(
         modifier = modifier,
@@ -34,8 +31,9 @@ actual fun NativeMap(modifier: Modifier, uiPadding: PaddingValues) {
             view.getMapAsync { map ->
                 map.setStyle("https://tiles.openfreemap.org/styles/positron")
                 map.uiSettings.apply {
+                    attributionGravity = Gravity.BOTTOM or Gravity.END
                     setAttributionMargins(
-                        leftUiPadding + logoWidth,
+                        leftUiPadding,
                         topUiPadding,
                         rightUiPadding,
                         bottomUiPadding

@@ -6,5 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-expect fun NativeMap(modifier: Modifier = Modifier, uiPadding: PaddingValues = PaddingValues(8.dp))
+expect fun NativeMap(
+    modifier: Modifier = Modifier,
+    uiPadding: PaddingValues = PaddingValues(8.dp)
+)
 

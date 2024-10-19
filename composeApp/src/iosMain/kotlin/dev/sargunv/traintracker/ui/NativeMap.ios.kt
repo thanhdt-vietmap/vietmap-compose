@@ -22,9 +22,16 @@ import platform.UIKit.UIViewAutoresizingFlexibleWidth
 @OptIn(ExperimentalForeignApi::class, ExperimentalComposeUiApi::class)
 @Composable
 actual fun NativeMap(modifier: Modifier, uiPadding: PaddingValues) {
-    val leftUiPadding = uiPadding.calculateLeftPadding(LocalLayoutDirection.current).value
-    val rightUiPadding = uiPadding.calculateRightPadding(LocalLayoutDirection.current).value
+    val leftSafeInset = WindowInsets.safeDrawing.asPaddingValues()
+        .calculateLeftPadding(LocalLayoutDirection.current).value
+    val rightSafeInset = WindowInsets.safeDrawing.asPaddingValues()
+        .calculateRightPadding(LocalLayoutDirection.current).value
     val bottomSafeInset = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding().value
+
+    val leftUiPadding =
+        uiPadding.calculateLeftPadding(LocalLayoutDirection.current).value - leftSafeInset
+    val rightUiPadding =
+        uiPadding.calculateRightPadding(LocalLayoutDirection.current).value - rightSafeInset
     val bottomUiPadding = uiPadding.calculateBottomPadding().value - bottomSafeInset
 
     UIKitView(
@@ -52,19 +59,6 @@ actual fun NativeMap(modifier: Modifier, uiPadding: PaddingValues) {
                     bottomUiPadding.toDouble()
                 )
             )
-
-//                setAttributionMargins(
-//                    leftUiPadding + logoWidth,
-//                    topUiPadding,
-//                    rightUiPadding,
-//                    bottomUiPadding
-//                )
-//                setLogoMargins(
-//                    leftUiPadding,
-//                    topUiPadding,
-//                    rightUiPadding,
-//                    bottomUiPadding
-//                )
-        }
+        },
     )
 }
