@@ -1,17 +1,17 @@
 package dev.sargunv.traintracker.ui
 
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.UIKitView
 import platform.MapKit.MKMapView
 
 @Composable
-actual fun TransitMap() {
+actual fun NativeMap(modifier: Modifier, uiPadding: PaddingValues) {
     UIKitView(
+        modifier = modifier,
         factory = {
             MKMapView()
         },
-        modifier = Modifier.fillMaxSize(),
     )
 }

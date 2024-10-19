@@ -34,11 +34,11 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.google.maps.compose)
             implementation(libs.sqldelight.driver.android)
             implementation(libs.ktor.client.android)
             implementation(libs.koin.core)
             implementation(libs.koin.android)
+            implementation(libs.maplibre.android)
         }
         iosMain.dependencies {
             implementation(libs.sqldelight.driver.native)

@@ -4,7 +4,9 @@ package dev.sargunv.traintracker.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
@@ -29,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import dev.sargunv.traintracker.IPlatform
@@ -41,7 +44,29 @@ fun MainScreen() {
         sheetDragHandle = { SheetDragHandle() },
         sheetContainerColor = MaterialTheme.colorScheme.surface,
         sheetContent = { SheetContent() },
-        content = { _ -> TransitMap() }
+        content = { sheetPadding ->
+            val insetsPadding = WindowInsets.safeDrawing.asPaddingValues(LocalDensity.current)
+            NativeMap(
+                uiPadding = PaddingValues(
+                    start = max(
+                        8.dp + sheetPadding.calculateLeftPadding(LayoutDirection.Ltr),
+                        insetsPadding.calculateLeftPadding(LayoutDirection.Ltr)
+                    ),
+                    end = max(
+                        8.dp + sheetPadding.calculateRightPadding(LayoutDirection.Ltr),
+                        insetsPadding.calculateRightPadding(LayoutDirection.Ltr)
+                    ),
+                    top = max(
+                        8.dp + sheetPadding.calculateTopPadding(),
+                        insetsPadding.calculateTopPadding()
+                    ),
+                    bottom = max(
+                        8.dp + sheetPadding.calculateBottomPadding(),
+                        insetsPadding.calculateBottomPadding()
+                    )
+                )
+            )
+        }
     )
 }
 
@@ -73,15 +98,16 @@ fun SheetContent() {
                 }
             }
         )
-        Text(
-//            text = "Browse the map or click the + button to get started",
-            text = koinInject<IPlatform>().name,
-            style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-            modifier = Modifier
-                .fillMaxSize()
-                .wrapContentSize(Alignment.Center)
-                .padding(16.dp)
-        )
+        for (i in 0..20) {
+            Text(
+                text = koinInject<IPlatform>().name,
+                style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center)
+                    .padding(16.dp)
+            )
+        }
     }
 }
 
