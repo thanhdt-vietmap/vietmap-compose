@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.serialization)
     alias(libs.plugins.sqldelight)
 }
@@ -19,15 +20,21 @@ kotlin {
         }
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+    iosArm64()
+    iosSimulatorArm64()
+
+    cocoapods {
+        summary = "Some description for the Shared Module"
+        homepage = "Link to the Shared Module homepage"
+        version = "1.0"
+        ios.deploymentTarget = "15.3"
+        podfile = project.file("../iosApp/Podfile")
+        framework {
+            baseName = "composeApp"
             isStatic = true
         }
+        pod("ZIPFoundation", "0.9.19")
+        pod("MapLibre", "6.7.1")
     }
 
     sourceSets {

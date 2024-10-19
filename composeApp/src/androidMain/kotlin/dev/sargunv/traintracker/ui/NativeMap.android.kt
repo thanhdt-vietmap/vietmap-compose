@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
@@ -73,29 +72,4 @@ actual fun NativeMap(modifier: Modifier, uiPadding: PaddingValues) {
         lifecycle.addObserver(observer)
         onDispose { lifecycle.removeObserver(observer) }
     }
-}
-
-data class PaddingPxValues(
-    val left: Int,
-    val top: Int,
-    val right: Int,
-    val bottom: Int
-)
-
-@Composable
-fun paddingValuesToPx(paddingValues: PaddingValues): PaddingPxValues {
-    val layoutDirection = LocalLayoutDirection.current
-    val left = with(LocalDensity.current) {
-        paddingValues.calculateLeftPadding(layoutDirection).toPx().roundToInt()
-    }
-    val top = with(LocalDensity.current) {
-        paddingValues.calculateTopPadding().toPx().roundToInt()
-    }
-    val right = with(LocalDensity.current) {
-        paddingValues.calculateRightPadding(layoutDirection).toPx().roundToInt()
-    }
-    val bottom = with(LocalDensity.current) {
-        paddingValues.calculateBottomPadding().toPx().roundToInt()
-    }
-    return PaddingPxValues(left, top, right, bottom)
 }
