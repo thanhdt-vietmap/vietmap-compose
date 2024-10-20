@@ -1,0 +1,136 @@
+CREATE TABLE agency (
+  agencyId TEXT PRIMARY KEY,
+  agencyName TEXT NOT NULL,
+  agencyUrl TEXT,
+  agencyTimezone TEXT,
+  agencyLang TEXT,
+  agencyPhone TEXT,
+  agencyFareUrl TEXT,
+  agencyEmail TEXT
+);
+
+insertAgency: INSERT INTO agency (agencyId, agencyName, agencyUrl, agencyTimezone, agencyLang, agencyPhone, agencyFareUrl, agencyEmail) VALUES ?;
+deleteAllAgencies: DELETE FROM agency;
+
+CREATE TABLE calendarDate (
+  serviceId TEXT NOT NULL,
+  date TEXT NOT NULL,
+  exceptionType INTEGER NOT NULL
+);
+
+insertCalendarDate: INSERT INTO calendarDate (serviceId, date, exceptionType) VALUES ?;
+deleteAllCalendarDates: DELETE FROM calendarDate;
+
+CREATE TABLE calendar (
+  serviceId TEXT PRIMARY KEY,
+  monday INTEGER NOT NULL,
+  tuesday INTEGER NOT NULL,
+  wednesday INTEGER NOT NULL,
+  thursday INTEGER NOT NULL,
+  friday INTEGER NOT NULL,
+  saturday INTEGER NOT NULL,
+  sunday INTEGER NOT NULL,
+  startDate TEXT NOT NULL,
+  endDate TEXT NOT NULL
+);
+
+insertCalendar: INSERT INTO calendar (serviceId, monday, tuesday, wednesday, thursday, friday, saturday, sunday, startDate, endDate) VALUES ?;
+deleteAllCalendars: DELETE FROM calendar;
+
+CREATE TABLE feedInfo (
+  feedPublisherName TEXT NOT NULL,
+  feedPublisherUrl TEXT,
+  feedLang TEXT,
+  feedStartDate TEXT,
+  feedEndDate TEXT,
+  feedVersion TEXT
+);
+
+insertFeedInfo: INSERT INTO feedInfo (feedPublisherName, feedPublisherUrl, feedLang, feedStartDate, feedEndDate, feedVersion) VALUES ?;
+deleteAllFeedInfos: DELETE FROM feedInfo;
+
+CREATE TABLE frequency (
+  tripId TEXT NOT NULL,
+  startTime TEXT NOT NULL,
+  endTime TEXT NOT NULL,
+  headwaySecs INTEGER NOT NULL,
+  exactTimes INTEGER
+);
+
+insertFrequency: INSERT INTO frequency (tripId, startTime, endTime, headwaySecs, exactTimes) VALUES ?;
+deleteAllFrequencies: DELETE FROM frequency;
+
+CREATE TABLE route (
+  routeId TEXT PRIMARY KEY,
+  agencyId TEXT,
+  routeShortName TEXT NOT NULL,
+  routeLongName TEXT NOT NULL,
+  routeDesc TEXT,
+  routeType INTEGER AS dev.sargunv.traintracker.gtfs.db.RouteType NOT NULL,
+  routeUrl TEXT,
+  routeColor TEXT,
+  routeTextColor TEXT
+);
+
+insertRoute: INSERT INTO route (routeId, agencyId, routeShortName, routeLongName, routeDesc, routeType, routeUrl, routeColor, routeTextColor) VALUES ?;
+deleteAllRoutes: DELETE FROM route;
+
+CREATE TABLE shape (
+  shapeId TEXT NOT NULL,
+  shapePtLat REAL NOT NULL,
+  shapePtLon REAL NOT NULL,
+  shapePtSequence INTEGER NOT NULL,
+  shapeDistTraveled REAL
+);
+
+CREATE INDEX shape_shapeId_shapePtSequence ON shape (shapeId, shapePtSequence);
+
+insertShape: INSERT INTO shape (shapeId, shapePtLat, shapePtLon, shapePtSequence, shapeDistTraveled) VALUES ?;
+deleteAllShapes: DELETE FROM shape;
+selectAllShapes: SELECT * FROM shape ORDER BY shapeId, shapePtSequence;
+
+CREATE TABLE stopTime (
+  tripId TEXT NOT NULL,
+  arrivalTime TEXT NOT NULL,
+  departureTime TEXT NOT NULL,
+  stopId TEXT NOT NULL,
+  stopSequence INTEGER NOT NULL,
+  stopHeadsign TEXT,
+  pickupType INTEGER,
+  dropOffType INTEGER,
+  shapeDistTraveled REAL
+);
+
+insertStopTime: INSERT INTO stopTime (tripId, arrivalTime, departureTime, stopId, stopSequence, stopHeadsign, pickupType, dropOffType, shapeDistTraveled) VALUES ?;
+deleteAllStopTimes: DELETE FROM stopTime;
+
+CREATE TABLE stop (
+  stopId TEXT PRIMARY KEY,
+  stopCode TEXT,
+  stopName TEXT NOT NULL,
+  stopDesc TEXT,
+  stopLat REAL NOT NULL,
+  stopLon REAL NOT NULL,
+  zoneId TEXT,
+  stopUrl TEXT,
+  locationType INTEGER,
+  parentStation TEXT,
+  stopTimezone TEXT
+);
+
+insertStop: INSERT INTO stop (stopId, stopCode, stopName, stopDesc, stopLat, stopLon, zoneId, stopUrl, locationType, parentStation, stopTimezone) VALUES ?;
+deleteAllStops: DELETE FROM stop;
+
+CREATE TABLE trip (
+  routeId TEXT NOT NULL,
+  serviceId TEXT NOT NULL,
+  tripId TEXT PRIMARY KEY,
+  tripHeadsign TEXT,
+  tripShortName TEXT,
+  directionId INTEGER,
+  blockId TEXT,
+  shapeId TEXT
+);
+
+insertTrip: INSERT INTO trip (routeId, serviceId, tripId, tripHeadsign, tripShortName, directionId, blockId, shapeId) VALUES ?;
+deleteAllTrips: DELETE FROM trip;

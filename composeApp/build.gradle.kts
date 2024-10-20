@@ -65,6 +65,7 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
     }
 
@@ -113,7 +114,10 @@ dependencies {
 sqldelight {
     databases {
         create("GtfsSchedule") {
-            packageName.set("dev.sargunv.traintracker.db")
+            packageName.set("dev.sargunv.traintracker.gtfs.db")
+            srcDirs("src/commonMain/dbGtfs")
+            verifyMigrations.set(true)
+            generateAsync.set(true)
         }
     }
 }

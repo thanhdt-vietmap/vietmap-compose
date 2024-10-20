@@ -15,6 +15,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
+import kotlin.math.roundToInt
 
 @Composable
 actual fun MapView(
@@ -59,31 +60,35 @@ actual fun MapView(
                     attributionGravity = Gravity.BOTTOM or Gravity.END
 
                     if (uiPadding != null) {
-                        val (
-                            leftUiPadding,
-                            topUiPadding,
-                            rightUiPadding,
-                            bottomUiPadding
-                        ) = paddingValuesToPx(uiPadding, dir, density)
+                        with(density) {
+                            val leftUiPadding =
+                                uiPadding.calculateLeftPadding(dir).toPx().roundToInt()
+                            val topUiPadding =
+                                uiPadding.calculateTopPadding().toPx().roundToInt()
+                            val rightUiPadding =
+                                uiPadding.calculateRightPadding(dir).toPx().roundToInt()
+                            val bottomUiPadding =
+                                uiPadding.calculateBottomPadding().toPx().roundToInt()
 
-                        setAttributionMargins(
-                            leftUiPadding,
-                            topUiPadding,
-                            rightUiPadding,
-                            bottomUiPadding
-                        )
-                        setLogoMargins(
-                            leftUiPadding,
-                            topUiPadding,
-                            rightUiPadding,
-                            bottomUiPadding
-                        )
-                        setCompassMargins(
-                            leftUiPadding,
-                            topUiPadding,
-                            rightUiPadding,
-                            bottomUiPadding
-                        )
+                            setAttributionMargins(
+                                leftUiPadding,
+                                topUiPadding,
+                                rightUiPadding,
+                                bottomUiPadding
+                            )
+                            setLogoMargins(
+                                leftUiPadding,
+                                topUiPadding,
+                                rightUiPadding,
+                                bottomUiPadding
+                            )
+                            setCompassMargins(
+                                leftUiPadding,
+                                topUiPadding,
+                                rightUiPadding,
+                                bottomUiPadding
+                            )
+                        }
                     }
                 }
             }
