@@ -1,6 +1,5 @@
 package dev.sargunv.traintracker.ui
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,15 +23,9 @@ import platform.UIKit.UIViewAutoresizingFlexibleWidth
 @Composable
 actual fun MapView(
     modifier: Modifier,
-    uiPadding: PaddingValues?,
     styleUrl: String,
-    isLogoEnabled: Boolean,
-    isAttributionEnabled: Boolean,
-    isCompassEnabled: Boolean,
-    isTiltGesturesEnabled: Boolean,
-    isZoomGesturesEnabled: Boolean,
-    isRotateGesturesEnabled: Boolean,
-    isScrollGesturesEnabled: Boolean,
+    uiSettings: MapUiSettings,
+    lines: Set<MapLine>, // TODO
 ) {
     val insetPadding = WindowInsets.safeDrawing.asPaddingValues()
     val dir = LocalLayoutDirection.current
@@ -51,23 +44,26 @@ actual fun MapView(
         update = { mapView ->
             mapView.setStyleURL(NSURL(string = styleUrl))
 
-            mapView.logoView.setHidden(!isLogoEnabled)
-            mapView.attributionButton.setHidden(!isAttributionEnabled)
-            mapView.compassView.setHidden(!isCompassEnabled)
+            mapView.logoView.setHidden(!uiSettings.isLogoEnabled)
+            mapView.attributionButton.setHidden(!uiSettings.isAttributionEnabled)
+            mapView.compassView.setHidden(!uiSettings.isCompassEnabled)
 
-            mapView.allowsTilting = isTiltGesturesEnabled
-            mapView.zoomEnabled = isZoomGesturesEnabled
-            mapView.rotateEnabled = isRotateGesturesEnabled
-            mapView.scrollEnabled = isScrollGesturesEnabled
+            mapView.allowsTilting = uiSettings.isTiltGesturesEnabled
+            mapView.zoomEnabled = uiSettings.isZoomGesturesEnabled
+            mapView.rotateEnabled = uiSettings.isRotateGesturesEnabled
+            mapView.scrollEnabled = uiSettings.isScrollGesturesEnabled
 
-            if (uiPadding != null) {
+            if (uiSettings.padding != null) {
                 val leftSafeInset = insetPadding.calculateLeftPadding(dir).value
                 val rightSafeInset = insetPadding.calculateRightPadding(dir).value
                 val bottomSafeInset = insetPadding.calculateBottomPadding().value
 
-                val leftUiPadding = uiPadding.calculateLeftPadding(dir).value - leftSafeInset
-                val rightUiPadding = uiPadding.calculateRightPadding(dir).value - rightSafeInset
-                val bottomUiPadding = uiPadding.calculateBottomPadding().value - bottomSafeInset
+                val leftUiPadding =
+                    uiSettings.padding.calculateLeftPadding(dir).value - leftSafeInset
+                val rightUiPadding =
+                    uiSettings.padding.calculateRightPadding(dir).value - rightSafeInset
+                val bottomUiPadding =
+                    uiSettings.padding.calculateBottomPadding().value - bottomSafeInset
 
                 mapView.setLogoViewMargins(
                     CGPointMake(

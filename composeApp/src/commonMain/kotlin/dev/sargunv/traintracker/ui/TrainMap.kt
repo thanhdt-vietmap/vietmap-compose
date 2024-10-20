@@ -47,28 +47,38 @@ fun TrainMap(sheetPadding: PaddingValues) {
     val viewModel = koinViewModel<TrainMapViewModel>()
     val state by remember { viewModel.state }
 
-    println(state.shapes)
-
     val insetsPadding = WindowInsets.safeDrawing.asPaddingValues(LocalDensity.current)
     MapView(
         styleUrl = "https://tiles.openfreemap.org/styles/positron",
-        uiPadding = PaddingValues(
-            start = max(
-                8.dp + sheetPadding.calculateLeftPadding(LayoutDirection.Ltr),
-                insetsPadding.calculateLeftPadding(LayoutDirection.Ltr)
+        uiSettings = MapUiSettings(
+            padding = PaddingValues(
+                start = max(
+                    8.dp + sheetPadding.calculateLeftPadding(LayoutDirection.Ltr),
+                    insetsPadding.calculateLeftPadding(LayoutDirection.Ltr)
+                ),
+                end = max(
+                    8.dp + sheetPadding.calculateRightPadding(LayoutDirection.Ltr),
+                    insetsPadding.calculateRightPadding(LayoutDirection.Ltr)
+                ),
+                top = max(
+                    8.dp + sheetPadding.calculateTopPadding(),
+                    insetsPadding.calculateTopPadding()
+                ),
+                bottom = max(
+                    8.dp + sheetPadding.calculateBottomPadding(),
+                    insetsPadding.calculateBottomPadding()
+                )
             ),
-            end = max(
-                8.dp + sheetPadding.calculateRightPadding(LayoutDirection.Ltr),
-                insetsPadding.calculateRightPadding(LayoutDirection.Ltr)
-            ),
-            top = max(
-                8.dp + sheetPadding.calculateTopPadding(),
-                insetsPadding.calculateTopPadding()
-            ),
-            bottom = max(
-                8.dp + sheetPadding.calculateBottomPadding(),
-                insetsPadding.calculateBottomPadding()
+        ),
+        lines = state.shapes.values.map { shapeList ->
+            MapLine(
+                points = shapeList.map { shape ->
+                    MapPoint(
+                        lat = shape.shapePtLat,
+                        lon = shape.shapePtLon
+                    )
+                }
             )
-        )
+        }.toSet()
     )
 }

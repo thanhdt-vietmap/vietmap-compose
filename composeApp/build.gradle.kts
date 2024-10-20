@@ -46,6 +46,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.android)
             implementation(libs.maplibre.android)
+            implementation(libs.maplibre.android.plugin.annotation)
         }
         iosMain.dependencies {
             implementation(libs.sqldelight.driver.native)
