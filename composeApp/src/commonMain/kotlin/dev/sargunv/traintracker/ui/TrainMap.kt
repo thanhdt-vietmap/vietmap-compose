@@ -70,6 +70,15 @@ fun TrainMap(sheetPadding: PaddingValues) {
                 )
             ),
         ),
+//        symbols = state.shapes.values.flatten().map { shape ->
+//            MapSymbol(
+//                point = MapPoint(
+//                    lat = shape.shapePtLat,
+//                    lon = shape.shapePtLon
+//                ),
+//                text = shape.shapePtSequence.toString()
+//            )
+//        }.toSet(),
         lines = state.shapes.values.map { shapeList ->
             MapLine(
                 points = shapeList.map { shape ->

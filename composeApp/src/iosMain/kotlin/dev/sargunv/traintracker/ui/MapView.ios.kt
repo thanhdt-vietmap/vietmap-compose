@@ -26,6 +26,7 @@ actual fun MapView(
     styleUrl: String,
     uiSettings: MapUiSettings,
     lines: Set<MapLine>, // TODO
+    symbols: Set<MapSymbol>, // TODO
 ) {
     val insetPadding = WindowInsets.safeDrawing.asPaddingValues()
     val dir = LocalLayoutDirection.current

@@ -18,6 +18,7 @@ data class MapUiSettings(
 
 data class MapPoint(val lat: Double, val lon: Double)
 data class MapLine(val points: List<MapPoint>)
+data class MapSymbol(val point: MapPoint, val text: String)
 
 @Composable
 expect fun MapView(
@@ -25,5 +26,6 @@ expect fun MapView(
     styleUrl: String = "https://demotiles.maplibre.org/style.json",
     uiSettings: MapUiSettings = MapUiSettings(),
     lines: Set<MapLine> = emptySet(),
+    symbols: Set<MapSymbol> = emptySet(),
 )
 

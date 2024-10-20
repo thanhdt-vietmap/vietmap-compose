@@ -2,6 +2,19 @@ package dev.sargunv.traintracker.gtfs.db
 
 import dev.sargunv.traintracker.DatabaseDriverFactory
 
+fun parseCsv(): List<Shape> {
+    return shapesCsv.split("\n").map {
+        val parts = it.split(",")
+        Shape(
+            shapeId = parts[0],
+            shapePtLat = parts[1].toDouble(),
+            shapePtLon = parts[2].toDouble(),
+            shapePtSequence = parts[3].toLong(),
+            shapeDistTraveled = parts[4].toDouble()
+        )
+    }
+}
+
 class GtfsScheduleDb(driverFactory: DatabaseDriverFactory) {
     private val db = GtfsSchedule(
         driverFactory.createDriver(GtfsSchedule.Schema, "gtfs_schedule.db"),
@@ -26,51 +39,9 @@ class GtfsScheduleDb(driverFactory: DatabaseDriverFactory) {
             q.deleteAllStops()
             q.deleteAllTrips()
 
-            q.insertShape(
-                Shape(
-                    shapeId = "1",
-                    shapePtLat = 0.0,
-                    shapePtLon = 0.0,
-                    shapePtSequence = 0,
-                    shapeDistTraveled = 0.0
-                )
-            )
-            q.insertShape(
-                Shape(
-                    shapeId = "1",
-                    shapePtLat = 10.0,
-                    shapePtLon = 0.0,
-                    shapePtSequence = 1,
-                    shapeDistTraveled = 0.0
-                )
-            )
-            q.insertShape(
-                Shape(
-                    shapeId = "1",
-                    shapePtLat = 10.0,
-                    shapePtLon = 10.0,
-                    shapePtSequence = 2,
-                    shapeDistTraveled = 0.0
-                )
-            )
-            q.insertShape(
-                Shape(
-                    shapeId = "1",
-                    shapePtLat = 0.0,
-                    shapePtLon = 10.0,
-                    shapePtSequence = 3,
-                    shapeDistTraveled = 0.0
-                )
-            )
-            q.insertShape(
-                Shape(
-                    shapeId = "1",
-                    shapePtLat = 0.0,
-                    shapePtLon = 0.0,
-                    shapePtSequence = 4,
-                    shapeDistTraveled = 0.0
-                )
-            )
+            parseCsv().forEach {
+                q.insertShape(it)
+            }
 
             q.selectAllShapes()
                 .executeAsList()
