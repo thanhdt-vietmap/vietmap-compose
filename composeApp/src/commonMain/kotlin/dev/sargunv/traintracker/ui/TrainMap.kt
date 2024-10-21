@@ -14,10 +14,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dev.sargunv.traintracker.gtfs.db.GtfsScheduleDb
 import dev.sargunv.traintracker.gtfs.db.Shape
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 class TrainMapViewModel(
@@ -25,17 +23,6 @@ class TrainMapViewModel(
 ) : ViewModel() {
     private val _state = mutableStateOf(TrainMapState())
     val state: State<TrainMapState> = _state
-
-    init {
-        loadShapes()
-    }
-
-    fun loadShapes() {
-        viewModelScope.launch {
-            val shapes = gtfsScheduleDb.clearAndInsert()
-            _state.value = _state.value.copy(shapes = shapes)
-        }
-    }
 }
 
 data class TrainMapState(
@@ -70,24 +57,5 @@ fun TrainMap(sheetPadding: PaddingValues) {
                 )
             ),
         ),
-//        symbols = state.shapes.values.flatten().map { shape ->
-//            MapSymbol(
-//                point = MapPoint(
-//                    lat = shape.shapePtLat,
-//                    lon = shape.shapePtLon
-//                ),
-//                text = shape.shapePtSequence.toString()
-//            )
-//        }.toSet(),
-        lines = state.shapes.values.map { shapeList ->
-            MapLine(
-                points = shapeList.map { shape ->
-                    MapPoint(
-                        lat = shape.shapePtLat,
-                        lon = shape.shapePtLon
-                    )
-                }
-            )
-        }.toSet()
     )
 }

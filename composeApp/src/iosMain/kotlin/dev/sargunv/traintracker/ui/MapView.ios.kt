@@ -25,8 +25,6 @@ actual fun MapView(
     modifier: Modifier,
     styleUrl: String,
     uiSettings: MapUiSettings,
-    lines: Set<MapLine>, // TODO
-    symbols: Set<MapSymbol>, // TODO
 ) {
     val insetPadding = WindowInsets.safeDrawing.asPaddingValues()
     val dir = LocalLayoutDirection.current
@@ -54,31 +52,29 @@ actual fun MapView(
             mapView.rotateEnabled = uiSettings.isRotateGesturesEnabled
             mapView.scrollEnabled = uiSettings.isScrollGesturesEnabled
 
-            if (uiSettings.padding != null) {
-                val leftSafeInset = insetPadding.calculateLeftPadding(dir).value
-                val rightSafeInset = insetPadding.calculateRightPadding(dir).value
-                val bottomSafeInset = insetPadding.calculateBottomPadding().value
+            val leftSafeInset = insetPadding.calculateLeftPadding(dir).value
+            val rightSafeInset = insetPadding.calculateRightPadding(dir).value
+            val bottomSafeInset = insetPadding.calculateBottomPadding().value
 
-                val leftUiPadding =
-                    uiSettings.padding.calculateLeftPadding(dir).value - leftSafeInset
-                val rightUiPadding =
-                    uiSettings.padding.calculateRightPadding(dir).value - rightSafeInset
-                val bottomUiPadding =
-                    uiSettings.padding.calculateBottomPadding().value - bottomSafeInset
+            val leftUiPadding =
+                uiSettings.padding.calculateLeftPadding(dir).value - leftSafeInset
+            val rightUiPadding =
+                uiSettings.padding.calculateRightPadding(dir).value - rightSafeInset
+            val bottomUiPadding =
+                uiSettings.padding.calculateBottomPadding().value - bottomSafeInset
 
-                mapView.setLogoViewMargins(
-                    CGPointMake(
-                        leftUiPadding.toDouble(),
-                        bottomUiPadding.toDouble()
-                    )
+            mapView.setLogoViewMargins(
+                CGPointMake(
+                    leftUiPadding.toDouble(),
+                    bottomUiPadding.toDouble()
                 )
-                mapView.setAttributionButtonMargins(
-                    CGPointMake(
-                        rightUiPadding.toDouble(),
-                        bottomUiPadding.toDouble()
-                    )
+            )
+            mapView.setAttributionButtonMargins(
+                CGPointMake(
+                    rightUiPadding.toDouble(),
+                    bottomUiPadding.toDouble()
                 )
-            }
+            )
 
         },
     )
