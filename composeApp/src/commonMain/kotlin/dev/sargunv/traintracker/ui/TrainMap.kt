@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
+import dev.sargunv.maplibre.kmpp.MapView
+import dev.sargunv.maplibre.kmpp.MapViewOptions
 import dev.sargunv.traintracker.gtfs.db.GtfsScheduleDb
 import dev.sargunv.traintracker.gtfs.db.Shape
 import org.koin.compose.viewmodel.koinViewModel
@@ -36,25 +38,29 @@ fun TrainMap(sheetPadding: PaddingValues) {
 
     val insetsPadding = WindowInsets.safeDrawing.asPaddingValues(LocalDensity.current)
     MapView(
-        styleUrl = "https://tiles.openfreemap.org/styles/positron",
-        uiSettings = MapUiSettings(
-            padding = PaddingValues(
-                start = max(
-                    8.dp + sheetPadding.calculateLeftPadding(LayoutDirection.Ltr),
-                    insetsPadding.calculateLeftPadding(LayoutDirection.Ltr)
+        options = MapViewOptions(
+            style = MapViewOptions.StyleOptions(
+                url = "https://tiles.openfreemap.org/styles/positron",
+            ),
+            ui = MapViewOptions.UiOptions(
+                padding = PaddingValues(
+                    start = max(
+                        8.dp + sheetPadding.calculateLeftPadding(LayoutDirection.Ltr),
+                        insetsPadding.calculateLeftPadding(LayoutDirection.Ltr)
+                    ),
+                    end = max(
+                        8.dp + sheetPadding.calculateRightPadding(LayoutDirection.Ltr),
+                        insetsPadding.calculateRightPadding(LayoutDirection.Ltr)
+                    ),
+                    top = max(
+                        8.dp + sheetPadding.calculateTopPadding(),
+                        insetsPadding.calculateTopPadding()
+                    ),
+                    bottom = max(
+                        8.dp + sheetPadding.calculateBottomPadding(),
+                        insetsPadding.calculateBottomPadding()
+                    )
                 ),
-                end = max(
-                    8.dp + sheetPadding.calculateRightPadding(LayoutDirection.Ltr),
-                    insetsPadding.calculateRightPadding(LayoutDirection.Ltr)
-                ),
-                top = max(
-                    8.dp + sheetPadding.calculateTopPadding(),
-                    insetsPadding.calculateTopPadding()
-                ),
-                bottom = max(
-                    8.dp + sheetPadding.calculateBottomPadding(),
-                    insetsPadding.calculateBottomPadding()
-                )
             ),
         ),
     )

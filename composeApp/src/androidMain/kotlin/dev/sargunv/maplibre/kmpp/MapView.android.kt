@@ -1,4 +1,4 @@
-package dev.sargunv.traintracker.ui
+package dev.sargunv.maplibre.kmpp
 
 import android.view.Gravity
 import androidx.compose.runtime.Composable
@@ -19,23 +19,20 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
-import kotlin.math.roundToInt
 
 @Composable
 actual fun MapView(
     modifier: Modifier,
-    styleUrl: String,
-    uiSettings: MapUiSettings,
+    options: MapViewOptions,
 ) {
     // remember some objects related to the underlying MapView, set in the factory
     var observer by remember { mutableStateOf<LifecycleEventObserver?>(null) }
 
-    // remember the latest values of the parameters, as they'll be used in the update lambda
-    val updatedStyleUrl by rememberUpdatedState(styleUrl)
-    val updatedUiSettings by rememberUpdatedState(uiSettings)
-
-    val updatedDirection by rememberUpdatedState(LocalLayoutDirection.current)
-    val updatedDensity by rememberUpdatedState(LocalDensity.current)
+    // AndroidView has some long-lived lambdas that need to reference the latest values
+    val latestUiOptions by rememberUpdatedState(options.ui)
+    val latestStyleOptions by rememberUpdatedState(options.style)
+    val latestLayoutDir by rememberUpdatedState(LocalLayoutDirection.current)
+    val latestDensity by rememberUpdatedState(LocalDensity.current)
 
     AndroidView(
         modifier = modifier,
@@ -59,9 +56,9 @@ actual fun MapView(
             }
         },
         update = { mapView ->
-            mapView.applyUiSettings(updatedUiSettings, updatedDensity, updatedDirection)
+            mapView.applyUiOptions(latestUiOptions, latestDensity, latestLayoutDir)
             mapView.getMapAsync { map ->
-                map.setStyle(updatedStyleUrl)
+                map.setStyle(latestStyleOptions.url)
             }
         }
     )
@@ -73,51 +70,45 @@ actual fun MapView(
     }
 }
 
-fun MapView.applyUiSettings(
-    uiSettings: MapUiSettings,
+fun MapView.applyUiOptions(
+    options: MapViewOptions.UiOptions,
     density: Density,
-    dir: LayoutDirection
+    layoutDir: LayoutDirection
 ) {
     getMapAsync { map ->
-        uiSettings.apply {
-            map.uiSettings.isLogoEnabled = isLogoEnabled
-            map.uiSettings.isAttributionEnabled = isAttributionEnabled
-            map.uiSettings.isCompassEnabled = isCompassEnabled
+        map.uiSettings.isLogoEnabled = options.isLogoEnabled
+        map.uiSettings.isAttributionEnabled = options.isAttributionEnabled
+        map.uiSettings.isCompassEnabled = options.isCompassEnabled
 
-            map.uiSettings.isTiltGesturesEnabled = isTiltGesturesEnabled
-            map.uiSettings.isZoomGesturesEnabled = isZoomGesturesEnabled
-            map.uiSettings.isRotateGesturesEnabled = isRotateGesturesEnabled
-            map.uiSettings.isScrollGesturesEnabled = isScrollGesturesEnabled
+        map.uiSettings.isTiltGesturesEnabled = options.isTiltGesturesEnabled
+        map.uiSettings.isZoomGesturesEnabled = options.isZoomGesturesEnabled
+        map.uiSettings.isRotateGesturesEnabled = options.isRotateGesturesEnabled
+        map.uiSettings.isScrollGesturesEnabled = options.isScrollGesturesEnabled
 
-            with(density) {
-                val leftUiPadding =
-                    padding.calculateLeftPadding(dir).toPx().roundToInt()
-                val topUiPadding =
-                    padding.calculateTopPadding().toPx().roundToInt()
-                val rightUiPadding =
-                    padding.calculateRightPadding(dir).toPx().roundToInt()
-                val bottomUiPadding =
-                    padding.calculateBottomPadding().toPx().roundToInt()
+        with(density) {
+            val topUiPadding = options.padding.calculateTopPadding().roundToPx()
+            val bottomUiPadding = options.padding.calculateBottomPadding().roundToPx()
+            val leftUiPadding = options.padding.calculateLeftPadding(layoutDir).roundToPx()
+            val rightUiPadding = options.padding.calculateRightPadding(layoutDir).roundToPx()
 
-                map.uiSettings.setAttributionMargins(
-                    leftUiPadding,
-                    topUiPadding,
-                    rightUiPadding,
-                    bottomUiPadding
-                )
-                map.uiSettings.setLogoMargins(
-                    leftUiPadding,
-                    topUiPadding,
-                    rightUiPadding,
-                    bottomUiPadding
-                )
-                map.uiSettings.setCompassMargins(
-                    leftUiPadding,
-                    topUiPadding,
-                    rightUiPadding,
-                    bottomUiPadding
-                )
-            }
+            map.uiSettings.setAttributionMargins(
+                leftUiPadding,
+                topUiPadding,
+                rightUiPadding,
+                bottomUiPadding
+            )
+            map.uiSettings.setLogoMargins(
+                leftUiPadding,
+                topUiPadding,
+                rightUiPadding,
+                bottomUiPadding
+            )
+            map.uiSettings.setCompassMargins(
+                leftUiPadding,
+                topUiPadding,
+                rightUiPadding,
+                bottomUiPadding
+            )
         }
     }
 }
