@@ -51,14 +51,25 @@ fun TrainMap(sheetPadding: PaddingValues) {
                 ),
                 layers = listOf(
                     Layer(
-                        id = "amtrak-route-lines",
+                        id = "amtrak-route-lines-casing",
                         source = "amtrak-geojson",
                         below = "boundary_3",
+                        type = Layer.Type.Line(
+                            color = 0xFF888888.toInt(),
+                            width = 3f,
+                            cap = "round",
+                            join = "miter",
+                        )
+                    ),
+                    Layer(
+                        id = "amtrak-route-lines-inner",
+                        source = "amtrak-geojson",
+                        above = "amtrak-route-lines-casing",
                         type = Layer.Type.Line(
                             color = 0xFFCAE4F1.toInt(),
                             width = 2f,
                             cap = "round",
-                            join = "round",
+                            join = "miter",
                         )
                     )
                 ),
