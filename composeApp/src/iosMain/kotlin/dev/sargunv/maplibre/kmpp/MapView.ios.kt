@@ -111,6 +111,7 @@ class MapViewDelegate(
             didFinishLoadingStyle.sourceWithIdentifier(id)
                 ?: error("Source not found: $id")
         }
+
         getLatestOptions().style.sources
             .map { (id, source) ->
                 when (source) {
@@ -118,13 +119,33 @@ class MapViewDelegate(
                 }
             }
             .forEach { didFinishLoadingStyle.addSource(it) }
+        
         getLatestOptions().style.layers
-            .map { layer ->
+            .associateBy({ it }) { layer ->
                 when (layer.type) {
                     is Layer.Type.Line -> layer.type.toNativeLayer(getSource, layer)
                 }
             }
-            .forEach { didFinishLoadingStyle.addLayer(it) }
+            .forEach { (layer, nativeLayer) ->
+                when {
+                    layer.below != null -> didFinishLoadingStyle.insertLayer(
+                        layer = nativeLayer,
+                        belowLayer = didFinishLoadingStyle.layerWithIdentifier(layer.below)!!
+                    )
+
+                    layer.above != null -> didFinishLoadingStyle.insertLayer(
+                        layer = nativeLayer,
+                        aboveLayer = didFinishLoadingStyle.layerWithIdentifier(layer.above)!!
+                    )
+
+                    layer.index != null -> didFinishLoadingStyle.insertLayer(
+                        layer = nativeLayer,
+                        atIndex = layer.index.toULong()
+                    )
+
+                    else -> didFinishLoadingStyle.addLayer(nativeLayer)
+                }
+            }
     }
 }
 

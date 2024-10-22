@@ -106,6 +106,7 @@ fun MapView.applyStyleOptions(
 ) {
     getMapAsync { map ->
         map.setStyle(options.url) { style ->
+
             options.sources
                 .map { (id, source) ->
                     when (source) {
@@ -113,13 +114,21 @@ fun MapView.applyStyleOptions(
                     }
                 }
                 .forEach { style.addSource(it) }
+
             options.layers
-                .map { layer ->
+                .associateBy({ it }) { layer ->
                     when (layer.type) {
                         is Layer.Type.Line -> layer.type.toNativeLayer(layer)
                     }
                 }
-                .forEach { style.addLayer(it) }
+                .forEach { (layer, nativeLayer) ->
+                    when {
+                        layer.below != null -> style.addLayerBelow(nativeLayer, layer.below)
+                        layer.above != null -> style.addLayerAbove(nativeLayer, layer.above)
+                        layer.index != null -> style.addLayerAt(nativeLayer, layer.index)
+                        else -> style.addLayer(nativeLayer)
+                    }
+                }
         }
     }
 }
