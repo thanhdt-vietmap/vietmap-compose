@@ -112,6 +112,10 @@ dependencies {
     debugImplementation(compose.uiTooling)
 }
 
+compose.resources {
+    packageOfResClass = "dev.sargunv.traintracker.generated"
+}
+
 sqldelight {
     databases {
         create("GtfsSchedule") {

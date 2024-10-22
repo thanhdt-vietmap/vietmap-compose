@@ -18,8 +18,10 @@ import dev.sargunv.maplibre.kmpp.Layer
 import dev.sargunv.maplibre.kmpp.MapView
 import dev.sargunv.maplibre.kmpp.MapViewOptions
 import dev.sargunv.maplibre.kmpp.Source
+import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.gtfs.db.GtfsScheduleDb
 import dev.sargunv.traintracker.gtfs.db.Shape
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.compose.viewmodel.koinViewModel
 
 class TrainMapViewModel(
@@ -33,19 +35,21 @@ data class TrainMapState(
     val shapes: Map<String, List<Shape>> = emptyMap()
 )
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun TrainMap(sheetPadding: PaddingValues) {
     val viewModel = koinViewModel<TrainMapViewModel>()
     val state by remember { viewModel.state }
 
     val insetsPadding = WindowInsets.safeDrawing.asPaddingValues(LocalDensity.current)
+
     MapView(
         options = MapViewOptions(
             style = MapViewOptions.StyleOptions(
                 url = "https://tiles.openfreemap.org/styles/positron",
                 sources = mapOf(
                     "amtrak-geojson" to Source.GeoJson(
-                        url = "https://raw.githubusercontent.com/datanews/amtrak-geojson/master/amtrak-combined.geojson",
+                        url = Res.getUri("files/geojson/amtrak/routes.geojson"),
                         tolerance = 0.001f
                     )
                 ),

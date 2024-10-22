@@ -74,10 +74,18 @@ actual fun MapView(
     }
 }
 
+fun URI.correctAssetUrlIfNeeded(): URI {
+    return if (scheme == "file" && path.startsWith("/android_asset/")) {
+        URI("asset://${path.removePrefix("/android_asset/")}")
+    } else {
+        this
+    }
+}
+
 fun Source.GeoJson.toNativeSource(id: String): GeoJsonSource {
     return GeoJsonSource(
         id = id,
-        uri = URI(url),
+        uri = URI(url).correctAssetUrlIfNeeded(),
         options = GeoJsonOptions().apply {
             tolerance?.let { withTolerance(it) }
         }
@@ -105,7 +113,7 @@ fun MapView.applyStyleOptions(
     options: MapViewOptions.StyleOptions
 ) {
     getMapAsync { map ->
-        map.setStyle(options.url) { style ->
+        map.setStyle(URI(options.url).correctAssetUrlIfNeeded().toString()) { style ->
 
             options.sources
                 .map { (id, source) ->
