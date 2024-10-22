@@ -14,8 +14,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
+import dev.sargunv.maplibre.kmpp.Layer
 import dev.sargunv.maplibre.kmpp.MapView
 import dev.sargunv.maplibre.kmpp.MapViewOptions
+import dev.sargunv.maplibre.kmpp.Source
 import dev.sargunv.traintracker.gtfs.db.GtfsScheduleDb
 import dev.sargunv.traintracker.gtfs.db.Shape
 import org.koin.compose.viewmodel.koinViewModel
@@ -41,6 +43,24 @@ fun TrainMap(sheetPadding: PaddingValues) {
         options = MapViewOptions(
             style = MapViewOptions.StyleOptions(
                 url = "https://tiles.openfreemap.org/styles/positron",
+                sources = mapOf(
+                    "amtrak-geojson" to Source.GeoJson(
+                        url = "https://raw.githubusercontent.com/datanews/amtrak-geojson/master/amtrak-combined.geojson",
+                        tolerance = 0.001f
+                    )
+                ),
+                layers = listOf(
+                    Layer(
+                        id = "amtrak-route-lines",
+                        source = "amtrak-geojson",
+                        type = Layer.Type.Line(
+                            color = 0xFFCAE4F1.toInt(),
+                            width = 2f,
+                            cap = "round",
+                            join = "round",
+                        )
+                    )
+                ),
             ),
             ui = MapViewOptions.UiOptions(
                 padding = PaddingValues(

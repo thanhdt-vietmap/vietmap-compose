@@ -11,6 +11,8 @@ data class MapViewOptions(
 ) {
     data class StyleOptions(
         val url: String = "https://demotiles.maplibre.org/style.json",
+        val sources: Map<String, Source> = emptyMap(),
+        val layers: List<Layer> = emptyList(),
     )
 
     data class UiOptions(

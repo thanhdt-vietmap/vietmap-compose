@@ -17,13 +17,21 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.viewinterop.UIKitInteropInteractionMode
 import androidx.compose.ui.viewinterop.UIKitInteropProperties
 import androidx.compose.ui.viewinterop.UIKitView
+import cocoapods.MapLibre.MLNLineStyleLayer
 import cocoapods.MapLibre.MLNMapView
 import cocoapods.MapLibre.MLNMapViewDelegateProtocol
+import cocoapods.MapLibre.MLNShapeSource
+import cocoapods.MapLibre.MLNShapeSourceOptionSimplificationTolerance
+import cocoapods.MapLibre.MLNSource
 import cocoapods.MapLibre.MLNStyle
+import cocoapods.MapLibre.MLNStyleLayer
 import cocoapods.MapLibre.allowsTilting
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreGraphics.CGPointMake
+import platform.Foundation.NSExpression
+import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
+import platform.UIKit.UIColor
 import platform.UIKit.UIViewAutoresizingFlexibleHeight
 import platform.UIKit.UIViewAutoresizingFlexibleWidth
 import platform.darwin.NSObject
@@ -60,12 +68,63 @@ actual fun MapView(
     )
 }
 
+fun Source.GeoJson.toNativeSource(id: String) = MLNShapeSource(
+    identifier = id,
+    URL = NSURL(string = url),
+    options = buildMap {
+        tolerance?.let { put(MLNShapeSourceOptionSimplificationTolerance, NSNumber(it.toDouble())) }
+    }
+)
+
+fun Int.toUiColor(): UIColor {
+    return UIColor(
+        red = ((this shr 16) and 0xFF).toDouble() / 255.0,
+        green = ((this shr 8) and 0xFF).toDouble() / 255.0,
+        blue = (this and 0xFF).toDouble() / 255.0,
+        alpha = ((this shr 24) and 0xFF).toDouble() / 255.0
+    )
+}
+
+fun MLNStyleLayer.applyFrom(layer: Layer) {
+    layer.minZoom?.let { setMinimumZoomLevel(it) }
+    layer.maxZoom?.let { setMaximumZoomLevel(it) }
+}
+
+fun Layer.Type.Line.toNativeLayer(
+    getSource: (String) -> MLNSource,
+    layer: Layer
+): MLNLineStyleLayer {
+    return MLNLineStyleLayer(layer.id, getSource(layer.source)).apply {
+        applyFrom(layer)
+        cap?.let { setLineCap(NSExpression.expressionForConstantValue(it)) }
+        join?.let { setLineJoin(NSExpression.expressionForConstantValue(it)) }
+        color?.let { setLineColor(NSExpression.expressionForConstantValue(it.toUiColor())) }
+        width?.let { setLineWidth(NSExpression.expressionForConstantValue(it)) }
+    }
+}
+
 class MapViewDelegate(
     val getLatestOptions: () -> MapViewOptions
 ) : NSObject(), MLNMapViewDelegateProtocol {
-    val options get() = getLatestOptions()
     override fun mapView(mapView: MLNMapView, didFinishLoadingStyle: MLNStyle) {
-        // no-op
+        val getSource = { id: String ->
+            didFinishLoadingStyle.sourceWithIdentifier(id)
+                ?: error("Source not found: $id")
+        }
+        getLatestOptions().style.sources
+            .map { (id, source) ->
+                when (source) {
+                    is Source.GeoJson -> source.toNativeSource(id)
+                }
+            }
+            .forEach { didFinishLoadingStyle.addSource(it) }
+        getLatestOptions().style.layers
+            .map { layer ->
+                when (layer.type) {
+                    is Layer.Type.Line -> layer.type.toNativeLayer(getSource, layer)
+                }
+            }
+            .forEach { didFinishLoadingStyle.addLayer(it) }
     }
 }
 

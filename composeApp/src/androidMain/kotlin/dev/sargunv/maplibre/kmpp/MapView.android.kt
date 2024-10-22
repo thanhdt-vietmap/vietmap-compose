@@ -19,6 +19,12 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
+import org.maplibre.android.style.layers.LineLayer
+import org.maplibre.android.style.layers.PropertyFactory
+import org.maplibre.android.style.sources.GeoJsonOptions
+import org.maplibre.android.style.sources.GeoJsonSource
+import java.net.URI
+import org.maplibre.android.style.layers.Layer as NativeLayer
 
 @Composable
 actual fun MapView(
@@ -57,9 +63,7 @@ actual fun MapView(
         },
         update = { mapView ->
             mapView.applyUiOptions(latestUiOptions, latestDensity, latestLayoutDir)
-            mapView.getMapAsync { map ->
-                map.setStyle(latestStyleOptions.url)
-            }
+            mapView.applyStyleOptions(latestStyleOptions)
         }
     )
 
@@ -67,6 +71,56 @@ actual fun MapView(
     DisposableEffect(lifecycle, observer) {
         observer?.let { lifecycle.addObserver(it) }
         onDispose { observer?.let { lifecycle.removeObserver(it) } }
+    }
+}
+
+fun Source.GeoJson.toNativeSource(id: String): GeoJsonSource {
+    return GeoJsonSource(
+        id = id,
+        uri = URI(url),
+        options = GeoJsonOptions().apply {
+            tolerance?.let { withTolerance(it) }
+        }
+    )
+}
+
+fun NativeLayer.applyFrom(layer: Layer) {
+    layer.minZoom?.let { minZoom = it }
+    layer.maxZoom?.let { maxZoom = it }
+}
+
+fun Layer.Type.Line.toNativeLayer(layer: Layer): LineLayer {
+    return LineLayer(layer.id, layer.source).apply {
+        applyFrom(layer)
+        withProperties(
+            cap?.let { PropertyFactory.lineCap(it) },
+            join?.let { PropertyFactory.lineJoin(it) },
+            color?.let { PropertyFactory.lineColor(it) },
+            width?.let { PropertyFactory.lineWidth(it) },
+        )
+    }
+}
+
+fun MapView.applyStyleOptions(
+    options: MapViewOptions.StyleOptions
+) {
+    getMapAsync { map ->
+        map.setStyle(options.url) { style ->
+            options.sources
+                .map { (id, source) ->
+                    when (source) {
+                        is Source.GeoJson -> source.toNativeSource(id)
+                    }
+                }
+                .forEach { style.addSource(it) }
+            options.layers
+                .map { layer ->
+                    when (layer.type) {
+                        is Layer.Type.Line -> layer.type.toNativeLayer(layer)
+                    }
+                }
+                .forEach { style.addLayer(it) }
+        }
     }
 }
 
