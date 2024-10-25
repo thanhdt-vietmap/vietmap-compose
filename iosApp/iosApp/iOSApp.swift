@@ -2,12 +2,6 @@ import UIKit
 import SwiftUI
 import composeApp
 
-class Platform: IPlatform {
-    var name: String {
-        return UIDevice.current.systemName + " " + UIDevice.current.systemVersion
-    }
-}
-
 struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         MainViewControllerKt.MainViewController()
@@ -27,7 +21,7 @@ struct ContentView: View {
 @main
 struct iOSApp: App {
     init() {
-        Koin_iosKt.doInitKoin(platform: Platform.init)
+        Module_iosKt.doInitKoin()
     }
 
     var body: some Scene {

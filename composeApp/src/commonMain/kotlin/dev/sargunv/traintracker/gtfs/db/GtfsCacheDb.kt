@@ -3,19 +3,22 @@ package dev.sargunv.traintracker.gtfs.db
 import dev.sargunv.traintracker.DatabaseDriverFactory
 
 
-class GtfsScheduleDb(driverFactory: DatabaseDriverFactory) {
-    private val db = GtfsSchedule(
-        driverFactory.createDriver(GtfsSchedule.Schema, "gtfs_schedule.db"),
+class GtfsCacheDb(driverFactory: DatabaseDriverFactory) {
+    private val db = GtfsCache(
+        driverFactory.createDriver(GtfsCache.Schema, "gtfs_cache.db"),
         routeAdapter = Route.Adapter(
             routeTypeAdapter = RouteType.Adapter
         )
     )
 
-    private val q = db.gtfsScheduleQueries
+    private val q = db.gtfsCacheQueries
 
-    fun clearAndInsert() {
-        db.transactionWithResult {
-            // clear the db
+    fun getCachedETag(): String? {
+        return q.getCacheVersion().executeAsOneOrNull()
+    }
+
+    fun update(newETag: String) {
+        q.transactionWithResult {
             q.deleteAllAgencies()
             q.deleteAllCalendarDates()
             q.deleteAllCalendars()
@@ -26,6 +29,8 @@ class GtfsScheduleDb(driverFactory: DatabaseDriverFactory) {
             q.deleteAllStopTimes()
             q.deleteAllStops()
             q.deleteAllTrips()
+
+            q.setCacheVersion(newETag)
         }
     }
 }

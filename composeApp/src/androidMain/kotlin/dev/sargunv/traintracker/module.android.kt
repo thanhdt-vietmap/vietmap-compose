@@ -11,10 +11,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-class Platform : IPlatform {
-    override val name: String = "Android ${android.os.Build.VERSION.SDK_INT}"
-}
-
 class AndroidDatabaseDriverFactory(private val context: Context) : DatabaseDriverFactory {
     override fun createDriver(
         schema: SqlSchema<QueryResult.Value<Unit>>,
@@ -25,13 +21,11 @@ class AndroidDatabaseDriverFactory(private val context: Context) : DatabaseDrive
 }
 
 fun initKoin(context: Context) {
-    val platformModule = module {
-        singleOf<IPlatform>(::Platform)
-        singleOf<DatabaseDriverFactory>({ AndroidDatabaseDriverFactory(context) })
-    }
     startKoin {
         androidLogger()
         androidContext(context)
-        modules(listOf(appModule, platformModule))
+        modules(commonModules + module {
+            singleOf<DatabaseDriverFactory>({ AndroidDatabaseDriverFactory(context) })
+        })
     }
 }

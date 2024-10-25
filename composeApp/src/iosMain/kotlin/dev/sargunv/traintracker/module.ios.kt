@@ -18,13 +18,10 @@ class IosDatabaseDriverFactory : DatabaseDriverFactory {
 }
 
 @Suppress("unused") // called in Swift
-fun initKoin(platform: () -> IPlatform) {
-    val platformModule = module {
-        singleOf<IPlatform>(platform)
-        singleOf<DatabaseDriverFactory>(::IosDatabaseDriverFactory)
-    }
-
+fun initKoin() {
     startKoin {
-        modules(listOf(appModule, platformModule))
+        modules(commonModules + module {
+            singleOf<DatabaseDriverFactory>(::IosDatabaseDriverFactory)
+        })
     }
 }

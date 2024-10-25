@@ -115,7 +115,7 @@ compose.resources {
 
 sqldelight {
     databases {
-        create("GtfsSchedule") {
+        create("GtfsCache") {
             packageName.set("dev.sargunv.traintracker.gtfs.db")
             srcDirs("src/commonMain/dbGtfs")
             verifyMigrations.set(true)

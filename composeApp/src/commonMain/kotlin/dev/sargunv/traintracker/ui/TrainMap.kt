@@ -14,25 +14,38 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dev.sargunv.maplibre.kmpp.Layer
 import dev.sargunv.maplibre.kmpp.MapView
 import dev.sargunv.maplibre.kmpp.MapViewOptions
 import dev.sargunv.maplibre.kmpp.Source
 import dev.sargunv.traintracker.generated.Res
-import dev.sargunv.traintracker.gtfs.db.GtfsScheduleDb
-import dev.sargunv.traintracker.gtfs.db.Shape
+import dev.sargunv.traintracker.gtfs.GtfsSdk
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.compose.viewmodel.koinViewModel
 
 class TrainMapViewModel(
-    private val gtfsScheduleDb: GtfsScheduleDb
+    private val gtfsSdk: GtfsSdk
 ) : ViewModel() {
     private val _state = mutableStateOf(TrainMapState())
     val state: State<TrainMapState> = _state
+
+    init {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(loading = true)
+            gtfsSdk.updateGtfsData().onSuccess {
+                _state.value = _state.value.copy(loading = false)
+            }.onFailure {
+                _state.value = _state.value.copy(loading = false, error = it.message)
+            }
+        }
+    }
 }
 
 data class TrainMapState(
-    val shapes: Map<String, List<Shape>> = emptyMap()
+    val loading: Boolean = false,
+    val error: String? = null,
 )
 
 @OptIn(ExperimentalResourceApi::class)

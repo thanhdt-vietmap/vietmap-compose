@@ -1,3 +1,10 @@
+CREATE TABLE cacheVersion (
+  eTag TEXT NOT NULL
+);
+
+setCacheVersion: INSERT OR REPLACE INTO cacheVersion (eTag) VALUES (?);
+getCacheVersion: SELECT eTag FROM cacheVersion LIMIT 1;
+
 CREATE TABLE agency (
   agencyId TEXT PRIMARY KEY,
   agencyName TEXT NOT NULL,
