@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -43,11 +41,8 @@ actual fun MapView(
     modifier: Modifier,
     options: MapViewOptions,
 ) {
-    // UIKitView has some long-lived lambdas that need to reference the latest values
-    val latestUiOptions by rememberUpdatedState(options.ui)
-    val latestStyleOptions by rememberUpdatedState(options.style)
-    val latestLayoutDir by rememberUpdatedState(LocalLayoutDirection.current)
-    val latestInsetPadding by rememberUpdatedState(WindowInsets.safeDrawing.asPaddingValues())
+    val layoutDir = LocalLayoutDirection.current
+    val insetPadding = WindowInsets.safeDrawing.asPaddingValues()
 
     UIKitView(
         modifier = modifier.fillMaxSize(),
@@ -62,8 +57,8 @@ actual fun MapView(
             }
         },
         update = { mapView ->
-            mapView.applyUiOptions(latestUiOptions, latestInsetPadding, latestLayoutDir)
-            mapView.setStyleURL(NSURL(string = latestStyleOptions.url))
+            mapView.applyUiOptions(options.ui, insetPadding, layoutDir)
+            mapView.setStyleURL(NSURL(string = options.style.url))
         },
     )
 }
@@ -119,7 +114,7 @@ class MapViewDelegate(
                 }
             }
             .forEach { didFinishLoadingStyle.addSource(it) }
-        
+
         getLatestOptions().style.layers
             .associateBy({ it }) { layer ->
                 when (layer.type) {

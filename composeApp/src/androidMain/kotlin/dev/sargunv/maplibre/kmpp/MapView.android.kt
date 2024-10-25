@@ -6,7 +6,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -31,14 +30,10 @@ actual fun MapView(
     modifier: Modifier,
     options: MapViewOptions,
 ) {
-    // remember some objects related to the underlying MapView, set in the factory
     var observer by remember { mutableStateOf<LifecycleEventObserver?>(null) }
 
-    // AndroidView has some long-lived lambdas that need to reference the latest values
-    val latestUiOptions by rememberUpdatedState(options.ui)
-    val latestStyleOptions by rememberUpdatedState(options.style)
-    val latestLayoutDir by rememberUpdatedState(LocalLayoutDirection.current)
-    val latestDensity by rememberUpdatedState(LocalDensity.current)
+    val layoutDir = LocalLayoutDirection.current
+    val density = LocalDensity.current
 
     AndroidView(
         modifier = modifier,
@@ -62,8 +57,8 @@ actual fun MapView(
             }
         },
         update = { mapView ->
-            mapView.applyUiOptions(latestUiOptions, latestDensity, latestLayoutDir)
-            mapView.applyStyleOptions(latestStyleOptions)
+            mapView.applyUiOptions(options.ui, density, layoutDir)
+            mapView.applyStyleOptions(options.style)
         }
     )
 

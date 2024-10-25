@@ -14,7 +14,7 @@ val appModule = module {
 }
 
 interface DatabaseDriverFactory {
-    fun createDriver(schema: SqlSchema<QueryResult.AsyncValue<Unit>>, name: String): SqlDriver
+    fun createDriver(schema: SqlSchema<QueryResult.Value<Unit>>, name: String): SqlDriver
 }
 
 interface IPlatform {

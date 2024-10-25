@@ -39,11 +39,9 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.sqldelight.driver.android)
             implementation(libs.ktor.client.android)
-            implementation(libs.koin.core)
             implementation(libs.koin.android)
             implementation(libs.maplibre.android)
             implementation(libs.maplibre.android.plugin.annotation)
@@ -51,7 +49,6 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.sqldelight.driver.native)
             implementation(libs.ktor.client.darwin)
-            implementation(libs.koin.core)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -122,7 +119,7 @@ sqldelight {
             packageName.set("dev.sargunv.traintracker.gtfs.db")
             srcDirs("src/commonMain/dbGtfs")
             verifyMigrations.set(true)
-            generateAsync.set(true)
+            generateAsync.set(false)
         }
     }
 }

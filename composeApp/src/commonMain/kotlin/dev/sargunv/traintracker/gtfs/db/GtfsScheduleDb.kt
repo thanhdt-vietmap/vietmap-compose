@@ -13,7 +13,7 @@ class GtfsScheduleDb(driverFactory: DatabaseDriverFactory) {
 
     private val q = db.gtfsScheduleQueries
 
-    suspend fun clearAndInsert() {
+    fun clearAndInsert() {
         db.transactionWithResult {
             // clear the db
             q.deleteAllAgencies()

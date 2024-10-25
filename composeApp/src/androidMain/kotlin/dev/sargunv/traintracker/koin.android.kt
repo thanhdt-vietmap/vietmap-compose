@@ -1,7 +1,6 @@
 package dev.sargunv.traintracker
 
 import android.content.Context
-import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
@@ -18,10 +17,10 @@ class Platform : IPlatform {
 
 class AndroidDatabaseDriverFactory(private val context: Context) : DatabaseDriverFactory {
     override fun createDriver(
-        schema: SqlSchema<QueryResult.AsyncValue<Unit>>,
+        schema: SqlSchema<QueryResult.Value<Unit>>,
         name: String
     ): SqlDriver {
-        return AndroidSqliteDriver(schema.synchronous(), context, name)
+        return AndroidSqliteDriver(schema, context, name)
     }
 }
 

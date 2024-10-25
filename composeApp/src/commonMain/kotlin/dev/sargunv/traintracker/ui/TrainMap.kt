@@ -46,7 +46,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
     MapView(
         options = MapViewOptions(
             style = MapViewOptions.StyleOptions(
-                url = "https://tiles.openfreemap.org/styles/positron",
+                url = Res.getUri("files/maplibre/style/positron.json"),
                 sources = mapOf(
                     "amtrak-geojson" to Source.GeoJson(
                         url = Res.getUri("files/geojson/amtrak/routes.geojson"),

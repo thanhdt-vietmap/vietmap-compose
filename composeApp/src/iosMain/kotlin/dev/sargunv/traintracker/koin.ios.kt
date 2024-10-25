@@ -1,6 +1,5 @@
 package dev.sargunv.traintracker
 
-import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
@@ -11,10 +10,10 @@ import org.koin.dsl.module
 
 class IosDatabaseDriverFactory : DatabaseDriverFactory {
     override fun createDriver(
-        schema: SqlSchema<QueryResult.AsyncValue<Unit>>,
+        schema: SqlSchema<QueryResult.Value<Unit>>,
         name: String
     ): SqlDriver {
-        return NativeSqliteDriver(schema.synchronous(), name)
+        return NativeSqliteDriver(schema, name)
     }
 }
 
