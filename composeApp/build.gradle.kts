@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -31,15 +30,15 @@ kotlin {
         podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "composeApp"
-            isStatic = true
+            isStatic = false
         }
-        pod("ZIPFoundation", "0.9.19")
         pod("MapLibre", "6.7.1")
     }
 
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
+            implementation(libs.kotlinx.io)
             implementation(libs.sqldelight.driver.android)
             implementation(libs.ktor.client.android)
             implementation(libs.koin.android)
@@ -47,6 +46,7 @@ kotlin {
             implementation(libs.maplibre.android.plugin.annotation)
         }
         iosMain.dependencies {
+            implementation(libs.kotlinx.io)
             implementation(libs.sqldelight.driver.native)
             implementation(libs.ktor.client.darwin)
         }
@@ -57,6 +57,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.kotlinx.io)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.sqldelight.runtime)
@@ -83,11 +84,6 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
-
-        Properties().let { properties ->
-            properties.load(project.rootProject.file("local.properties").inputStream())
-            resValue("string", "google_maps_api_key", properties.getProperty("GOOGLE_MAPS_API_KEY"))
-        }
     }
     packaging {
         resources {

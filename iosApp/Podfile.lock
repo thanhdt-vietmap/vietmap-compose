@@ -1,12 +1,12 @@
 PODS:
   - composeApp (1.0):
     - MapLibre (= 6.7.1)
-    - ZIPFoundation (= 0.9.19)
   - MapLibre (6.7.1)
   - ZIPFoundation (0.9.19)
 
 DEPENDENCIES:
   - composeApp (from `../composeApp`)
+  - ZIPFoundation (~> 0.9.19)
 
 SPEC REPOS:
   trunk:
@@ -18,10 +18,10 @@ EXTERNAL SOURCES:
     :path: "../composeApp"
 
 SPEC CHECKSUMS:
-  composeApp: be6f171e17bb35386bf430fc55c1ed24af39bb29
+  composeApp: 684df6feda96cd320292cf507b392207379c97da
   MapLibre: a82ab2ca7a727a2f0a72b2c474c13e8633e2fc91
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: b0ef537beebacc3151924f2b7bc0146efda7afbb
+PODFILE CHECKSUM: bbecdde507012caa3e44e9aa5f9778e7a68ba178
 
 COCOAPODS: 1.15.2

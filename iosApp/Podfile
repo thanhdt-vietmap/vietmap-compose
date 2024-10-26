@@ -2,6 +2,7 @@ target 'iosApp' do
   use_frameworks!
   platform :ios, '15.3'
   pod 'composeApp', :path => '../composeApp'
+  pod 'ZIPFoundation', '~> 0.9.19'
 end
 
 post_install do |installer|

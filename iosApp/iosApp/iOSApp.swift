@@ -1,32 +1,40 @@
-import UIKit
 import SwiftUI
+import UIKit
 import composeApp
 
-struct ComposeView: UIViewControllerRepresentable {
+struct MainViewController: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         MainViewControllerKt.MainViewController()
     }
 
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+    func updateUIViewController(
+        _ uiViewController: UIViewController, context: Context
+    ) {}
 }
 
-struct ContentView: View {
+struct MainView: View {
     var body: some View {
-        ComposeView()
-                .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
-                .ignoresSafeArea(edges: .all)
+        MainViewController()
+            .ignoresSafeArea(.keyboard)  // Compose has own keyboard handler
+            .ignoresSafeArea(edges: .all)
     }
 }
 
 @main
 struct iOSApp: App {
     init() {
-        Module_iosKt.doInitKoin()
+        Module_iosKt.doInitKoin(
+            initUnzipper: UnzipperImpl.init
+        )
     }
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
         }
     }
+}
+
+#Preview {
+    MainView()
 }
