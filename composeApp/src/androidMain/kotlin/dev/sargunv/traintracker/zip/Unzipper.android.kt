@@ -1,4 +1,4 @@
-package dev.sargunv.kmp.unzip
+package dev.sargunv.traintracker.zip
 
 import io.ktor.utils.io.streams.inputStream
 import kotlinx.io.Sink

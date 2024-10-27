@@ -5,8 +5,8 @@ import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import dev.sargunv.kmp.unzip.Unzipper
-import dev.sargunv.kmp.unzip.UnzipperImpl
+import dev.sargunv.traintracker.zip.Unzipper
+import dev.sargunv.traintracker.zip.UnzipperImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

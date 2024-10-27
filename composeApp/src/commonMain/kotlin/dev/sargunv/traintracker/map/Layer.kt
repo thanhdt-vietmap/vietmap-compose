@@ -1,4 +1,4 @@
-package dev.sargunv.maplibre.kmpp
+package dev.sargunv.traintracker.map
 
 import androidx.annotation.ColorInt
 

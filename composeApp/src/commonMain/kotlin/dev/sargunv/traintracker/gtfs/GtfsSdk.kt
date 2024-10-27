@@ -1,7 +1,7 @@
 package dev.sargunv.traintracker.gtfs
 
-import dev.sargunv.kmp.unzip.Unzipper
 import dev.sargunv.traintracker.gtfs.db.GtfsCacheDb
+import dev.sargunv.traintracker.zip.Unzipper
 import io.ktor.utils.io.core.readBytes
 import kotlinx.io.Buffer
 import kotlinx.io.RawSink

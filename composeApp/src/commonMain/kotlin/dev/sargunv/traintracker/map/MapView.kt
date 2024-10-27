@@ -1,4 +1,4 @@
-package dev.sargunv.maplibre.kmpp
+package dev.sargunv.traintracker.map
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable

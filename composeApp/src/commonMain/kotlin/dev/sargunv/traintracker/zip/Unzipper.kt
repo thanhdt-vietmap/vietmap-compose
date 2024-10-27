@@ -1,4 +1,4 @@
-package dev.sargunv.kmp.unzip
+package dev.sargunv.traintracker.zip
 
 import kotlinx.io.Sink
 import kotlinx.io.Source

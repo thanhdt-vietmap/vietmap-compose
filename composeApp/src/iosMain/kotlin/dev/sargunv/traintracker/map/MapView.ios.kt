@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalForeignApi::class)
 
-package dev.sargunv.maplibre.kmpp
+package dev.sargunv.traintracker.map
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -33,7 +33,6 @@ import platform.UIKit.UIColor
 import platform.UIKit.UIViewAutoresizingFlexibleHeight
 import platform.UIKit.UIViewAutoresizingFlexibleWidth
 import platform.darwin.NSObject
-
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

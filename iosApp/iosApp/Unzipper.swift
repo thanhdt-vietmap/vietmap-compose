@@ -7,7 +7,7 @@ class UnzipperImpl: Unzipper {
         handleFile: @escaping (String) -> any Kotlinx_io_coreSink,
         handleDirectory: @escaping (String) -> Void
     ) throws {
-        let data = Unzipper_iosKt.toNSData(source)
+        let data = IOKt.toNSData(source)
         let archive = try Archive(data: data, accessMode: .read)
         for entry in archive {
             switch entry.type {
@@ -19,7 +19,7 @@ class UnzipperImpl: Unzipper {
                     consumer: { data -> Void in
                         sink
                             .write(
-                                source:Unzipper_iosKt.toByteArray(data),
+                                source:IOKt.toByteArray(data),
                                 startIndex: 0,
                                 endIndex: Int32(data.count)
                             )

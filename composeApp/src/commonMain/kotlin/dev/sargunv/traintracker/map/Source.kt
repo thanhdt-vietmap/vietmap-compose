@@ -1,4 +1,4 @@
-package dev.sargunv.maplibre.kmpp
+package dev.sargunv.traintracker.map
 
 sealed class Source {
     data class GeoJson(

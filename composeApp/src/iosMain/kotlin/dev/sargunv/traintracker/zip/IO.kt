@@ -1,4 +1,4 @@
-package dev.sargunv.kmp.unzip
+package dev.sargunv.traintracker.zip
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
