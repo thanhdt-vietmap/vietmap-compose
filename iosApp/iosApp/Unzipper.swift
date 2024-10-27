@@ -7,7 +7,8 @@ class UnzipperImpl: Unzipper {
         handleFile: @escaping (String) -> any Kotlinx_io_coreSink,
         handleDirectory: @escaping (String) -> Void
     ) throws {
-        let archive = try Archive(data: Unzipper_iosKt.toNSData(source), accessMode: .create)
+        let data = Unzipper_iosKt.toNSData(source)
+        let archive = try Archive(data: data, accessMode: .read)
         for entry in archive {
             switch entry.type {
             case .file:

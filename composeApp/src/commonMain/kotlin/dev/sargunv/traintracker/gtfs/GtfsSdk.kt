@@ -17,6 +17,7 @@ class GtfsSdk(
         val cachedETag = if (noCache) null else gtfsCacheDb.getCachedETag()
         return gtfsClient.getGtfsStaticArchive(cachedETag).map { maybeResponse ->
             val (eTag, feed) = maybeResponse ?: return@map
+            println("#### ETag: $eTag")
             unzipper.readArchive(
                 source = feed,
                 handleFile = { path ->
@@ -45,6 +46,7 @@ class GtfsSdk(
                 },
             )
             gtfsCacheDb.update(eTag)
+            println("#### Cache updated")
         }
     }
 }

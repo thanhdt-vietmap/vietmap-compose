@@ -21,6 +21,8 @@ import dev.sargunv.maplibre.kmpp.MapViewOptions
 import dev.sargunv.maplibre.kmpp.Source
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.gtfs.GtfsSdk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.compose.viewmodel.koinViewModel
@@ -32,7 +34,7 @@ class TrainMapViewModel(
     val state: State<TrainMapState> = _state
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(loading = true)
             gtfsSdk.updateGtfsData(noCache = true).onSuccess {
                 _state.value = _state.value.copy(loading = false)
