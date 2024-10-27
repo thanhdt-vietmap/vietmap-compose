@@ -38,33 +38,39 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-            implementation(libs.kotlinx.io)
-            implementation(libs.sqldelight.driver.android)
-            implementation(libs.ktor.client.android)
-            implementation(libs.koin.android)
             implementation(libs.maplibre.android)
             implementation(libs.maplibre.android.plugin.annotation)
+            implementation(libs.koin.android)
+            implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.kotlinx.io.core)
+            implementation(libs.kotlinx.io.bytestring)
+            implementation(libs.ktor.client.android)
+            implementation(libs.sqldelight.driver.android)
         }
         iosMain.dependencies {
-            implementation(libs.kotlinx.io)
-            implementation(libs.sqldelight.driver.native)
+            implementation(libs.kotlinx.io.bytestring)
+            implementation(libs.kotlinx.io.core)
             implementation(libs.ktor.client.darwin)
+            implementation(libs.sqldelight.driver.native)
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
+            implementation(compose.components.uiToolingPreview)
+            implementation(compose.components.resources)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.runtime)
             implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.kotlinx.io)
-            implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.sqldelight.runtime)
-            implementation(libs.ktor.client.core)
+            implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.io.bytestring)
+            implementation(libs.kotlinx.io.core)
+            implementation(libs.kotlinx.serialization.core)
+            implementation(libs.ktor.client.core)
+            implementation(libs.sqldelight.runtime)
         }
     }
 

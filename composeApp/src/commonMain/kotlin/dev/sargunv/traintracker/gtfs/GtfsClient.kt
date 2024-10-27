@@ -4,7 +4,25 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.cancel
+import io.ktor.utils.io.core.writeFully
+import io.ktor.utils.io.readRemaining
+import kotlinx.coroutines.runBlocking
+import kotlinx.io.Buffer
+import kotlinx.io.RawSource
+import kotlinx.io.Source
+import kotlinx.io.buffered
+import kotlinx.io.readByteArray
 
+fun ByteReadChannel.toSource() = object : RawSource {
+    override fun close() = cancel()
+
+    override fun readAtMostTo(sink: Buffer, byteCount: Long) = runBlocking {
+        val bytes = readRemaining(byteCount).readByteArray()
+        sink.writeFully(bytes)
+        bytes.size.toLong()
+    }
+}.buffered()
 
 class GtfsClient(private val staticFeedUrl: String) {
     private val client = HttpClient()
@@ -18,16 +36,16 @@ class GtfsClient(private val staticFeedUrl: String) {
             when (it.status.value) {
                 200 -> StaticArchiveResponse(
                     eTag = it.headers["ETag"]!!,
-                    feed = it.bodyAsChannel()
+                    feed = it.bodyAsChannel().toSource()
                 )
 
                 304 -> null
-                else -> throw Exception("HTTP status code ${it.status.value}")
+                else -> throw Exception("Unexpected HTTP status code ${it.status.value}")
             }
         }
 
-    class StaticArchiveResponse(
+    data class StaticArchiveResponse(
         val eTag: String,
-        val feed: ByteReadChannel
+        val feed: Source
     )
 }

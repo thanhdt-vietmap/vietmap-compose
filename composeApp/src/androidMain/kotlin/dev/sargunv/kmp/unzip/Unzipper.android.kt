@@ -6,7 +6,7 @@ import kotlinx.io.Source
 import kotlinx.io.asOutputStream
 import java.util.zip.ZipInputStream
 
-class UnzipperImpl() : Unzipper {
+class UnzipperImpl : Unzipper {
     override fun readArchive(
         source: Source,
         handleFile: (path: String) -> Sink,
@@ -17,8 +17,9 @@ class UnzipperImpl() : Unzipper {
             .forEach { entry ->
                 val path = entry.name
                 if (entry.isDirectory) handleDirectory(path)
-                else handleFile(path).let { sink ->
-                    input.copyTo(sink.asOutputStream())
+                else handleFile(path).asOutputStream().let {
+                    input.copyTo(it)
+                    it.close()
                 }
             }
     }

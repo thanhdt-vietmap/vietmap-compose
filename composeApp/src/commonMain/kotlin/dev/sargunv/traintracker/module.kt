@@ -8,8 +8,6 @@ import dev.sargunv.traintracker.ui.TrainMapViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-const val VIA_RAIL = "https://www.viarail.ca/sites/all/files/gtfs/viarail.zip"
-
 val appModule = module {
     viewModel { TrainMapViewModel(gtfsSdk = get()) }
 }

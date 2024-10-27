@@ -24,6 +24,7 @@ class UnzipperImpl: Unzipper {
                             )
                     }
                 )
+                sink.close()
             case .directory: handleDirectory(entry.path)
             case .symlink: break
             }

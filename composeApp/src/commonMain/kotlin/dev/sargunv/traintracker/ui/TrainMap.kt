@@ -34,7 +34,7 @@ class TrainMapViewModel(
     init {
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true)
-            gtfsSdk.updateGtfsData().onSuccess {
+            gtfsSdk.updateGtfsData(noCache = true).onSuccess {
                 _state.value = _state.value.copy(loading = false)
             }.onFailure {
                 _state.value = _state.value.copy(loading = false, error = it.message)
