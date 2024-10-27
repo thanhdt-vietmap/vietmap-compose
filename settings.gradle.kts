@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 rootProject.name = "train-tracker-app"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 

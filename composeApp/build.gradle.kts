@@ -72,6 +72,9 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.sqldelight.runtime)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
