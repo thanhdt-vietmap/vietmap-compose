@@ -17,7 +17,10 @@ class GtfsCacheDb(driverFactory: DatabaseDriverFactory) {
         return q.getCacheVersion().executeAsOneOrNull()
     }
 
-    fun update(newETag: String) {
+    fun update(
+        newETag: String,
+        newRoutes: List<Route>? = null,
+    ) {
         q.transactionWithResult {
             q.deleteAllAgencies()
             q.deleteAllCalendarDates()
@@ -29,6 +32,8 @@ class GtfsCacheDb(driverFactory: DatabaseDriverFactory) {
             q.deleteAllStopTimes()
             q.deleteAllStops()
             q.deleteAllTrips()
+
+            newRoutes?.forEach(q::insertRoute)
 
             q.setCacheVersion(newETag)
         }

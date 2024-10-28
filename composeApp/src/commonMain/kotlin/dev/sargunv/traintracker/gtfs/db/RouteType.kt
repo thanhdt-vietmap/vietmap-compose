@@ -1,7 +1,9 @@
 package dev.sargunv.traintracker.gtfs.db
 
 import app.cash.sqldelight.ColumnAdapter
+import kotlinx.serialization.Serializable
 
+@Serializable(with = RouteType.Serializer::class)
 enum class RouteType(val value: Long) {
     TRAM(0), // or streetcar, light rail
     SUBWAY(1), // or metro
@@ -18,4 +20,6 @@ enum class RouteType(val value: Long) {
         override fun decode(databaseValue: Long) = entries.first { it.value == databaseValue }
         override fun encode(value: RouteType) = value.value
     }
+
+    class Serializer : LongColumnAdapterSerializer<RouteType>(Adapter)
 }

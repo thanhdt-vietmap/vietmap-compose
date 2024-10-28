@@ -15,8 +15,9 @@ import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 
-@ExperimentalSerializationApi
-object Csv : StringFormat {
+class Csv(
+    private val namingStrategy: CsvNamingStrategy = CsvNamingStrategy.Identity,
+) : StringFormat {
     override val serializersModule = EmptySerializersModule()
 
     override fun <T> decodeFromString(deserializer: DeserializationStrategy<T>, string: String): T {
@@ -28,12 +29,20 @@ object Csv : StringFormat {
     }
 
     fun <T> decodeFromSource(deserializer: DeserializationStrategy<T>, source: Source): T {
-        return deserializer.deserialize(Decoder(CsvParser(source), serializersModule))
+        return deserializer.deserialize(
+            Decoder(
+                CsvParser(source),
+                serializersModule,
+                namingStrategy
+            )
+        )
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     private class Decoder(
         csvParser: CsvParser,
         override val serializersModule: SerializersModule,
+        private val namingStrategy: CsvNamingStrategy,
     ) : AbstractDecoder() {
         private var level = 0
 
@@ -41,6 +50,8 @@ object Csv : StringFormat {
         private val records = csvParser.parseWithHeader()
             .map { row -> row.map { (key, value) -> key to value } }
             .toList()
+
+        private var implicitNullCols: List<String>? = null
 
         private var row = 0
         private var col = 0
@@ -58,6 +69,15 @@ object Csv : StringFormat {
                 1 -> {
                     require(descriptor.kind == StructureKind.CLASS) {
                         "Second-level structure must be a class (got ${descriptor.kind})"
+                    }
+
+                    if (implicitNullCols == null) {
+                        // infer implicit null columns, to fill nulls on columns not present in csv
+                        val presentHeaders = records[row]
+                            .map { namingStrategy.fromCsvName(it.first) }.toSet()
+                        implicitNullCols = descriptor.elementNames
+                            .filterNot { presentHeaders.contains(it) }
+                            .filter { !descriptor.isElementOptional(descriptor.getElementIndex(it)) }
                     }
 
                     level++
@@ -81,13 +101,26 @@ object Csv : StringFormat {
                 }
 
                 2 -> {
-                    if (col >= records[row].size) {
-                        row++
-                        col = 0
-                        return DECODE_DONE
+                    when {
+                        // end of row
+                        col >= records[row].size + implicitNullCols!!.size -> {
+                            row++
+                            col = 0
+                            return DECODE_DONE
+                        }
+
+                        // implicit null
+                        col >= records[row].size -> {
+                            val name = implicitNullCols!![col - records[row].size]
+                            return descriptor.getElementIndex(name)
+                        }
+
+                        // regular element
+                        else -> {
+                            val name = namingStrategy.fromCsvName(records[row][col].first)
+                            descriptor.getElementIndex(name)
+                        }
                     }
-                    val element = records[row][col]
-                    descriptor.getElementIndex(element.first)
                 }
 
                 else -> throw NotImplementedError("Fields must be within a list of objects (got level $level)")
@@ -103,9 +136,17 @@ object Csv : StringFormat {
 
         override fun decodeString(): String = decodeValue() as String
 
-        override fun decodeNotNullMark(): Boolean = records[row][col].second != ""
+        override fun decodeNotNullMark(): Boolean {
+            if (col >= records[row].size) return false // implicit null
+            return records[row][col].second != ""
+        }
 
         override fun decodeNull(): Nothing? {
+            if (col >= records[row].size) {
+                // implicit null
+                col++
+                return null
+            }
             val value = decodeString()
             if (value == "") return null
             throw IllegalStateException("Expected null, but got '$value'")

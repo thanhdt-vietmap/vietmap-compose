@@ -63,7 +63,7 @@ class CsvTest {
                 Strings(foo = "4", bar = "5", baz = "6"),
                 Strings(foo = "7", bar = "8", baz = "9"),
             ),
-            Csv.decodeFromSource(serializer(), load("simple-multiline")),
+            Csv().decodeFromSource(serializer(), load("simple-multiline")),
         )
     }
 
@@ -73,7 +73,7 @@ class CsvTest {
             listOf(
                 Ints(foo = 1, bar = 2, baz = 3),
             ),
-            Csv.decodeFromSource(serializer(), load("simple-lf")),
+            Csv().decodeFromSource(serializer(), load("simple-lf")),
         )
     }
 
@@ -85,7 +85,7 @@ class CsvTest {
                 StringsOutOfOrder(foo = "4", bar = "5", baz = "6"),
                 StringsOutOfOrder(foo = "7", bar = "8", baz = "9"),
             ),
-            Csv.decodeFromSource(serializer(), load("simple-multiline")),
+            Csv().decodeFromSource(serializer(), load("simple-multiline")),
         )
     }
 
@@ -93,7 +93,7 @@ class CsvTest {
     fun decodeNoRows() {
         assertEquals(
             emptyList<Strings>(),
-            Csv.decodeFromSource(serializer(), load("header-no-rows")),
+            Csv().decodeFromSource(serializer(), load("header-no-rows")),
         )
     }
 
@@ -103,7 +103,7 @@ class CsvTest {
             listOf(
                 Strings(foo = "1", bar = "", baz = "3"),
             ),
-            Csv.decodeFromSource(serializer(), load("empty-field")),
+            Csv().decodeFromSource(serializer(), load("empty-field")),
         )
     }
 
@@ -113,7 +113,7 @@ class CsvTest {
             listOf(
                 NullableStrings(foo = "1", bar = null, baz = "3"),
             ),
-            Csv.decodeFromSource(serializer(), load("empty-field")),
+            Csv().decodeFromSource(serializer(), load("empty-field")),
         )
     }
 
@@ -124,7 +124,7 @@ class CsvTest {
             listOf(
                 NullableInts(foo = 1, bar = null, baz = 3),
             ),
-            Csv.decodeFromSource(serializer(), load("empty-field")),
+            Csv().decodeFromSource(serializer(), load("empty-field")),
         )
     }
 
@@ -134,7 +134,7 @@ class CsvTest {
             listOf(
                 Enums(foo = Enums.FooBarBaz.a, bar = Enums.FooBarBaz.b, baz = Enums.FooBarBaz.c),
             ),
-            Csv.decodeFromSource(serializer(), load("simple-words")),
+            Csv().decodeFromSource(serializer(), load("simple-words")),
         )
     }
 
@@ -144,7 +144,17 @@ class CsvTest {
             listOf(
                 Enums(foo = Enums.FooBarBaz.b, bar = Enums.FooBarBaz.c, baz = Enums.FooBarBaz.d),
             ),
-            Csv.decodeFromSource(serializer(), load("simple-lf")),
+            Csv().decodeFromSource(serializer(), load("simple-lf")),
+        )
+    }
+
+    @Test
+    fun decodeImplicitNulls() {
+        assertEquals(
+            listOf(
+                NullableStrings(foo = "1", bar = null, baz = null),
+            ),
+            Csv().decodeFromSource(serializer(), load("one-column")),
         )
     }
 }

@@ -1,52 +1,53 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package dev.sargunv.traintracker.gtfs
 
+import dev.sargunv.traintracker.csv.Csv
+import dev.sargunv.traintracker.csv.CsvNamingStrategy
 import dev.sargunv.traintracker.gtfs.db.GtfsCacheDb
+import dev.sargunv.traintracker.gtfs.db.Route
 import dev.sargunv.traintracker.zip.Unzipper
-import io.ktor.utils.io.core.readBytes
 import kotlinx.io.Buffer
-import kotlinx.io.RawSink
 import kotlinx.io.buffered
 import kotlinx.io.discardingSink
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializer
+import kotlinx.serialization.builtins.ListSerializer
 
 class GtfsSdk(
     private val gtfsClient: GtfsClient,
     private val gtfsCacheDb: GtfsCacheDb,
     private val unzipper: Unzipper,
 ) {
-    suspend fun updateGtfsData(noCache: Boolean = false): Result<Unit> {
-        val cachedETag = if (noCache) null else gtfsCacheDb.getCachedETag()
-        return gtfsClient.getGtfsStaticArchive(cachedETag).map { maybeResponse ->
-            val (eTag, feed) = maybeResponse ?: return@map
-            println("#### ETag: $eTag")
-            unzipper.readArchive(
-                source = feed,
-                handleFile = { path ->
-                    if (path != "agency.txt") {
-                        println("#### Skipping file: $path")
-                        discardingSink().buffered()
-                    } else {
-                        println("#### File: $path")
-                        object : RawSink {
-                            override fun close() {
-                                println("#### File closed: $path")
-                            }
+    private val csv = Csv(namingStrategy = CsvNamingStrategy.SnakeCase)
 
-                            override fun flush() {
-                            }
+    suspend fun updateGtfsData(noCache: Boolean = false) =
+        gtfsClient.getGtfsStaticArchive(if (noCache) null else gtfsCacheDb.getCachedETag())
+            .map { maybeResponse ->
+                val (eTag, feed) = maybeResponse ?: return@map
 
-                            override fun write(source: Buffer, byteCount: Long) {
-                                print(source.readBytes(byteCount.toInt()).decodeToString())
-                            }
+                val routesBuf = Buffer()
 
-                        }.buffered()
-                    }
-                },
-                handleDirectory = { path ->
-                    println("#### Directory: $path")
-                },
-            )
-            gtfsCacheDb.update(eTag)
-            println("#### Cache updated")
-        }
-    }
+                unzipper.readArchive(
+                    source = feed,
+                    handleFile = { path ->
+                        if (path != "routes.txt") {
+                            discardingSink().buffered()
+                        } else {
+                            routesBuf
+                        }
+                    },
+                )
+
+                val routes: List<Route> =
+                    csv.decodeFromSource(ListSerializer(RouteSerializer), routesBuf)
+                println(routes)
+
+                gtfsCacheDb.update(newETag = eTag, newRoutes = routes)
+
+                println("#### Cache updated to $eTag")
+            }
+
+    @Serializer(forClass = Route::class)
+    object RouteSerializer
 }
