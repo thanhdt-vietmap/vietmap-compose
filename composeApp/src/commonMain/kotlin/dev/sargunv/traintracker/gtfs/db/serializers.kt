@@ -8,61 +8,51 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-@Serializer(forClass = Agency::class)
-object AgencySerializer
+@Serializer(forClass = Agency::class) object AgencySerializer
 
-@Serializer(forClass = CacheVersion::class)
-object CacheVersionSerializer
+@Serializer(forClass = CacheVersion::class) object CacheVersionSerializer
 
-@Serializer(forClass = Calendar::class)
-object CalendarSerializer
+@Serializer(forClass = Calendar::class) object CalendarSerializer
 
-@Serializer(forClass = CalendarDate::class)
-object CalendarDateSerializer
+@Serializer(forClass = CalendarDate::class) object CalendarDateSerializer
 
-@Serializer(forClass = FeedInfo::class)
-object FeedInfoSerializer
+@Serializer(forClass = FeedInfo::class) object FeedInfoSerializer
 
-@Serializer(forClass = Frequency::class)
-object FrequencySerializer
+@Serializer(forClass = Frequency::class) object FrequencySerializer
 
-@Serializer(forClass = Route::class)
-object RouteSerializer
+@Serializer(forClass = Route::class) object RouteSerializer
 
-@Serializer(forClass = Shape::class)
-object ShapeSerializer
+@Serializer(forClass = Shape::class) object ShapeSerializer
 
-@Serializer(forClass = Stop::class)
-object StopSerializer
+@Serializer(forClass = Stop::class) object StopSerializer
 
-@Serializer(forClass = StopTime::class)
-object StopTimeSerializer
+@Serializer(forClass = StopTime::class) object StopTimeSerializer
 
-@Serializer(forClass = Trip::class)
-object TripSerializer
+@Serializer(forClass = Trip::class) object TripSerializer
 
 abstract class SerializerByColumnAdapter<T : Any, S>(
     private val adapter: ColumnAdapter<T, S>,
 ) : KSerializer<T> {
-    override fun deserialize(decoder: Decoder): T {
-        return adapter.decode(decode(decoder))
-    }
+  override fun deserialize(decoder: Decoder): T {
+    return adapter.decode(decode(decoder))
+  }
 
-    override fun serialize(encoder: Encoder, value: T) {
-        encode(encoder, adapter.encode(value))
-    }
+  override fun serialize(encoder: Encoder, value: T) {
+    encode(encoder, adapter.encode(value))
+  }
 
-    abstract fun decode(decoder: Decoder): S
+  abstract fun decode(decoder: Decoder): S
 
-    abstract fun encode(encoder: Encoder, value: S)
+  abstract fun encode(encoder: Encoder, value: S)
 }
 
 open class SerializerByLongColumnAdapter<T : Any>(
     adapter: ColumnAdapter<T, Long>,
 ) : SerializerByColumnAdapter<T, Long>(adapter) {
-    override val descriptor =
-        PrimitiveSerialDescriptor(adapter::class.qualifiedName!!, PrimitiveKind.LONG)
+  override val descriptor =
+      PrimitiveSerialDescriptor(adapter::class.qualifiedName!!, PrimitiveKind.LONG)
 
-    override fun decode(decoder: Decoder) = decoder.decodeLong()
-    override fun encode(encoder: Encoder, value: Long) = encoder.encodeLong(value)
+  override fun decode(decoder: Decoder) = decoder.decodeLong()
+
+  override fun encode(encoder: Encoder, value: Long) = encoder.encodeLong(value)
 }

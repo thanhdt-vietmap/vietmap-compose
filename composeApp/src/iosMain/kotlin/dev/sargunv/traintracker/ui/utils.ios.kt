@@ -12,13 +12,12 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 
 @Composable
-actual fun getColorScheme() =
-    if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+actual fun getColorScheme() = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 actual fun getSheetHeight(): Dp {
-    val fullWindowHeight = LocalWindowInfo.current.containerSize.height
-    val topSafeInset = WindowInsets.safeDrawing.getTop(LocalDensity.current)
-    return with(LocalDensity.current) { (fullWindowHeight - topSafeInset).toDp() }
+  val fullWindowHeight = LocalWindowInfo.current.containerSize.height
+  val topSafeInset = WindowInsets.safeDrawing.getTop(LocalDensity.current)
+  return with(LocalDensity.current) { (fullWindowHeight - topSafeInset).toDp() }
 }

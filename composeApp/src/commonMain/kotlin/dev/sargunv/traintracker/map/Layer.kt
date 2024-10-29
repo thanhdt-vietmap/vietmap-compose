@@ -12,18 +12,18 @@ data class Layer(
     val minZoom: Float? = null,
     val maxZoom: Float? = null,
 ) {
-    init {
-        require(below == null || above == null || index == null) {
-            "Only one of below, above, or index can be set"
-        }
+  init {
+    require(below == null || above == null || index == null) {
+      "Only one of below, above, or index can be set"
     }
+  }
 
-    sealed class Type {
-        data class Line(
-            val cap: String? = null,
-            val join: String? = null,
-            @ColorInt val color: Int? = null,
-            val width: Float? = null,
-        ) : Type()
-    }
+  sealed class Type {
+    data class Line(
+        val cap: String? = null,
+        val join: String? = null,
+        @ColorInt val color: Int? = null,
+        val width: Float? = null,
+    ) : Type()
+  }
 }

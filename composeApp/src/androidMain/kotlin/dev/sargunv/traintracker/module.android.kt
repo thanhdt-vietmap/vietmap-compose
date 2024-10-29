@@ -14,21 +14,20 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 class AndroidDatabaseDriverFactory(private val context: Context) : DatabaseDriverFactory {
-    override fun createDriver(
-        schema: SqlSchema<QueryResult.Value<Unit>>,
-        name: String
-    ): SqlDriver {
-        return AndroidSqliteDriver(schema, context, name)
-    }
+  override fun createDriver(schema: SqlSchema<QueryResult.Value<Unit>>, name: String): SqlDriver {
+    return AndroidSqliteDriver(schema, context, name)
+  }
 }
 
 fun initKoin(context: Context) {
-    startKoin {
-        androidLogger()
-        androidContext(context)
-        modules(commonModules + module {
-            singleOf<DatabaseDriverFactory>({ AndroidDatabaseDriverFactory(context) })
-            singleOf<Unzipper>(::UnzipperImpl)
-        })
-    }
+  startKoin {
+    androidLogger()
+    androidContext(context)
+    modules(
+        commonModules +
+            module {
+              singleOf<DatabaseDriverFactory>({ AndroidDatabaseDriverFactory(context) })
+              singleOf<Unzipper>(::UnzipperImpl)
+            })
+  }
 }

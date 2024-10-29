@@ -10,20 +10,19 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 class IosDatabaseDriverFactory : DatabaseDriverFactory {
-    override fun createDriver(
-        schema: SqlSchema<QueryResult.Value<Unit>>,
-        name: String
-    ): SqlDriver {
-        return NativeSqliteDriver(schema, name)
-    }
+  override fun createDriver(schema: SqlSchema<QueryResult.Value<Unit>>, name: String): SqlDriver {
+    return NativeSqliteDriver(schema, name)
+  }
 }
 
 @Suppress("unused") // called in Swift
 fun initKoin(initUnzipper: () -> Unzipper) {
-    startKoin {
-        modules(commonModules + module {
-            singleOf<DatabaseDriverFactory>(::IosDatabaseDriverFactory)
-            single<Unzipper> { initUnzipper() }
-        })
-    }
+  startKoin {
+    modules(
+        commonModules +
+            module {
+              singleOf<DatabaseDriverFactory>(::IosDatabaseDriverFactory)
+              single<Unzipper> { initUnzipper() }
+            })
+  }
 }

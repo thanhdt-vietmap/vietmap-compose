@@ -18,19 +18,19 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 actual fun getColorScheme(): ColorScheme {
-    val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-    val darkMode = isSystemInDarkTheme()
-    return when {
-        dynamicColor && darkMode -> dynamicDarkColorScheme(LocalContext.current)
-        dynamicColor && !darkMode -> dynamicLightColorScheme(LocalContext.current)
-        darkMode -> darkColorScheme()
-        else -> lightColorScheme()
-    }
+  val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+  val darkMode = isSystemInDarkTheme()
+  return when {
+    dynamicColor && darkMode -> dynamicDarkColorScheme(LocalContext.current)
+    dynamicColor && !darkMode -> dynamicLightColorScheme(LocalContext.current)
+    darkMode -> darkColorScheme()
+    else -> lightColorScheme()
+  }
 }
 
 @Composable
 actual fun getSheetHeight(): Dp {
-    val safeWindowHeight = LocalConfiguration.current.screenHeightDp.dp
-    val bottomSafeInset = WindowInsets.safeDrawing.getBottom(LocalDensity.current)
-    return with(LocalDensity.current) { safeWindowHeight + bottomSafeInset.toDp() }
+  val safeWindowHeight = LocalConfiguration.current.screenHeightDp.dp
+  val bottomSafeInset = WindowInsets.safeDrawing.getBottom(LocalDensity.current)
+  return with(LocalDensity.current) { safeWindowHeight + bottomSafeInset.toDp() }
 }

@@ -7,12 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import dev.sargunv.traintracker.ui.App
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        initKoin(this@MainActivity)
-        setContent {
-            App()
-        }
-    }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    enableEdgeToEdge()
+    initKoin(this@MainActivity)
+    setContent { App() }
+  }
 }

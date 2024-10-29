@@ -16,20 +16,17 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import java.net.URI
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
+import org.maplibre.android.style.layers.Layer as NativeLayer
 import org.maplibre.android.style.layers.LineLayer
 import org.maplibre.android.style.layers.PropertyFactory
 import org.maplibre.android.style.sources.GeoJsonOptions
 import org.maplibre.android.style.sources.GeoJsonSource
-import java.net.URI
-import org.maplibre.android.style.layers.Layer as NativeLayer
 
 @Composable
-actual fun MapView(
-    modifier: Modifier,
-    options: MapViewOptions,
-) {
+actual fun MapView(modifier: Modifier, options: MapViewOptions) {
     var observer by remember { mutableStateOf<LifecycleEventObserver?>(null) }
 
     val layoutDir = LocalLayoutDirection.current
@@ -59,7 +56,7 @@ actual fun MapView(
         update = { mapView ->
             mapView.applyUiOptions(options.ui, density, layoutDir)
             mapView.applyStyleOptions(options.style)
-        }
+        },
     )
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -81,9 +78,7 @@ fun Source.GeoJson.toNativeSource(id: String): GeoJsonSource {
     return GeoJsonSource(
         id = id,
         uri = URI(url).correctAssetUrlIfNeeded(),
-        options = GeoJsonOptions().apply {
-            tolerance?.let { withTolerance(it) }
-        }
+        options = GeoJsonOptions().apply { tolerance?.let { withTolerance(it) } },
     )
 }
 
@@ -104,12 +99,9 @@ fun Layer.Type.Line.toNativeLayer(layer: Layer): LineLayer {
     }
 }
 
-fun MapView.applyStyleOptions(
-    options: MapViewOptions.StyleOptions
-) {
+fun MapView.applyStyleOptions(options: MapViewOptions.StyleOptions) {
     getMapAsync { map ->
         map.setStyle(URI(options.url).correctAssetUrlIfNeeded().toString()) { style ->
-
             options.sources
                 .map { (id, source) ->
                     when (source) {
@@ -139,7 +131,7 @@ fun MapView.applyStyleOptions(
 fun MapView.applyUiOptions(
     options: MapViewOptions.UiOptions,
     density: Density,
-    layoutDir: LayoutDirection
+    layoutDir: LayoutDirection,
 ) {
     getMapAsync { map ->
         map.uiSettings.isLogoEnabled = options.isLogoEnabled
@@ -161,19 +153,19 @@ fun MapView.applyUiOptions(
                 leftUiPadding,
                 topUiPadding,
                 rightUiPadding,
-                bottomUiPadding
+                bottomUiPadding,
             )
             map.uiSettings.setLogoMargins(
                 leftUiPadding,
                 topUiPadding,
                 rightUiPadding,
-                bottomUiPadding
+                bottomUiPadding,
             )
             map.uiSettings.setCompassMargins(
                 leftUiPadding,
                 topUiPadding,
                 rightUiPadding,
-                bottomUiPadding
+                bottomUiPadding,
             )
         }
     }

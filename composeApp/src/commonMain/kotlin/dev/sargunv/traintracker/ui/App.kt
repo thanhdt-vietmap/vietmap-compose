@@ -13,16 +13,14 @@ import org.koin.compose.KoinContext
 @Preview
 @Composable
 fun App() {
-    KoinContext {
-        MaterialTheme(colorScheme = getColorScheme()) {
-            BottomSheetScaffold(
-                sheetPeekHeight = max(128.dp, getSheetHeight() / 4),
-                sheetDragHandle = { BottomSheetDragHandle() },
-                sheetContainerColor = MaterialTheme.colorScheme.surface,
-                sheetContent = { MainMenu() },
-                content = { padding -> TrainMap(sheetPadding = padding) }
-            )
-        }
+  KoinContext {
+    MaterialTheme(colorScheme = getColorScheme()) {
+      BottomSheetScaffold(
+          sheetPeekHeight = max(128.dp, getSheetHeight() / 4),
+          sheetDragHandle = { BottomSheetDragHandle() },
+          sheetContainerColor = MaterialTheme.colorScheme.surface,
+          sheetContent = { MainMenu() },
+          content = { padding -> TrainMap(sheetPadding = padding) })
     }
+  }
 }
-
