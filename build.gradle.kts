@@ -11,7 +11,24 @@ plugins {
   alias(libs.plugins.spotless)
 }
 
-allprojects {
+subprojects {
   apply(plugin = "com.diffplug.spotless")
   spotless { kotlinGradle { ktfmt().googleStyle() } }
+}
+
+spotless {
+  kotlin {
+    target("buildSrc/src/**/*.kt")
+    ktfmt().googleStyle()
+  }
+
+  kotlinGradle {
+    target("buildSrc/**/*.gradle.kts")
+    ktfmt().googleStyle()
+  }
+
+  format("swift") {
+    target("iosApp/iosApp/**/*.swift")
+    nativeCmd("swiftFormat","/usr/bin/env", listOf("swift-format"))
+  }
 }
