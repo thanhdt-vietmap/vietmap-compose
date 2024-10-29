@@ -15,10 +15,10 @@ import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 
-class Csv(
-    private val namingStrategy: CsvNamingStrategy = CsvNamingStrategy.Identity,
+open class Csv(
+    private val config: Config = Config(),
 ) : StringFormat {
-    override val serializersModule = EmptySerializersModule()
+    override val serializersModule get() = config.serializersModule
 
     override fun <T> decodeFromString(deserializer: DeserializationStrategy<T>, string: String): T {
         return decodeFromSource(deserializer, Buffer().apply { writeString(string) })
@@ -32,8 +32,7 @@ class Csv(
         return deserializer.deserialize(
             Decoder(
                 CsvParser(source),
-                serializersModule,
-                namingStrategy
+                config
             )
         )
     }
@@ -41,9 +40,10 @@ class Csv(
     @OptIn(ExperimentalSerializationApi::class)
     private class Decoder(
         csvParser: CsvParser,
-        override val serializersModule: SerializersModule,
-        private val namingStrategy: CsvNamingStrategy,
+        private val config: Config,
     ) : AbstractDecoder() {
+        override val serializersModule get() = config.serializersModule
+
         private var level = 0
 
         // TODO: stream the CSV file instead of loading it all into memory
@@ -51,7 +51,7 @@ class Csv(
             .map { row -> row.map { (key, value) -> key to value } }
             .toList()
 
-        private var implicitNullCols: List<String>? = null
+        private var nullHeaders: List<String>? = null
 
         private var row = 0
         private var col = 0
@@ -71,13 +71,22 @@ class Csv(
                         "Second-level structure must be a class (got ${descriptor.kind})"
                     }
 
-                    if (implicitNullCols == null) {
-                        // infer implicit null columns, to fill nulls on columns not present in csv
-                        val presentHeaders = records[row]
-                            .map { namingStrategy.fromCsvName(it.first) }.toSet()
-                        implicitNullCols = descriptor.elementNames
-                            .filterNot { presentHeaders.contains(it) }
-                            .filter { !descriptor.isElementOptional(descriptor.getElementIndex(it)) }
+                    if (config.treatMissingColumnsAsNull) {
+                        if (nullHeaders == null) {
+                            val presentHeaders = records[row]
+                                .map { config.namingStrategy.fromCsvName(it.first) }.toSet()
+                            nullHeaders = descriptor.elementNames
+                                .filterNot { presentHeaders.contains(it) }
+                                .filter {
+                                    !descriptor.isElementOptional(
+                                        descriptor.getElementIndex(
+                                            it
+                                        )
+                                    )
+                                }
+                        }
+                    } else {
+                        nullHeaders = emptyList()
                     }
 
                     level++
@@ -103,7 +112,7 @@ class Csv(
                 2 -> {
                     when {
                         // end of row
-                        col >= records[row].size + implicitNullCols!!.size -> {
+                        col >= records[row].size + nullHeaders!!.size -> {
                             row++
                             col = 0
                             return DECODE_DONE
@@ -111,13 +120,13 @@ class Csv(
 
                         // implicit null
                         col >= records[row].size -> {
-                            val name = implicitNullCols!![col - records[row].size]
+                            val name = nullHeaders!![col - records[row].size]
                             return descriptor.getElementIndex(name)
                         }
 
                         // regular element
                         else -> {
-                            val name = namingStrategy.fromCsvName(records[row][col].first)
+                            val name = config.namingStrategy.fromCsvName(records[row][col].first)
                             descriptor.getElementIndex(name)
                         }
                     }
@@ -190,4 +199,12 @@ class Csv(
             return ordinal
         }
     }
+
+    data class Config(
+        val serializersModule: SerializersModule = EmptySerializersModule(),
+        val namingStrategy: CsvNamingStrategy = CsvNamingStrategy.Identity,
+        val treatMissingColumnsAsNull: Boolean = false,
+    )
+
+    data object Default : Csv()
 }

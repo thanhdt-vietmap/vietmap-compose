@@ -4,12 +4,9 @@ import kotlinx.io.Source
 
 class CsvParser(
     private val input: Source,
+    private val config: Config = Config(),
 ) {
-    private val dquote = '"'
-    private val comma = ','
-    private val newline = '\n'
-    private val carriageReturn = '\r'
-    private val specialChars = "$dquote$comma$newline$carriageReturn"
+    private val specialChars = with(config) { "$quote$comma$newline$carriageReturn" }
     private val data = StringBuilder()
     private val buffer = ByteArray(4096)
 
@@ -34,18 +31,18 @@ class CsvParser(
         var cursor = pos
 
         // accept opening quote
-        if (charAt(cursor) != dquote) return null
+        if (charAt(cursor) != config.quote) return null
         cursor++
 
         val result = StringBuilder()
         while (true) {
             // require content
             val c = charAt(cursor) ?: throw CsvParseException("Unterminated quoted value")
-            if (c == dquote) {
+            if (c == config.quote) {
                 val next = charAt(cursor + 1)
-                if (next == dquote) {
+                if (next == config.quote) {
                     // accept escaped quote
-                    result.append(dquote)
+                    result.append(config.quote)
                     cursor += 2
                 } else {
                     // accept closing quote
@@ -63,14 +60,14 @@ class CsvParser(
 
     private fun readNonQuotedField(pos: Int): ReadResult<String>? {
         val firstChar = charAt(pos) ?: return null
-        if (firstChar == dquote) return null // not a non-quoted field
+        if (firstChar == config.quote) return null // not a non-quoted field
 
         var cursor = pos
         val result = StringBuilder()
 
         while (true) {
             val c = charAt(cursor) ?: break
-            if (c == dquote) throw CsvParseException("Unexpected quote in non-quoted field")
+            if (c == config.quote) throw CsvParseException("Unexpected quote in non-quoted field")
             if (specialChars.contains(c)) break
             result.append(c)
             cursor++
@@ -92,11 +89,9 @@ class CsvParser(
         while (true) {
             val c = charAt(cursor) ?: break
             when (c) {
-                carriageReturn, newline -> {
-                    break
-                }
+                config.carriageReturn, config.newline -> break
 
-                comma -> {
+                config.comma -> {
                     cursor++
                     val fieldResult = readField(cursor)
                         ?: throw CsvParseException("Expected field after comma")
@@ -114,9 +109,9 @@ class CsvParser(
     private fun readEndOfLine(pos: Int): ReadResult<Unit>? {
         val c = charAt(pos) ?: return ReadResult(Unit, pos)
         return when (c) {
-            newline -> ReadResult(Unit, pos + 1)
-            carriageReturn -> {
-                if (charAt(pos + 1) == newline) ReadResult(Unit, pos + 2)
+            config.newline -> ReadResult(Unit, pos + 1)
+            config.carriageReturn -> {
+                if (charAt(pos + 1) == config.newline) ReadResult(Unit, pos + 2)
                 else ReadResult(Unit, pos + 1)
             }
 
@@ -161,4 +156,11 @@ class CsvParser(
             header.zip(record).toMap()
         }
     }
+
+    data class Config(
+        val quote: Char = '"',
+        val comma: Char = ',',
+        val newline: Char = '\n',
+        val carriageReturn: Char = '\r',
+    )
 }

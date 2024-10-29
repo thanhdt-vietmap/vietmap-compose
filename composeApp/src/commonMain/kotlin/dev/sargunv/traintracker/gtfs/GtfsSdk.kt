@@ -6,12 +6,12 @@ import dev.sargunv.traintracker.csv.Csv
 import dev.sargunv.traintracker.csv.CsvNamingStrategy
 import dev.sargunv.traintracker.gtfs.db.GtfsCacheDb
 import dev.sargunv.traintracker.gtfs.db.Route
+import dev.sargunv.traintracker.gtfs.db.RouteSerializer
 import dev.sargunv.traintracker.zip.Unzipper
 import kotlinx.io.Buffer
 import kotlinx.io.buffered
 import kotlinx.io.discardingSink
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.Serializer
 import kotlinx.serialization.builtins.ListSerializer
 
 class GtfsSdk(
@@ -19,7 +19,7 @@ class GtfsSdk(
     private val gtfsCacheDb: GtfsCacheDb,
     private val unzipper: Unzipper,
 ) {
-    private val csv = Csv(namingStrategy = CsvNamingStrategy.SnakeCase)
+    private val csv = Csv(Csv.Config(namingStrategy = CsvNamingStrategy.SnakeCase))
 
     suspend fun updateGtfsData(noCache: Boolean = false) =
         gtfsClient.getGtfsStaticArchive(if (noCache) null else gtfsCacheDb.getCachedETag())
@@ -47,7 +47,4 @@ class GtfsSdk(
 
                 println("#### Cache updated to $eTag")
             }
-
-    @Serializer(forClass = Route::class)
-    object RouteSerializer
 }

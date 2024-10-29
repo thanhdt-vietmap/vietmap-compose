@@ -21,5 +21,5 @@ enum class RouteType(val value: Long) {
         override fun encode(value: RouteType) = value.value
     }
 
-    class Serializer : LongColumnAdapterSerializer<RouteType>(Adapter)
+    class Serializer : SerializerByLongColumnAdapter<RouteType>(Adapter)
 }

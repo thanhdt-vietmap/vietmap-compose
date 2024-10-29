@@ -3,10 +3,12 @@
 package dev.sargunv.traintracker.csv
 
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 @Serializable
 data class Strings(
@@ -54,6 +56,18 @@ data class Enums(
     }
 }
 
+@Serializable
+data class NamingOne(
+    val testFoo: String,
+)
+
+@Serializable
+data class NamingNullable(
+    val testFoo: String?,
+    val testBar: String?,
+    val testBaz: String?,
+)
+
 class CsvTest {
     @Test
     fun decodeMultiline() {
@@ -63,7 +77,7 @@ class CsvTest {
                 Strings(foo = "4", bar = "5", baz = "6"),
                 Strings(foo = "7", bar = "8", baz = "9"),
             ),
-            Csv().decodeFromSource(serializer(), load("simple-multiline")),
+            Csv.Default.decodeFromSource(serializer(), load("simple-multiline")),
         )
     }
 
@@ -73,7 +87,7 @@ class CsvTest {
             listOf(
                 Ints(foo = 1, bar = 2, baz = 3),
             ),
-            Csv().decodeFromSource(serializer(), load("simple-lf")),
+            Csv.Default.decodeFromSource(serializer(), load("simple-lf")),
         )
     }
 
@@ -85,7 +99,7 @@ class CsvTest {
                 StringsOutOfOrder(foo = "4", bar = "5", baz = "6"),
                 StringsOutOfOrder(foo = "7", bar = "8", baz = "9"),
             ),
-            Csv().decodeFromSource(serializer(), load("simple-multiline")),
+            Csv.Default.decodeFromSource(serializer(), load("simple-multiline")),
         )
     }
 
@@ -93,7 +107,7 @@ class CsvTest {
     fun decodeNoRows() {
         assertEquals(
             emptyList<Strings>(),
-            Csv().decodeFromSource(serializer(), load("header-no-rows")),
+            Csv.Default.decodeFromSource(serializer(), load("header-no-rows")),
         )
     }
 
@@ -103,7 +117,7 @@ class CsvTest {
             listOf(
                 Strings(foo = "1", bar = "", baz = "3"),
             ),
-            Csv().decodeFromSource(serializer(), load("empty-field")),
+            Csv.Default.decodeFromSource(serializer(), load("empty-field")),
         )
     }
 
@@ -113,7 +127,7 @@ class CsvTest {
             listOf(
                 NullableStrings(foo = "1", bar = null, baz = "3"),
             ),
-            Csv().decodeFromSource(serializer(), load("empty-field")),
+            Csv.Default.decodeFromSource(serializer(), load("empty-field")),
         )
     }
 
@@ -124,7 +138,7 @@ class CsvTest {
             listOf(
                 NullableInts(foo = 1, bar = null, baz = 3),
             ),
-            Csv().decodeFromSource(serializer(), load("empty-field")),
+            Csv.Default.decodeFromSource(serializer(), load("empty-field")),
         )
     }
 
@@ -134,7 +148,7 @@ class CsvTest {
             listOf(
                 Enums(foo = Enums.FooBarBaz.a, bar = Enums.FooBarBaz.b, baz = Enums.FooBarBaz.c),
             ),
-            Csv().decodeFromSource(serializer(), load("simple-words")),
+            Csv.Default.decodeFromSource(serializer(), load("simple-words")),
         )
     }
 
@@ -144,17 +158,58 @@ class CsvTest {
             listOf(
                 Enums(foo = Enums.FooBarBaz.b, bar = Enums.FooBarBaz.c, baz = Enums.FooBarBaz.d),
             ),
-            Csv().decodeFromSource(serializer(), load("simple-lf")),
+            Csv.Default.decodeFromSource(serializer(), load("simple-lf")),
         )
     }
 
     @Test
-    fun decodeImplicitNulls() {
+    fun decodeTreatMissingColumnsAsNullFalse() {
+        assertFailsWith<MissingFieldException>("") {
+            Csv.Default.decodeFromSource<List<Enums>>(serializer(), load("one-column"))
+        }
+    }
+
+    @Test
+    fun decodeTreatMissingColumnsAsNullTrue() {
         assertEquals(
             listOf(
                 NullableStrings(foo = "1", bar = null, baz = null),
             ),
-            Csv().decodeFromSource(serializer(), load("one-column")),
+            Csv(Csv.Config(treatMissingColumnsAsNull = true)).decodeFromSource(
+                serializer(),
+                load("one-column")
+            ),
+        )
+    }
+
+    @Test
+    fun decodeNamingStrategy() {
+        assertEquals(
+            listOf(
+                NamingOne(testFoo = "1"),
+            ),
+            Csv(Csv.Config(namingStrategy = CsvNamingStrategy.SnakeCase)).decodeFromSource(
+                serializer(),
+                load("snake-case")
+            ),
+        )
+    }
+
+    @Test
+    fun decodeNamingStrategyMissingColumns() {
+        assertEquals(
+            listOf(
+                NamingNullable(testFoo = "1", testBar = null, testBaz = null),
+            ),
+            Csv(
+                Csv.Config(
+                    namingStrategy = CsvNamingStrategy.SnakeCase,
+                    treatMissingColumnsAsNull = true
+                )
+            ).decodeFromSource(
+                serializer(),
+                load("snake-case")
+            ),
         )
     }
 }
