@@ -35,17 +35,14 @@ class TrainMapViewModel(private val gtfsSdk: GtfsSdk) : ViewModel() {
     viewModelScope.launch(Dispatchers.IO) {
       _state.value = _state.value.copy(loading = true)
       gtfsSdk
-          .updateGtfsData(noCache = true)
-          .onSuccess { _state.value = _state.value.copy(loading = false) }
-          .onFailure { _state.value = _state.value.copy(loading = false, error = it.message) }
+        .refreshSchedule()
+        .onSuccess { _state.value = _state.value.copy(loading = false) }
+        .onFailure { _state.value = _state.value.copy(loading = false, error = it.message) }
     }
   }
 }
 
-data class TrainMapState(
-    val loading: Boolean = false,
-    val error: String? = null,
-)
+data class TrainMapState(val loading: Boolean = false, val error: String? = null)
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -56,64 +53,73 @@ fun TrainMap(sheetPadding: PaddingValues) {
   val insetsPadding = WindowInsets.safeDrawing.asPaddingValues(LocalDensity.current)
 
   MapView(
-      options =
-          MapViewOptions(
-              style =
-                  MapViewOptions.StyleOptions(
-                      url = Res.getUri("files/maplibre/style/positron.json"),
-                      sources =
-                          mapOf(
-                              "amtrak-geojson" to
-                                  Source.GeoJson(
-                                      url = Res.getUri("files/geojson/amtrak/routes.geojson"),
-                                      tolerance = 0.001f)),
-                      layers =
-                          listOf(
-                              Layer(
-                                  id = "amtrak-route-lines-casing",
-                                  source = "amtrak-geojson",
-                                  below = "boundary_3",
-                                  type =
-                                      Layer.Type.Line(
-                                          color = 0xFF888888.toInt(),
-                                          width = 3f,
-                                          cap = "round",
-                                          join = "miter",
-                                      )),
-                              Layer(
-                                  id = "amtrak-route-lines-inner",
-                                  source = "amtrak-geojson",
-                                  above = "amtrak-route-lines-casing",
-                                  type =
-                                      Layer.Type.Line(
-                                          color = 0xFFCAE4F1.toInt(),
-                                          width = 2f,
-                                          cap = "round",
-                                          join = "miter",
-                                      ))),
-                  ),
-              ui =
-                  MapViewOptions.UiOptions(
-                      padding =
-                          PaddingValues(
-                              start =
-                                  max(
-                                      8.dp + sheetPadding.calculateLeftPadding(LayoutDirection.Ltr),
-                                      insetsPadding.calculateLeftPadding(LayoutDirection.Ltr)),
-                              end =
-                                  max(
-                                      8.dp +
-                                          sheetPadding.calculateRightPadding(LayoutDirection.Ltr),
-                                      insetsPadding.calculateRightPadding(LayoutDirection.Ltr)),
-                              top =
-                                  max(
-                                      8.dp + sheetPadding.calculateTopPadding(),
-                                      insetsPadding.calculateTopPadding()),
-                              bottom =
-                                  max(
-                                      8.dp + sheetPadding.calculateBottomPadding(),
-                                      insetsPadding.calculateBottomPadding())),
-                  ),
+    options =
+      MapViewOptions(
+        style =
+          MapViewOptions.StyleOptions(
+            url = Res.getUri("files/maplibre/style/positron.json"),
+            sources =
+              mapOf(
+                "amtrak-geojson" to
+                  Source.GeoJson(
+                    url = Res.getUri("files/geojson/amtrak/routes.geojson"),
+                    tolerance = 0.001f,
+                  )
+              ),
+            layers =
+              listOf(
+                Layer(
+                  id = "amtrak-route-lines-casing",
+                  source = "amtrak-geojson",
+                  below = "boundary_3",
+                  type =
+                    Layer.Type.Line(
+                      color = 0xFF888888.toInt(),
+                      width = 3f,
+                      cap = "round",
+                      join = "miter",
+                    ),
+                ),
+                Layer(
+                  id = "amtrak-route-lines-inner",
+                  source = "amtrak-geojson",
+                  above = "amtrak-route-lines-casing",
+                  type =
+                    Layer.Type.Line(
+                      color = 0xFFCAE4F1.toInt(),
+                      width = 2f,
+                      cap = "round",
+                      join = "miter",
+                    ),
+                ),
+              ),
           ),
+        ui =
+          MapViewOptions.UiOptions(
+            padding =
+              PaddingValues(
+                start =
+                  max(
+                    8.dp + sheetPadding.calculateLeftPadding(LayoutDirection.Ltr),
+                    insetsPadding.calculateLeftPadding(LayoutDirection.Ltr),
+                  ),
+                end =
+                  max(
+                    8.dp + sheetPadding.calculateRightPadding(LayoutDirection.Ltr),
+                    insetsPadding.calculateRightPadding(LayoutDirection.Ltr),
+                  ),
+                top =
+                  max(
+                    8.dp + sheetPadding.calculateTopPadding(),
+                    insetsPadding.calculateTopPadding(),
+                  ),
+                bottom =
+                  max(
+                    8.dp + sheetPadding.calculateBottomPadding(),
+                    insetsPadding.calculateBottomPadding(),
+                  ),
+              )
+          ),
+      )
   )
 }

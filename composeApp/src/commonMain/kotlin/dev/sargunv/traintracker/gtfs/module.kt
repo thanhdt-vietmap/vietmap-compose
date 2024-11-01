@@ -1,12 +1,20 @@
 package dev.sargunv.traintracker.gtfs
 
-import dev.sargunv.traintracker.gtfs.db.GtfsCacheDb
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-const val VIA_RAIL = "https://www.viarail.ca/sites/all/files/gtfs/viarail.zip"
+enum class GtfsAgency(val scheduleUrl: String) {
+  ViaRail(scheduleUrl = "https://www.viarail.ca/sites/all/files/gtfs/viarail.zip")
+}
 
 val gtfsModule = module {
-  single { GtfsCacheDb(driverFactory = get()) }
-  single { GtfsClient(staticFeedUrl = VIA_RAIL) }
-  single { GtfsSdk(gtfsClient = get(), gtfsCacheDb = get(), unzipper = get()) }
+  for (agency in GtfsAgency.entries) {
+    single(named(agency)) {
+      GtfsSdk(
+        gtfsClient = GtfsClient(scheduleUrl = agency.scheduleUrl),
+        gtfsScheduleDao = GtfsScheduleDao(driverFactory = get(), name = "${agency.name}.db"),
+        unzipper = get(),
+      )
+    }
+  }
 }

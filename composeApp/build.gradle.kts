@@ -110,9 +110,9 @@ compose.resources { packageOfResClass = "dev.sargunv.traintracker.generated" }
 
 sqldelight {
   databases {
-    create("GtfsCache") {
-      packageName.set("dev.sargunv.traintracker.gtfs.db")
-      srcDirs("src/commonMain/dbGtfs")
+    create("GtfsScheduleDb") {
+      packageName.set("dev.sargunv.traintracker.gtfs")
+      srcDirs("src/commonMain/sqldelight/GtfsScheduleDb")
       verifyMigrations.set(true)
       generateAsync.set(false)
     }

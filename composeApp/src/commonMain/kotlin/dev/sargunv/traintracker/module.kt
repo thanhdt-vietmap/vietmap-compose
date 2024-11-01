@@ -3,12 +3,14 @@ package dev.sargunv.traintracker
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
+import dev.sargunv.traintracker.gtfs.GtfsAgency
 import dev.sargunv.traintracker.gtfs.gtfsModule
 import dev.sargunv.traintracker.ui.TrainMapViewModel
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val appModule = module { viewModel { TrainMapViewModel(gtfsSdk = get()) } }
+val appModule = module { viewModel { TrainMapViewModel(gtfsSdk = get(named(GtfsAgency.ViaRail))) } }
 
 val commonModules = listOf(gtfsModule, appModule)
 

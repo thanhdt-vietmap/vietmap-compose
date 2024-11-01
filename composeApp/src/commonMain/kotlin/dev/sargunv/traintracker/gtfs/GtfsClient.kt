@@ -7,27 +7,26 @@ import io.ktor.utils.io.core.writeFully
 import kotlinx.io.Buffer
 import kotlinx.io.Source
 
-class GtfsClient(private val staticFeedUrl: String) {
+class GtfsClient(private val scheduleUrl: String) {
   private val client = HttpClient()
 
-  suspend fun getGtfsStaticArchive(localETag: String?) =
-      runCatching {
-            client.get(staticFeedUrl) {
-              if (localETag != null) headers["If-None-Match"] = localETag
-            }
-          }
-          .map {
-            when (it.status.value) {
-              200 ->
-                  StaticArchiveResponse(
-                      eTag = it.headers["ETag"]!!,
-                      feed = Buffer().apply { writeFully(it.bodyAsBytes()) } // TODO stream this
-                      )
+  private suspend fun makeGetScheduleRequest(localETag: String?) = runCatching {
+    client.get(scheduleUrl) { if (localETag != null) headers["If-None-Match"] = localETag }
+  }
 
-              304 -> null
-              else -> throw Exception("Unexpected HTTP status code ${it.status.value}")
-            }
-          }
+  suspend fun getSchedule(localETag: String?) =
+    makeGetScheduleRequest(localETag).map {
+      when (it.status.value) {
+        200 ->
+          GetScheduleResponse(
+            eTag = it.headers["ETag"]!!,
+            scheduleZip = Buffer().apply { writeFully(it.bodyAsBytes()) }, // TODO stream this
+          )
 
-  data class StaticArchiveResponse(val eTag: String, val feed: Source)
+        304 -> null
+        else -> throw Exception("Unexpected HTTP status code ${it.status.value}")
+      }
+    }
+
+  data class GetScheduleResponse(val eTag: String, val scheduleZip: Source)
 }

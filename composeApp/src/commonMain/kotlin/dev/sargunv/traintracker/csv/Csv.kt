@@ -12,12 +12,11 @@ import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.encoding.AbstractDecoder
 import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
+import kotlinx.serialization.encoding.CompositeDecoder.Companion.UNKNOWN_NAME
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 
-open class Csv(
-    private val config: Config = Config(),
-) : StringFormat {
+open class Csv(private val config: Config = Config()) : StringFormat {
   override val serializersModule
     get() = config.serializersModule
 
@@ -34,10 +33,7 @@ open class Csv(
   }
 
   @OptIn(ExperimentalSerializationApi::class)
-  private class Decoder(
-      csvParser: CsvParser,
-      private val config: Config,
-  ) : AbstractDecoder() {
+  private class Decoder(csvParser: CsvParser, private val config: Config) : AbstractDecoder() {
     override val serializersModule
       get() = config.serializersModule
 
@@ -45,7 +41,7 @@ open class Csv(
 
     // TODO: stream the CSV file instead of loading it all into memory
     private val records =
-        csvParser.parseWithHeader().map { row -> row.map { (key, value) -> key to value } }.toList()
+      csvParser.parseWithHeader().map { row -> row.map { (key, value) -> key to value } }.toList()
 
     private var nullHeaders: List<String>? = null
 
@@ -70,11 +66,11 @@ open class Csv(
           if (config.treatMissingColumnsAsNull) {
             if (nullHeaders == null) {
               val presentHeaders =
-                  records[row].map { config.namingStrategy.fromCsvName(it.first) }.toSet()
+                records[row].map { config.namingStrategy.fromCsvName(it.first) }.toSet()
               nullHeaders =
-                  descriptor.elementNames
-                      .filterNot { presentHeaders.contains(it) }
-                      .filter { !descriptor.isElementOptional(descriptor.getElementIndex(it)) }
+                descriptor.elementNames
+                  .filterNot { presentHeaders.contains(it) }
+                  .filter { !descriptor.isElementOptional(descriptor.getElementIndex(it)) }
             }
           } else {
             nullHeaders = emptyList()
@@ -95,36 +91,40 @@ open class Csv(
 
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
       return when (level) {
-        1 -> {
-          if (row >= records.size) return DECODE_DONE
-          return row
-        }
+        1 -> if (row >= records.size) return DECODE_DONE else row
 
-        2 -> {
-          when {
-            // end of row
-            col >= records[row].size + nullHeaders!!.size -> {
-              row++
-              col = 0
-              return DECODE_DONE
-            }
+        2 ->
+          sequence {
+              while (true) {
+                yield(
+                  when {
+                    // end of row
+                    col >= records[row].size + nullHeaders!!.size -> {
+                      row++
+                      col = 0
+                      DECODE_DONE
+                    }
 
-            // implicit null
-            col >= records[row].size -> {
-              val name = nullHeaders!![col - records[row].size]
-              return descriptor.getElementIndex(name)
-            }
+                    // implicit null
+                    col >= records[row].size -> {
+                      val name = nullHeaders!![col - records[row].size]
+                      descriptor.getElementIndex(name)
+                    }
 
-            // regular element
-            else -> {
-              val name = config.namingStrategy.fromCsvName(records[row][col].first)
-              descriptor.getElementIndex(name)
+                    // regular element
+                    else -> {
+                      val name = config.namingStrategy.fromCsvName(records[row][col].first)
+                      descriptor.getElementIndex(name)
+                    }
+                  }
+                )
+                col++
+              }
             }
-          }
-        }
+            .first { it != UNKNOWN_NAME || !config.ignoreUnknownKeys }
 
         else ->
-            throw NotImplementedError("Fields must be within a list of objects (got level $level)")
+          throw NotImplementedError("Fields must be within a list of objects (got level $level)")
       }
     }
 
@@ -179,11 +179,11 @@ open class Csv(
       if (index >= 0) return index
 
       val ordinal =
-          try {
-            value.toInt()
-          } catch (e: NumberFormatException) {
-            throw IllegalArgumentException("Enum value '$value' not found in $enumDescriptor")
-          }
+        try {
+          value.toInt()
+        } catch (e: NumberFormatException) {
+          throw IllegalArgumentException("Enum value '$value' not found in $enumDescriptor")
+        }
 
       if (ordinal < 0 || ordinal >= enumDescriptor.elementsCount) {
         throw IllegalArgumentException("Enum ordinal $ordinal not found in $enumDescriptor")
@@ -194,9 +194,10 @@ open class Csv(
   }
 
   data class Config(
-      val serializersModule: SerializersModule = EmptySerializersModule(),
-      val namingStrategy: CsvNamingStrategy = CsvNamingStrategy.Identity,
-      val treatMissingColumnsAsNull: Boolean = false,
+    val serializersModule: SerializersModule = EmptySerializersModule(),
+    val namingStrategy: CsvNamingStrategy = CsvNamingStrategy.Identity,
+    val treatMissingColumnsAsNull: Boolean = false,
+    val ignoreUnknownKeys: Boolean = false,
   )
 
   data object Default : Csv()

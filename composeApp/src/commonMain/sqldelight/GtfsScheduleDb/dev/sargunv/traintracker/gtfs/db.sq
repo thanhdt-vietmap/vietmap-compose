@@ -73,7 +73,7 @@ CREATE TABLE route (
   routeShortName TEXT NOT NULL,
   routeLongName TEXT NOT NULL,
   routeDesc TEXT,
-  routeType INTEGER AS dev.sargunv.traintracker.gtfs.db.RouteType NOT NULL,
+  routeType INTEGER AS dev.sargunv.traintracker.gtfs.RouteType NOT NULL,
   routeUrl TEXT,
   routeColor TEXT,
   routeTextColor TEXT
