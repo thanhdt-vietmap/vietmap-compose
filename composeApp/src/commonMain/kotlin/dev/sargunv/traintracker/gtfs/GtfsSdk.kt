@@ -37,8 +37,7 @@ class GtfsSdk(
     return gtfsClient.getSchedule(cachedETag).map { maybeResponse ->
       val (eTag, scheduleZip) = maybeResponse ?: return@map
 
-      val files =
-        mutableMapOf<String, Buffer>().ifEmpty { fileHandlers.keys.associateWith { Buffer() } }
+      val files = mutableMapOf<String, Buffer>()
 
       println("Extracting GTFS archive ...")
 
@@ -48,7 +47,7 @@ class GtfsSdk(
         handleFile = { path ->
           if (path in fileHandlers) {
             println("Extracting $path")
-            files.getValue(path)
+            files.getOrPut(path) { Buffer() }
           } else {
             println("Skipping $path")
             discardingSink().buffered()

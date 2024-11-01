@@ -2,29 +2,21 @@ package dev.sargunv.traintracker.csv
 
 import kotlinx.io.Source
 
-class CsvParser(
-    private val input: Source,
-    private val config: Config = Config(),
-) {
-  private val specialChars = with(config) { "$quote$comma$newline$carriageReturn" }
+class CsvParser(private val input: Source, private val config: Config = Config()) {
   private val data = StringBuilder()
   private val buffer = ByteArray(4096)
 
-  private data class ReadResult<T>(
-      val value: T,
-      val newPos: Int,
-  )
+  private data class ReadResult<T>(val value: T, val newPos: Int)
 
   class CsvParseException(message: String) : Exception(message)
 
   private fun charAt(pos: Int): Char? {
-    while (!input.exhausted() && data.length <= pos) {
+    while (data.length <= pos) {
+      if (input.exhausted()) return null
       val numBytesRead = input.readAtMostTo(buffer, 0, buffer.size)
       data.append(buffer.decodeToString(0, numBytesRead))
     }
-    if (pos < data.length) return data[pos]
-    if (input.exhausted()) return null
-    throw IllegalStateException()
+    return data[pos]
   }
 
   private fun readQuotedField(pos: Int): ReadResult<String>? {
@@ -67,9 +59,13 @@ class CsvParser(
 
     while (true) {
       val c = charAt(cursor) ?: break
-      if (c == config.quote) throw CsvParseException("Unexpected quote in non-quoted field")
-      if (specialChars.contains(c)) break
-      result.append(c)
+      when (c) {
+        config.quote -> throw CsvParseException("Unexpected quote in non-quoted field")
+        config.comma,
+        config.newline,
+        config.carriageReturn -> break
+        else -> result.append(c)
+      }
       cursor++
     }
 
@@ -95,7 +91,7 @@ class CsvParser(
         config.comma -> {
           cursor++
           val fieldResult =
-              readField(cursor) ?: throw CsvParseException("Expected field after comma")
+            readField(cursor) ?: throw CsvParseException("Expected field after comma")
           fields.add(fieldResult.value)
           cursor = fieldResult.newPos
         }
@@ -120,13 +116,13 @@ class CsvParser(
     }
   }
 
-  fun parseWithoutHeader(): Sequence<List<String>> = sequence {
+  fun parseRecords(): Sequence<List<String>> = sequence {
     input.use {
       val (firstRecord, pos) =
-          readRecord(0) ?: throw CsvParseException("Expected at least one record")
+        readRecord(0) ?: throw CsvParseException("Expected at least one record")
       var cursor =
-          readEndOfLine(pos)?.newPos
-              ?: throw CsvParseException("Expected end of line, got '${charAt(pos)}'")
+        readEndOfLine(pos)?.newPos
+          ?: throw CsvParseException("Expected end of line, got '${charAt(pos)}'")
       val numColumns = firstRecord.size
 
       yield(firstRecord)
@@ -135,11 +131,12 @@ class CsvParser(
         val (record, newPos) = readRecord(cursor) ?: break
         if (record.size != numColumns) {
           throw CsvParseException(
-              "Expected $numColumns columns, got ${record.size} in record $record")
+            "Expected $numColumns columns, got ${record.size} in record $record"
+          )
         }
         cursor =
-            readEndOfLine(newPos)?.newPos
-                ?: throw CsvParseException("Expected end of line, got '${charAt(newPos)}'")
+          readEndOfLine(newPos)?.newPos
+            ?: throw CsvParseException("Expected end of line, got '${charAt(newPos)}'")
         yield(record)
       }
 
@@ -149,22 +146,22 @@ class CsvParser(
     }
   }
 
-  fun parseWithHeader(
-      checkHeader: (header: List<String>) -> Boolean = { true }
+  fun parseRecordsAsMaps(
+    handleHeader: ((header: List<String>) -> Unit)? = null
   ): Sequence<Map<String, String>> {
-    val records = parseWithoutHeader().iterator()
+    val records = parseRecords().iterator()
     if (!records.hasNext()) throw CsvParseException("Expected a header")
 
     val header = records.next()
-    if (!checkHeader(header)) throw CsvParseException("Header check failed")
+    handleHeader?.invoke(header)
 
     return records.asSequence().map { record -> header.zip(record).toMap() }
   }
 
   data class Config(
-      val quote: Char = '"',
-      val comma: Char = ',',
-      val newline: Char = '\n',
-      val carriageReturn: Char = '\r',
+    val quote: Char = '"',
+    val comma: Char = ',',
+    val newline: Char = '\n',
+    val carriageReturn: Char = '\r',
   )
 }

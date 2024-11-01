@@ -37,14 +37,21 @@ open class Csv(private val config: Config = Config()) : StringFormat {
     override val serializersModule
       get() = config.serializersModule
 
-    private var level = 0
+    val originalHeaders: Set<String>
+    val headers: List<String>
+    private lateinit var nullHeaders: List<String>
 
     // TODO: stream the CSV file instead of loading it all into memory
     private val records =
-      csvParser.parseWithHeader().map { row -> row.map { (key, value) -> key to value } }.toList()
+      csvParser.parseRecords().let { records ->
+        records.first().let { header ->
+          originalHeaders = header.toSet()
+          headers = header.map { config.namingStrategy.fromCsvName(it) }
+        }
+        records.drop(1).toList()
+      }
 
-    private var nullHeaders: List<String>? = null
-
+    private var level = 0
     private var row = 0
     private var col = 0
 
@@ -63,17 +70,15 @@ open class Csv(private val config: Config = Config()) : StringFormat {
             "Second-level structure must be a class (got ${descriptor.kind})"
           }
 
-          if (config.treatMissingColumnsAsNull) {
-            if (nullHeaders == null) {
-              val presentHeaders =
-                records[row].map { config.namingStrategy.fromCsvName(it.first) }.toSet()
-              nullHeaders =
+          if (!::nullHeaders.isInitialized) {
+            nullHeaders =
+              if (config.treatMissingColumnsAsNull) {
                 descriptor.elementNames
-                  .filterNot { presentHeaders.contains(it) }
+                  .filterNot { originalHeaders.contains(config.namingStrategy.toCsvName(it)) }
                   .filter { !descriptor.isElementOptional(descriptor.getElementIndex(it)) }
-            }
-          } else {
-            nullHeaders = emptyList()
+              } else {
+                emptyList()
+              }
           }
 
           level++
@@ -93,35 +98,30 @@ open class Csv(private val config: Config = Config()) : StringFormat {
       return when (level) {
         1 -> if (row >= records.size) return DECODE_DONE else row
 
-        2 ->
-          sequence {
-              while (true) {
-                yield(
-                  when {
-                    // end of row
-                    col >= records[row].size + nullHeaders!!.size -> {
-                      row++
-                      col = 0
-                      DECODE_DONE
-                    }
+        2 -> {
+          var ret: Int
+          do {
+            ret =
+              when {
+                // end of row
+                col >= records[row].size + nullHeaders.size -> {
+                  row++
+                  col = 0
+                  DECODE_DONE
+                }
 
-                    // implicit null
-                    col >= records[row].size -> {
-                      val name = nullHeaders!![col - records[row].size]
-                      descriptor.getElementIndex(name)
-                    }
+                // implicit null
+                col >= records[row].size ->
+                  descriptor.getElementIndex(nullHeaders[col - records[row].size])
 
-                    // regular element
-                    else -> {
-                      val name = config.namingStrategy.fromCsvName(records[row][col].first)
-                      descriptor.getElementIndex(name)
-                    }
-                  }
-                )
-                col++
+                // regular element
+                else -> descriptor.getElementIndex(headers[col])
               }
-            }
-            .first { it != UNKNOWN_NAME || !config.ignoreUnknownKeys }
+            col++
+          } while (ret == UNKNOWN_NAME && config.ignoreUnknownKeys)
+          col--
+          ret
+        }
 
         else ->
           throw NotImplementedError("Fields must be within a list of objects (got level $level)")
@@ -130,7 +130,7 @@ open class Csv(private val config: Config = Config()) : StringFormat {
 
     override fun decodeValue(): Any {
       require(level == 2) { "Fields must be within a list of objects (got level $level)" }
-      val ret = records[row][col].second
+      val ret = records[row][col]
       col++
       return ret
     }
@@ -139,7 +139,7 @@ open class Csv(private val config: Config = Config()) : StringFormat {
 
     override fun decodeNotNullMark(): Boolean {
       if (col >= records[row].size) return false // implicit null
-      return records[row][col].second != ""
+      return records[row][col] != ""
     }
 
     override fun decodeNull(): Nothing? {
@@ -149,7 +149,7 @@ open class Csv(private val config: Config = Config()) : StringFormat {
         return null
       }
       val value = decodeString()
-      if (value == "") return null
+      if (value.isEmpty()) return null
       throw IllegalStateException("Expected null, but got '$value'")
     }
 
