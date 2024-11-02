@@ -2,43 +2,16 @@
 
 package dev.sargunv.traintracker.csv
 
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.serializer
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
-@Serializable data class OneString(val foo: String)
-
-@Serializable data class Strings(val foo: String, val bar: String, val baz: String)
-
-@Serializable data class StringsOutOfOrder(val bar: String, val baz: String, val foo: String)
-
-@Serializable data class NullableStrings(val foo: String?, val bar: String?, val baz: String?)
-
-@Serializable data class Ints(val foo: Int, val bar: Int, val baz: Int)
-
-@Serializable data class NullableInts(val foo: Int?, val bar: Int?, val baz: Int?)
-
-@Serializable
-data class Enums(val foo: FooBarBaz, val bar: FooBarBaz, val baz: FooBarBaz) {
-  enum class FooBarBaz {
-    a,
-    b,
-    c,
-    d,
-  }
-}
-
-@Serializable data class NamingOne(val testFoo: String)
-
-@Serializable
-data class NamingNullable(val testFoo: String?, val testBar: String?, val testBaz: String?)
-
-class CsvTest {
+class CsvDecoderTest {
   @Test
   fun decodeMultiline() {
     assertEquals(
@@ -47,7 +20,7 @@ class CsvTest {
         Strings(foo = "4", bar = "5", baz = "6"),
         Strings(foo = "7", bar = "8", baz = "9"),
       ),
-      Csv.Default.decodeFromSource(serializer(), load("simple-multiline")),
+      CsvFormat.Csv.decodeFromSource(serializer(), load("simple-multiline")),
     )
   }
 
@@ -55,7 +28,7 @@ class CsvTest {
   fun decodeInts() {
     assertEquals(
       listOf(Ints(foo = 1, bar = 2, baz = 3)),
-      Csv.Default.decodeFromSource(serializer(), load("simple-lf")),
+      CsvFormat.Csv.decodeFromSource(serializer(), load("simple-lf")),
     )
   }
 
@@ -67,7 +40,7 @@ class CsvTest {
         StringsOutOfOrder(foo = "4", bar = "5", baz = "6"),
         StringsOutOfOrder(foo = "7", bar = "8", baz = "9"),
       ),
-      Csv.Default.decodeFromSource(serializer(), load("simple-multiline")),
+      CsvFormat.Csv.decodeFromSource(serializer(), load("simple-multiline")),
     )
   }
 
@@ -75,7 +48,7 @@ class CsvTest {
   fun decodeNoRows() {
     assertEquals(
       emptyList<Strings>(),
-      Csv.Default.decodeFromSource(serializer(), load("header-no-rows")),
+      CsvFormat.Csv.decodeFromSource(serializer(), load("header-no-rows")),
     )
   }
 
@@ -83,7 +56,7 @@ class CsvTest {
   fun decodeEmptyStrings() {
     assertEquals(
       listOf(Strings(foo = "1", bar = "", baz = "3")),
-      Csv.Default.decodeFromSource(serializer(), load("empty-field")),
+      CsvFormat.Csv.decodeFromSource(serializer(), load("empty-field")),
     )
   }
 
@@ -91,7 +64,7 @@ class CsvTest {
   fun decodeNullableStrings() {
     assertEquals(
       listOf(NullableStrings(foo = "1", bar = null, baz = "3")),
-      Csv.Default.decodeFromSource(serializer(), load("empty-field")),
+      CsvFormat.Csv.decodeFromSource(serializer(), load("empty-field")),
     )
   }
 
@@ -99,7 +72,7 @@ class CsvTest {
   fun decodeNullableInts() {
     assertEquals(
       listOf(NullableInts(foo = 1, bar = null, baz = 3)),
-      Csv.Default.decodeFromSource(serializer(), load("empty-field")),
+      CsvFormat.Csv.decodeFromSource(serializer(), load("empty-field")),
     )
   }
 
@@ -107,7 +80,7 @@ class CsvTest {
   fun decodeEnumsByName() {
     assertEquals(
       listOf(Enums(foo = Enums.FooBarBaz.a, bar = Enums.FooBarBaz.b, baz = Enums.FooBarBaz.c)),
-      Csv.Default.decodeFromSource(serializer(), load("simple-words")),
+      CsvFormat.Csv.decodeFromSource(serializer(), load("simple-words")),
     )
   }
 
@@ -115,14 +88,14 @@ class CsvTest {
   fun decodeEnumsByOrdinal() {
     assertEquals(
       listOf(Enums(foo = Enums.FooBarBaz.b, bar = Enums.FooBarBaz.c, baz = Enums.FooBarBaz.d)),
-      Csv.Default.decodeFromSource(serializer(), load("simple-lf")),
+      CsvFormat.Csv.decodeFromSource(serializer(), load("simple-lf")),
     )
   }
 
   @Test
   fun decodeTreatMissingColumnsAsNullFalse() {
     assertFailsWith<MissingFieldException> {
-      Csv.Default.decodeFromSource<List<Enums>>(serializer(), load("one-column"))
+      CsvFormat.Csv.decodeFromSource<List<Enums>>(serializer(), load("one-column"))
     }
   }
 
@@ -130,7 +103,7 @@ class CsvTest {
   fun decodeTreatMissingColumnsAsNullTrue() {
     assertEquals(
       listOf(NullableStrings(foo = "1", bar = null, baz = null)),
-      Csv(Csv.Config(treatMissingColumnsAsNull = true))
+      CsvFormat(CsvFormat.Config(treatMissingColumnsAsNull = true))
         .decodeFromSource(serializer(), load("one-column")),
     )
   }
@@ -139,7 +112,7 @@ class CsvTest {
   fun decodeIgnoreUnknownKeysFalse() {
     // UnknownFieldException is internal
     assertFailsWith<SerializationException> {
-      Csv.Default.decodeFromSource<List<OneString>>(serializer(), load("simple-lf"))
+      CsvFormat.Csv.decodeFromSource<List<OneString>>(serializer(), load("simple-lf"))
     }
   }
 
@@ -147,7 +120,7 @@ class CsvTest {
   fun decodeIgnoreUnknownKeysTrue() {
     assertEquals(
       listOf(OneString(foo = "1")),
-      Csv(Csv.Config(ignoreUnknownKeys = true)).decodeFromSource(serializer(), load("simple-lf")),
+      CsvFormat(CsvFormat.Config(ignoreUnknownKeys = true)).decodeFromSource(serializer(), load("simple-lf")),
     )
   }
 
@@ -155,7 +128,7 @@ class CsvTest {
   fun decodeNamingStrategy() {
     assertEquals(
       listOf(NamingOne(testFoo = "1")),
-      Csv(Csv.Config(namingStrategy = CsvNamingStrategy.SnakeCase))
+      CsvFormat(CsvFormat.Config(namingStrategy = CsvNamingStrategy.SnakeCase))
         .decodeFromSource(serializer(), load("snake-case")),
     )
   }
@@ -164,10 +137,40 @@ class CsvTest {
   fun decodeNamingStrategyMissingColumns() {
     assertEquals(
       listOf(NamingNullable(testFoo = "1", testBar = null, testBaz = null)),
-      Csv(
-          Csv.Config(namingStrategy = CsvNamingStrategy.SnakeCase, treatMissingColumnsAsNull = true)
+      CsvFormat(
+          CsvFormat.Config(
+            namingStrategy = CsvNamingStrategy.SnakeCase,
+            treatMissingColumnsAsNull = true,
+          )
         )
         .decodeFromSource(serializer(), load("snake-case")),
     )
   }
+
+  @Serializable data class OneString(val foo: String)
+
+  @Serializable data class Strings(val foo: String, val bar: String, val baz: String)
+
+  @Serializable data class StringsOutOfOrder(val bar: String, val baz: String, val foo: String)
+
+  @Serializable data class NullableStrings(val foo: String?, val bar: String?, val baz: String?)
+
+  @Serializable data class Ints(val foo: Int, val bar: Int, val baz: Int)
+
+  @Serializable data class NullableInts(val foo: Int?, val bar: Int?, val baz: Int?)
+
+  @Serializable
+  data class Enums(val foo: FooBarBaz, val bar: FooBarBaz, val baz: FooBarBaz) {
+    enum class FooBarBaz {
+      a,
+      b,
+      c,
+      d,
+    }
+  }
+
+  @Serializable data class NamingOne(val testFoo: String)
+
+  @Serializable
+  data class NamingNullable(val testFoo: String?, val testBar: String?, val testBaz: String?)
 }

@@ -61,7 +61,7 @@ class CsvParser(private val input: Source, private val config: Config = Config()
       val c = charAt(cursor) ?: break
       when (c) {
         config.quote -> throw CsvParseException("Unexpected quote in non-quoted field")
-        config.comma,
+        config.delimiter,
         config.newline,
         config.carriageReturn -> break
         else -> result.append(c)
@@ -88,7 +88,7 @@ class CsvParser(private val input: Source, private val config: Config = Config()
         config.carriageReturn,
         config.newline -> break
 
-        config.comma -> {
+        config.delimiter -> {
           cursor++
           val fieldResult =
             readField(cursor) ?: throw CsvParseException("Expected field after comma")
@@ -116,7 +116,7 @@ class CsvParser(private val input: Source, private val config: Config = Config()
     }
   }
 
-  fun parseRecords(): Sequence<List<String>> = sequence {
+  fun parseHeaderless(): Sequence<List<String>> = sequence {
     input.use {
       val (firstRecord, pos) =
         readRecord(0) ?: throw CsvParseException("Expected at least one record")
@@ -146,22 +146,25 @@ class CsvParser(private val input: Source, private val config: Config = Config()
     }
   }
 
-  fun parseRecordsAsMaps(
-    handleHeader: ((header: List<String>) -> Unit)? = null
-  ): Sequence<Map<String, String>> {
-    val records = parseRecords().iterator()
+  fun parse(): CsvTable {
+    val records = parseHeaderless().iterator()
     if (!records.hasNext()) throw CsvParseException("Expected a header")
-
     val header = records.next()
-    handleHeader?.invoke(header)
-
-    return records.asSequence().map { record -> header.zip(record).toMap() }
+    return CsvTable(header, records.asSequence())
   }
 
-  data class Config(
-    val quote: Char = '"',
-    val comma: Char = ',',
-    val newline: Char = '\n',
-    val carriageReturn: Char = '\r',
-  )
+  fun parseToMaps(): Sequence<Map<String, String>> {
+    val (header, records) = parse()
+    return records.map { record -> header.zip(record).toMap() }
+  }
+
+  data class Config(val quote: Char = '"', val delimiter: Char = ',') {
+    // line delimiters prob shouldn't be configurable
+    val newline = '\n'
+    val carriageReturn = '\r'
+
+    init {
+      require(quote != delimiter) { "Quote and delimiter must be different" }
+    }
+  }
 }

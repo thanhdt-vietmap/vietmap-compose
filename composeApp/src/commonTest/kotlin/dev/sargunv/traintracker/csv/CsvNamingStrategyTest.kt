@@ -50,16 +50,18 @@ class CsvNamingStrategyTest {
   @Test
   fun testCompositeToCsv() {
     val strategy =
-        CsvNamingStrategy.Composite(
-            listOf(CsvNamingStrategy.KebabCase.reversed(), CsvNamingStrategy.SnakeCase))
+      CsvNamingStrategy.Composite(
+        listOf(CsvNamingStrategy.KebabCase.reversed(), CsvNamingStrategy.SnakeCase)
+      )
     assertEquals("foo_bar_baz", strategy.toCsvName("foo-bar-baz"))
   }
 
   @Test
   fun testCompositeFromCsv() {
     val strategy =
-        CsvNamingStrategy.Composite(
-            listOf(CsvNamingStrategy.KebabCase.reversed(), CsvNamingStrategy.SnakeCase))
+      CsvNamingStrategy.Composite(
+        listOf(CsvNamingStrategy.KebabCase.reversed(), CsvNamingStrategy.SnakeCase)
+      )
     assertEquals("foo-bar-baz", strategy.fromCsvName("foo_bar_baz"))
   }
 }

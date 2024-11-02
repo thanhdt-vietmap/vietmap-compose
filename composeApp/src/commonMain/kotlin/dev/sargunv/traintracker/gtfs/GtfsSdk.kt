@@ -1,6 +1,6 @@
 package dev.sargunv.traintracker.gtfs
 
-import dev.sargunv.traintracker.csv.Csv
+import dev.sargunv.traintracker.csv.CsvFormat
 import dev.sargunv.traintracker.csv.CsvNamingStrategy
 import dev.sargunv.traintracker.zip.Unzipper
 import kotlinx.io.Buffer
@@ -86,7 +86,7 @@ private class CsvHandler<T>(
       .count()
 
   object GtfsCsv :
-    Csv(
+    CsvFormat(
       Config(
         namingStrategy = CsvNamingStrategy.SnakeCase,
         treatMissingColumnsAsNull = true,
