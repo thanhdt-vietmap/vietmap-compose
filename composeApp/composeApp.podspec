@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
     spec.libraries                = 'c++'
     spec.ios.deployment_target    = '15.3'
     spec.dependency 'MapLibre', '6.7.1'
-    spec.dependency 'zipzap'
+    spec.dependency 'zipzap', '8.1.1'
                 
     if !Dir.exist?('build/cocoapods/framework/composeApp.framework') || Dir.empty?('build/cocoapods/framework/composeApp.framework')
         raise "

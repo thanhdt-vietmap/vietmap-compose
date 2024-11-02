@@ -4,11 +4,11 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-  alias(libs.plugins.kotlinMultiplatform)
-  alias(libs.plugins.androidApplication)
-  alias(libs.plugins.jetbrainsCompose)
+  alias(libs.plugins.kotlin.multiplatform)
+  alias(libs.plugins.android.application)
+  alias(libs.plugins.jetbrains.compose)
   alias(libs.plugins.compose.compiler)
-  alias(libs.plugins.kotlinCocoapods)
+  alias(libs.plugins.kotlin.cocoapods)
   alias(libs.plugins.serialization)
   alias(libs.plugins.sqldelight)
   alias(libs.plugins.spotless)
@@ -17,13 +17,10 @@ plugins {
 version = "0.1.0"
 
 kotlin {
-  androidTarget {
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions { jvmTarget.set(JvmTarget.JVM_11) }
-  }
-
+  androidTarget { compilerOptions { jvmTarget.set(JvmTarget.JVM_11) } }
   iosArm64()
   iosSimulatorArm64()
+  iosX64()
 
   cocoapods {
     summary = "Some description for the Shared Module"
@@ -31,15 +28,13 @@ kotlin {
     ios.deploymentTarget = "15.3"
     podfile = project.file("../iosApp/Podfile")
     framework { baseName = "composeApp" }
-    pod("zipzap")
-    pod("MapLibre", "6.7.1")
+    pod("zipzap", libs.versions.zipzap.get())
+    pod("MapLibre", libs.versions.maplibre.ios.get())
   }
 
   sourceSets {
     androidMain.dependencies {
       implementation(libs.androidx.activity.compose)
-      implementation(libs.maplibre.android)
-      implementation(libs.maplibre.android.plugin.annotation)
       implementation(libs.koin.android)
       implementation(libs.kotlinx.coroutines.android)
       implementation(libs.kotlinx.io.core)
@@ -52,7 +47,6 @@ kotlin {
       implementation(libs.sqldelight.driver.native)
     }
     commonMain.dependencies {
-      implementation(compose.components.uiToolingPreview)
       implementation(compose.components.resources)
       implementation(compose.foundation)
       implementation(compose.material3)
@@ -70,13 +64,11 @@ kotlin {
       implementation(libs.sqldelight.runtime)
 
       implementation(project(":kotlin-csv"))
-      implementation(project(":kzip"))
+      implementation(project(":kotlin-zip"))
+      implementation(project(":maplibre-compose"))
     }
     commonTest.dependencies { implementation(libs.kotlin.test) }
   }
-
-  @OptIn(ExperimentalKotlinGradlePluginApi::class)
-  compilerOptions { freeCompilerArgs.add("-Xexpect-actual-classes") }
 }
 
 android {

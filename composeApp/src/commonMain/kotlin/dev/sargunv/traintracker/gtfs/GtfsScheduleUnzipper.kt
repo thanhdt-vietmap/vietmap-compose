@@ -2,7 +2,7 @@ package dev.sargunv.traintracker.gtfs
 
 import dev.sargunv.kotlincsv.CsvFormat
 import dev.sargunv.kotlincsv.CsvNamingStrategy
-import dev.sargunv.kzip.unzip
+import dev.sargunv.kotlinzip.unzip
 import kotlinx.io.Buffer
 import kotlinx.io.Source
 import kotlinx.serialization.KSerializer

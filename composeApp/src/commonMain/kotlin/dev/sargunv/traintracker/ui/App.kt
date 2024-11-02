@@ -6,21 +6,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import dev.sargunv.traintracker.getColorScheme
+import dev.sargunv.traintracker.getSheetHeight
 import org.koin.compose.KoinContext
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun App() {
   KoinContext {
     MaterialTheme(colorScheme = getColorScheme()) {
       BottomSheetScaffold(
-          sheetPeekHeight = max(128.dp, getSheetHeight() / 4),
-          sheetDragHandle = { BottomSheetDragHandle() },
-          sheetContainerColor = MaterialTheme.colorScheme.surface,
-          sheetContent = { MainMenu() },
-          content = { padding -> TrainMap(sheetPadding = padding) })
+        sheetPeekHeight = max(128.dp, getSheetHeight() / 4),
+        sheetDragHandle = { BottomSheetDragHandle() },
+        sheetContainerColor = MaterialTheme.colorScheme.surface,
+        sheetContent = { MainMenu() },
+        content = { padding -> TrainMap(sheetPadding = padding) },
+      )
     }
   }
 }

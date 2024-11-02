@@ -15,12 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.sargunv.maplibrecompose.Layer
+import dev.sargunv.maplibrecompose.MapView
+import dev.sargunv.maplibrecompose.MapViewOptions
+import dev.sargunv.maplibrecompose.Source
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.gtfs.GtfsSdk
-import dev.sargunv.traintracker.map.Layer
-import dev.sargunv.traintracker.map.MapView
-import dev.sargunv.traintracker.map.MapViewOptions
-import dev.sargunv.traintracker.map.Source
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch

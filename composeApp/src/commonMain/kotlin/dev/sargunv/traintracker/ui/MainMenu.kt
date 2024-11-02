@@ -24,35 +24,40 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import dev.sargunv.traintracker.getSheetHeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainMenu() {
   Column(
-      modifier =
-          Modifier
-              // subtract drag handle height
-              .heightIn(max = getSheetHeight() - 26.dp)
-              // the max sheet height already accounts for the top inset
-              .consumeWindowInsets(
-                  WindowInsets(top = WindowInsets.safeDrawing.getTop(LocalDensity.current)))
-              .verticalScroll(rememberScrollState()),
+    modifier =
+      Modifier
+        // subtract drag handle height
+        .heightIn(max = getSheetHeight() - 26.dp)
+        // the max sheet height already accounts for the top inset
+        .consumeWindowInsets(
+          WindowInsets(top = WindowInsets.safeDrawing.getTop(LocalDensity.current))
+        )
+        .verticalScroll(rememberScrollState())
   ) {
     CenterAlignedTopAppBar(
-        title = { Text("My Trains") },
-        actions = {
-          IconButton(onClick = { /*TODO*/ }) { Icon(Icons.Default.Add, contentDescription = "Add") }
-          IconButton(onClick = { /*TODO*/ }) {
-            Icon(Icons.Default.Settings, contentDescription = "Settings")
-          }
-        })
+      title = { Text("My Trains") },
+      actions = {
+        IconButton(onClick = { /*TODO*/ }) { Icon(Icons.Default.Add, contentDescription = "Add") }
+        IconButton(onClick = { /*TODO*/ }) {
+          Icon(Icons.Default.Settings, contentDescription = "Settings")
+        }
+      },
+    )
     for (i in 0..20) {
       Text(
-          text = "Item $i",
-          style =
-              MaterialTheme.typography.bodyMedium.copy(
-                  color = MaterialTheme.colorScheme.onSurfaceVariant),
-          modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center).padding(16.dp))
+        text = "Item $i",
+        style =
+          MaterialTheme.typography.bodyMedium.copy(
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+          ),
+        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center).padding(16.dp),
+      )
     }
   }
 }

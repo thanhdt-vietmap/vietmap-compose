@@ -31,4 +31,4 @@ dependencyResolutionManagement {
   }
 }
 
-include(":kotlin-csv", ":kzip", ":composeApp", ":")
+include(":kotlin-csv", ":kotlin-zip", "maplibre-compose", ":composeApp", ":")
