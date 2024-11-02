@@ -1,7 +1,7 @@
 PODS:
-  - composeApp (1.0):
+  - composeApp (0.1.0):
     - MapLibre (= 6.7.1)
-    - zipzap (= 8.1.1)
+    - zipzap
   - MapLibre (6.7.1)
   - zipzap (8.1.1)
 
@@ -18,7 +18,7 @@ EXTERNAL SOURCES:
     :path: "../composeApp"
 
 SPEC CHECKSUMS:
-  composeApp: f616c49480558a81884041ff8b31f30be2dbc7a2
+  composeApp: c05790b7a4454f6f855ea20d66be6076311517d7
   MapLibre: a82ab2ca7a727a2f0a72b2c474c13e8633e2fc91
   zipzap: 940162d9c9c60472c2eab341385e4214da0fdf1c
 

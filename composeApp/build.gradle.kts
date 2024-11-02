@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -12,12 +14,7 @@ plugins {
   alias(libs.plugins.spotless)
 }
 
-spotless {
-  kotlin {
-    target("src/**/*.kt")
-    ktfmt().googleStyle()
-  }
-}
+version = "0.1.0"
 
 kotlin {
   androidTarget {
@@ -31,14 +28,10 @@ kotlin {
   cocoapods {
     summary = "Some description for the Shared Module"
     homepage = "Link to the Shared Module homepage"
-    version = "1.0"
     ios.deploymentTarget = "15.3"
     podfile = project.file("../iosApp/Podfile")
-    framework {
-      baseName = "composeApp"
-      isStatic = false
-    }
-    pod("zipzap", "8.1.1")
+    framework { baseName = "composeApp" }
+    pod("zipzap")
     pod("MapLibre", "6.7.1")
   }
 
@@ -50,12 +43,10 @@ kotlin {
       implementation(libs.koin.android)
       implementation(libs.kotlinx.coroutines.android)
       implementation(libs.kotlinx.io.core)
-      implementation(libs.kotlinx.io.bytestring)
       implementation(libs.ktor.client.android)
       implementation(libs.sqldelight.driver.android)
     }
     iosMain.dependencies {
-      implementation(libs.kotlinx.io.bytestring)
       implementation(libs.kotlinx.io.core)
       implementation(libs.ktor.client.darwin)
       implementation(libs.sqldelight.driver.native)
@@ -73,13 +64,13 @@ kotlin {
       implementation(libs.koin.compose)
       implementation(libs.koin.compose.viewmodel)
       implementation(libs.kotlinx.coroutines.core)
-      implementation(libs.kotlinx.io.bytestring)
       implementation(libs.kotlinx.io.core)
       implementation(libs.kotlinx.serialization.core)
       implementation(libs.ktor.client.core)
       implementation(libs.sqldelight.runtime)
 
       implementation(project(":kotlin-csv"))
+      implementation(project(":kzip"))
     }
     commonTest.dependencies { implementation(libs.kotlin.test) }
   }
@@ -107,8 +98,6 @@ android {
   }
 }
 
-dependencies { debugImplementation(compose.uiTooling) }
-
 compose.resources { packageOfResClass = "dev.sargunv.traintracker.generated" }
 
 sqldelight {
@@ -119,5 +108,12 @@ sqldelight {
       verifyMigrations.set(true)
       generateAsync.set(false)
     }
+  }
+}
+
+spotless {
+  kotlin {
+    target("src/**/*.kt")
+    ktfmt().googleStyle()
   }
 }

@@ -2,15 +2,13 @@ package dev.sargunv.traintracker.gtfs
 
 import dev.sargunv.kotlincsv.CsvFormat
 import dev.sargunv.kotlincsv.CsvNamingStrategy
-import dev.sargunv.traintracker.zip.Unzipper
+import dev.sargunv.kzip.unzip
 import kotlinx.io.Buffer
 import kotlinx.io.Source
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 
-class GtfsScheduleUnzipper(
-  private val ignoreFiles: Set<String> = emptySet(),
-) {
+class GtfsScheduleUnzipper(private val ignoreFiles: Set<String> = emptySet()) {
   private val fileHandlers =
     mapOf(
       "routes.txt" to CsvHandler(RouteSerializer, GtfsSchedule.Builder::addRoute),
@@ -30,8 +28,8 @@ class GtfsScheduleUnzipper(
     val files = mutableMapOf<String, Buffer>()
 
     // TODO parse while streaming instead of buffering all the files up at once
-    Unzipper().readArchive(
-      source = zipContent,
+    unzip(
+      zipArchive = zipContent,
       handleFile = { path, content ->
         if (path in fileHandlers && path !in ignoreFiles) {
           println("Extracting $path")

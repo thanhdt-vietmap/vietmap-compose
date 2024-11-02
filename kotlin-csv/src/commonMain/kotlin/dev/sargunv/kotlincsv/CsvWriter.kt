@@ -7,7 +7,7 @@ public class CsvWriter(private val sink: Sink, private val encoding: CsvEncoding
   private var numColumns = -1
   private var rowCount = 0
 
-  private inline fun Sink.writeChar(c: Char) {
+  private fun Sink.writeChar(c: Char) {
     writeString(c.toString())
   }
 
