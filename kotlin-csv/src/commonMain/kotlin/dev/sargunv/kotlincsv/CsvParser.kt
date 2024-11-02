@@ -2,7 +2,7 @@ package dev.sargunv.kotlincsv
 
 import kotlinx.io.Source
 
-class CsvParser(private val input: Source, private val config: Config = Config()) {
+class CsvParser(private val input: Source, private val encoding: CsvEncoding = CsvEncoding()) {
   private var data = StringBuilder()
   private val buffer = ByteArray(4096)
 
@@ -23,18 +23,18 @@ class CsvParser(private val input: Source, private val config: Config = Config()
     var cursor = pos
 
     // accept opening quote
-    if (charAt(cursor) != config.quote) return null
+    if (charAt(cursor) != encoding.quote) return null
     cursor++
 
     val result = StringBuilder()
     while (true) {
       // require content
       val c = charAt(cursor) ?: throw CsvParseException("Unterminated quoted value")
-      if (c == config.quote) {
+      if (c == encoding.quote) {
         val next = charAt(cursor + 1)
-        if (next == config.quote) {
+        if (next == encoding.quote) {
           // accept escaped quote
-          result.append(config.quote)
+          result.append(encoding.quote)
           cursor += 2
         } else {
           // accept closing quote
@@ -52,7 +52,7 @@ class CsvParser(private val input: Source, private val config: Config = Config()
 
   private fun readNonQuotedField(pos: Int): ReadResult<String>? {
     val firstChar = charAt(pos) ?: return null
-    if (firstChar == config.quote) return null // not a non-quoted field
+    if (firstChar == encoding.quote) return null // not a non-quoted field
 
     var cursor = pos
     val result = StringBuilder()
@@ -60,10 +60,10 @@ class CsvParser(private val input: Source, private val config: Config = Config()
     while (true) {
       val c = charAt(cursor) ?: break
       when (c) {
-        config.quote -> throw CsvParseException("Unexpected quote in non-quoted field")
-        config.delimiter,
-        config.newline,
-        config.carriageReturn -> break
+        encoding.quote -> throw CsvParseException("Unexpected quote in non-quoted field")
+        encoding.delimiter,
+        encoding.newline,
+        encoding.carriageReturn -> break
         else -> result.append(c)
       }
       cursor++
@@ -85,10 +85,10 @@ class CsvParser(private val input: Source, private val config: Config = Config()
     while (true) {
       val c = charAt(cursor) ?: break
       when (c) {
-        config.carriageReturn,
-        config.newline -> break
+        encoding.carriageReturn,
+        encoding.newline -> break
 
-        config.delimiter -> {
+        encoding.delimiter -> {
           cursor++
           val fieldResult =
             readField(cursor) ?: throw CsvParseException("Expected field after comma")
@@ -106,9 +106,9 @@ class CsvParser(private val input: Source, private val config: Config = Config()
   private fun readEndOfLine(pos: Int): ReadResult<Unit>? {
     val c = charAt(pos) ?: return ReadResult(Unit, pos)
     return when (c) {
-      config.newline -> ReadResult(Unit, pos + 1)
-      config.carriageReturn -> {
-        if (charAt(pos + 1) == config.newline) ReadResult(Unit, pos + 2)
+      encoding.newline -> ReadResult(Unit, pos + 1)
+      encoding.carriageReturn -> {
+        if (charAt(pos + 1) == encoding.newline) ReadResult(Unit, pos + 2)
         else ReadResult(Unit, pos + 1)
       }
 
@@ -163,15 +163,5 @@ class CsvParser(private val input: Source, private val config: Config = Config()
   fun parseToMaps(): Sequence<Map<String, String>> {
     val (header, records) = parse()
     return records.map { record -> header.zip(record).toMap() }
-  }
-
-  data class Config(val quote: Char = '"', val delimiter: Char = ',') {
-    // line delimiters prob shouldn't be configurable
-    val newline = '\n'
-    val carriageReturn = '\r'
-
-    init {
-      require(quote != delimiter) { "Quote and delimiter must be different" }
-    }
   }
 }

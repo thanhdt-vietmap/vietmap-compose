@@ -26,7 +26,7 @@ open class CsvFormat(private val config: Config = Config()) : StringFormat {
   }
 
   data class Config(
-    val parserConfig: CsvParser.Config = CsvParser.Config(),
+    val encoding: CsvEncoding = CsvEncoding(),
     val serializersModule: SerializersModule = EmptySerializersModule(),
     val namingStrategy: CsvNamingStrategy = CsvNamingStrategy.Identity,
     val treatMissingColumnsAsNull: Boolean = false,
@@ -35,5 +35,5 @@ open class CsvFormat(private val config: Config = Config()) : StringFormat {
 
   object Csv : CsvFormat()
 
-  object Tsv : CsvFormat(Config(CsvParser.Config(delimiter = '\t')))
+  object Tsv : CsvFormat(Config(CsvEncoding(delimiter = '\t')))
 }

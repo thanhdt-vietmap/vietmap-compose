@@ -27,7 +27,7 @@ internal class CsvDecoder(source: Source, private val config: CsvFormat.Config) 
   private lateinit var recordDescriptor: SerialDescriptor
 
   init {
-    val table = CsvParser(source, config.parserConfig).parse()
+    val table = CsvParser(source, config.encoding).parse()
     originalHeader = table.header
     mappedHeader = table.header.map { config.namingStrategy.fromCsvName(it) }
     records = table.records.iterator()
