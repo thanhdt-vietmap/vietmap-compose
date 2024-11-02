@@ -5,13 +5,10 @@ import dev.sargunv.kotlincsv.CsvNamingStrategy
 import dev.sargunv.traintracker.zip.Unzipper
 import kotlinx.io.Buffer
 import kotlinx.io.Source
-import kotlinx.io.buffered
-import kotlinx.io.discardingSink
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 
 class GtfsScheduleUnzipper(
-  private val unzipper: Unzipper,
   private val ignoreFiles: Set<String> = emptySet(),
 ) {
   private val fileHandlers =
@@ -29,19 +26,19 @@ class GtfsScheduleUnzipper(
       "shapes.txt" to CsvHandler(ShapeSerializer, GtfsSchedule.Builder::addShape),
     )
 
-  fun unzip(source: Source, validate: Boolean = false): GtfsSchedule {
+  fun unzip(zipContent: Source, validate: Boolean = false): GtfsSchedule {
     val files = mutableMapOf<String, Buffer>()
 
     // TODO parse while streaming instead of buffering all the files up at once
-    unzipper.readArchive(
-      source = source,
-      handleFile = { path ->
+    Unzipper().readArchive(
+      source = zipContent,
+      handleFile = { path, content ->
         if (path in fileHandlers && path !in ignoreFiles) {
           println("Extracting $path")
-          files.getOrPut(path) { Buffer() }
+          if (path in files) println("Warning: Duplicate file $path")
+          files[path] = Buffer().also { content.transferTo(it) }
         } else {
           println("Skipping $path")
-          discardingSink().buffered()
         }
       },
     )

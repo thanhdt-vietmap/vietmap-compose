@@ -5,8 +5,6 @@ import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import dev.sargunv.traintracker.zip.Unzipper
-import dev.sargunv.traintracker.zip.UnzipperImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -24,10 +22,8 @@ fun initKoin(context: Context) {
     androidLogger()
     androidContext(context)
     modules(
-        commonModules +
-            module {
-              singleOf<DatabaseDriverFactory>({ AndroidDatabaseDriverFactory(context) })
-              singleOf<Unzipper>(::UnzipperImpl)
-            })
+      commonModules +
+        module { singleOf<DatabaseDriverFactory>({ AndroidDatabaseDriverFactory(context) }) }
+    )
   }
 }

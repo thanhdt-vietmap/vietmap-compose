@@ -14,7 +14,7 @@ val gtfsModule = module {
       GtfsSdk(
         gtfsClient = GtfsClient(scheduleUrl = agency.scheduleUrl),
         gtfsDao = GtfsDao(driverFactory = get(), name = "${agency.name}.db"),
-        gtfsScheduleUnzipper = GtfsScheduleUnzipper(unzipper = get()),
+        gtfsScheduleUnzipper = GtfsScheduleUnzipper(),
       )
     }
   }

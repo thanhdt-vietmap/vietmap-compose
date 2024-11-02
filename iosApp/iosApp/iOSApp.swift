@@ -23,9 +23,7 @@ struct MainView: View {
 @main
 struct iOSApp: App {
   init() {
-    Module_iosKt.doInitKoin(
-      initUnzipper: UnzipperImpl.init
-    )
+    Module_iosKt.doInitKoin()
   }
 
   var body: some Scene {
