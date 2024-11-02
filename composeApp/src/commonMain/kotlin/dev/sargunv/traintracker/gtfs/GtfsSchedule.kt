@@ -44,16 +44,18 @@ data class GtfsSchedule(
 
     fun addFeedInfo(feedInfo: FeedInfo) = apply { feedInfos.add(feedInfo) }
 
-    fun build(): GtfsSchedule {
-      require(agencies.isNotEmpty()) { "Agencies must be provided" }
-      require(stops.isNotEmpty()) { "Stops must be provided" } // TODO unless Locations provided
-      require(routes.isNotEmpty()) { "Routes must be provided" }
-      require(trips.isNotEmpty()) { "Trips must be provided" }
-      require(stopTimes.isNotEmpty()) { "StopTimes must be provided" }
-      require(calendars.isNotEmpty() || calendarDates.isNotEmpty()) {
-        "Either Calendars or CalendarDates must be provided"
+    fun build(validate: Boolean = true): GtfsSchedule {
+      if (validate) {
+        require(agencies.isNotEmpty()) { "Agencies must be provided" }
+        require(stops.isNotEmpty()) { "Stops must be provided" } // TODO unless Locations provided
+        require(routes.isNotEmpty()) { "Routes must be provided" }
+        require(trips.isNotEmpty()) { "Trips must be provided" }
+        require(stopTimes.isNotEmpty()) { "StopTimes must be provided" }
+        require(calendars.isNotEmpty() || calendarDates.isNotEmpty()) {
+          "Either Calendars or CalendarDates must be provided"
+        }
+        // TODO require FeedInfos if Translations provided
       }
-      // TODO require FeedInfos if Translations provided
 
       return GtfsSchedule(
         agencies = agencies,

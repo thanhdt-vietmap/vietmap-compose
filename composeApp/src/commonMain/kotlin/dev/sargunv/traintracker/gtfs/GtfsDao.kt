@@ -2,20 +2,20 @@ package dev.sargunv.traintracker.gtfs
 
 import dev.sargunv.traintracker.DatabaseDriverFactory
 
-class GtfsScheduleDao(driverFactory: DatabaseDriverFactory, name: String) {
+class GtfsDao(driverFactory: DatabaseDriverFactory, name: String) {
   private val db =
-    GtfsScheduleDb(
-      driverFactory.createDriver(GtfsScheduleDb.Schema, name),
+    GtfsDb(
+      driverFactory.createDriver(GtfsDb.Schema, name),
       routeAdapter = Route.Adapter(routeTypeAdapter = RouteType.Adapter),
     )
 
   private val q = db.dbQueries
 
-  fun getCachedETag(): String? {
+  fun getScheduleETag(): String? {
     return q.getCacheVersion().executeAsOneOrNull()
   }
 
-  fun update(newETag: String, newSchedule: GtfsSchedule) {
+  fun updateSchedule(newETag: String, newSchedule: GtfsSchedule) {
     q.transactionWithResult {
       q.deleteAllAgencies()
       q.deleteAllCalendarDates()

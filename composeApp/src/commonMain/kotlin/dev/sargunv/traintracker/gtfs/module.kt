@@ -4,7 +4,8 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 enum class GtfsAgency(val scheduleUrl: String) {
-  ViaRail(scheduleUrl = "https://www.viarail.ca/sites/all/files/gtfs/viarail.zip")
+  ViaRail(scheduleUrl = "https://www.viarail.ca/sites/all/files/gtfs/viarail.zip"),
+  Amtrak(scheduleUrl = "https://content.amtrak.com/content/gtfs/GTFS.zip"),
 }
 
 val gtfsModule = module {
@@ -12,8 +13,8 @@ val gtfsModule = module {
     single(named(agency)) {
       GtfsSdk(
         gtfsClient = GtfsClient(scheduleUrl = agency.scheduleUrl),
-        gtfsScheduleDao = GtfsScheduleDao(driverFactory = get(), name = "${agency.name}.db"),
-        unzipper = get(),
+        gtfsDao = GtfsDao(driverFactory = get(), name = "${agency.name}.db"),
+        gtfsScheduleUnzipper = GtfsScheduleUnzipper(unzipper = get()),
       )
     }
   }
