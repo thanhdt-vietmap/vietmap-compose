@@ -77,6 +77,8 @@ kotlin {
       implementation(libs.kotlinx.serialization.core)
       implementation(libs.ktor.client.core)
       implementation(libs.sqldelight.runtime)
+
+      implementation(project(":kotlin-csv"))
     }
     commonTest.dependencies { implementation(libs.kotlin.test) }
   }

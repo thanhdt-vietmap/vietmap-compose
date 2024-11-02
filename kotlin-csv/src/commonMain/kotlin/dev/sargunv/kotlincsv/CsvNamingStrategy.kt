@@ -1,4 +1,4 @@
-package dev.sargunv.traintracker.csv
+package dev.sargunv.kotlincsv
 
 interface CsvNamingStrategy {
   fun toCsvName(name: String): String

@@ -1,4 +1,4 @@
-package dev.sargunv.traintracker.csv
+package dev.sargunv.kotlincsv
 
 import kotlinx.io.Buffer
 import kotlinx.io.Source

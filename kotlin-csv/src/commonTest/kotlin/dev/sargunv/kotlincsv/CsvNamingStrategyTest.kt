@@ -1,4 +1,4 @@
-package dev.sargunv.traintracker.csv
+package dev.sargunv.kotlincsv
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -1,15 +1,15 @@
 @file:OptIn(ExperimentalSerializationApi::class)
 
-package dev.sargunv.traintracker.csv
+package dev.sargunv.kotlincsv
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.serializer
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 class CsvDecoderTest {
   @Test
@@ -120,7 +120,8 @@ class CsvDecoderTest {
   fun decodeIgnoreUnknownKeysTrue() {
     assertEquals(
       listOf(OneString(foo = "1")),
-      CsvFormat(CsvFormat.Config(ignoreUnknownKeys = true)).decodeFromSource(serializer(), load("simple-lf")),
+      CsvFormat(CsvFormat.Config(ignoreUnknownKeys = true))
+        .decodeFromSource(serializer(), load("simple-lf")),
     )
   }
 

@@ -1,7 +1,7 @@
 package dev.sargunv.traintracker.gtfs
 
-import dev.sargunv.traintracker.csv.CsvFormat
-import dev.sargunv.traintracker.csv.CsvNamingStrategy
+import dev.sargunv.kotlincsv.CsvFormat
+import dev.sargunv.kotlincsv.CsvNamingStrategy
 import dev.sargunv.traintracker.zip.Unzipper
 import kotlinx.io.Buffer
 import kotlinx.io.Source

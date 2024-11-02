@@ -31,4 +31,4 @@ dependencyResolutionManagement {
   }
 }
 
-include(":composeApp", ":")
+include(":kotlin-csv", ":composeApp", ":")
