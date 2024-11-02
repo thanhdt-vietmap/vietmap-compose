@@ -14,6 +14,7 @@ kotlin {
   explicitApi()
 
   jvm()
+
   macosX64()
   macosArm64()
   iosSimulatorArm64()

@@ -64,7 +64,7 @@ kotlin {
       implementation(libs.sqldelight.runtime)
 
       implementation(project(":kotlin-csv"))
-      implementation(project(":kotlin-zip"))
+      implementation(project(":multiplatform-zip"))
       implementation(project(":maplibre-compose"))
     }
     commonTest.dependencies { implementation(libs.kotlin.test) }
