@@ -2,13 +2,16 @@ package dev.sargunv.kotlincsv
 
 import kotlinx.io.Source
 
-class CsvParser(private val input: Source, private val encoding: CsvEncoding = CsvEncoding()) {
+public class CsvParser(
+  private val input: Source,
+  private val encoding: CsvEncoding = CsvEncoding(),
+) {
   private var data = StringBuilder()
   private val buffer = ByteArray(4096)
 
   private data class ReadResult<T>(val value: T, val newPos: Int)
 
-  class CsvParseException(message: String) : Exception(message)
+  public class CsvParseException(message: String) : Exception(message)
 
   private fun charAt(pos: Int): Char? {
     while (data.length <= pos) {
@@ -116,7 +119,7 @@ class CsvParser(private val input: Source, private val encoding: CsvEncoding = C
     }
   }
 
-  fun parseHeaderless(): Sequence<List<String>> = sequence {
+  public fun parseHeaderless(): Sequence<List<String>> = sequence {
     input.use {
       val (firstRecord, pos) =
         readRecord(0) ?: throw CsvParseException("Expected at least one record")
@@ -153,14 +156,14 @@ class CsvParser(private val input: Source, private val encoding: CsvEncoding = C
     }
   }
 
-  fun parse(): CsvTable {
+  public fun parse(): CsvTable {
     val records = parseHeaderless().iterator()
     if (!records.hasNext()) throw CsvParseException("Expected a header")
     val header = records.next()
     return CsvTable(header, records.asSequence())
   }
 
-  fun parseToMaps(): Sequence<Map<String, String>> {
+  public fun parseToMaps(): Sequence<Map<String, String>> {
     val (header, records) = parse()
     return records.map { record -> header.zip(record).toMap() }
   }

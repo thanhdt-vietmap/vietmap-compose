@@ -2,14 +2,13 @@
 
 package dev.sargunv.kotlincsv
 
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.MissingFieldException
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.serializer
 
 class CsvDecoderTest {
   @Test
@@ -147,31 +146,4 @@ class CsvDecoderTest {
         .decodeFromSource(serializer(), load("snake-case")),
     )
   }
-
-  @Serializable data class OneString(val foo: String)
-
-  @Serializable data class Strings(val foo: String, val bar: String, val baz: String)
-
-  @Serializable data class StringsOutOfOrder(val bar: String, val baz: String, val foo: String)
-
-  @Serializable data class NullableStrings(val foo: String?, val bar: String?, val baz: String?)
-
-  @Serializable data class Ints(val foo: Int, val bar: Int, val baz: Int)
-
-  @Serializable data class NullableInts(val foo: Int?, val bar: Int?, val baz: Int?)
-
-  @Serializable
-  data class Enums(val foo: FooBarBaz, val bar: FooBarBaz, val baz: FooBarBaz) {
-    enum class FooBarBaz {
-      a,
-      b,
-      c,
-      d,
-    }
-  }
-
-  @Serializable data class NamingOne(val testFoo: String)
-
-  @Serializable
-  data class NamingNullable(val testFoo: String?, val testBar: String?, val testBaz: String?)
 }

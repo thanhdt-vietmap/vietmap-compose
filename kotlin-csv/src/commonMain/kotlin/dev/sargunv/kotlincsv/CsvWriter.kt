@@ -3,49 +3,9 @@ package dev.sargunv.kotlincsv
 import kotlinx.io.Sink
 import kotlinx.io.writeString
 
-class CsvWriter
-private constructor(
-  private val table: Sequence<List<String>>,
-  private val sink: Sink,
-  private val encoding: CsvEncoding = CsvEncoding(),
-) {
-  private val numColumns = table.firstOrNull()?.size ?: 0
+public class CsvWriter(private val sink: Sink, private val encoding: CsvEncoding = CsvEncoding()) {
+  private var numColumns = -1
   private var rowCount = 0
-
-  companion object {
-    fun of(table: CsvTable, sink: Sink, encoding: CsvEncoding = CsvEncoding()) =
-      CsvWriter(sequenceOf(table.header) + table.records, sink, encoding)
-
-    fun of(table: Sequence<List<String>>, sink: Sink, encoding: CsvEncoding = CsvEncoding()) =
-      CsvWriter(table, sink, encoding)
-
-    fun of(table: List<List<String>>, sink: Sink, encoding: CsvEncoding = CsvEncoding()) =
-      of(table.asSequence(), sink, encoding)
-
-    fun ofMaps(
-      table: Sequence<Map<String, String>>,
-      sink: Sink,
-      encoding: CsvEncoding = CsvEncoding(),
-    ) =
-      of(
-        sequence<List<String>> {
-          val keys = table.firstOrNull()?.keys ?: return@sequence
-          yield(keys.toList())
-          for (row in table) {
-            require(row.keys == keys) { "All rows must have the same keys" }
-            yield(keys.map { row[it]!! })
-          }
-        },
-        sink,
-        encoding,
-      )
-
-    fun ofMaps(
-      table: List<Map<String, String>>,
-      sink: Sink,
-      encoding: CsvEncoding = CsvEncoding(),
-    ) = ofMaps(table.asSequence(), sink, encoding)
-  }
 
   private inline fun Sink.writeChar(c: Char) {
     writeString(c.toString())
@@ -63,8 +23,13 @@ private constructor(
     }
   }
 
-  private fun writeRecord(record: List<String>) {
-    require(record.size == numColumns) { "Row $rowCount has incorrect number of columns" }
+  internal fun writeRecord(record: List<String>) {
+    if (numColumns < 0) numColumns = record.size
+    else {
+      require(record.size == numColumns) {
+        "Row $rowCount has ${record.size} columns; expected $numColumns"
+      }
+    }
     rowCount++
 
     record.forEachIndexed { i, field ->
@@ -76,5 +41,23 @@ private constructor(
     sink.writeChar(encoding.newline)
   }
 
-  fun write() = sink.use { table.forEach(::writeRecord) }
+  public fun write(table: Sequence<List<String>>): Unit = sink.use { table.forEach(::writeRecord) }
+
+  public fun write(table: CsvTable): Unit = write(sequenceOf(table.header) + table.records)
+
+  public fun write(table: List<List<String>>): Unit = write(table.asSequence())
+
+  public fun writeMaps(table: Sequence<Map<String, String>>): Unit =
+    write(
+      sequence<List<String>> {
+        val keys = table.firstOrNull()?.keys ?: return@sequence
+        yield(keys.toList())
+        for (row in table) {
+          require(row.keys == keys) { "All rows must have the same keys" }
+          yield(keys.map { row[it]!! })
+        }
+      }
+    )
+
+  public fun writeMaps(table: List<Map<String, String>>): Unit = writeMaps(table.asSequence())
 }

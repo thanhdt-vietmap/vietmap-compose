@@ -1,25 +1,16 @@
 package dev.sargunv.kotlincsv
 
+import kotlinx.io.Buffer
+import kotlinx.io.Source
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlinx.io.Buffer
-import kotlinx.io.Source
-import kotlinx.io.readString
 
 class CsvWriterTest {
-  private fun write(data: List<List<String>>): Source =
-    Buffer().apply { CsvWriter.of(data, this).write() }
+  private fun write(data: List<List<String>>): Source = Buffer().also { CsvWriter(it).write(data) }
 
   private fun writeMaps(data: List<Map<String, String>>): Source =
-    Buffer().apply { CsvWriter.ofMaps(data, this).write() }
-
-  private fun assertBuffersEqual(expected: Source, actual: Source) {
-    assertEquals(
-      expected.readString().trimEnd { c -> c == '\n' },
-      actual.readString().trimEnd { c -> c == '\n' },
-    )
-  }
+    Buffer().also { CsvWriter(it).writeMaps(data) }
 
   @Test
   fun allEmpty() {
