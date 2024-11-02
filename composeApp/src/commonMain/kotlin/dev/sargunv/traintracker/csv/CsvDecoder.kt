@@ -14,23 +14,25 @@ internal class CsvDecoder(source: Source, private val config: CsvFormat.Config) 
 
   private val originalHeader: List<String>
   private val mappedHeader: List<String>
-  private val records: List<List<String>> // TODO: stream the CSV record sequence
-
-  init {
-    val table = CsvParser(source, config.parserConfig).parse()
-    originalHeader = table.header
-    mappedHeader = table.header.map { config.namingStrategy.fromCsvName(it) }
-    records = table.records.toList()
-  }
+  private val records: Iterator<List<String>>
 
   // current location of the decoder
   private var level = 0
   private var row = 0
+  private var record: List<String>? = null
   private var col = 0
 
   // initialized on first record
   private lateinit var nullHeaders: List<String>
   private lateinit var recordDescriptor: SerialDescriptor
+
+  init {
+    val table = CsvParser(source, config.parserConfig).parse()
+    originalHeader = table.header
+    mappedHeader = table.header.map { config.namingStrategy.fromCsvName(it) }
+    records = table.records.iterator()
+    record = if (records.hasNext()) records.next() else null
+  }
 
   override val serializersModule = config.serializersModule
 
@@ -86,7 +88,7 @@ internal class CsvDecoder(source: Source, private val config: CsvFormat.Config) 
 
   override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
     return when (level) {
-      1 -> if (row >= records.size) return CompositeDecoder.DECODE_DONE else row
+      1 -> if (record == null) return CompositeDecoder.DECODE_DONE else row
 
       2 -> {
         var ret: Int
@@ -94,15 +96,15 @@ internal class CsvDecoder(source: Source, private val config: CsvFormat.Config) 
           ret =
             when {
               // end of row
-              col >= records[row].size + nullHeaders.size -> {
+              col >= record!!.size + nullHeaders.size -> {
                 row++
+                record = if (records.hasNext()) records.next() else null
                 col = 0
                 CompositeDecoder.DECODE_DONE
               }
 
               // implicit null
-              col >= records[row].size ->
-                descriptor.getElementIndex(nullHeaders[col - records[row].size])
+              col >= record!!.size -> descriptor.getElementIndex(nullHeaders[col - record!!.size])
 
               // regular element
               else -> descriptor.getElementIndex(mappedHeader[col])
@@ -120,7 +122,7 @@ internal class CsvDecoder(source: Source, private val config: CsvFormat.Config) 
 
   override fun decodeValue(): Any {
     require(level == 2) { "Fields must be within a list of objects (got level $level)" }
-    val ret = records[row][col]
+    val ret = record!![col]
     col++
     return ret
   }
@@ -128,12 +130,12 @@ internal class CsvDecoder(source: Source, private val config: CsvFormat.Config) 
   override fun decodeString(): String = decodeValue() as String
 
   override fun decodeNotNullMark(): Boolean {
-    if (col >= records[row].size) return false // implicit null
-    return records[row][col] != ""
+    if (col >= record!!.size) return false // implicit null
+    return record!![col] != ""
   }
 
   override fun decodeNull(): Nothing? {
-    if (col >= records[row].size) {
+    if (col >= record!!.size) {
       // implicit null
       col++
       return null

@@ -3,7 +3,7 @@ package dev.sargunv.traintracker.csv
 import kotlinx.io.Source
 
 class CsvParser(private val input: Source, private val config: Config = Config()) {
-  private val data = StringBuilder()
+  private var data = StringBuilder()
   private val buffer = ByteArray(4096)
 
   private data class ReadResult<T>(val value: T, val newPos: Int)
@@ -123,8 +123,11 @@ class CsvParser(private val input: Source, private val config: Config = Config()
       var cursor =
         readEndOfLine(pos)?.newPos
           ?: throw CsvParseException("Expected end of line, got '${charAt(pos)}'")
-      val numColumns = firstRecord.size
 
+      data = StringBuilder(data.drop(cursor))
+      cursor = 0
+
+      val numColumns = firstRecord.size
       yield(firstRecord)
 
       while (true) {
@@ -134,9 +137,13 @@ class CsvParser(private val input: Source, private val config: Config = Config()
             "Expected $numColumns columns, got ${record.size} in record $record"
           )
         }
+
         cursor =
           readEndOfLine(newPos)?.newPos
             ?: throw CsvParseException("Expected end of line, got '${charAt(newPos)}'")
+        data = StringBuilder(data.drop(cursor))
+        cursor = 0
+
         yield(record)
       }
 
