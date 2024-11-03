@@ -21,7 +21,8 @@ internal fun Layer.Type.Line.toNativeLayer(layer: Layer): LineLayer {
           Expression.rgba(it.red.toShort(), it.green.toShort(), it.blue.toShort(), it.alpha)
         )
       },
-      width?.let { PropertyFactory.lineWidth(it) },
+      //      width?.let { PropertyFactory.lineWidth(it) },
+      PropertyFactory.lineWidth(fancyWidth()),
     )
   }
 }

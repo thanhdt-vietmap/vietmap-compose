@@ -2,9 +2,7 @@ package dev.sargunv.maplibrecompose
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.LayoutDirection
-import cocoapods.MapLibre.MLNMapView
-import cocoapods.MapLibre.MLNStyle
-import cocoapods.MapLibre.allowsTilting
+import cocoapods.MapLibre.*
 import platform.CoreGraphics.CGPointMake
 
 internal fun MLNMapView.applyUiOptions(
@@ -15,6 +13,8 @@ internal fun MLNMapView.applyUiOptions(
   logoView.setHidden(!options.isLogoEnabled)
   attributionButton.setHidden(!options.isAttributionEnabled)
   compassView.setHidden(!options.isCompassEnabled)
+
+  debugMask = MLNMapDebugTileBoundariesMask or MLNMapDebugTileInfoMask
 
   allowsTilting = options.isTiltGesturesEnabled
   zoomEnabled = options.isZoomGesturesEnabled

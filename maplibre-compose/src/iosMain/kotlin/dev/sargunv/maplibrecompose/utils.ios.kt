@@ -1,8 +1,5 @@
 package dev.sargunv.maplibrecompose
 
-import kotlinx.cinterop.initBy
-import platform.Foundation.NSExpression
-import platform.Foundation.NSExpressionMeta
 import platform.UIKit.UIColor
 
 internal fun Color.toUiColor(): UIColor {

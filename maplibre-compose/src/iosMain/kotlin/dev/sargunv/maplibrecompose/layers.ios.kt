@@ -19,6 +19,7 @@ internal fun Layer.Type.Line.toNativeLayer(
     cap?.let { setLineCap(NSExpression.expressionForConstantValue(it)) }
     join?.let { setLineJoin(NSExpression.expressionForConstantValue(it)) }
     color?.let { setLineColor(NSExpression.expressionForConstantValue(it.toUiColor())) }
-    width?.let { setLineWidth(NSExpression.expressionForConstantValue(it)) }
+    //    width?.let { setLineWidth(NSExpression.expressionForConstantValue(it)) }
+    setLineWidth(fancyWidth())
   }
 }

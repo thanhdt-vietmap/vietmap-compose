@@ -13,6 +13,8 @@ internal fun MapView.applyUiOptions(
   getMapAsync { map ->
     map.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
 
+    map.isDebugActive = true
+
     map.uiSettings.isLogoEnabled = options.isLogoEnabled
     map.uiSettings.isAttributionEnabled = options.isAttributionEnabled
     map.uiSettings.isCompassEnabled = options.isCompassEnabled
