@@ -29,6 +29,12 @@ kotlin {
   }
 
   sourceSets {
+    all {
+      languageSettings {
+        optIn("androidx.compose.ui.ExperimentalComposeUiApi")
+        optIn("kotlinx.cinterop.ExperimentalForeignApi")
+      }
+    }
     androidMain.dependencies {
       implementation(libs.maplibre.android)
       implementation(libs.maplibre.android.plugin.annotation)
@@ -38,7 +44,6 @@ kotlin {
       implementation(compose.foundation)
       implementation(compose.ui)
     }
-    commonTest.dependencies { implementation(libs.kotlin.test) }
   }
 }
 

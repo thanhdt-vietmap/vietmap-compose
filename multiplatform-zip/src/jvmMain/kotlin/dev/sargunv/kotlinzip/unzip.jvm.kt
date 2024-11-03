@@ -1,11 +1,11 @@
 package dev.sargunv.kotlinzip
 
+import java.util.zip.ZipInputStream
 import kotlinx.io.RawSource
 import kotlinx.io.Source
 import kotlinx.io.asInputStream
 import kotlinx.io.asSource
 import kotlinx.io.buffered
-import java.util.zip.ZipInputStream
 
 public actual fun unzip(zipArchive: Source, handleFile: (path: String, content: Source) -> Unit) {
   val zip = ZipInputStream(zipArchive.asInputStream())

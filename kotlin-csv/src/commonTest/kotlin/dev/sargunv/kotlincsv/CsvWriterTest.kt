@@ -1,10 +1,10 @@
 package dev.sargunv.kotlincsv
 
-import kotlinx.io.Buffer
-import kotlinx.io.Source
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlinx.io.Buffer
+import kotlinx.io.Source
 
 class CsvWriterTest {
   private fun write(data: List<List<String>>): Source = Buffer().also { CsvWriter(it).write(data) }

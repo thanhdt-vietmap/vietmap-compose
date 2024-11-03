@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-public data class MapViewOptions(
+public data class MaplibreMapOptions(
   val style: StyleOptions = StyleOptions(),
   val ui: UiOptions = UiOptions(),
 ) {
@@ -28,4 +28,7 @@ public data class MapViewOptions(
 }
 
 @Composable
-public expect fun MapView(modifier: Modifier = Modifier, options: MapViewOptions = MapViewOptions())
+public expect fun MaplibreMap(
+  modifier: Modifier = Modifier,
+  options: MaplibreMapOptions = MaplibreMapOptions(),
+)

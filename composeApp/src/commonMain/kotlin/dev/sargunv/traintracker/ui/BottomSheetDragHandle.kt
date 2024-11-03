@@ -12,10 +12,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun BottomSheetDragHandle() {
   Surface(
-      // no bottom padding to avoid double padding with the TopAppBar
-      modifier = Modifier.padding(top = 22.dp),
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-      shape = MaterialTheme.shapes.extraLarge) {
-        Box(Modifier.size(width = 32.dp, height = 4.dp))
-      }
+    // no bottom padding to avoid double padding with the TopAppBar
+    modifier = Modifier.padding(top = 22.dp),
+    color = MaterialTheme.colorScheme.onSurfaceVariant,
+    shape = MaterialTheme.shapes.extraLarge,
+  ) {
+    Box(Modifier.size(width = 32.dp, height = 4.dp))
+  }
 }

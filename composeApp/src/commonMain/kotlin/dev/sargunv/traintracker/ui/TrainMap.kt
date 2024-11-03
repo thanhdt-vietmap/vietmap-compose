@@ -15,10 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.sargunv.maplibrecompose.Layer
-import dev.sargunv.maplibrecompose.MapView
-import dev.sargunv.maplibrecompose.MapViewOptions
-import dev.sargunv.maplibrecompose.Source
+import dev.sargunv.maplibrecompose.*
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.gtfs.GtfsSdk
 import kotlinx.coroutines.Dispatchers
@@ -52,11 +49,11 @@ fun TrainMap(sheetPadding: PaddingValues) {
 
   val insetsPadding = WindowInsets.safeDrawing.asPaddingValues(LocalDensity.current)
 
-  MapView(
+  MaplibreMap(
     options =
-      MapViewOptions(
+      MaplibreMapOptions(
         style =
-          MapViewOptions.StyleOptions(
+          MaplibreMapOptions.StyleOptions(
             url = Res.getUri("files/maplibre/style/positron.json"),
             sources =
               mapOf(
@@ -74,7 +71,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
                   below = "boundary_3",
                   type =
                     Layer.Type.Line(
-                      color = 0xFF888888.toInt(),
+                      color = Color(0xFF888888u),
                       width = 3f,
                       cap = "round",
                       join = "miter",
@@ -86,7 +83,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
                   above = "amtrak-route-lines-casing",
                   type =
                     Layer.Type.Line(
-                      color = 0xFFCAE4F1.toInt(),
+                      color = Color(0xFFCAE4F1u),
                       width = 2f,
                       cap = "round",
                       join = "miter",
@@ -95,7 +92,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
               ),
           ),
         ui =
-          MapViewOptions.UiOptions(
+          MaplibreMapOptions.UiOptions(
             padding =
               PaddingValues(
                 start =

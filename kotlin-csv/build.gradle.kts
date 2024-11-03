@@ -8,7 +8,10 @@ kotlin {
   explicitApi()
 
   jvm()
-  js()
+  js {
+    browser()
+    nodejs()
+  }
 
   // https://kotlinlang.org/docs/native-target-support.html
   macosX64()
