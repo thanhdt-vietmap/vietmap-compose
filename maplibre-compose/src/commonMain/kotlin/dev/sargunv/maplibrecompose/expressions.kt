@@ -3,7 +3,7 @@ package dev.sargunv.maplibrecompose
 @Suppress("MemberVisibilityCanBePrivate")
 public object ExpressionDsl {
 
-  // types: https://maplibre.org/maplibre-style-spec/types/
+  // basic types: https://maplibre.org/maplibre-style-spec/types/
   // minus point and padding, which don't seem to be used in expressions
 
   public fun const(string: String): Expression<String> = Expression(string)
@@ -47,6 +47,8 @@ public object ExpressionDsl {
 
   // expressions: https://maplibre.org/maplibre-style-spec/expressions/
 
+  // variable binding
+
   /**
    * Binds expressions to named variables, which can then be referenced in the result expression
    * using [var].
@@ -59,6 +61,8 @@ public object ExpressionDsl {
 
   /** References variable bound using [let]. */
   public fun <T> `var`(name: String): Expression<T> = call("var", const(name))
+
+  // types
 
   /** Produces a literal array value. */
   public fun <T> literal(values: List<Expression<T>>): Expression<List<T>> =
@@ -239,6 +243,8 @@ public object ExpressionDsl {
   public fun toColor(value: Expression<*>, vararg fallbacks: Expression<*>): Expression<TColor> =
     call("to-color", value, *fallbacks)
 
+  // lookup
+
   /** Retrieves an item from an array. */
   public fun <T> at(index: Expression<Number>, array: Expression<List<T>>): Expression<T> =
     call("at", index, array)
@@ -312,6 +318,48 @@ public object ExpressionDsl {
    * position.
    */
   public fun length(value: Expression<*>): Expression<Number> = call("length", value)
+
+  // decision
+
+  /**
+   * Selects the first output whose corresponding test condition evaluates to true, or the fallback
+   * value otherwise.
+   */
+  public fun <T> case(
+    branches: List<Pair<Expression<Boolean>, Expression<T>>>,
+    default: Expression<T>,
+  ): Expression<T> {
+    val args = branches.flatMap { listOf(it.first, it.second) }
+    return call("case", *args.toTypedArray(), default)
+  }
+
+  /**
+   * Selects the output whose label value matches the input value, or the fallback value if no match
+   * is found. The input can be any expression (e.g. ["get", "building_type"]). Each label must be
+   * either:
+   * - a single literal value; or
+   * - an array of literal values, whose values must be all strings or all numbers (e.g. [100, 101]
+   *   or ["c", "b"]). The input matches if any of the values in the array matches, similar to the
+   *   "in" operator.
+   *
+   * Each label must be unique. If the input type does not match the type of the labels, the result
+   * will be the fallback value.
+   */
+  public fun <T> match(
+    input: Expression<*>,
+    vararg branches: Pair<Expression<*>, Expression<T>>,
+    default: Expression<T>,
+  ): Expression<T> {
+    val args = branches.flatMap { listOf(it.first, it.second) }
+    return call("match", input, *args.toTypedArray(), default)
+  }
+
+  /**
+   * Evaluates each expression in turn until the first non-null value is obtained, and returns that
+   * value.
+   */
+  public fun <T> coalesce(vararg values: Expression<T?>, last: Expression<T>): Expression<T> =
+    call("coalesce", *values, last)
 
   // TODO above are in the right order from the docs, below are not
 
