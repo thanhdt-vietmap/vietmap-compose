@@ -239,6 +239,80 @@ public object ExpressionDsl {
   public fun toColor(value: Expression<*>, vararg fallbacks: Expression<*>): Expression<TColor> =
     call("to-color", value, *fallbacks)
 
+  /** Retrieves an item from an array. */
+  public fun <T> at(index: Expression<Number>, array: Expression<List<T>>): Expression<T> =
+    call("at", index, array)
+
+  /** Determines whether an item exists in an array or a substring exists in a string. */
+  public fun `in`(needle: Expression<*>, haystack: Expression<*>): Expression<Boolean> =
+    call("in", needle, haystack)
+
+  /**
+   * Returns the first position at which an item can be found in an array or a substring can be
+   * found in a string, or -1 if the input cannot be found. Accepts an optional index from where to
+   * begin the search. In a string, a UTF-16 surrogate pair counts as a single position.
+   */
+  public fun indexOf(
+    value: Expression<*>,
+    array: Expression<List<*>>,
+    start: Expression<Number>? = null,
+  ): Expression<Number> {
+    val args = buildList {
+      add(value)
+      add(array)
+      start?.let { add(it) }
+    }
+    return call("index-of", *args.toTypedArray())
+  }
+
+  /**
+   * Returns an item from an array or a substring from a string from a specified start index, or
+   * between a start index and an end index if set. The return value is inclusive of the start index
+   * but not of the end index. In a string, a UTF-16 surrogate pair counts as a single position.
+   */
+  public fun <T> slice(
+    value: Expression<*>,
+    start: Expression<Number>,
+    length: Expression<Number>? = null,
+  ): Expression<T> {
+    val args = buildList {
+      add(value)
+      add(start)
+      length?.let { add(it) }
+    }
+    return call("slice", *args.toTypedArray())
+  }
+
+  /**
+   * Retrieves a property value from the current feature's properties, or from another object if a
+   * second argument is provided. Returns null if the requested property is missing.
+   */
+  public fun <T> get(
+    key: Expression<String>,
+    obj: Expression<Map<String, *>>? = null,
+  ): Expression<T> {
+    val args = obj?.let { listOf(key, it) } ?: listOf(key)
+    return call("get", *args.toTypedArray())
+  }
+
+  /**
+   * Tests for the presence of an property value in the current feature's properties, or from
+   * another object if a second argument is provided.
+   */
+  public fun has(
+    key: Expression<String>,
+    obj: Expression<Map<String, *>>? = null,
+  ): Expression<Boolean> {
+    val args = obj?.let { listOf(key, it) } ?: listOf(key)
+    return call("has", *args.toTypedArray())
+  }
+
+  /**
+   * Gets the length of an array or string. In a string, a UTF-16 surrogate pair counts as a single
+   * position.
+   */
+  public fun length(value: Expression<*>): Expression<Number> = call("length", value)
+
   // TODO above are in the right order from the docs, below are not
 
   public fun <Output> interpolate(
