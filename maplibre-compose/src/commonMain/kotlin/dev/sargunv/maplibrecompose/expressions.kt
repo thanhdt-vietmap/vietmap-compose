@@ -14,7 +14,6 @@ public object ExpressionDsl {
 
   public fun const(`null`: Nothing?): Expression<Nothing?> = Expression(`null`)
 
-  @Suppress("UNCHECKED_CAST")
   public fun colorRgb(
     red: UByte,
     green: UByte,
@@ -22,15 +21,9 @@ public object ExpressionDsl {
     alpha: Float? = null,
   ): Expression<TColor> {
     require(alpha == null || alpha in 0f..1f) { "alpha must be in the range 0..1" }
-    return if (alpha != null) {
-      const("rgb(${red}, ${green}, ${blue}, ${alpha})")
-    } else {
-      const("rgb(${red}, ${green}, ${blue})")
-    }
-      as Expression<TColor>
+    return Colors.rgb(red, green, blue, alpha)
   }
 
-  @Suppress("UNCHECKED_CAST")
   public fun colorHsl(
     hue: Int,
     saturation: Int,
@@ -41,25 +34,16 @@ public object ExpressionDsl {
     require(saturation in 0..100) { "saturation must be in the range 0..100" }
     require(lightness in 0..100) { "lightness must be in the range 0..100" }
     require(alpha == null || alpha in 0f..1f) { "alpha must be in the range 0..1" }
-    return if (alpha != null) {
-      const("hsl(${hue}, ${saturation}%, ${lightness}%, ${alpha})")
-    } else {
-      const("hsl(${hue}, ${saturation}%, ${lightness}%)")
-    }
-      as Expression<TColor>
+    return Colors.hsl(hue, saturation, lightness, alpha)
   }
 
-  @Suppress("UNCHECKED_CAST")
-  public fun color(value: String): Expression<TColor> {
-    require(
-      value.startsWith("#") &&
-        (value.length == 4 || value.length == 7) &&
-        value.drop(1).all { it in '0'..'9' || it in 'a'..'f' || it in 'A'..'F' }
-    ) {
-      "color must be a 3- or 6-digit hex string starting with #"
-    }
-    return const(value) as Expression<TColor>
-  }
+  public fun color(value: UInt): Expression<TColor> =
+    colorRgb(
+      (value shr 16).toUByte(),
+      (value shr 8).toUByte(),
+      value.toUByte(),
+      (value shr 24).toFloat() / 255f,
+    )
 
   // expressions: https://maplibre.org/maplibre-style-spec/expressions/
 
@@ -305,10 +289,8 @@ public object ExpressionDsl {
 
 public fun <T> useExpressions(block: ExpressionDsl.() -> T): T = block(ExpressionDsl)
 
-public sealed interface Expression<T> {
+public interface Expression<T> {
   public val value: Any?
-
-  private class ExpressionImpl<T>(override val value: Any?) : Expression<T>
 
   public companion object {
     public operator fun invoke(string: String): Expression<String> = ExpressionImpl(string)
@@ -325,6 +307,27 @@ public sealed interface Expression<T> {
     public operator fun invoke(map: Map<String, Expression<*>>): Expression<Map<String, *>> =
       ExpressionImpl(map.entries.associate { (key, value) -> key to value.value })
   }
+}
+
+private class ExpressionImpl<T>(override val value: Any?) : Expression<T>
+
+public expect class Color : Expression<TColor>
+
+public expect object Colors {
+  public val white: Color
+  public val silver: Color
+  public val gray: Color
+  public val black: Color
+  public val red: Color
+  public val maroon: Color
+  public val yellow: Color
+  public val green: Color
+  public val blue: Color
+  public val purple: Color
+
+  public fun rgb(red: UByte, green: UByte, blue: UByte, alpha: Float? = null): Color
+
+  public fun hsl(hue: Int, saturation: Int, lightness: Int, alpha: Float? = null): Color
 }
 
 // token types for expression type safety; these should never be instantiated
@@ -344,24 +347,3 @@ public sealed interface TCollator
 public sealed interface TInterpolationType
 
 // enum constants
-
-public enum class Color : Expression<TColor> {
-  White,
-  Silver,
-  Gray,
-  Black,
-  Red,
-  Maroon,
-  Yellow,
-  Olive,
-  Lime,
-  Green,
-  Aqua,
-  Teal,
-  Blue,
-  Navy,
-  Fuchsia,
-  Purple;
-
-  override val value: String = name.lowercase()
-}

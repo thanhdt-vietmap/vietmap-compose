@@ -72,7 +72,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
                     below = "boundary_3",
                     type =
                       Layer.Type.Line(
-                        color = Color.White,
+                        color = Colors.white,
                         width =
                           interpolate(
                             exponential(const(2f)),
@@ -90,7 +90,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
                     above = "amtrak-route-lines-casing",
                     type =
                       Layer.Type.Line(
-                        color = Color.Teal,
+                        color = Colors.blue,
                         width =
                           interpolate(
                             exponential(const(2f)),

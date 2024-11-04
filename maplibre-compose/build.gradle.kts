@@ -30,6 +30,7 @@ kotlin {
 
   sourceSets {
     all {
+      compilerOptions { freeCompilerArgs.add("-Xexpect-actual-classes") }
       languageSettings {
         optIn("androidx.compose.ui.ExperimentalComposeUiApi")
         optIn("kotlinx.cinterop.ExperimentalForeignApi")
