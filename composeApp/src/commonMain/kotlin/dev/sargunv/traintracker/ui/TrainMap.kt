@@ -64,32 +64,46 @@ fun TrainMap(sheetPadding: PaddingValues) {
                   )
               ),
             layers =
-              listOf(
-                Layer(
-                  id = "amtrak-route-lines-casing",
-                  source = "amtrak-geojson",
-                  below = "boundary_3",
-                  type =
-                    Layer.Type.Line(
-                      color = Color(0xFF888888u),
-                      width = 3f,
-                      cap = "round",
-                      join = "miter",
-                    ),
-                ),
-                Layer(
-                  id = "amtrak-route-lines-inner",
-                  source = "amtrak-geojson",
-                  above = "amtrak-route-lines-casing",
-                  type =
-                    Layer.Type.Line(
-                      color = Color(0xFFCAE4F1u),
-                      width = 2f,
-                      cap = "round",
-                      join = "miter",
-                    ),
-                ),
-              ),
+              useExpressions {
+                listOf(
+                  Layer(
+                    id = "amtrak-route-lines-casing",
+                    source = "amtrak-geojson",
+                    below = "boundary_3",
+                    type =
+                      Layer.Type.Line(
+                        color = color(0xFF888888u),
+                        width =
+                          interpolate(
+                            exponential(2f),
+                            zoom(),
+                            0 to literal(1.0f),
+                            10 to literal(4f),
+                          ),
+                        cap = literal("round"),
+                        join = literal("miter"),
+                      ),
+                  ),
+                  Layer(
+                    id = "amtrak-route-lines-inner",
+                    source = "amtrak-geojson",
+                    above = "amtrak-route-lines-casing",
+                    type =
+                      Layer.Type.Line(
+                        color = color(0xFFCAE4F1u),
+                        width =
+                          interpolate(
+                            exponential(0.75f),
+                            zoom(),
+                            0 to literal(0.5f),
+                            10 to literal(3f),
+                          ),
+                        cap = literal("round"),
+                        join = literal("miter"),
+                      ),
+                  ),
+                )
+              },
           ),
         ui =
           MaplibreMapOptions.UiOptions(

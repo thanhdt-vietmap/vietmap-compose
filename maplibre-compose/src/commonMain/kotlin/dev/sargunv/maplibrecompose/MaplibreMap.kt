@@ -10,9 +10,9 @@ public data class MaplibreMapOptions(
   val ui: UiOptions = UiOptions(),
 ) {
   public data class StyleOptions(
-    val url: String = "https://demotiles.maplibre.org/style.json",
-    val sources: Map<String, Source> = emptyMap(),
-    val layers: List<Layer> = emptyList(),
+      val url: String = "https://demotiles.maplibre.org/style.json",
+      val sources: Map<String, Source> = emptyMap(),
+      val layers: List<Layer> = emptyList(),
   )
 
   public data class UiOptions(
