@@ -2,6 +2,67 @@ package dev.sargunv.maplibrecompose
 
 @Suppress("MemberVisibilityCanBePrivate")
 public object ExpressionDsl {
+
+  // types: https://maplibre.org/maplibre-style-spec/types/
+  // minus point and padding, which don't seem to be used in expressions
+
+  public fun const(string: String): Expression<String> = Expression(string)
+
+  public fun const(number: Number): Expression<Number> = Expression(number)
+
+  public fun const(bool: Boolean): Expression<Boolean> = Expression(bool)
+
+  public fun const(`null`: Nothing?): Expression<Nothing?> = Expression(`null`)
+
+  @Suppress("UNCHECKED_CAST")
+  public fun colorRgb(
+    red: UByte,
+    green: UByte,
+    blue: UByte,
+    alpha: Float? = null,
+  ): Expression<TColor> {
+    require(alpha == null || alpha in 0f..1f) { "alpha must be in the range 0..1" }
+    return if (alpha != null) {
+      const("rgb(${red}, ${green}, ${blue}, ${alpha})")
+    } else {
+      const("rgb(${red}, ${green}, ${blue})")
+    }
+      as Expression<TColor>
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  public fun colorHsl(
+    hue: Int,
+    saturation: Int,
+    lightness: Int,
+    alpha: Float? = null,
+  ): Expression<TColor> {
+    require(hue in 0..360) { "hue must be in the range 0..360" }
+    require(saturation in 0..100) { "saturation must be in the range 0..100" }
+    require(lightness in 0..100) { "lightness must be in the range 0..100" }
+    require(alpha == null || alpha in 0f..1f) { "alpha must be in the range 0..1" }
+    return if (alpha != null) {
+      const("hsl(${hue}, ${saturation}%, ${lightness}%, ${alpha})")
+    } else {
+      const("hsl(${hue}, ${saturation}%, ${lightness}%)")
+    }
+      as Expression<TColor>
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  public fun color(value: String): Expression<TColor> {
+    require(
+      value.startsWith("#") &&
+        (value.length == 4 || value.length == 7) &&
+        value.drop(1).all { it in '0'..'9' || it in 'a'..'f' || it in 'A'..'F' }
+    ) {
+      "color must be a 3- or 6-digit hex string starting with #"
+    }
+    return const(value) as Expression<TColor>
+  }
+
+  // expressions: https://maplibre.org/maplibre-style-spec/expressions/
+
   /**
    * Binds expressions to named variables, which can then be referenced in the result expression
    * using [var].
@@ -10,19 +71,10 @@ public object ExpressionDsl {
     name: String,
     value: Expression<Input>,
     expression: Expression<Output>,
-  ): Expression<Output> = call("let", literal(name), value, expression)
+  ): Expression<Output> = call("let", const(name), value, expression)
 
   /** References variable bound using [let]. */
-  public fun <T> `var`(name: String): Expression<T> = call("var", literal(name))
-
-  /** Produces a literal string value. */
-  public fun literal(value: String): Expression<String> = Expression(value)
-
-  /** Produces a literal number value. */
-  public fun literal(value: Number): Expression<Number> = Expression(value)
-
-  /** Produces a literal boolean value. */
-  public fun literal(value: Boolean): Expression<Boolean> = Expression(value)
+  public fun <T> `var`(name: String): Expression<T> = call("var", const(name))
 
   /** Produces a literal array value. */
   public fun <T> literal(values: List<Expression<T>>): Expression<List<T>> =
@@ -32,9 +84,6 @@ public object ExpressionDsl {
   public fun literal(values: Map<String, Expression<*>>): Expression<Map<String, Expression<*>>> =
     call("literal", Expression(values))
 
-  /** Produces a literal null value. */
-  public fun `null`(): Expression<Nothing?> = Expression(null)
-
   /**
    * Asserts that the input is an array (optionally with a specific item type and length). If, when
    * the input expression is evaluated, it is not of the asserted type, then this assertion will
@@ -42,12 +91,12 @@ public object ExpressionDsl {
    */
   public fun <T> array(
     value: Expression<*>,
-    type: String? = null,
-    length: Int? = null,
+    type: Expression<String>? = null,
+    length: Expression<Number>? = null,
   ): Expression<Array<T>> {
     val args = buildList {
-      if (type != null) add(literal(type))
-      if (length != null) add(literal(length))
+      type?.let { add(const("array")) }
+      length?.let { add(const("array")) }
     }
     return call("array", value, *args.toTypedArray())
   }
@@ -100,7 +149,7 @@ public object ExpressionDsl {
     caseSensitive: Expression<Boolean>? = null,
     diacriticSensitive: Expression<Boolean>? = null,
     locale: Expression<String>? = null,
-  ): Expression<CollatorValue> =
+  ): Expression<TCollator> =
     call(
       "collator",
       options {
@@ -115,7 +164,7 @@ public object ExpressionDsl {
    * input may contain a string literal or expression, including an 'image' expression. Strings may
    * be followed by a style override object that supports the following properties:
    */
-  public fun format(vararg sections: Pair<Expression<*>, FormatStyle>): Expression<FormattedValue> {
+  public fun format(vararg sections: Pair<Expression<*>, FormatStyle>): Expression<TFormatted> {
     val args =
       sections.flatMap { (value, style) ->
         listOf(
@@ -143,7 +192,7 @@ public object ExpressionDsl {
    * the image is currently in the style. This validation process is synchronous and requires the
    * image to have been added to the style before requesting it in the image argument.
    */
-  public fun image(value: Expression<String>): Expression<ImageValue> = call("image", value)
+  public fun image(value: Expression<String>): Expression<TResolvedImage> = call("image", value)
 
   /**
    * Converts the input number into a string representation using the providing formatting rules. If
@@ -203,63 +252,52 @@ public object ExpressionDsl {
    * order until the first successful conversion is obtained. If none of the inputs can be
    * converted, the expression is an error.
    */
-  public fun toColor(
-    value: Expression<*>,
-    vararg fallbacks: Expression<*>,
-  ): Expression<ColorValue> = call("to-color", value, *fallbacks)
+  public fun toColor(value: Expression<*>, vararg fallbacks: Expression<*>): Expression<TColor> =
+    call("to-color", value, *fallbacks)
 
   // TODO above are in the right order from the docs, below are not
 
-  public fun <Input : Number, Output> interpolate(
-    type: Expression<InterpolationValue>,
-    input: Expression<Input>,
-    vararg stops: Pair<Input, Expression<Output>>,
+  public fun <Output> interpolate(
+    type: Expression<TInterpolationType>,
+    input: Expression<Number>,
+    vararg stops: Pair<Number, Expression<Output>>,
   ): Expression<Output> {
-    val args =
-      stops.sortedBy { it.first.toDouble() }.flatMap { listOf(literal(it.first), it.second) }
+    val args = stops.sortedBy { it.first.toDouble() }.flatMap { listOf(const(it.first), it.second) }
     return call("interpolate", type, input, *args.toTypedArray())
   }
 
-  public fun linear(): Expression<InterpolationValue> = call("linear")
+  public fun linear(): Expression<TInterpolationType> = call("linear")
 
-  public fun exponential(base: Number): Expression<InterpolationValue> =
-    call("exponential", literal(base))
+  public fun exponential(base: Expression<Number>): Expression<TInterpolationType> =
+    call("exponential", base)
 
   public fun cubicBezier(
-    x1: Number,
-    y1: Number,
-    x2: Number,
-    y2: Number,
-  ): Expression<InterpolationValue> =
-    call("cubic-bezier", literal(x1), literal(y1), literal(x2), literal(y2))
+    x1: Expression<Number>,
+    y1: Expression<Number>,
+    x2: Expression<Number>,
+    y2: Expression<Number>,
+  ): Expression<TInterpolationType> = call("cubic-bezier", x1, y1, x2, y2)
 
   public fun zoom(): Expression<Number> = call("zoom")
 
-  public fun rgba(red: UByte, green: UByte, blue: UByte, alpha: Float): Expression<ColorValue> =
-    call(
-      "rgba",
-      literal(red.toShort()),
-      literal(green.toShort()),
-      literal(blue.toShort()),
-      literal(alpha),
-    )
+  public fun rgba(
+    red: Expression<Number>,
+    green: Expression<Number>,
+    blue: Expression<Number>,
+    alpha: Expression<Number>,
+  ): Expression<TColor> = call("rgba", red, green, blue, alpha)
 
-  public fun rgb(red: UByte, green: UByte, blue: UByte): Expression<ColorValue> =
-    call("rgb", literal(red.toShort()), literal(green.toShort()), literal(blue.toShort()))
+  public fun rgb(
+    red: Expression<Number>,
+    green: Expression<Number>,
+    blue: Expression<Number>,
+  ): Expression<TColor> = call("rgb", red, green, blue)
 
-  public fun color(value: UInt): Expression<ColorValue> =
-    rgba(
-      (value shr 16).toUByte(),
-      (value shr 8).toUByte(),
-      value.toUByte(),
-      ((value shr 24) and 0xFFu).toFloat() / 255f,
-    )
-
-  // utils below
+  // utils
 
   @Suppress("UNCHECKED_CAST")
   private fun <Return> call(function: String, vararg args: Expression<*>) =
-    Expression(listOf(literal(function), *args)) as Expression<Return>
+    Expression(listOf(const(function), *args)) as Expression<Return>
 
   private inline fun options(block: MutableMap<String, Expression<*>>.() -> Unit) =
     Expression(mutableMapOf<String, Expression<*>>().apply(block))
@@ -267,32 +305,63 @@ public object ExpressionDsl {
 
 public fun <T> useExpressions(block: ExpressionDsl.() -> T): T = block(ExpressionDsl)
 
-public class Expression<T> private constructor(internal val value: Any?) {
+public sealed interface Expression<T> {
+  public val value: Any?
+
+  private class ExpressionImpl<T>(override val value: Any?) : Expression<T>
+
   public companion object {
-    public operator fun invoke(string: String): Expression<String> = Expression(string)
+    public operator fun invoke(string: String): Expression<String> = ExpressionImpl(string)
 
-    public operator fun invoke(number: Number): Expression<Number> = Expression(number)
+    public operator fun invoke(number: Number): Expression<Number> = ExpressionImpl(number)
 
-    public operator fun invoke(bool: Boolean): Expression<Boolean> = Expression(bool)
+    public operator fun invoke(bool: Boolean): Expression<Boolean> = ExpressionImpl(bool)
 
-    public operator fun invoke(nil: Nothing? = null): Expression<Nothing?> = Expression(nil)
+    public operator fun invoke(nil: Nothing? = null): Expression<Nothing?> = ExpressionImpl(nil)
 
     public operator fun invoke(list: List<Expression<*>>): Expression<List<*>> =
-      Expression(list.map { it.value })
+      ExpressionImpl(list.map { it.value })
 
     public operator fun invoke(map: Map<String, Expression<*>>): Expression<Map<String, *>> =
-      Expression(map.entries.associate { (key, value) -> key to value.value })
+      ExpressionImpl(map.entries.associate { (key, value) -> key to value.value })
   }
 }
 
-// token classes for expression type safety
+// token types for expression type safety; these should never be instantiated
+// based on non primitive types from https://maplibre.org/maplibre-style-spec/types/
+// point and padding don't seem to be used in expressions, so I didn't include them
 
-public class ColorValue private constructor()
+public sealed interface TColor
 
-public class CollatorValue private constructor()
+public sealed interface TFormatted
 
-public class FormattedValue private constructor()
+public sealed interface TResolvedImage
 
-public class ImageValue private constructor()
+// also some extra tokens invented here
 
-public class InterpolationValue private constructor()
+public sealed interface TCollator
+
+public sealed interface TInterpolationType
+
+// enum constants
+
+public enum class Color : Expression<TColor> {
+  White,
+  Silver,
+  Gray,
+  Black,
+  Red,
+  Maroon,
+  Yellow,
+  Olive,
+  Lime,
+  Green,
+  Aqua,
+  Teal,
+  Blue,
+  Navy,
+  Fuchsia,
+  Purple;
+
+  override val value: String = name.lowercase()
+}

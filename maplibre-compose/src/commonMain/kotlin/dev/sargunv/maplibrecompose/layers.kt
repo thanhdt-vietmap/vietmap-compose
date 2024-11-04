@@ -20,7 +20,7 @@ public data class Layer(
     public data class Line(
       val cap: Expression<String>? = null,
       val join: Expression<String>? = null,
-      val color: Expression<ColorValue>? = null,
+      val color: Expression<TColor>? = null,
       val width: Expression<Number>? = null,
     ) : Type()
   }
