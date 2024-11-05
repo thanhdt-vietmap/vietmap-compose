@@ -78,7 +78,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
                           interpolate(
                             exponential(const(2f)),
                             zoom(),
-                            0 to const(2.0f),
+                            0 to const(2f),
                             10 to const(4f),
                           ),
                         cap = const("round"),
@@ -91,16 +91,10 @@ fun TrainMap(sheetPadding: PaddingValues) {
                     above = "amtrak-route-lines-casing",
                     type =
                       Layer.Type.Line(
-                        color = const(Color.Cyan),
-                        width =
-                          interpolate(
-                            exponential(const(2f)),
-                            zoom(),
-                            0 to const(1f),
-                            10 to const(2f),
-                          ),
-                        cap = const("round"),
-                        join = const("miter"),
+                        color = Color.Cyan(),
+                        width = interpolate(exponential(2f()), zoom(), 0 to 1f(), 10 to 2f()),
+                        cap = "round"(),
+                        join = "miter"(),
                       ),
                   ),
                 )

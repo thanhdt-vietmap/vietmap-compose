@@ -3,7 +3,7 @@ package dev.sargunv.maplibrecompose
 import androidx.compose.ui.graphics.Color
 import kotlin.jvm.JvmName
 
-@Suppress("MemberVisibilityCanBePrivate", "FunctionName")
+@Suppress("MemberVisibilityCanBePrivate")
 public object ExpressionDsl {
 
   // basic types: https://maplibre.org/maplibre-style-spec/types/
@@ -15,9 +15,20 @@ public object ExpressionDsl {
 
   public fun const(bool: Boolean): Expression<Boolean> = Expression.ofBoolean(bool)
 
-  public fun <T> nil(): Expression<T?> = Expression.ofNull()
+  @Suppress("UNCHECKED_CAST")
+  public fun <T> nil(): Expression<T> = Expression.ofNull() as Expression<T>
 
   public fun const(color: Color): Expression<Color> = Expression.ofColor(color)
+
+  public operator fun String.invoke(): Expression<String> = const(this)
+
+  public operator fun Number.invoke(): Expression<Number> = const(this)
+
+  public operator fun Boolean.invoke(): Expression<Boolean> = const(this)
+
+  public operator fun <T> Nothing?.invoke(): Expression<T> = nil()
+
+  public operator fun Color.invoke(): Expression<Color> = const(this)
 
   // expressions: https://maplibre.org/maplibre-style-spec/expressions/
 
@@ -629,7 +640,7 @@ public object ExpressionDsl {
   public operator fun Expression<Number>.minus(other: Expression<Number>): Expression<Number> =
     call("-", this, other)
 
-  public operator fun minus(it: Expression<Number>): Expression<Number> = call("-", it)
+  public operator fun Expression<Number>.unaryMinus(): Expression<Number> = call("-", this)
 
   public operator fun Expression<Number>.div(b: Expression<Number>): Expression<Number> =
     call("/", this, b)
