@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrecompose
 
 import androidx.compose.ui.graphics.Color
+import kotlin.jvm.JvmName
 
 @Suppress("MemberVisibilityCanBePrivate")
 public object ExpressionDsl {
@@ -8,16 +9,15 @@ public object ExpressionDsl {
   // basic types: https://maplibre.org/maplibre-style-spec/types/
   // minus point and padding, which don't seem to be used in expressions
 
-  public fun const(string: String): Expression<String> = Expression(string)
+  public fun const(string: String): Expression<String> = Expression.ofString(string)
 
-  public fun const(number: Number): Expression<Number> = Expression(number)
+  public fun const(number: Number): Expression<Number> = Expression.ofNumber(number)
 
-  public fun const(bool: Boolean): Expression<Boolean> = Expression(bool)
+  public fun const(bool: Boolean): Expression<Boolean> = Expression.ofBoolean(bool)
 
-  @Suppress("UNUSED_PARAMETER")
-  public fun const(`null`: Nothing?): Expression<Nothing?> = Expression(null)
+  public fun <T> `null`(): Expression<T?> = Expression.ofNull()
 
-  public fun const(color: Color): Expression<Color> = Expression(color)
+  public fun const(color: Color): Expression<Color> = Expression.ofColor(color)
 
   // expressions: https://maplibre.org/maplibre-style-spec/expressions/
 
@@ -40,22 +40,22 @@ public object ExpressionDsl {
 
   /** Produces a literal array value. */
   public fun <T> literal(values: List<Expression<T>>): Expression<List<T>> =
-    call("literal", Expression(values))
+    call("literal", Expression.ofList(values))
 
   /** Produces a literal object value. */
-  public fun literal(values: Map<String, Expression<*>>): Expression<Map<String, Expression<*>>> =
-    call("literal", Expression(values))
+  public fun <T> literal(values: Map<String, Expression<T>>): Expression<Map<String, T>> =
+    call("literal", Expression.ofMap(values))
 
   /**
    * Asserts that the input is an array (optionally with a specific item type and length). If, when
    * the input expression is evaluated, it is not of the asserted type, then this assertion will
    * cause the whole expression to be aborted.
    */
-  public fun <T> array(
+  public fun array(
     value: Expression<*>,
     type: Expression<String>? = null,
     length: Expression<Number>? = null,
-  ): Expression<Array<T>> {
+  ): Expression<List<*>> {
     val args = buildList {
       type?.let { add(const("array")) }
       length?.let { add(const("array")) }
@@ -114,10 +114,10 @@ public object ExpressionDsl {
   ): Expression<TCollator> =
     call(
       "collator",
-      options {
-        if (caseSensitive != null) put("case-sensitive", caseSensitive)
-        if (diacriticSensitive != null) put("diacritic-sensitive", diacriticSensitive)
-        if (locale != null) put("locale", locale)
+      buildOptions {
+        caseSensitive?.let { put("case-sensitive", it) }
+        diacriticSensitive?.let { put("diacritic-sensitive", it) }
+        locale?.let { put("locale", it) }
       },
     )
 
@@ -126,20 +126,20 @@ public object ExpressionDsl {
    * input may contain a string literal or expression, including an 'image' expression. Strings may
    * be followed by a style override object that supports the following properties:
    */
-  public fun format(vararg sections: Pair<Expression<*>, FormatStyle>): Expression<TFormatted> {
-    val args =
-      sections.flatMap { (value, style) ->
-        listOf(
-          value,
-          options {
-            if (style.textFont != null) put("text-font", style.textFont)
-            if (style.textColor != null) put("text-color", style.textColor)
-            if (style.fontScale != null) put("font-scale", style.fontScale)
-          },
+  public fun format(vararg sections: Pair<Expression<*>, FormatStyle>): Expression<TFormatted> =
+    call(
+      "format",
+      *sections.foldToArgs { (value, style) ->
+        add(value)
+        add(
+          buildOptions {
+            style.textFont?.let { put("text-font", it) }
+            style.textColor?.let { put("text-color", it) }
+            style.fontScale?.let { put("font-scale", it) }
+          }
         )
-      }
-    return call("format", *args.toTypedArray())
-  }
+      },
+    )
 
   public data class FormatStyle(
     val textFont: Expression<String>? = null,
@@ -173,11 +173,11 @@ public object ExpressionDsl {
     call(
       "number-format",
       number,
-      options {
-        if (locale != null) put("locale", locale)
-        if (currency != null) put("currency", currency)
-        if (minFractionDigits != null) put("min-fraction-digits", minFractionDigits)
-        if (maxFractionDigits != null) put("max-fraction-digits", maxFractionDigits)
+      buildOptions {
+        locale?.let { put("locale", it) }
+        currency?.let { put("currency", it) }
+        minFractionDigits?.let { put("min-fraction-digits", it) }
+        maxFractionDigits?.let { put("max-fraction-digits", it) }
       },
     )
 
@@ -246,12 +246,31 @@ public object ExpressionDsl {
   }
 
   /**
-   * Returns an item from an array or a substring from a string from a specified start index, or
-   * between a start index and an end index if set. The return value is inclusive of the start index
-   * but not of the end index. In a string, a UTF-16 surrogate pair counts as a single position.
+   * Returns a substring from a string from a specified start index, or between a start index and an
+   * end index if set. The return value is inclusive of the start index but not of the end index. A
+   * UTF-16 surrogate pair counts as a single position.
    */
+  @JvmName("sliceString")
+  public fun slice(
+    value: Expression<String>,
+    start: Expression<Number>,
+    length: Expression<Number>? = null,
+  ): Expression<String> {
+    val args = buildList {
+      add(value)
+      add(start)
+      length?.let { add(it) }
+    }
+    return call("slice", *args.toTypedArray())
+  }
+
+  /**
+   * Returns an item from an list from a specified start index, or between a start index and an end
+   * index if set. The return value is inclusive of the start index but not of the end index.
+   */
+  @JvmName("sliceList")
   public fun <T> slice(
-    value: Expression<*>,
+    value: Expression<List<T>>,
     start: Expression<Number>,
     length: Expression<Number>? = null,
   ): Expression<T> {
@@ -291,7 +310,15 @@ public object ExpressionDsl {
    * Gets the length of an array or string. In a string, a UTF-16 surrogate pair counts as a single
    * position.
    */
-  public fun length(value: Expression<*>): Expression<Number> = call("length", value)
+  @JvmName("lengthOfString")
+  public fun length(value: Expression<String>): Expression<Number> = call("length", value)
+
+  /**
+   * Gets the length of an array or string. In a string, a UTF-16 surrogate pair counts as a single
+   * position.
+   */
+  @JvmName("lengthOfList")
+  public fun length(value: Expression<List<*>>): Expression<Number> = call("length", value)
 
   // decision
 
@@ -299,41 +326,106 @@ public object ExpressionDsl {
    * Selects the first output whose corresponding test condition evaluates to true, or the fallback
    * value otherwise.
    */
-  public fun <T> case(
-    branches: List<Pair<Expression<Boolean>, Expression<T>>>,
-    default: Expression<T>,
-  ): Expression<T> {
-    val args = branches.flatMap { listOf(it.first, it.second) }
-    return call("case", *args.toTypedArray(), default)
-  }
+  public fun <T> case(branches: List<CaseBranch<T>>, fallback: Expression<T>): Expression<T> =
+    call(
+      "case",
+      *branches.foldToArgs { (test, output) ->
+        add(test)
+        add(output)
+      },
+      fallback,
+    )
+
+  public data class CaseBranch<Output>
+  internal constructor(
+    internal val test: Expression<Boolean>,
+    internal val output: Expression<Output>,
+  )
+
+  public infix fun <Output> Expression<Boolean>.then(
+    output: Expression<Output>
+  ): CaseBranch<Output> = CaseBranch(this, output)
 
   /**
    * Selects the output whose label value matches the input value, or the fallback value if no match
    * is found. The input can be any expression (e.g. ["get", "building_type"]). Each label must be
    * either:
-   * - a single literal value; or
-   * - an array of literal values, whose values must be all strings or all numbers (e.g. [100, 101]
-   *   or ["c", "b"]). The input matches if any of the values in the array matches, similar to the
-   *   "in" operator.
+   * - a single string; or
+   * - a list of strings. The input matches if any of the values in the array matches, similar to
+   *   the "in" operator.
    *
    * Each label must be unique. If the input type does not match the type of the labels, the result
    * will be the fallback value.
    */
+  @JvmName("matchStrings")
   public fun <T> match(
     input: Expression<*>,
-    vararg branches: Pair<Expression<*>, Expression<T>>,
-    default: Expression<T>,
-  ): Expression<T> {
-    val args = branches.flatMap { listOf(it.first, it.second) }
-    return call("match", input, *args.toTypedArray(), default)
-  }
+    fallback: Expression<T>,
+    vararg branches: MatchBranch<String, T>,
+  ): Expression<T> =
+    call(
+      "match",
+      input,
+      *branches.foldToArgs { (label, output) ->
+        add(label)
+        add(output)
+      },
+      fallback,
+    )
+
+  /**
+   * Selects the output whose label value matches the input value, or the fallback value if no match
+   * is found. The input can be any expression (e.g. ["get", "building_type"]). Each label must be
+   * either:
+   * - a single number; or
+   * - a list of numbers. The input matches if any of the values in the array matches, similar to
+   *   the "in" operator.
+   *
+   * Each label must be unique. If the input type does not match the type of the labels, the result
+   * will be the fallback value.
+   */
+  @JvmName("matchNumbers")
+  public fun <T> match(
+    input: Expression<*>,
+    fallback: Expression<T>,
+    vararg branches: MatchBranch<Number, T>,
+  ): Expression<T> =
+    call(
+      "match",
+      input,
+      *branches.foldToArgs { (label, output) ->
+        add(label)
+        add(output)
+      },
+      fallback,
+    )
+
+  @Suppress("unused")
+  public data class MatchBranch<Label, Output>
+  internal constructor(internal val label: Expression<*>, internal val output: Expression<Output>)
+
+  public infix fun <Output> String.then(output: Expression<Output>): MatchBranch<String, Output> =
+    MatchBranch(const(this), output)
+
+  public infix fun <Output> Number.then(output: Expression<Output>): MatchBranch<Number, Output> =
+    MatchBranch(const(this), output)
+
+  @JvmName("stringsThen")
+  public infix fun <Output> List<String>.then(
+    output: Expression<Output>
+  ): MatchBranch<String, Output> = MatchBranch(Expression.ofList(this.map(::const)), output)
+
+  @JvmName("numbersThen")
+  public infix fun <Output> List<Number>.then(
+    output: Expression<Output>
+  ): MatchBranch<Number, Output> = MatchBranch(Expression.ofList(this.map(::const)), output)
 
   /**
    * Evaluates each expression in turn until the first non-null value is obtained, and returns that
    * value.
    */
-  public fun <T> coalesce(vararg values: Expression<T?>, last: Expression<T>): Expression<T> =
-    call("coalesce", *values, last)
+  public fun <T> coalesce(first: Expression<T?>, vararg values: Expression<T?>): Expression<T> =
+    call("coalesce", first, *values)
 
   // TODO above are in the right order from the docs, below are not
 
@@ -341,10 +433,18 @@ public object ExpressionDsl {
     type: Expression<TInterpolationType>,
     input: Expression<Number>,
     vararg stops: Pair<Number, Expression<Output>>,
-  ): Expression<Output> {
-    val args = stops.sortedBy { it.first.toDouble() }.flatMap { listOf(const(it.first), it.second) }
-    return call("interpolate", type, input, *args.toTypedArray())
-  }
+  ): Expression<Output> =
+    call(
+      "interpolate",
+      type,
+      input,
+      *stops
+        .sortedBy { it.first.toDouble() }
+        .foldToArgs {
+          add(const(it.first))
+          add(it.second)
+        },
+    )
 
   public fun linear(): Expression<TInterpolationType> = call("linear")
 
@@ -377,37 +477,42 @@ public object ExpressionDsl {
 
   @Suppress("UNCHECKED_CAST")
   private fun <Return> call(function: String, vararg args: Expression<*>) =
-    Expression(listOf(const(function), *args)) as Expression<Return>
+    Expression.ofList(listOf(const(function), *args)) as Expression<Return>
 
-  private inline fun options(block: MutableMap<String, Expression<*>>.() -> Unit) =
-    Expression(mutableMapOf<String, Expression<*>>().apply(block))
+  private inline fun buildOptions(block: MutableMap<String, Expression<*>>.() -> Unit) =
+    Expression.ofMap(mutableMapOf<String, Expression<*>>().apply(block))
+
+  private fun <T> Array<T>.foldToArgs(block: MutableList<Expression<*>>.(element: T) -> Unit) =
+    fold(mutableListOf<Expression<*>>()) { acc, element -> acc.apply { block(element) } }
+      .toTypedArray()
+
+  private fun <T> List<T>.foldToArgs(block: MutableList<Expression<*>>.(element: T) -> Unit) =
+    fold(mutableListOf<Expression<*>>()) { acc, element -> acc.apply { block(element) } }
+      .toTypedArray()
 }
 
 public fun <T> useExpressions(block: ExpressionDsl.() -> T): T = block(ExpressionDsl)
 
-public interface Expression<T> {
-  public val value: Any?
+// would make this an inline value class, but we lose varargs
+// https://youtrack.jetbrains.com/issue/KT-33565/Allow-vararg-parameter-of-inline-class-type
+public data class Expression<out T> internal constructor(internal val value: Any?) {
+  internal companion object {
+    fun ofString(string: String): Expression<String> = Expression(string)
 
-  public companion object {
-    public operator fun invoke(string: String): Expression<String> = ExpressionImpl(string)
+    fun ofNumber(number: Number): Expression<Number> = Expression(number)
 
-    public operator fun invoke(number: Number): Expression<Number> = ExpressionImpl(number)
+    fun ofBoolean(bool: Boolean): Expression<Boolean> = Expression(bool)
 
-    public operator fun invoke(bool: Boolean): Expression<Boolean> = ExpressionImpl(bool)
+    fun ofNull(): Expression<Nothing?> = Expression(null)
 
-    public operator fun invoke(nil: Nothing? = null): Expression<Nothing?> = ExpressionImpl(nil)
+    fun ofColor(color: Color): Expression<Color> = Expression(color.toMlnColor())
 
-    public operator fun invoke(color: Color): Expression<Color> = ExpressionImpl(color.toMlnColor())
+    fun ofList(list: List<Expression<*>>): Expression<List<*>> = Expression(list.map { it.value })
 
-    public operator fun invoke(list: List<Expression<*>>): Expression<List<*>> =
-      ExpressionImpl(list.map { it.value })
-
-    public operator fun invoke(map: Map<String, Expression<*>>): Expression<Map<String, *>> =
-      ExpressionImpl(map.entries.associate { (key, value) -> key to value.value })
+    fun ofMap(map: Map<String, Expression<*>>): Expression<Map<String, *>> =
+      Expression(map.entries.associate { (key, value) -> key to value.value })
   }
 }
-
-private class ExpressionImpl<T>(override val value: Any?) : Expression<T>
 
 internal expect fun Color.toMlnColor(): Any
 
