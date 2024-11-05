@@ -145,11 +145,11 @@ public object ExpressionDsl {
   )
 
   /**
-   * Returns an image type for use in [iconImage], *-pattern entries and as a section in the
-   * [format] expression. If set, the image argument will check that the requested image exists in
-   * the style and will return either the resolved image name or null, depending on whether or not
-   * the image is currently in the style. This validation process is synchronous and requires the
-   * image to have been added to the style before requesting it in the image argument.
+   * Returns an image type for use in icon-image, *-pattern entries and as a section in the [format]
+   * expression. If set, the image argument will check that the requested image exists in the style
+   * and will return either the resolved image name or null, depending on whether or not the image
+   * is currently in the style. This validation process is synchronous and requires the image to
+   * have been added to the style before requesting it in the image argument.
    */
   public fun image(value: Expression<String>): Expression<TResolvedImage> = call("image", value)
 
@@ -608,7 +608,71 @@ public object ExpressionDsl {
     y2: Expression<Number>,
   ): Expression<TInterpolationType> = call("cubic-bezier", x1, y1, x2, y2)
 
-  // TODO math
+  // math
+
+  public val ln2: Expression<Number> = call("ln2")
+
+  public val pi: Expression<Number> = call("pi")
+
+  public val e: Expression<Number> = call("e")
+
+  public fun sum(vararg numbers: Expression<Number>): Expression<Number> = call("+", *numbers)
+
+  public fun product(vararg numbers: Expression<Number>): Expression<Number> = call("*", *numbers)
+
+  public operator fun Expression<Number>.plus(other: Expression<Number>): Expression<Number> =
+    sum(this, other)
+
+  public operator fun Expression<Number>.times(other: Expression<Number>): Expression<Number> =
+    product(this, other)
+
+  public operator fun Expression<Number>.minus(other: Expression<Number>): Expression<Number> =
+    call("-", this, other)
+
+  public operator fun minus(it: Expression<Number>): Expression<Number> = call("-", it)
+
+  public operator fun Expression<Number>.div(b: Expression<Number>): Expression<Number> =
+    call("/", this, b)
+
+  public operator fun Expression<Number>.rem(b: Expression<Number>): Expression<Number> =
+    call("%", this, b)
+
+  public fun Expression<Number>.pow(exponent: Expression<Number>): Expression<Number> =
+    call("^", this, exponent)
+
+  public fun sqrt(value: Expression<Number>): Expression<Number> = call("sqrt", value)
+
+  public fun log10(value: Expression<Number>): Expression<Number> = call("log10", value)
+
+  public fun ln(value: Expression<Number>): Expression<Number> = call("ln", value)
+
+  public fun log2(value: Expression<Number>): Expression<Number> = call("log2", value)
+
+  public fun sin(value: Expression<Number>): Expression<Number> = call("sin", value)
+
+  public fun cos(value: Expression<Number>): Expression<Number> = call("cos", value)
+
+  public fun tan(value: Expression<Number>): Expression<Number> = call("tan", value)
+
+  public fun asin(value: Expression<Number>): Expression<Number> = call("asin", value)
+
+  public fun acos(value: Expression<Number>): Expression<Number> = call("acos", value)
+
+  public fun atan(value: Expression<Number>): Expression<Number> = call("atan", value)
+
+  public fun min(vararg numbers: Expression<Number>): Expression<Number> = call("min", *numbers)
+
+  public fun max(vararg numbers: Expression<Number>): Expression<Number> = call("max", *numbers)
+
+  public fun round(value: Expression<Number>): Expression<Number> = call("round", value)
+
+  public fun abs(value: Expression<Number>): Expression<Number> = call("abs", value)
+
+  public fun ceil(value: Expression<Number>): Expression<Number> = call("ceil", value)
+
+  public fun floor(value: Expression<Number>): Expression<Number> = call("floor", value)
+
+  public fun distance(value: Expression<TGeometry>): Expression<Number> = call("distance", value)
 
   // color
 
