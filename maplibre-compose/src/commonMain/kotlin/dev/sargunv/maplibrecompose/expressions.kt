@@ -3,7 +3,7 @@ package dev.sargunv.maplibrecompose
 import androidx.compose.ui.graphics.Color
 import kotlin.jvm.JvmName
 
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "FunctionName")
 public object ExpressionDsl {
 
   // basic types: https://maplibre.org/maplibre-style-spec/types/
@@ -15,7 +15,7 @@ public object ExpressionDsl {
 
   public fun const(bool: Boolean): Expression<Boolean> = Expression.ofBoolean(bool)
 
-  public fun <T> `null`(): Expression<T?> = Expression.ofNull()
+  public fun <T> nil(): Expression<T?> = Expression.ofNull()
 
   public fun const(color: Color): Expression<Color> = Expression.ofColor(color)
 
@@ -27,11 +27,8 @@ public object ExpressionDsl {
    * Binds expressions to named variables, which can then be referenced in the result expression
    * using [var].
    */
-  public fun <Input, Output> let(
-    name: String,
-    value: Expression<Input>,
-    expression: Expression<Output>,
-  ): Expression<Output> = call("let", const(name), value, expression)
+  public fun <T> let(name: String, value: Expression<*>, expression: Expression<T>): Expression<T> =
+    call("let", const(name), value, expression)
 
   /** References variable bound using [let]. */
   public fun <T> `var`(name: String): Expression<T> = call("var", const(name))
@@ -51,11 +48,11 @@ public object ExpressionDsl {
    * the input expression is evaluated, it is not of the asserted type, then this assertion will
    * cause the whole expression to be aborted.
    */
-  public fun array(
+  public fun <T> array(
     value: Expression<*>,
     type: Expression<String>? = null,
     length: Expression<Number>? = null,
-  ): Expression<List<*>> {
+  ): Expression<List<T>> {
     val args = buildList {
       type?.let { add(const("array")) }
       length?.let { add(const("array")) }
@@ -95,10 +92,10 @@ public object ExpressionDsl {
    * evaluated in order until an object is obtained. If none of the inputs are objects, the
    * expression is an error.
    */
-  public fun `object`(
+  public fun <T> `object`(
     value: Expression<*>,
     vararg fallbacks: Expression<*>,
-  ): Expression<Map<String, *>> = call("object", value, *fallbacks)
+  ): Expression<Map<String, T>> = call("object", value, *fallbacks)
 
   /**
    * Returns a collator for use in locale-dependent comparison operations. The [caseSensitive] and
@@ -223,9 +220,27 @@ public object ExpressionDsl {
   public fun <T> at(index: Expression<Number>, array: Expression<List<T>>): Expression<T> =
     call("at", index, array)
 
-  /** Determines whether an item exists in an array or a substring exists in a string. */
-  public fun `in`(needle: Expression<*>, haystack: Expression<*>): Expression<Boolean> =
+  @JvmName("getAtIndex")
+  public operator fun <T> Expression<List<T>>.get(index: Expression<Number>): Expression<T> =
+    at(index, this)
+
+  /** Determines whether an item exists in an array. */
+  @JvmName("inList")
+  public fun `in`(needle: Expression<*>, haystack: Expression<List<*>>): Expression<Boolean> =
     call("in", needle, haystack)
+
+  /** Determines whether a substring exists in a string. */
+  @JvmName("inString")
+  public fun `in`(needle: Expression<String>, haystack: Expression<String>): Expression<Boolean> =
+    call("in", needle, haystack)
+
+  @JvmName("inListInfix")
+  public infix fun Expression<*>.`in`(other: Expression<List<*>>): Expression<Boolean> =
+    `in`(this, other)
+
+  @JvmName("inStringInfix")
+  public infix fun Expression<String>.`in`(other: Expression<String>): Expression<Boolean> =
+    `in`(this, other)
 
   /**
    * Returns the first position at which an item can be found in an array or a substring can be
@@ -424,18 +439,120 @@ public object ExpressionDsl {
    * Evaluates each expression in turn until the first non-null value is obtained, and returns that
    * value.
    */
-  public fun <T> coalesce(first: Expression<T?>, vararg values: Expression<T?>): Expression<T> =
-    call("coalesce", first, *values)
+  public fun <T> coalesce(vararg values: Expression<T?>): Expression<T> = call("coalesce", *values)
 
-  // TODO above are in the right order from the docs, below are not
+  public infix fun Expression<*>.eq(other: Expression<*>): Expression<Boolean> =
+    call("==", this, other)
 
-  public fun <Output> interpolate(
+  public fun eq(
+    left: Expression<String>,
+    right: Expression<String>,
+    collator: Expression<TCollator>? = null,
+  ): Expression<Boolean> = call("==", left, right, *buildArgs { collator?.let { add(it) } })
+
+  public infix fun Expression<*>.neq(other: Expression<*>): Expression<Boolean> =
+    call("!=", this, other)
+
+  public fun neq(
+    left: Expression<String>,
+    right: Expression<String>,
+    collator: Expression<TCollator>? = null,
+  ): Expression<Boolean> = call("!=", left, right, *buildArgs { collator?.let { add(it) } })
+
+  @JvmName("gtNumber")
+  public infix fun Expression<Number>.gt(other: Expression<Number>): Expression<Boolean> =
+    call(">", this, other)
+
+  @JvmName("gtString")
+  public infix fun Expression<String>.gt(other: Expression<String>): Expression<Boolean> =
+    call(">", this, other)
+
+  public fun gt(
+    left: Expression<String>,
+    right: Expression<String>,
+    collator: Expression<TCollator>? = null,
+  ): Expression<Boolean> = call(">", left, right, *buildArgs { collator?.let { add(it) } })
+
+  @JvmName("ltNumber")
+  public infix fun Expression<Number>.lt(other: Expression<Number>): Expression<Boolean> =
+    call("<", this, other)
+
+  @JvmName("ltString")
+  public infix fun Expression<String>.lt(other: Expression<String>): Expression<Boolean> =
+    call("<", this, other)
+
+  public fun lt(
+    left: Expression<String>,
+    right: Expression<String>,
+    collator: Expression<TCollator>? = null,
+  ): Expression<Boolean> = call("<", left, right, *buildArgs { collator?.let { add(it) } })
+
+  @JvmName("gteNumber")
+  public infix fun Expression<Number>.gte(other: Expression<Number>): Expression<Boolean> =
+    call(">=", this, other)
+
+  @JvmName("gteString")
+  public infix fun Expression<String>.gte(other: Expression<String>): Expression<Boolean> =
+    call(">=", this, other)
+
+  public fun gte(
+    left: Expression<String>,
+    right: Expression<String>,
+    collator: Expression<TCollator>? = null,
+  ): Expression<Boolean> = call(">=", left, right, *buildArgs { collator?.let { add(it) } })
+
+  @JvmName("lteNumber")
+  public infix fun Expression<Number>.lte(other: Expression<Number>): Expression<Boolean> =
+    call("<=", this, other)
+
+  @JvmName("lteString")
+  public infix fun Expression<String>.lte(other: Expression<String>): Expression<Boolean> =
+    call("<=", this, other)
+
+  public fun lte(
+    left: Expression<String>,
+    right: Expression<String>,
+    collator: Expression<TCollator>? = null,
+  ): Expression<Boolean> = call("<=", left, right, *buildArgs { collator?.let { add(it) } })
+
+  public fun all(vararg expressions: Expression<Boolean>): Expression<Boolean> =
+    call("all", *expressions)
+
+  public fun any(vararg expressions: Expression<Boolean>): Expression<Boolean> =
+    call("any", *expressions)
+
+  public fun not(expression: Expression<Boolean>): Expression<Boolean> = call("!", expression)
+
+  @JvmName("notOperator")
+  public operator fun Expression<Boolean>.not(): Expression<Boolean> = not(this)
+
+  public fun within(geometry: Expression<TGeometry>): Expression<Boolean> = call("within", geometry)
+
+  // ramps, scales, curves
+
+  public fun step(
+    input: Expression<Number>,
+    vararg stops: Pair<Number, Expression<Number>>,
+  ): Expression<Number> =
+    call(
+      "step",
+      input,
+      *stops
+        .sortedBy { it.first.toDouble() }
+        .foldToArgs {
+          add(const(it.first))
+          add(it.second)
+        },
+    )
+
+  private fun <Output> interpolateImpl(
+    name: String,
     type: Expression<TInterpolationType>,
     input: Expression<Number>,
     vararg stops: Pair<Number, Expression<Output>>,
   ): Expression<Output> =
     call(
-      "interpolate",
+      name,
       type,
       input,
       *stops
@@ -446,10 +563,43 @@ public object ExpressionDsl {
         },
     )
 
-  public fun linear(): Expression<TInterpolationType> = call("linear")
+  @JvmName("interpolateNumber")
+  public fun interpolate(
+    type: Expression<TInterpolationType>,
+    input: Expression<Number>,
+    vararg stops: Pair<Number, Expression<Number>>,
+  ): Expression<Number> = interpolateImpl("interpolate", type, input, *stops)
+
+  @JvmName("interpolateColor")
+  public fun interpolate(
+    type: Expression<TInterpolationType>,
+    input: Expression<Number>,
+    vararg stops: Pair<Number, Expression<Color>>,
+  ): Expression<Color> = interpolateImpl("interpolate", type, input, *stops)
+
+  @JvmName("interpolateNumbers")
+  public fun interpolate(
+    type: Expression<TInterpolationType>,
+    input: Expression<Number>,
+    vararg stops: Pair<Number, Expression<List<Number>>>,
+  ): Expression<List<Number>> = interpolateImpl("interpolate", type, input, *stops)
+
+  public fun interpolateHcl(
+    type: Expression<TInterpolationType>,
+    input: Expression<Number>,
+    vararg stops: Pair<Number, Expression<Color>>,
+  ): Expression<Color> = interpolateImpl("interpolate-hcl", type, input, *stops)
+
+  public fun interpolateLab(
+    type: Expression<TInterpolationType>,
+    input: Expression<Number>,
+    vararg stops: Pair<Number, Expression<Color>>,
+  ): Expression<Color> = interpolateImpl("interpolate-lab", type, input, *stops)
 
   public fun exponential(base: Expression<Number>): Expression<TInterpolationType> =
     call("exponential", base)
+
+  public fun linear(): Expression<TInterpolationType> = call("linear")
 
   public fun cubicBezier(
     x1: Expression<Number>,
@@ -458,7 +608,11 @@ public object ExpressionDsl {
     y2: Expression<Number>,
   ): Expression<TInterpolationType> = call("cubic-bezier", x1, y1, x2, y2)
 
-  public fun zoom(): Expression<Number> = call("zoom")
+  // TODO math
+
+  // color
+
+  public fun toRgba(color: Expression<Color>): Expression<List<Number>> = call("to-rgba", color)
 
   public fun rgba(
     red: Expression<Number>,
@@ -473,6 +627,16 @@ public object ExpressionDsl {
     blue: Expression<Number>,
   ): Expression<Color> = call("rgb", red, green, blue)
 
+  // TODO feature data
+
+  // zoom
+
+  public fun zoom(): Expression<Number> = call("zoom")
+
+  // TODO heatmap
+
+  // TODO string
+
   // utils
 
   @Suppress("UNCHECKED_CAST")
@@ -481,6 +645,9 @@ public object ExpressionDsl {
 
   private inline fun buildOptions(block: MutableMap<String, Expression<*>>.() -> Unit) =
     Expression.ofMap(mutableMapOf<String, Expression<*>>().apply(block))
+
+  private fun buildArgs(block: MutableList<Expression<*>>.() -> Unit) =
+    mutableListOf<Expression<*>>().apply(block).toTypedArray()
 
   private fun <T> Array<T>.foldToArgs(block: MutableList<Expression<*>>.(element: T) -> Unit) =
     fold(mutableListOf<Expression<*>>()) { acc, element -> acc.apply { block(element) } }
@@ -529,5 +696,8 @@ public sealed interface TResolvedImage
 public sealed interface TCollator
 
 public sealed interface TInterpolationType
+
+// TODO create a const() for this and prob a real type of some kind
+public sealed interface TGeometry
 
 // enum constants

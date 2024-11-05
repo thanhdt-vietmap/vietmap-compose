@@ -30,7 +30,12 @@ kotlin {
 
   sourceSets {
     all {
-      compilerOptions { freeCompilerArgs.add("-Xexpect-actual-classes") }
+      compilerOptions {
+        freeCompilerArgs.apply {
+          add("-Xexpect-actual-classes")
+          add("-Xconsistent-data-class-copy-visibility")
+        }
+      }
       languageSettings {
         optIn("androidx.compose.ui.ExperimentalComposeUiApi")
         optIn("kotlinx.cinterop.ExperimentalForeignApi")
