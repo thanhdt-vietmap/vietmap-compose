@@ -627,15 +627,43 @@ public object ExpressionDsl {
     blue: Expression<Number>,
   ): Expression<Color> = call("rgb", red, green, blue)
 
-  // TODO feature data
+  // feature data
+
+  public fun <T> properties(): Expression<Map<String, T>> = call("properties")
+
+  public fun <T> featureState(key: Expression<String>): Expression<T> = call("feature-state", key)
+
+  public fun geometryType(): Expression<String> = call("geometry-type")
+
+  public fun <T> id(): Expression<T> = call("id")
+
+  public fun lineProgress(value: Expression<Number>): Expression<Number> =
+    call("line-progress", value)
+
+  public fun <T> accumulated(key: Expression<String>): Expression<T> = call("accumulated", key)
 
   // zoom
 
   public fun zoom(): Expression<Number> = call("zoom")
 
-  // TODO heatmap
+  // heatmap
 
-  // TODO string
+  public fun heatmapDensity(): Expression<Number> = call("heatmap-density")
+
+  // string
+
+  public fun isSupportedScript(script: Expression<String>): Expression<Boolean> =
+    call("is-supported-script", script)
+
+  public fun upcase(string: Expression<String>): Expression<String> = call("upcase", string)
+
+  public fun downcase(string: Expression<String>): Expression<String> = call("downcase", string)
+
+  public fun concat(vararg strings: Expression<String>): Expression<String> =
+    call("concat", *strings)
+
+  public fun resolvedLocale(collator: Expression<TCollator>): Expression<String> =
+    call("resolved-locale", collator)
 
   // utils
 
