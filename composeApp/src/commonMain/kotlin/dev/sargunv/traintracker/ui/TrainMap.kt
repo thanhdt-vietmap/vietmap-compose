@@ -9,6 +9,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -72,7 +73,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
                     below = "boundary_3",
                     type =
                       Layer.Type.Line(
-                        color = Colors.white,
+                        color = const(Color.White),
                         width =
                           interpolate(
                             exponential(const(2f)),
@@ -90,7 +91,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
                     above = "amtrak-route-lines-casing",
                     type =
                       Layer.Type.Line(
-                        color = Colors.blue,
+                        color = const(Color.Cyan),
                         width =
                           interpolate(
                             exponential(const(2f)),

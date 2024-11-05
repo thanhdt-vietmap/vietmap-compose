@@ -1,5 +1,7 @@
 package dev.sargunv.maplibrecompose
 
+import androidx.compose.ui.graphics.Color
+
 @Suppress("MemberVisibilityCanBePrivate")
 public object ExpressionDsl {
 
@@ -12,38 +14,10 @@ public object ExpressionDsl {
 
   public fun const(bool: Boolean): Expression<Boolean> = Expression(bool)
 
-  public fun const(`null`: Nothing?): Expression<Nothing?> = Expression(`null`)
+  @Suppress("UNUSED_PARAMETER")
+  public fun const(`null`: Nothing?): Expression<Nothing?> = Expression(null)
 
-  public fun colorRgb(
-    red: UByte,
-    green: UByte,
-    blue: UByte,
-    alpha: Float? = null,
-  ): Expression<TColor> {
-    require(alpha == null || alpha in 0f..1f) { "alpha must be in the range 0..1" }
-    return Colors.rgb(red, green, blue, alpha)
-  }
-
-  public fun colorHsl(
-    hue: Int,
-    saturation: Int,
-    lightness: Int,
-    alpha: Float? = null,
-  ): Expression<TColor> {
-    require(hue in 0..360) { "hue must be in the range 0..360" }
-    require(saturation in 0..100) { "saturation must be in the range 0..100" }
-    require(lightness in 0..100) { "lightness must be in the range 0..100" }
-    require(alpha == null || alpha in 0f..1f) { "alpha must be in the range 0..1" }
-    return Colors.hsl(hue, saturation, lightness, alpha)
-  }
-
-  public fun color(value: UInt): Expression<TColor> =
-    colorRgb(
-      (value shr 16).toUByte(),
-      (value shr 8).toUByte(),
-      value.toUByte(),
-      (value shr 24).toFloat() / 255f,
-    )
+  public fun const(color: Color): Expression<Color> = Expression(color)
 
   // expressions: https://maplibre.org/maplibre-style-spec/expressions/
 
@@ -240,7 +214,7 @@ public object ExpressionDsl {
    * order until the first successful conversion is obtained. If none of the inputs can be
    * converted, the expression is an error.
    */
-  public fun toColor(value: Expression<*>, vararg fallbacks: Expression<*>): Expression<TColor> =
+  public fun toColor(value: Expression<*>, vararg fallbacks: Expression<*>): Expression<Color> =
     call("to-color", value, *fallbacks)
 
   // lookup
@@ -391,13 +365,13 @@ public object ExpressionDsl {
     green: Expression<Number>,
     blue: Expression<Number>,
     alpha: Expression<Number>,
-  ): Expression<TColor> = call("rgba", red, green, blue, alpha)
+  ): Expression<Color> = call("rgba", red, green, blue, alpha)
 
   public fun rgb(
     red: Expression<Number>,
     green: Expression<Number>,
     blue: Expression<Number>,
-  ): Expression<TColor> = call("rgb", red, green, blue)
+  ): Expression<Color> = call("rgb", red, green, blue)
 
   // utils
 
@@ -423,6 +397,8 @@ public interface Expression<T> {
 
     public operator fun invoke(nil: Nothing? = null): Expression<Nothing?> = ExpressionImpl(nil)
 
+    public operator fun invoke(color: Color): Expression<Color> = ExpressionImpl(color.toMlnColor())
+
     public operator fun invoke(list: List<Expression<*>>): Expression<List<*>> =
       ExpressionImpl(list.map { it.value })
 
@@ -433,30 +409,11 @@ public interface Expression<T> {
 
 private class ExpressionImpl<T>(override val value: Any?) : Expression<T>
 
-public expect class Color : Expression<TColor>
-
-public expect object Colors {
-  public val white: Color
-  public val silver: Color
-  public val gray: Color
-  public val black: Color
-  public val red: Color
-  public val maroon: Color
-  public val yellow: Color
-  public val green: Color
-  public val blue: Color
-  public val purple: Color
-
-  public fun rgb(red: UByte, green: UByte, blue: UByte, alpha: Float? = null): Color
-
-  public fun hsl(hue: Int, saturation: Int, lightness: Int, alpha: Float? = null): Color
-}
+internal expect fun Color.toMlnColor(): Any
 
 // token types for expression type safety; these should never be instantiated
 // based on non primitive types from https://maplibre.org/maplibre-style-spec/types/
 // point and padding don't seem to be used in expressions, so I didn't include them
-
-public sealed interface TColor
 
 public sealed interface TFormatted
 

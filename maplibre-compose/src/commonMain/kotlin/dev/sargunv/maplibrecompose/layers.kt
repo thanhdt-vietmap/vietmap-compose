@@ -1,5 +1,7 @@
 package dev.sargunv.maplibrecompose
 
+import androidx.compose.ui.graphics.Color
+
 public data class Layer(
   val id: String,
   val source: String,
@@ -20,7 +22,7 @@ public data class Layer(
     public data class Line(
       val cap: Expression<String>? = null,
       val join: Expression<String>? = null,
-      val color: Expression<TColor>? = null,
+      val color: Expression<Color>? = null,
       val width: Expression<Number>? = null,
     ) : Type()
   }
