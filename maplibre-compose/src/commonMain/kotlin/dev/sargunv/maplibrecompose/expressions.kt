@@ -761,7 +761,7 @@ public object ExpressionDsl {
       .toTypedArray()
 }
 
-public fun <T> useExpressions(block: ExpressionDsl.() -> T): T = block(ExpressionDsl)
+public inline fun <T> useExpressions(block: ExpressionDsl.() -> T): T = block(ExpressionDsl)
 
 // would make this an inline value class, but we lose varargs
 // https://youtrack.jetbrains.com/issue/KT-33565/Allow-vararg-parameter-of-inline-class-type
