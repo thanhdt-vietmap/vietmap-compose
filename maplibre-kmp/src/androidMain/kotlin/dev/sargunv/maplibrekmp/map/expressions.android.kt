@@ -7,7 +7,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
-import dev.sargunv.maplibrekmp.style.expression.Expression
+import dev.sargunv.maplibrekmp.style.Expression
 import org.maplibre.android.style.expressions.Expression as MlnExpression
 
 private fun convertToMlnJson(value: Any?): JsonElement =

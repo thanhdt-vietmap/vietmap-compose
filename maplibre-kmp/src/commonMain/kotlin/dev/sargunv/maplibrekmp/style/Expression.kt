@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrekmp.style.expression
+package dev.sargunv.maplibrekmp.style
 
 import androidx.compose.ui.graphics.Color
 
@@ -16,9 +16,11 @@ public data class Expression<out T> internal constructor(internal val value: Any
 
     fun ofColor(color: Color): Expression<Color> = Expression(color)
 
-    fun ofList(list: List<Expression<*>>): Expression<List<*>> = Expression(list.map { it.value })
+    // return Expression<*> because without ["literal" ... ] MapLibre may not treat it as a list
+    fun ofList(list: List<Expression<*>>): Expression<*> = Expression<Any?>(list.map { it.value })
 
-    fun ofMap(map: Map<String, Expression<*>>): Expression<Map<String, *>> =
-      Expression(map.entries.associate { (key, value) -> key to value.value })
+    // return Expression<*> because without ["literal" ... ] MapLibre may not treat it as a list
+    fun ofMap(map: Map<String, Expression<*>>): Expression<*> =
+      Expression<Any?>(map.entries.associate { (key, value) -> key to value.value })
   }
 }

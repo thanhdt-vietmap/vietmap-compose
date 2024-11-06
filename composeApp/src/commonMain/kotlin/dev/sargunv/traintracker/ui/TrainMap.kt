@@ -16,15 +16,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.sargunv.maplibrekmp.*
 import dev.sargunv.maplibrekmp.map.MaplibreMap
 import dev.sargunv.maplibrekmp.map.MaplibreMapOptions
-import dev.sargunv.maplibrekmp.style.expression.Expressions.const
-import dev.sargunv.maplibrekmp.style.expression.Expressions.exponential
-import dev.sargunv.maplibrekmp.style.expression.Expressions.interpolate
-import dev.sargunv.maplibrekmp.style.expression.Expressions.zoom
-import dev.sargunv.maplibrekmp.style.layer.Layer
-import dev.sargunv.maplibrekmp.style.source.Source
+import dev.sargunv.maplibrekmp.style.Layer
+import dev.sargunv.maplibrekmp.style.Source
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.gtfs.GtfsSdk
 import kotlinx.coroutines.Dispatchers
@@ -62,22 +57,18 @@ fun TrainMap(sheetPadding: PaddingValues) {
     options =
       MaplibreMapOptions(
         style =
-          MaplibreMapOptions.StyleOptions(
-            url = Res.getUri("files/maplibre/style/positron.json"),
-            sources =
-              mapOf(
-                "amtrak-geojson" to
-                  Source.GeoJson(
-                    url = Res.getUri("files/geojson/amtrak/routes.geojson"),
-                    tolerance = 0.001f,
-                  )
-              ),
-            layers =
-              listOf(
+          MaplibreMapOptions.StyleOptions(url = Res.getUri("files/maplibre/style/positron.json")) {
+            val amtrakRoutes =
+              Source.GeoJson(
+                id = "amtrak-geojson",
+                url = Res.getUri("files/geojson/amtrak/routes.geojson"),
+                tolerance = 0.001f,
+              )
+            below("boundary_3") {
+              addAll(
                 Layer(
                   id = "amtrak-route-lines-casing",
-                  source = "amtrak-geojson",
-                  below = "boundary_3",
+                  source = amtrakRoutes,
                   type =
                     Layer.Type.Line(
                       color = const(Color.White),
@@ -94,8 +85,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
                 ),
                 Layer(
                   id = "amtrak-route-lines-inner",
-                  source = "amtrak-geojson",
-                  above = "amtrak-route-lines-casing",
+                  source = amtrakRoutes,
                   type =
                     Layer.Type.Line(
                       color = const(Color.Cyan),
@@ -110,8 +100,9 @@ fun TrainMap(sheetPadding: PaddingValues) {
                       join = const("miter"),
                     ),
                 ),
-              ),
-          ),
+              )
+            }
+          },
         ui =
           MaplibreMapOptions.UiOptions(
             padding =

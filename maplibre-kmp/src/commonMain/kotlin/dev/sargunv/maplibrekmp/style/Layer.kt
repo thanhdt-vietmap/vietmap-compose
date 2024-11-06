@@ -1,21 +1,14 @@
-package dev.sargunv.maplibrekmp.style.layer
+package dev.sargunv.maplibrekmp.style
 
 import androidx.compose.ui.graphics.Color
-import dev.sargunv.maplibrekmp.style.expression.Expression
 
 public data class Layer(
   val id: String,
-  val source: String,
+  val source: Source,
   val type: Type,
   val minZoom: Float? = null,
   val maxZoom: Float? = null,
 ) {
-  init {
-    require(below == null || above == null || index == null) {
-      "Only one of below, above, or index can be set"
-    }
-  }
-
   public sealed class Type {
     public data class Line(
       val cap: Expression<String>? = null,

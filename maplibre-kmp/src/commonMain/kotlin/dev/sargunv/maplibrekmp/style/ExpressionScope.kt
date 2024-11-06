@@ -1,10 +1,10 @@
-package dev.sargunv.maplibrekmp.style.expression
+package dev.sargunv.maplibrekmp.style
 
 import androidx.compose.ui.graphics.Color
 import kotlin.jvm.JvmName
 
 @Suppress("INAPPLICABLE_JVM_NAME")
-public sealed interface ExpressionScope {
+public interface ExpressionScope {
 
   // basic types: https://maplibre.org/maplibre-style-spec/types/
   // minus point and padding, which don't seem to be used in expressions

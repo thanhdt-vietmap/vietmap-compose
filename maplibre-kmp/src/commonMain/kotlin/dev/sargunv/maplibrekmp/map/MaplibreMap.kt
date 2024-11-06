@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.sargunv.maplibrekmp.style.layer.Layer
-import dev.sargunv.maplibrekmp.style.source.Source
 
 public data class MaplibreMapOptions(
   val style: StyleOptions = StyleOptions(),
@@ -13,8 +11,7 @@ public data class MaplibreMapOptions(
 ) {
   public data class StyleOptions(
     val url: String = "https://demotiles.maplibre.org/style.json",
-    val sources: Map<String, Source> = emptyMap(),
-    val layers: List<Layer> = emptyList(),
+    val block: StyleScope.Default.() -> Unit = {},
   )
 
   public data class UiOptions(

@@ -2,7 +2,7 @@ package dev.sargunv.maplibrekmp.map
 
 import androidx.compose.ui.graphics.Color
 import cocoapods.MapLibre.expressionWithMLNJSONObject
-import dev.sargunv.maplibrekmp.style.expression.Expression
+import dev.sargunv.maplibrekmp.style.Expression
 import platform.Foundation.NSExpression
 import platform.UIKit.UIColor
 

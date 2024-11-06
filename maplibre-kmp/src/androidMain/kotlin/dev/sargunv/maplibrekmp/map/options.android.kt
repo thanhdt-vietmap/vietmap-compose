@@ -3,9 +3,10 @@ package dev.sargunv.maplibrekmp.map
 import android.view.Gravity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
-import dev.sargunv.maplibrekmp.style.layer.Layer
-import dev.sargunv.maplibrekmp.style.source.Source
+import dev.sargunv.maplibrekmp.style.Layer
+import dev.sargunv.maplibrekmp.style.Source
 import org.maplibre.android.maps.MapView
+import org.maplibre.android.maps.Style
 
 internal fun MapView.applyUiOptions(
   options: MaplibreMapOptions.UiOptions,
@@ -47,28 +48,26 @@ internal fun MapView.applyUiOptions(
 internal fun MapView.applyStyleOptions(options: MaplibreMapOptions.StyleOptions) {
   getMapAsync { map ->
     map.setStyle(options.url.correctedAndroidUri().toString()) { style ->
-      options.sources
-        .map { (id, source) ->
-          when (source) {
-            is Source.GeoJson -> source.toNativeSource(id)
-          }
-        }
-        .forEach { style.addSource(it) }
-
-      options.layers
-        .associateBy({ it }) { layer ->
-          when (layer.type) {
-            is Layer.Type.Line -> layer.type.toNativeLayer(layer)
-          }
-        }
-        .forEach { (layer, nativeLayer) ->
-          when {
-            layer.below != null -> style.addLayerBelow(nativeLayer, layer.below)
-            layer.above != null -> style.addLayerAbove(nativeLayer, layer.above)
-            layer.index != null -> style.addLayerAt(nativeLayer, layer.index)
-            else -> style.addLayer(nativeLayer)
-          }
-        }
+      options.block(StyleScope.Default(NativeStyleManager(style)))
     }
   }
+}
+
+internal class NativeStyleManager(private val style: Style) : StyleManager() {
+  override fun registerSource(source: Source) = style.addSource(source.toNativeSource())
+
+  override fun registerLayer(layer: Layer) = style.addLayer(layer.toNativeLayer())
+
+  override fun registerLayerAbove(id: String, layer: Layer) =
+    style.addLayerAbove(layer.toNativeLayer(), id)
+
+  override fun registerLayerBelow(id: String, layer: Layer) =
+    style.addLayerBelow(layer.toNativeLayer(), id)
+
+  override fun registerLayerAt(index: Int, layer: Layer) =
+    style.addLayerAt(layer.toNativeLayer(), index)
+
+  override fun hasSource(id: String) = style.getSource(id) != null
+
+  override fun hasLayer(id: String) = style.getLayer(id) != null
 }

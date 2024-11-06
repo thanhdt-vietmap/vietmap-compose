@@ -3,8 +3,8 @@ package dev.sargunv.maplibrekmp.map
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.LayoutDirection
 import cocoapods.MapLibre.*
-import dev.sargunv.maplibrekmp.style.layer.Layer
-import dev.sargunv.maplibrekmp.style.source.Source
+import dev.sargunv.maplibrekmp.style.Layer
+import dev.sargunv.maplibrekmp.style.Source
 import platform.CoreGraphics.CGPointMake
 
 internal fun MLNMapView.applyUiOptions(
@@ -36,33 +36,29 @@ internal fun MLNMapView.applyUiOptions(
 }
 
 internal fun MLNStyle.applyStyleOptions(options: MaplibreMapOptions.StyleOptions) {
-  val getSource = { id: String -> sourceWithIdentifier(id) ?: error("Source not found: $id") }
+  options.block(StyleScope.Default(NativeStyleManager(this)))
+}
 
-  options.sources
-    .map { (id, source) ->
-      when (source) {
-        is Source.GeoJson -> source.toNativeSource(id)
-      }
-    }
-    .forEach { addSource(it) }
+internal class NativeStyleManager(private val style: MLNStyle) : StyleManager() {
+  private fun getSource(id: String) =
+    style.sourceWithIdentifier(id) ?: error("Source not found: $id")
 
-  options.layers
-    .associateBy({ it }) { layer ->
-      when (layer.type) {
-        is Layer.Type.Line -> layer.type.toNativeLayer(getSource, layer)
-      }
-    }
-    .forEach { (layer, nativeLayer) ->
-      when {
-        layer.below != null ->
-          insertLayer(layer = nativeLayer, belowLayer = layerWithIdentifier(layer.below)!!)
+  private fun getLayer(id: String) = style.layerWithIdentifier(id) ?: error("Layer not found: $id")
 
-        layer.above != null ->
-          insertLayer(layer = nativeLayer, aboveLayer = layerWithIdentifier(layer.above)!!)
+  override fun registerSource(source: Source) = style.addSource(source.toNativeSource())
 
-        layer.index != null -> insertLayer(layer = nativeLayer, atIndex = layer.index.toULong())
+  override fun registerLayer(layer: Layer) = style.addLayer(layer.toNativeLayer(::getSource))
 
-        else -> addLayer(nativeLayer)
-      }
-    }
+  override fun registerLayerAbove(id: String, layer: Layer) =
+    style.insertLayer(layer = layer.toNativeLayer(::getSource), aboveLayer = getLayer(id))
+
+  override fun registerLayerBelow(id: String, layer: Layer) =
+    style.insertLayer(layer = layer.toNativeLayer(::getSource), belowLayer = getLayer(id))
+
+  override fun registerLayerAt(index: Int, layer: Layer) =
+    style.insertLayer(layer = layer.toNativeLayer(::getSource), atIndex = index.toULong())
+
+  override fun hasSource(id: String) = style.sourceWithIdentifier(id) != null
+
+  override fun hasLayer(id: String) = style.layerWithIdentifier(id) != null
 }
