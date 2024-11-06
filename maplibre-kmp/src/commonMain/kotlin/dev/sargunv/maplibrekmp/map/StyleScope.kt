@@ -3,6 +3,7 @@ package dev.sargunv.maplibrekmp.map
 import dev.sargunv.maplibrekmp.style.ExpressionScope
 import dev.sargunv.maplibrekmp.style.Layer
 
+@StyleScopeDslMarker
 public sealed class StyleScope private constructor(internal val manager: StyleManager<*, *>) :
   ExpressionScope {
 
