@@ -65,7 +65,7 @@ kotlin {
 
       implementation(project(":kotlin-csv"))
       implementation(project(":multiplatform-zip"))
-      implementation(project(":maplibre-compose"))
+      implementation(project(":maplibre-kmp"))
     }
     commonTest.dependencies { implementation(libs.kotlin.test) }
   }

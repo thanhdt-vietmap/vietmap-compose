@@ -16,7 +16,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.sargunv.maplibrecompose.*
+import dev.sargunv.maplibrekmp.*
+import dev.sargunv.maplibrekmp.map.MaplibreMap
+import dev.sargunv.maplibrekmp.map.MaplibreMapOptions
+import dev.sargunv.maplibrekmp.style.expression.Expressions.const
+import dev.sargunv.maplibrekmp.style.expression.Expressions.exponential
+import dev.sargunv.maplibrekmp.style.expression.Expressions.interpolate
+import dev.sargunv.maplibrekmp.style.expression.Expressions.zoom
+import dev.sargunv.maplibrekmp.style.layer.Layer
+import dev.sargunv.maplibrekmp.style.source.Source
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.gtfs.GtfsSdk
 import kotlinx.coroutines.Dispatchers
@@ -65,40 +73,44 @@ fun TrainMap(sheetPadding: PaddingValues) {
                   )
               ),
             layers =
-              useExpressions {
-                listOf(
-                  Layer(
-                    id = "amtrak-route-lines-casing",
-                    source = "amtrak-geojson",
-                    below = "boundary_3",
-                    type =
-                      Layer.Type.Line(
-                        color = const(Color.White),
-                        width =
-                          interpolate(
-                            exponential(const(2f)),
-                            zoom(),
-                            0 to const(2f),
-                            10 to const(4f),
-                          ),
-                        cap = const("round"),
-                        join = const("miter"),
-                      ),
-                  ),
-                  Layer(
-                    id = "amtrak-route-lines-inner",
-                    source = "amtrak-geojson",
-                    above = "amtrak-route-lines-casing",
-                    type =
-                      Layer.Type.Line(
-                        color = Color.Cyan(),
-                        width = interpolate(exponential(2f()), zoom(), 0 to 1f(), 10 to 2f()),
-                        cap = "round"(),
-                        join = "miter"(),
-                      ),
-                  ),
-                )
-              },
+              listOf(
+                Layer(
+                  id = "amtrak-route-lines-casing",
+                  source = "amtrak-geojson",
+                  below = "boundary_3",
+                  type =
+                    Layer.Type.Line(
+                      color = const(Color.White),
+                      width =
+                        interpolate(
+                          exponential(const(2f)),
+                          zoom(),
+                          0 to const(2f),
+                          10 to const(4f),
+                        ),
+                      cap = const("round"),
+                      join = const("miter"),
+                    ),
+                ),
+                Layer(
+                  id = "amtrak-route-lines-inner",
+                  source = "amtrak-geojson",
+                  above = "amtrak-route-lines-casing",
+                  type =
+                    Layer.Type.Line(
+                      color = const(Color.Cyan),
+                      width =
+                        interpolate(
+                          exponential(const(2f)),
+                          zoom(),
+                          0 to const(1f),
+                          10 to const(2f),
+                        ),
+                      cap = const("round"),
+                      join = const("miter"),
+                    ),
+                ),
+              ),
           ),
         ui =
           MaplibreMapOptions.UiOptions(
