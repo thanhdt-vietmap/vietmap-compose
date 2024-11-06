@@ -10,9 +10,13 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.viewinterop.UIKitInteropInteractionMode
 import androidx.compose.ui.viewinterop.UIKitInteropProperties
 import androidx.compose.ui.viewinterop.UIKitView
+import cocoapods.MapLibre.MLNMapDebugTileBoundariesMask
+import cocoapods.MapLibre.MLNMapDebugTileInfoMask
 import cocoapods.MapLibre.MLNMapView
 import cocoapods.MapLibre.MLNMapViewDelegateProtocol
 import cocoapods.MapLibre.MLNStyle
+import cocoapods.MapLibre.allowsTilting
+import platform.CoreGraphics.CGPointMake
 import platform.Foundation.NSURL
 import platform.UIKit.UIViewAutoresizingFlexibleHeight
 import platform.UIKit.UIViewAutoresizingFlexibleWidth
@@ -30,16 +34,42 @@ public actual fun MaplibreMap(modifier: Modifier, options: MaplibreMapOptions) {
     factory = { MLNMapView() },
     update = { mapView ->
       mapView.apply {
+        delegate = MapDelegate(options)
+
+        debugMask = MLNMapDebugTileBoundariesMask or MLNMapDebugTileInfoMask
+
         autoresizingMask = UIViewAutoresizingFlexibleWidth or UIViewAutoresizingFlexibleHeight
-        delegate =
-          object : NSObject(), MLNMapViewDelegateProtocol {
-            override fun mapView(mapView: MLNMapView, didFinishLoadingStyle: MLNStyle) {
-              didFinishLoadingStyle.applyStyleOptions(options.style)
-            }
-          }
-        applyUiOptions(options.ui, insetPadding, layoutDir)
+        logoView.setHidden(!options.ui.isLogoEnabled)
+        attributionButton.setHidden(!options.ui.isAttributionEnabled)
+        compassView.setHidden(!options.ui.isCompassEnabled)
+
+        allowsTilting = options.ui.isTiltGesturesEnabled
+        zoomEnabled = options.ui.isZoomGesturesEnabled
+        rotateEnabled = options.ui.isRotateGesturesEnabled
+        scrollEnabled = options.ui.isScrollGesturesEnabled
+
+        val leftSafeInset = insetPadding.calculateLeftPadding(layoutDir).value
+        val rightSafeInset = insetPadding.calculateRightPadding(layoutDir).value
+        val bottomSafeInset = insetPadding.calculateBottomPadding().value
+        val leftUiPadding = options.ui.padding.calculateLeftPadding(layoutDir).value - leftSafeInset
+        val rightUiPadding =
+          options.ui.padding.calculateRightPadding(layoutDir).value - rightSafeInset
+        val bottomUiPadding = options.ui.padding.calculateBottomPadding().value - bottomSafeInset
+
+        setLogoViewMargins(CGPointMake(leftUiPadding.toDouble(), bottomUiPadding.toDouble()))
+        setAttributionButtonMargins(
+          CGPointMake(rightUiPadding.toDouble(), bottomUiPadding.toDouble())
+        )
+
         setStyleURL(NSURL(string = options.style.url))
       }
     },
   )
+}
+
+internal class MapDelegate(private val options: MaplibreMapOptions) :
+  NSObject(), MLNMapViewDelegateProtocol {
+
+  override fun mapView(mapView: MLNMapView, didFinishLoadingStyle: MLNStyle) =
+    options.style.block(StyleScope.Default(NativeStyleManager(didFinishLoadingStyle)))
 }

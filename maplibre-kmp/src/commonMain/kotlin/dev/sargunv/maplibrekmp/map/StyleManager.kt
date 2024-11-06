@@ -3,18 +3,21 @@ package dev.sargunv.maplibrekmp.map
 import dev.sargunv.maplibrekmp.style.Layer
 import dev.sargunv.maplibrekmp.style.Source
 
-internal abstract class StyleManager {
+internal abstract class StyleManager<NativeSource, NativeLayer>(
+  private val sourceAdapter: Adapter<Source, NativeSource>,
+  private val layerAdapter: Adapter<Layer, NativeLayer>,
+) {
   private val registeredSources = mutableSetOf<Source>()
 
-  internal abstract fun registerSource(source: Source)
+  internal abstract fun registerSource(source: NativeSource)
 
-  internal abstract fun registerLayer(layer: Layer)
+  internal abstract fun registerLayer(layer: NativeLayer)
 
-  internal abstract fun registerLayerAbove(id: String, layer: Layer)
+  internal abstract fun registerLayerAbove(id: String, layer: NativeLayer)
 
-  internal abstract fun registerLayerBelow(id: String, layer: Layer)
+  internal abstract fun registerLayerBelow(id: String, layer: NativeLayer)
 
-  internal abstract fun registerLayerAt(index: Int, layer: Layer)
+  internal abstract fun registerLayerAt(index: Int, layer: NativeLayer)
 
   internal abstract fun hasSource(id: String): Boolean
 
@@ -23,25 +26,25 @@ internal abstract class StyleManager {
   internal fun addLayer(layer: Layer) {
     checkLayerId(layer.id)
     registerSourceIfNotExists(layer.source)
-    registerLayer(layer)
+    registerLayer(layerAdapter.convert(layer))
   }
 
   internal fun addLayerAbove(above: String, layer: Layer) {
     checkLayerId(layer.id)
     registerSourceIfNotExists(layer.source)
-    registerLayerAbove(above, layer)
+    registerLayerAbove(above, layerAdapter.convert(layer))
   }
 
   internal fun addLayerBelow(below: String, layer: Layer) {
     checkLayerId(layer.id)
     registerSourceIfNotExists(layer.source)
-    registerLayerBelow(below, layer)
+    registerLayerBelow(below, layerAdapter.convert(layer))
   }
 
   internal fun addLayerAt(index: Int, layer: Layer) {
     checkLayerId(layer.id)
     registerSourceIfNotExists(layer.source)
-    registerLayerAt(index, layer)
+    registerLayerAt(index, layerAdapter.convert(layer))
   }
 
   private fun checkLayerId(id: String) {
@@ -59,8 +62,12 @@ internal abstract class StyleManager {
   private fun registerSourceIfNotExists(source: Source) {
     if (!registeredSources.contains(source)) {
       checkSourceId(source.id)
-      registerSource(source)
+      registerSource(sourceAdapter.convert(source))
       registeredSources.add(source)
     }
+  }
+
+  internal fun interface Adapter<Common, Native> {
+    fun convert(common: Common): Native
   }
 }
