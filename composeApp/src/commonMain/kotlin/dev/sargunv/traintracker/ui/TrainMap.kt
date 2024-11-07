@@ -5,26 +5,26 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import dev.sargunv.maplibrekmp.compose.GeoJsonSource
+import dev.sargunv.maplibrekmp.compose.LineLayer
+import dev.sargunv.maplibrekmp.compose.StackBelow
 import dev.sargunv.maplibrekmp.map.MaplibreMap
 import dev.sargunv.maplibrekmp.map.MaplibreMapOptions
-import dev.sargunv.maplibrekmp.style.Layer
-import dev.sargunv.maplibrekmp.style.Source
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.gtfs.GtfsSdk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -32,15 +32,15 @@ class TrainMapViewModel(private val gtfsSdk: GtfsSdk) : ViewModel() {
   private val _state = mutableStateOf(TrainMapState())
   val state: State<TrainMapState> = _state
 
-  init {
-    viewModelScope.launch(Dispatchers.IO) {
-      _state.value = _state.value.copy(loading = true)
-      gtfsSdk
-        .refreshSchedule(noCache = true)
-        .onSuccess { _state.value = _state.value.copy(loading = false) }
-        .onFailure { _state.value = _state.value.copy(loading = false, error = it.message) }
-    }
-  }
+  //  init {
+  //    viewModelScope.launch(Dispatchers.IO) {
+  //      _state.value = _state.value.copy(loading = true)
+  //      gtfsSdk
+  //        .refreshSchedule()
+  //        .onSuccess { _state.value = _state.value.copy(loading = false) }
+  //        .onFailure { _state.value = _state.value.copy(loading = false, error = it.message) }
+  //    }
+  //  }
 }
 
 data class TrainMapState(val loading: Boolean = false, val error: String? = null)
@@ -57,52 +57,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
     options =
       MaplibreMapOptions(
         style =
-          MaplibreMapOptions.StyleOptions(url = Res.getUri("files/maplibre/style/positron.json")) {
-            val amtrakRoutes =
-              Source.GeoJson(
-                id = "amtrak-geojson",
-                url = Res.getUri("files/geojson/amtrak/routes.geojson"),
-                tolerance = 0.001f,
-              )
-            below("boundary_3") {
-              addAll(
-                Layer(
-                  id = "amtrak-route-lines-casing",
-                  source = amtrakRoutes,
-                  type =
-                    Layer.Type.Line(
-                      color = const(Color.White),
-                      width =
-                        interpolate(
-                          exponential(const(2f)),
-                          zoom(),
-                          0 to const(2f),
-                          10 to const(4f),
-                        ),
-                      cap = const("round"),
-                      join = const("miter"),
-                    ),
-                ),
-                Layer(
-                  id = "amtrak-route-lines-inner",
-                  source = amtrakRoutes,
-                  type =
-                    Layer.Type.Line(
-                      color = const(Color.Cyan),
-                      width =
-                        interpolate(
-                          exponential(const(2f)),
-                          zoom(),
-                          0 to const(1f),
-                          10 to const(2f),
-                        ),
-                      cap = const("round"),
-                      join = const("miter"),
-                    ),
-                ),
-              )
-            }
-          },
+          MaplibreMapOptions.StyleOptions(url = Res.getUri("files/maplibre/style/positron.json")),
         ui =
           MaplibreMapOptions.UiOptions(
             padding =
@@ -130,5 +85,32 @@ fun TrainMap(sheetPadding: PaddingValues) {
               )
           ),
       )
-  )
+  ) {
+    val amtrakRoutes =
+      GeoJsonSource(url = Res.getUri("files/geojson/amtrak/routes.geojson"), tolerance = 0.001f)
+
+    var sec by remember { mutableStateOf(0) }
+
+    LaunchedEffect(Unit) {
+      while (true) {
+        delay(16)
+        sec += 16
+      }
+    }
+
+    val color by remember(sec) { mutableStateOf(Color.hsl((sec / 15 % 360).toFloat(), 1.0f, 0.5f)) }
+
+    StackBelow("boundary_3") {
+      LineLayer(
+        sourceId = amtrakRoutes,
+        lineColor = const(Color.White),
+        lineWidth = interpolate(exponential(const(2f)), zoom(), 0 to const(2f), 10 to const(4f)),
+      )
+      LineLayer(
+        sourceId = amtrakRoutes,
+        lineColor = const(color),
+        lineWidth = interpolate(exponential(const(2f)), zoom(), 0 to const(1f), 10 to const(2f)),
+      )
+    }
+  }
 }

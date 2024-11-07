@@ -9,12 +9,24 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import dev.sargunv.maplibrekmp.compose.MapNode
+import dev.sargunv.maplibrekmp.compose.MapNodeApplier
+import dev.sargunv.maplibrekmp.compose.StyleScope
+import dev.sargunv.maplibrekmp.style.Style
+import kotlinx.coroutines.awaitCancellation
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
+import org.maplibre.android.maps.Style as MLNStyle
 
 @Composable
-public actual fun MaplibreMap(modifier: Modifier, options: MaplibreMapOptions) {
+public actual fun MaplibreMap(
+  modifier: Modifier,
+  options: MaplibreMapOptions,
+  styleContent: @Composable StyleScope.() -> Unit,
+) {
   var observer by remember { mutableStateOf<LifecycleEventObserver?>(null) }
+  var style by remember { mutableStateOf<MLNStyle?>(null) }
+  val compositionContext = rememberCompositionContext()
 
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
@@ -78,9 +90,7 @@ public actual fun MaplibreMap(modifier: Modifier, options: MaplibreMapOptions) {
           )
         }
 
-        map.setStyle(options.style.url.correctedAndroidUri().toString()) { style ->
-          options.style.block(StyleScope.Default(NativeStyleManager(style)))
-        }
+        map.setStyle(options.style.url.correctedAndroidUri().toString()) { style = it }
       }
     },
   )
@@ -89,5 +99,18 @@ public actual fun MaplibreMap(modifier: Modifier, options: MaplibreMapOptions) {
   DisposableEffect(lifecycle, observer) {
     observer?.let { lifecycle.addObserver(it) }
     onDispose { observer?.let { lifecycle.removeObserver(it) } }
+  }
+
+  LaunchedEffect(style) {
+    style?.let { style ->
+      val composition =
+        Composition(MapNodeApplier(MapNode.StyleNode(Style(style))), compositionContext)
+      composition.setContent { StyleScope.styleContent() }
+      try {
+        awaitCancellation()
+      } finally {
+        composition.dispose()
+      }
+    }
   }
 }

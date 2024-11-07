@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrekmp.style
+package dev.sargunv.maplibrekmp.style.expression
 
 import androidx.compose.ui.graphics.Color
 

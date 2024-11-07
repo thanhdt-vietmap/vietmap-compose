@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrekmp.style
+package dev.sargunv.maplibrekmp.style.expression
 
 // token types for expression type safety; these should never be instantiated
 

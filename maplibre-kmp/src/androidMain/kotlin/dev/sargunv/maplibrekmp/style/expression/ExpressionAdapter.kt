@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrekmp.map
+package dev.sargunv.maplibrekmp.style.expression
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -7,12 +7,10 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
-import dev.sargunv.maplibrekmp.style.Expression
-import org.maplibre.android.style.expressions.Expression as NativeExpression
 
-internal object NativeExpressionAdapter : StyleManager.Adapter<Expression<*>, NativeExpression> {
-  override fun convert(common: Expression<*>): NativeExpression =
-    NativeExpression.Converter.convert(normalizeJsonLike(common.value))
+internal object ExpressionAdapter {
+  fun Expression<*>.convert(): org.maplibre.android.style.expressions.Expression =
+    org.maplibre.android.style.expressions.Expression.Converter.convert(normalizeJsonLike(value))
 
   private fun normalizeJsonLike(value: Any?): JsonElement =
     when (value) {
