@@ -28,10 +28,7 @@ kotlin {
     pod("zipzap", libs.versions.zipzap.get())
   }
 
-  sourceSets {
-    commonMain.dependencies { api(libs.kotlinx.io.core) }
-    commonTest.dependencies { implementation(libs.kotlin.test) }
-  }
+  sourceSets { commonMain.dependencies { api(libs.kotlinx.io.core) } }
 }
 
 spotless {
