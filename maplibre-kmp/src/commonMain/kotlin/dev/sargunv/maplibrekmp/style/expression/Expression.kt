@@ -1,9 +1,11 @@
 package dev.sargunv.maplibrekmp.style.expression
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
 // would make this an inline value class, but we lose varargs
 // https://youtrack.jetbrains.com/issue/KT-33565/Allow-vararg-parameter-of-inline-class-type
+@Immutable
 public data class Expression<out T> private constructor(internal val value: Any?) {
   internal companion object {
     fun ofString(string: String): Expression<String> = Expression(string)

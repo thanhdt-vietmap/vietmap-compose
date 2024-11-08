@@ -1,0 +1,95 @@
+unstable class MapControl {
+  unstable var impl: MapLibreMap
+  <runtime stability> = Unstable
+}
+unstable class Style {
+  unstable var impl: Style
+  <runtime stability> = Unstable
+}
+stable class ExpressionAdapter {
+  <runtime stability> = Stable
+}
+stable class Layer {
+  <runtime stability> = Stable
+}
+unstable class LineLayer {
+  stable val id: String
+  stable val source: Source
+  unstable val impl: LineLayer
+  <runtime stability> = Unstable
+}
+unstable class GeoJsonSource {
+  stable val id: String
+  unstable val impl: GeoJsonSource
+  <runtime stability> = Unstable
+}
+unstable class NativeSource {
+  stable val id: String
+  unstable var _impl: Source
+  <runtime stability> = Unstable
+}
+stable class Source {
+  <runtime stability> = Stable
+}
+unstable class StyleNode {
+  unstable val style: Style
+  unstable val children: MutableList<MapNode>
+  stable val anchor: Top
+  stable var knownSources: SnapshotStateMap<String, Source>
+  <runtime stability> = Unstable
+}
+unstable class LayerStackNode {
+  runtime val anchor: LayerAnchor
+  unstable val children: MutableList<MapNode>
+  <runtime stability> = Unstable
+}
+runtime class SourceNode {
+  runtime val source: T
+  <runtime stability> = Parameter(T)
+}
+runtime class LayerNode {
+  runtime val layer: T
+  <runtime stability> = Parameter(T)
+}
+stable class MapNodeApplier {
+  <runtime stability> = Stable
+}
+stable class Top {
+  <runtime stability> = Stable
+}
+stable class Bottom {
+  <runtime stability> = Stable
+}
+stable class Above {
+  stable val layerId: String
+  <runtime stability> = Stable
+}
+stable class Below {
+  stable val layerId: String
+  <runtime stability> = Stable
+}
+stable class StyleScope {
+  <runtime stability> = Stable
+}
+stable class Expression {
+  unstable val value: Any?
+}
+stable class FormatStyle {
+  stable val textFont: Expression<String>?
+  stable val textColor: Expression<String>?
+  stable val fontScale: Expression<Number>?
+  <runtime stability> = Stable
+}
+stable class CaseBranch {
+  stable val test: Expression<Boolean>
+  stable val output: Expression<Output>
+  <runtime stability> = Stable
+}
+stable class MatchBranch {
+  stable val label: Expression<*>
+  stable val output: Expression<Output>
+  <runtime stability> = Stable
+}
+stable class Expressions {
+  <runtime stability> = Stable
+}

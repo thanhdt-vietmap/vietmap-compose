@@ -55,14 +55,13 @@ public fun MaplibreMap(
   )
 
   LaunchedEffect(style) {
-    style?.let { style ->
-      val composition = Composition(MapNodeApplier(MapNode.StyleNode(style)), compositionContext)
-      composition.setContent { StyleScope.styleContent() }
-      try {
-        awaitCancellation()
-      } finally {
-        composition.dispose()
-      }
+    val applier = style?.let { MapNodeApplier(MapNode.StyleNode(it)) } ?: return@LaunchedEffect
+    val composition = Composition(applier, compositionContext)
+    composition.setContent { StyleScope.styleContent() }
+    try {
+      awaitCancellation()
+    } finally {
+      composition.dispose()
     }
   }
 }

@@ -79,8 +79,8 @@ fun TrainMap(sheetPadding: PaddingValues) {
 
     LaunchedEffect(Unit) {
       while (true) {
-        delay(16)
-        sec += 16
+        delay(1600)
+        sec += 1600
       }
     }
 

@@ -1,0 +1,41 @@
+restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun NativeMap(
+  stable modifier: Modifier
+  stable uiPadding: PaddingValues
+  stable styleUrl: String
+  stable updateMap: Function1<@[ParameterName(name = 'map')] MapControl, Unit>
+  stable onStyleLoaded: Function1<@[ParameterName(name = 'style')] Style, Unit>
+  stable onRelease: Function0<Unit>
+)
+restartable skippable scheme("[androidx.compose.ui.UiComposable, [androidx.compose.ui.UiComposable]]") fun MaplibreMap(
+  stable modifier: Modifier? = @static Companion
+  stable styleUrl: String? = @static "https://demotiles.maplibre.org/style.json"
+  stable uiPadding: PaddingValues? = @static PaddingValues(8.dp)
+  stable isDebugEnabled: Boolean = @static false
+  stable isLogoEnabled: Boolean = @static true
+  stable isAttributionEnabled: Boolean = @static true
+  stable isCompassEnabled: Boolean = @static true
+  stable isTiltGesturesEnabled: Boolean = @static true
+  stable isZoomGesturesEnabled: Boolean = @static true
+  stable isRotateGesturesEnabled: Boolean = @static true
+  stable isScrollGesturesEnabled: Boolean = @static true
+  stable styleContent: @[ExtensionFunctionType] Function3<StyleScope, Composer, Int, Unit>? = @static ComposableSingletons$MaplibreMapKt.lambda-1
+)
+fun getSource(
+  stable id: String
+): Source?
+fun GeoJsonSource(
+  unused stable <this>: StyleScope
+  stable url: String
+  stable tolerance: Float? = @static null
+): String
+restartable skippable fun LineLayer(
+  unused <this>: LayerStackScope
+  stable sourceId: String
+  stable lineColor: Expression<Color>
+  stable lineWidth: Expression<Number>
+)
+restartable skippable scheme("[0, [0]]") fun AnchoredLayers(
+  stable <this>: StyleScope
+  anchor: LayerAnchor
+  stable content: @[ExtensionFunctionType] Function3<LayerStackScope, Composer, Int, Unit>
+)

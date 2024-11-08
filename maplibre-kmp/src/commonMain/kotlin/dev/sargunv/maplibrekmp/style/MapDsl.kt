@@ -4,16 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
 import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import dev.sargunv.maplibrekmp.internal.MapNode
 import dev.sargunv.maplibrekmp.internal.MapNodeApplier
-import dev.sargunv.maplibrekmp.style.expression.Expression
-import dev.sargunv.maplibrekmp.style.expression.ExpressionScope
 import dev.sargunv.maplibrekmp.internal.wrapper.layer.LineLayer
 import dev.sargunv.maplibrekmp.internal.wrapper.source.GeoJsonSource
 import dev.sargunv.maplibrekmp.internal.wrapper.source.Source
+import dev.sargunv.maplibrekmp.style.expression.Expression
+import dev.sargunv.maplibrekmp.style.expression.ExpressionScope
 import kotlin.random.Random
 
 @DslMarker internal annotation class MapDsl
@@ -27,21 +26,18 @@ private var incrementingId = Random.nextInt() % 1000 + 1000
 private fun nextId(): String = "maplibrekmp-${incrementingId++}"
 
 @Composable
-internal fun withSource(id: String, block: @Composable (source: Source) -> Unit) {
+internal fun getSource(id: String): Source? {
   val rootNode = ((currentComposer.applier as MapNodeApplier).root as MapNode.StyleNode)
-  val source by rootNode.getSource(id)
-  source?.let { block(it) }
+  return rootNode.getSource(id).value
 }
 
 @Composable
 public fun StyleScope.GeoJsonSource(url: String, tolerance: Float? = null): String {
   val id = remember { nextId() }
-  key(id, url, tolerance) {
-    ComposeNode<MapNode.SourceNode<GeoJsonSource>, MapNodeApplier>(
-      factory = { MapNode.SourceNode(GeoJsonSource(id = id, url = url, tolerance = tolerance)) },
-      update = {},
-    )
-  }
+  ComposeNode<MapNode.SourceNode<GeoJsonSource>, MapNodeApplier>(
+    factory = { MapNode.SourceNode(GeoJsonSource(id = id, url = url, tolerance = tolerance)) },
+    update = {},
+  )
   return id
 }
 
@@ -52,7 +48,7 @@ public fun LayerStackScope.LineLayer(
   lineWidth: Expression<Number>,
 ) {
   val id = remember { nextId() }
-  withSource(sourceId) { source ->
+  getSource(sourceId)?.let { source ->
     ComposeNode<MapNode.LayerNode<LineLayer>, MapNodeApplier>(
       factory = { MapNode.LayerNode(LineLayer(id = id, source = source)) },
       update = {
