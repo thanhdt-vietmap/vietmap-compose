@@ -17,9 +17,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
+import dev.sargunv.maplibrekmp.compose.AnchoredLayers
 import dev.sargunv.maplibrekmp.compose.GeoJsonSource
+import dev.sargunv.maplibrekmp.compose.LayerAnchor
 import dev.sargunv.maplibrekmp.compose.LineLayer
-import dev.sargunv.maplibrekmp.compose.StackBelow
 import dev.sargunv.maplibrekmp.map.MaplibreMap
 import dev.sargunv.maplibrekmp.map.MaplibreMapOptions
 import dev.sargunv.traintracker.generated.Res
@@ -86,9 +87,6 @@ fun TrainMap(sheetPadding: PaddingValues) {
           ),
       )
   ) {
-    val amtrakRoutes =
-      GeoJsonSource(url = Res.getUri("files/geojson/amtrak/routes.geojson"), tolerance = 0.001f)
-
     var sec by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
@@ -100,17 +98,20 @@ fun TrainMap(sheetPadding: PaddingValues) {
 
     val color by remember(sec) { mutableStateOf(Color.hsl((sec / 15 % 360).toFloat(), 1.0f, 0.5f)) }
 
-    StackBelow("boundary_3") {
-      LineLayer(
-        sourceId = amtrakRoutes,
-        lineColor = const(Color.White),
-        lineWidth = interpolate(exponential(const(2f)), zoom(), 0 to const(2f), 10 to const(4f)),
-      )
-      LineLayer(
-        sourceId = amtrakRoutes,
-        lineColor = const(color),
-        lineWidth = interpolate(exponential(const(2f)), zoom(), 0 to const(1f), 10 to const(2f)),
-      )
-    }
+    GeoJsonSource(url = Res.getUri("files/geojson/amtrak/routes.geojson"), tolerance = 0.001f)
+      .let { amtrakRoutes ->
+        AnchoredLayers(LayerAnchor.Below("boundary_3")) {
+          LineLayer(
+            sourceId = amtrakRoutes,
+            lineColor = const(Color.White),
+            lineWidth = interpolate(exponential(const(2f)), zoom(), 0 to const(2f), 10 to const(4f)),
+          )
+          LineLayer(
+            sourceId = amtrakRoutes,
+            lineColor = const(color),
+            lineWidth = interpolate(exponential(const(2f)), zoom(), 0 to const(1f), 10 to const(2f)),
+          )
+        }
+      }
   }
 }

@@ -13,19 +13,15 @@ internal class MapNodeApplier(root: MapNode.StyleNode) : AbstractApplier<MapNode
   private val style: Style
     get() = (root as MapNode.StyleNode).style
 
-  override fun insertBottomUp(index: Int, instance: MapNode) {
-    //    println("insertBottomUp: $index, $instance")
-  }
+  override fun insertBottomUp(index: Int, instance: MapNode) {}
 
   override fun insertTopDown(index: Int, instance: MapNode) {
-    //    println("insertTopDown: $index, $instance")
     container.children.add(index, instance)
     onInserted(index, instance)
   }
 
   override fun move(from: Int, to: Int, count: Int) {
     val moved = container.children.slice(from until (from + count - 1))
-    //    println("move: $from -> $to: $moved")
     container.children.move(from, to, count)
     if (to > from) {
       moved.forEachIndexed { index, instance -> onMovedRight(to + index, instance) }
@@ -37,14 +33,12 @@ internal class MapNodeApplier(root: MapNode.StyleNode) : AbstractApplier<MapNode
   }
 
   override fun onClear() {
-    //    println("onClear: ${container.children}")
     container.children.forEach(::onRemoved)
     container.children.clear()
   }
 
   override fun remove(index: Int, count: Int) {
     val removed = container.children.slice(index until (index + count - 1))
-    //    println("remove: $index, $count: $removed")
     container.children.remove(index, count)
     removed.forEach(::onRemoved)
   }
@@ -56,7 +50,12 @@ internal class MapNodeApplier(root: MapNode.StyleNode) : AbstractApplier<MapNode
       is MapNode.LayerNode<*> ->
         findPrevLayer(index)?.let { style.addLayerAbove(it.layer.id, instance.layer) }
           ?: findNextLayer(index)?.let { style.addLayerBelow(it.layer.id, instance.layer) }
-          ?: container.insertionStrategy.insertAnchorLayer(style, instance)
+          ?: when (val anchor = container.anchor) {
+            LayerAnchor.Top -> style.addLayer(instance.layer)
+            LayerAnchor.Bottom -> style.addLayerAt(0, instance.layer)
+            is LayerAnchor.Above -> style.addLayerAbove(anchor.layerId, instance.layer)
+            is LayerAnchor.Below -> style.addLayerBelow(anchor.layerId, instance.layer)
+          }
       is MapNode.LayerStackNode -> {}
     }
   }

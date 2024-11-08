@@ -9,7 +9,7 @@ import dev.sargunv.maplibrekmp.style.source.Source
 internal sealed interface MapNode {
   class StyleNode(val style: Style) : MapNode, NodeContainer {
     override val children = mutableListOf<MapNode>()
-    override val insertionStrategy = InsertionStrategy.Top
+    override val anchor = LayerAnchor.Top
     private var knownSources =
       mutableStateMapOf<String, Source>().apply { style.getSources().forEach { put(it.id, it) } }
 
@@ -26,7 +26,7 @@ internal sealed interface MapNode {
     internal fun getSource(id: String) = derivedStateOf { knownSources[id] }
   }
 
-  class LayerStackNode(override val insertionStrategy: InsertionStrategy) : MapNode, NodeContainer {
+  class LayerStackNode(override val anchor: LayerAnchor) : MapNode, NodeContainer {
     override val children = mutableListOf<MapNode>()
   }
 
@@ -35,7 +35,7 @@ internal sealed interface MapNode {
   class LayerNode<T : Layer>(val layer: T) : MapNode
 
   sealed interface LayerStack {
-    val insertionStrategy: InsertionStrategy
+    val anchor: LayerAnchor
   }
 
   sealed interface NodeContainer : LayerStack {

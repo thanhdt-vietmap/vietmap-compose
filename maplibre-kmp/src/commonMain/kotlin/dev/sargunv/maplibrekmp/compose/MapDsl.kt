@@ -62,29 +62,12 @@ public fun LayerStackScope.LineLayer(
 }
 
 @Composable
-public fun StyleScope.StackBelow(layerId: String, content: @Composable LayerStackScope.() -> Unit) {
+public fun StyleScope.AnchoredLayers(
+  anchor: LayerAnchor,
+  content: @Composable LayerStackScope.() -> Unit,
+) {
   ComposeNode<MapNode.LayerStackNode, MapNodeApplier>(
-    factory = { MapNode.LayerStackNode(InsertionStrategy.Below(layerId)) },
-    update = {},
-  ) {
-    content()
-  }
-}
-
-@Composable
-public fun StyleScope.StackAbove(layerId: String, content: @Composable LayerStackScope.() -> Unit) {
-  ComposeNode<MapNode.LayerStackNode, MapNodeApplier>(
-    factory = { MapNode.LayerStackNode(InsertionStrategy.Above(layerId)) },
-    update = {},
-  ) {
-    content()
-  }
-}
-
-@Composable
-public fun StyleScope.StackBottom(content: @Composable LayerStackScope.() -> Unit) {
-  ComposeNode<MapNode.LayerStackNode, MapNodeApplier>(
-    factory = { MapNode.LayerStackNode(InsertionStrategy.Bottom) },
+    factory = { MapNode.LayerStackNode(anchor) },
     update = {},
   ) {
     content()
