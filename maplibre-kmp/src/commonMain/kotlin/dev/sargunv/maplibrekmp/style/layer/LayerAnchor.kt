@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrekmp.style
+package dev.sargunv.maplibrekmp.style.layer
 
 public sealed interface LayerAnchor {
   public data object Top : LayerAnchor

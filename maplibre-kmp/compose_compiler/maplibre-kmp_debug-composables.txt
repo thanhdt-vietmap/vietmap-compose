@@ -20,22 +20,23 @@ restartable skippable scheme("[androidx.compose.ui.UiComposable, [androidx.compo
   stable isScrollGesturesEnabled: Boolean = @static true
   stable styleContent: @[ExtensionFunctionType] Function3<StyleScope, Composer, Int, Unit>? = @static ComposableSingletons$MaplibreMapKt.lambda-1
 )
-fun getSource(
-  stable id: String
-): Source?
-fun GeoJsonSource(
-  unused stable <this>: StyleScope
-  stable url: String
-  stable tolerance: Float? = @static null
-): String
+restartable skippable scheme("[0, [0]]") fun AnchoredLayers(
+  unused stable <this>: SourceScope
+  anchor: LayerAnchor
+  stable content: @[ExtensionFunctionType] Function3<LayerContainerScope, Composer, Int, Unit>
+)
 restartable skippable fun LineLayer(
-  unused <this>: LayerStackScope
-  stable sourceId: String
+  unused <this>: LayerContainerScope
+  stable sourceHandle: SourceHandle
   stable lineColor: Expression<Color>
   stable lineWidth: Expression<Number>
 )
-restartable skippable scheme("[0, [0]]") fun AnchoredLayers(
-  stable <this>: StyleScope
-  anchor: LayerAnchor
-  stable content: @[ExtensionFunctionType] Function3<LayerStackScope, Composer, Int, Unit>
+restartable skippable scheme("[0, [0]]") fun GeoJsonSource(
+  unused stable <this>: StyleScope
+  stable url: String
+  stable tolerance: Float? = @static null
+  stable content: @[ExtensionFunctionType] Function4<SourceScope, @[ParameterName(name = 'source')] SourceHandle, Composer, Int, Unit>
 )
+fun getSource(
+  stable source: SourceHandle
+): Source?

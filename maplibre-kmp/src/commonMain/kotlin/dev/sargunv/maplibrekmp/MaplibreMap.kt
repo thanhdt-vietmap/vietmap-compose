@@ -11,8 +11,8 @@ import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.sargunv.maplibrekmp.internal.MapNode
-import dev.sargunv.maplibrekmp.internal.MapNodeApplier
+import dev.sargunv.maplibrekmp.internal.compose.MapNodeApplier
+import dev.sargunv.maplibrekmp.internal.compose.StyleNode
 import dev.sargunv.maplibrekmp.internal.wrapper.NativeMap
 import dev.sargunv.maplibrekmp.internal.wrapper.Style
 import dev.sargunv.maplibrekmp.style.StyleScope
@@ -55,7 +55,7 @@ public fun MaplibreMap(
   )
 
   LaunchedEffect(style) {
-    val applier = style?.let { MapNodeApplier(MapNode.StyleNode(it)) } ?: return@LaunchedEffect
+    val applier = style?.let { MapNodeApplier(StyleNode(it)) } ?: return@LaunchedEffect
     val composition = Composition(applier, compositionContext)
     composition.setContent { StyleScope.styleContent() }
     try {

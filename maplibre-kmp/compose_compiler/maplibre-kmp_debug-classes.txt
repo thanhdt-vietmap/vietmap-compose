@@ -31,45 +31,33 @@ unstable class NativeSource {
 stable class Source {
   <runtime stability> = Stable
 }
-unstable class StyleNode {
-  unstable val style: Style
-  unstable val children: MutableList<MapNode>
-  stable val anchor: Top
-  stable var knownSources: SnapshotStateMap<String, Source>
-  <runtime stability> = Unstable
-}
-unstable class LayerStackNode {
+runtime class AnchoredLayersNode {
   runtime val anchor: LayerAnchor
-  unstable val children: MutableList<MapNode>
-  <runtime stability> = Unstable
+  <runtime stability> = Uncertain(LayerAnchor)
 }
-runtime class SourceNode {
-  runtime val source: T
-  <runtime stability> = Parameter(T)
+stable class LayerContainerNode {
+  <runtime stability> = Stable
 }
 runtime class LayerNode {
   runtime val layer: T
   <runtime stability> = Parameter(T)
 }
+unstable class MapNode {
+  unstable val children: MutableList<MapNode>
+  <runtime stability> = Unstable
+}
 stable class MapNodeApplier {
   <runtime stability> = Stable
 }
-stable class Top {
-  <runtime stability> = Stable
+runtime class SourceNode {
+  runtime val source: T
+  stable val anchor: Top
+  <runtime stability> = Parameter(T)
 }
-stable class Bottom {
-  <runtime stability> = Stable
-}
-stable class Above {
-  stable val layerId: String
-  <runtime stability> = Stable
-}
-stable class Below {
-  stable val layerId: String
-  <runtime stability> = Stable
-}
-stable class StyleScope {
-  <runtime stability> = Stable
+unstable class StyleNode {
+  unstable val style: Style
+  stable var knownSources: SnapshotStateMap<String, Source>
+  <runtime stability> = Unstable
 }
 stable class Expression {
   unstable val value: Any?
@@ -91,5 +79,36 @@ stable class MatchBranch {
   <runtime stability> = Stable
 }
 stable class Expressions {
+  <runtime stability> = Stable
+}
+stable class Top {
+  <runtime stability> = Stable
+}
+stable class Bottom {
+  <runtime stability> = Stable
+}
+stable class Above {
+  stable val layerId: String
+  <runtime stability> = Stable
+}
+stable class Below {
+  stable val layerId: String
+  <runtime stability> = Stable
+}
+stable class StyleScope {
+  <runtime stability> = Stable
+}
+stable class SourceScope {
+  <runtime stability> = Stable
+}
+stable class AnchoredLayersScope {
+  <runtime stability> = Stable
+}
+unstable class IncrementingId {
+  stable var incrementingId: Int
+  <runtime stability> = Unstable
+}
+stable class SourceHandle {
+  stable val id: String
   <runtime stability> = Stable
 }
