@@ -2,31 +2,67 @@ package dev.sargunv.maplibrekmp
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Composition
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCompositionContext
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.sargunv.maplibrekmp.internal.MapNode
+import dev.sargunv.maplibrekmp.internal.MapNodeApplier
+import dev.sargunv.maplibrekmp.internal.wrapper.NativeMap
+import dev.sargunv.maplibrekmp.internal.wrapper.Style
 import dev.sargunv.maplibrekmp.style.StyleScope
-
-public data class MaplibreMapOptions(
-  val style: StyleOptions = StyleOptions(),
-  val ui: UiOptions = UiOptions(),
-) {
-  public data class StyleOptions(val url: String = "https://demotiles.maplibre.org/style.json")
-
-  public data class UiOptions(
-    val padding: PaddingValues = PaddingValues(8.dp),
-    val isLogoEnabled: Boolean = true,
-    val isAttributionEnabled: Boolean = true,
-    val isCompassEnabled: Boolean = true,
-    val isTiltGesturesEnabled: Boolean = true,
-    val isZoomGesturesEnabled: Boolean = true,
-    val isRotateGesturesEnabled: Boolean = true,
-    val isScrollGesturesEnabled: Boolean = true,
-  )
-}
+import kotlinx.coroutines.awaitCancellation
 
 @Composable
-public expect fun MaplibreMap(
+public fun MaplibreMap(
   modifier: Modifier = Modifier,
-  options: MaplibreMapOptions = MaplibreMapOptions(),
+  styleUrl: String = "https://demotiles.maplibre.org/style.json",
+  uiPadding: PaddingValues = PaddingValues(8.dp),
+  isDebugEnabled: Boolean = false,
+  isLogoEnabled: Boolean = true,
+  isAttributionEnabled: Boolean = true,
+  isCompassEnabled: Boolean = true,
+  isTiltGesturesEnabled: Boolean = true,
+  isZoomGesturesEnabled: Boolean = true,
+  isRotateGesturesEnabled: Boolean = true,
+  isScrollGesturesEnabled: Boolean = true,
   styleContent: @Composable StyleScope.() -> Unit = {},
-)
+) {
+  var style by remember { mutableStateOf<Style?>(null) }
+  val compositionContext = rememberCompositionContext()
+
+  NativeMap(
+    modifier = modifier,
+    uiPadding = uiPadding,
+    styleUrl = styleUrl,
+    updateMap = { map ->
+      map.isDebugEnabled = isDebugEnabled
+      map.isLogoEnabled = isLogoEnabled
+      map.isAttributionEnabled = isAttributionEnabled
+      map.isCompassEnabled = isCompassEnabled
+      map.isTiltGesturesEnabled = isTiltGesturesEnabled
+      map.isZoomGesturesEnabled = isZoomGesturesEnabled
+      map.isRotateGesturesEnabled = isRotateGesturesEnabled
+      map.isScrollGesturesEnabled = isScrollGesturesEnabled
+    },
+    onStyleLoaded = { style = it },
+    onRelease = { style = null },
+  )
+
+  LaunchedEffect(style) {
+    style?.let { style ->
+      val composition = Composition(MapNodeApplier(MapNode.StyleNode(style)), compositionContext)
+      composition.setContent { StyleScope.styleContent() }
+      try {
+        awaitCancellation()
+      } finally {
+        composition.dispose()
+      }
+    }
+  }
+}

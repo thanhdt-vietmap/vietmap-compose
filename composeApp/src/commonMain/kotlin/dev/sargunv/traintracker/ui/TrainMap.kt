@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
 import dev.sargunv.maplibrekmp.MaplibreMap
-import dev.sargunv.maplibrekmp.MaplibreMapOptions
 import dev.sargunv.maplibrekmp.style.AnchoredLayers
 import dev.sargunv.maplibrekmp.style.GeoJsonSource
 import dev.sargunv.maplibrekmp.style.LayerAnchor
@@ -54,39 +53,28 @@ fun TrainMap(sheetPadding: PaddingValues) {
 
   val insetsPadding = WindowInsets.safeDrawing.asPaddingValues(LocalDensity.current)
 
-  MaplibreMap(
-    options =
-      MaplibreMapOptions(
-        style =
-          MaplibreMapOptions.StyleOptions(url = Res.getUri("files/maplibre/style/positron.json")),
-        ui =
-          MaplibreMapOptions.UiOptions(
-            padding =
-              PaddingValues(
-                start =
-                  max(
-                    8.dp + sheetPadding.calculateLeftPadding(LayoutDirection.Ltr),
-                    insetsPadding.calculateLeftPadding(LayoutDirection.Ltr),
-                  ),
-                end =
-                  max(
-                    8.dp + sheetPadding.calculateRightPadding(LayoutDirection.Ltr),
-                    insetsPadding.calculateRightPadding(LayoutDirection.Ltr),
-                  ),
-                top =
-                  max(
-                    8.dp + sheetPadding.calculateTopPadding(),
-                    insetsPadding.calculateTopPadding(),
-                  ),
-                bottom =
-                  max(
-                    8.dp + sheetPadding.calculateBottomPadding(),
-                    insetsPadding.calculateBottomPadding(),
-                  ),
-              )
-          ),
-      )
-  ) {
+  val uiPadding =
+    remember(sheetPadding, insetsPadding) {
+      val start =
+        max(
+          8.dp + sheetPadding.calculateLeftPadding(LayoutDirection.Ltr),
+          insetsPadding.calculateLeftPadding(LayoutDirection.Ltr),
+        )
+      val end =
+        max(
+          8.dp + sheetPadding.calculateRightPadding(LayoutDirection.Ltr),
+          insetsPadding.calculateRightPadding(LayoutDirection.Ltr),
+        )
+      val top = max(8.dp + sheetPadding.calculateTopPadding(), insetsPadding.calculateTopPadding())
+      val bottom =
+        max(8.dp + sheetPadding.calculateBottomPadding(), insetsPadding.calculateBottomPadding())
+      PaddingValues(start = start, end = end, top = top, bottom = bottom)
+    }
+
+  val styleUrl = remember { Res.getUri("files/maplibre/style/positron.json") }
+  val amtrakUrl = remember { Res.getUri("files/geojson/amtrak/routes.geojson") }
+
+  MaplibreMap(styleUrl = styleUrl, uiPadding = uiPadding) {
     var sec by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
@@ -98,20 +86,19 @@ fun TrainMap(sheetPadding: PaddingValues) {
 
     val color by remember(sec) { mutableStateOf(Color.hsl((sec / 15 % 360).toFloat(), 1.0f, 0.5f)) }
 
-    GeoJsonSource(url = Res.getUri("files/geojson/amtrak/routes.geojson"), tolerance = 0.001f)
-      .let { amtrakRoutes ->
-        AnchoredLayers(LayerAnchor.Below("boundary_3")) {
-          LineLayer(
-            sourceId = amtrakRoutes,
-            lineColor = const(Color.White),
-            lineWidth = interpolate(exponential(const(2f)), zoom(), 0 to const(2f), 10 to const(4f)),
-          )
-          LineLayer(
-            sourceId = amtrakRoutes,
-            lineColor = const(color),
-            lineWidth = interpolate(exponential(const(2f)), zoom(), 0 to const(1f), 10 to const(2f)),
-          )
-        }
+    GeoJsonSource(url = amtrakUrl, tolerance = 0.001f).let { amtrakRoutes ->
+      AnchoredLayers(LayerAnchor.Below("boundary_3")) {
+        LineLayer(
+          sourceId = amtrakRoutes,
+          lineColor = const(Color.White),
+          lineWidth = interpolate(exponential(const(2f)), zoom(), 0 to const(2f), 10 to const(4f)),
+        )
+        LineLayer(
+          sourceId = amtrakRoutes,
+          lineColor = const(color),
+          lineWidth = interpolate(exponential(const(2f)), zoom(), 0 to const(1f), 10 to const(2f)),
+        )
       }
+    }
   }
 }

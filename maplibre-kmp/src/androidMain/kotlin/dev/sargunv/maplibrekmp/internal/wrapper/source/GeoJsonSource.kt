@@ -1,6 +1,6 @@
 package dev.sargunv.maplibrekmp.internal.wrapper.source
 
-import dev.sargunv.maplibrekmp.internal.correctedAndroidUri
+import dev.sargunv.maplibrekmp.internal.wrapper.correctedAndroidUri
 import org.maplibre.android.style.sources.GeoJsonOptions
 import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
 

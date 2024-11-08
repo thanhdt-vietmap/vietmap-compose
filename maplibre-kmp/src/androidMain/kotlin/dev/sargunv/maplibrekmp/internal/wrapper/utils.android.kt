@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrekmp.internal
+package dev.sargunv.maplibrekmp.internal.wrapper
 
 import java.net.URI
 
