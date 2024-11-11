@@ -11,8 +11,9 @@ import dev.sargunv.maplibrekmp.style.SourceScope
 @Composable
 public fun SourceScope.AnchoredLayers(
   anchor: LayerAnchor,
-  content: @Composable LayerContainerScope.() -> Unit,
+  content: @Composable LayerContainerScope.() -> Unit = {},
 ) {
+  // TODO anchor should be passed down as a LocaLProvider instead
   ComposeNode<AnchoredLayersNode, MapNodeApplier>(
     factory = { AnchoredLayersNode(anchor) },
     update = {},

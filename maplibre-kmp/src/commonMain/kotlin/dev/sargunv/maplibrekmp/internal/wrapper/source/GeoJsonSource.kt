@@ -1,3 +1,14 @@
 package dev.sargunv.maplibrekmp.internal.wrapper.source
 
-internal expect class GeoJsonSource(id: String, url: String, tolerance: Float? = null) : Source
+import dev.sargunv.maplibrekmp.style.source.GeoJsonOptions
+
+internal expect class GeoJsonSource(
+  id: String,
+  dataUrl: String? = null,
+  dataJson: String? = null,
+  options: GeoJsonOptions,
+) : Source {
+  fun setDataUrl(url: String)
+
+  fun setDataJson(json: String)
+}

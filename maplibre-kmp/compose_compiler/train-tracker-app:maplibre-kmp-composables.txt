@@ -1,4 +1,4 @@
-restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun NativeMap(
+restartable skippable fun NativeMap(
   stable modifier: Modifier
   stable uiPadding: PaddingValues
   stable styleUrl: String
@@ -6,7 +6,7 @@ restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun NativeMap
   stable onStyleLoaded: Function1<@[ParameterName(name = 'style')] Style, Unit>
   stable onRelease: Function0<Unit>
 )
-restartable skippable scheme("[androidx.compose.ui.UiComposable, [androidx.compose.ui.UiComposable]]") fun MaplibreMap(
+restartable skippable scheme("[0, [0]]") fun MaplibreMap(
   stable modifier: Modifier? = @static Companion
   stable styleUrl: String? = @static "https://demotiles.maplibre.org/style.json"
   stable uiPadding: PaddingValues? = @static PaddingValues(8.dp)

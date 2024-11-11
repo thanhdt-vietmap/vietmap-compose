@@ -12,7 +12,7 @@ import kotlin.random.Random
 
 @MapDsl public sealed interface LayerContainerScope : ExpressionScope
 
-@MapDsl public data object StyleScope
+@MapDsl public data object StyleScope : ExpressionScope
 
 @MapDsl public data object SourceScope : LayerContainerScope
 

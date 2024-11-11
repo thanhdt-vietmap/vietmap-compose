@@ -20,6 +20,10 @@ public interface ExpressionScope {
 
   public fun const(color: Color): Expression<Color> = Expression.ofColor(color)
 
+  public fun point(x: Number, y: Number): Expression<Point> = Expression.ofPoint(Point(x, y))
+
+  public fun point(point: Point): Expression<Point> = Expression.ofPoint(point)
+
   // expressions: https://maplibre.org/maplibre-style-spec/expressions/
 
   // variable binding
@@ -579,6 +583,13 @@ public interface ExpressionScope {
     input: Expression<Number>,
     vararg stops: Pair<Number, Expression<Color>>,
   ): Expression<Color> = interpolateImpl("interpolate", type, input, *stops)
+
+  @JvmName("interpolatePoint")
+  public fun interpolate(
+    type: Expression<TInterpolationType>,
+    input: Expression<Number>,
+    vararg stops: Pair<Number, Expression<Point>>,
+  ): Expression<Point> = interpolateImpl("interpolate", type, input, *stops)
 
   @JvmName("interpolateNumbers")
   public fun interpolate(

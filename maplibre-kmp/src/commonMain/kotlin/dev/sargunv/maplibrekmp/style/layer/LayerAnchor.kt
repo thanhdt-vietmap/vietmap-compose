@@ -1,5 +1,8 @@
 package dev.sargunv.maplibrekmp.style.layer
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 public sealed interface LayerAnchor {
   public data object Top : LayerAnchor
 

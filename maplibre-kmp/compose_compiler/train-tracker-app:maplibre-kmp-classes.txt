@@ -1,9 +1,9 @@
 unstable class MapControl {
-  unstable var impl: MapLibreMap
+  unstable var impl: MLNMapView
   <runtime stability> = Unstable
 }
 unstable class Style {
-  unstable var impl: Style
+  unstable var impl: MLNStyle
   <runtime stability> = Unstable
 }
 stable class ExpressionAdapter {
@@ -15,17 +15,17 @@ stable class Layer {
 unstable class LineLayer {
   stable val id: String
   stable val source: Source
-  unstable val impl: LineLayer
+  unstable val impl: MLNLineStyleLayer
   <runtime stability> = Unstable
 }
 unstable class GeoJsonSource {
   stable val id: String
-  unstable val impl: GeoJsonSource
+  unstable val impl: MLNShapeSource
   <runtime stability> = Unstable
 }
 unstable class NativeSource {
   stable val id: String
-  unstable var _impl: Source
+  unstable var _impl: MLNSource
   <runtime stability> = Unstable
 }
 stable class Source {
@@ -86,9 +86,10 @@ stable class MatchBranch {
 stable class Expressions {
   <runtime stability> = Stable
 }
-stable class Point {
+unstable class Point {
   unstable val x: Number
   unstable val y: Number
+  <runtime stability> = Unstable
 }
 stable class Top {
   <runtime stability> = Stable

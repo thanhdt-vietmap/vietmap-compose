@@ -8,6 +8,7 @@ import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import dev.sargunv.maplibrekmp.style.expression.Expression
+import dev.sargunv.maplibrekmp.style.expression.Point
 
 internal object ExpressionAdapter {
   fun Expression<*>.convert(): org.maplibre.android.style.expressions.Expression =
@@ -22,6 +23,11 @@ internal object ExpressionAdapter {
       is List<*> -> JsonArray().apply { value.forEach { add(normalizeJsonLike(it)) } }
       is Map<*, *> ->
         JsonObject().apply { value.forEach { add(it.key as String, normalizeJsonLike(it.value)) } }
+      is Point ->
+        JsonArray().apply {
+          add(value.x)
+          add(value.y)
+        }
       is Color ->
         JsonPrimitive(
           value.toArgb().let {
