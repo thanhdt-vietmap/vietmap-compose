@@ -25,6 +25,17 @@ restartable skippable scheme("[0, [0]]") fun AnchoredLayers(
   stable anchor: LayerAnchor
   stable content: @[ExtensionFunctionType] Function3<LayerContainerScope, Composer, Int, Unit>? = @static ComposableSingletons$AnchoredLayersKt.lambda-1
 )
+restartable skippable fun CircleLayer(
+  <this>: LayerContainerScope
+  stable source: SourceHandle
+  stable sourceLayer: String? = @static ""
+  stable minZoom: Float = @static 0.0f
+  stable maxZoom: Float = @static 24.0f
+  stable filter: Expression<Boolean>? = @dynamic nil()
+  stable visible: Boolean = @static true
+  stable layout: CircleLayout? = @dynamic CircleLayout()
+  stable paint: CirclePaint? = @dynamic CirclePaint()
+)
 restartable skippable fun LineLayer(
   <this>: LayerContainerScope
   stable source: SourceHandle

@@ -20,24 +20,8 @@ actual constructor(override val id: String, override val source: Source) : Layer
       impl.sourceLayerIdentifier = value
     }
 
-  actual var minZoom: Float
-    get() = impl.minimumZoomLevel
-    set(value) {
-      impl.minimumZoomLevel = value
-    }
-
-  actual var maxZoom: Float
-    get() = impl.maximumZoomLevel
-    set(value) {
-      impl.maximumZoomLevel = value
-    }
-
   actual fun setFilter(filter: Expression<Boolean>) {
     impl.predicate = filter.toPredicate()
-  }
-
-  actual fun setVisible(value: Boolean) {
-    impl.visible = value
   }
 
   actual fun setLineCap(lineCap: Expression<String>) {

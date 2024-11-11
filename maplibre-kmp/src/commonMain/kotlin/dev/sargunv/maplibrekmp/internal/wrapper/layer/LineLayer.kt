@@ -8,12 +8,8 @@ import dev.sargunv.maplibrekmp.style.expression.TResolvedImage
 
 internal expect class LineLayer(id: String, source: Source) : Layer {
   var sourceLayer: String
-  var minZoom: Float
-  var maxZoom: Float
 
   fun setFilter(filter: Expression<Boolean>)
-
-  fun setVisible(value: Boolean)
 
   fun setLineCap(lineCap: Expression<String>)
 

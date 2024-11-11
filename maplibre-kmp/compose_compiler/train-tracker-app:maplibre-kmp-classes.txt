@@ -6,6 +6,12 @@ unstable class Style {
   unstable var impl: MLNStyle
   <runtime stability> = Unstable
 }
+unstable class CircleLayer {
+  stable val id: String
+  stable val source: Source
+  unstable val impl: MLNCircleStyleLayer
+  <runtime stability> = Unstable
+}
 stable class ExpressionAdapter {
   <runtime stability> = Stable
 }
@@ -86,10 +92,27 @@ stable class MatchBranch {
 stable class Expressions {
   <runtime stability> = Stable
 }
-unstable class Point {
+stable class Point {
   unstable val x: Number
   unstable val y: Number
-  <runtime stability> = Unstable
+}
+stable class CircleLayout {
+  stable val circleSortKey: Expression<Number>
+  <runtime stability> = Stable
+}
+stable class CirclePaint {
+  stable val circleRadius: Expression<Number>
+  stable val circleColor: Expression<Color>
+  stable val circleBlur: Expression<Number>
+  stable val circleOpacity: Expression<Number>
+  stable val circleTranslate: Expression<Point>
+  stable val circleTranslateAnchor: Expression<String>
+  stable val circlePitchScale: Expression<String>
+  stable val circlePitchAlignment: Expression<String>
+  stable val circleStrokeWidth: Expression<Number>
+  stable val circleStrokeColor: Expression<Color>
+  stable val circleStrokeOpacity: Expression<Number>
+  <runtime stability> = Stable
 }
 stable class Top {
   <runtime stability> = Stable

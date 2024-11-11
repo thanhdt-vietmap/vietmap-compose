@@ -35,7 +35,7 @@ actual constructor(
         withClusterMaxZoom(options.clusterMaxZoom)
         withClusterRadius(options.clusterRadius)
         options.clusterProperties.forEach { (key, value) ->
-          withClusterProperty(key, const(value.operator).convert(), value.mapper.convert())
+          withClusterProperty(key, const(value.operator).convert()!!, value.mapper.convert()!!)
         }
       }
 

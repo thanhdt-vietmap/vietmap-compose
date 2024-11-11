@@ -6,8 +6,8 @@ import dev.sargunv.maplibrekmp.internal.wrapper.source.Source
 import dev.sargunv.maplibrekmp.style.expression.Expression
 import dev.sargunv.maplibrekmp.style.expression.Point
 import dev.sargunv.maplibrekmp.style.expression.TResolvedImage
+import org.maplibre.android.style.expressions.Expression as MLNExpression
 import org.maplibre.android.style.layers.LineLayer as MLNLineLayer
-import org.maplibre.android.style.layers.Property
 import org.maplibre.android.style.layers.PropertyFactory
 
 internal actual class LineLayer
@@ -21,24 +21,8 @@ actual constructor(override val id: String, override val source: Source) : Layer
       impl.sourceLayer = value
     }
 
-  actual var minZoom: Float
-    get() = impl.minZoom
-    set(value) {
-      impl.minZoom = value
-    }
-
-  actual var maxZoom: Float
-    get() = impl.maxZoom
-    set(value) {
-      impl.maxZoom = value
-    }
-
   actual fun setFilter(filter: Expression<Boolean>) {
-    impl.setFilter(filter.convert())
-  }
-
-  actual fun setVisible(value: Boolean) {
-    impl.setProperties(PropertyFactory.visibility(if (value) Property.VISIBLE else Property.NONE))
+    impl.setFilter(filter.convert() ?: MLNExpression.literal(true))
   }
 
   actual fun setLineCap(lineCap: Expression<String>) {

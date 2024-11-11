@@ -62,7 +62,7 @@ public fun LayerContainerScope.LineLayer(
         set(minZoom) { layer.minZoom = it }
         set(maxZoom) { layer.maxZoom = it }
         set(filter) { layer.setFilter(it) }
-        set(visible) { layer.setVisible(it) }
+        set(visible) { layer.visible = it }
         set(layout.lineCap) { layer.setLineCap(it) }
         set(layout.lineJoin) { layer.setLineJoin(it) }
         set(layout.lineMiterLimit) { layer.setLineMiterLimit(it) }
