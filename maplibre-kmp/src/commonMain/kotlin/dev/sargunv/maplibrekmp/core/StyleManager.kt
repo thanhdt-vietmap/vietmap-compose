@@ -2,7 +2,7 @@ package dev.sargunv.maplibrekmp.core
 
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateMapOf
-import dev.sargunv.maplibrekmp.compose.layer.Anchor
+import dev.sargunv.maplibrekmp.core.layer.Anchor
 import dev.sargunv.maplibrekmp.core.layer.Layer
 import dev.sargunv.maplibrekmp.core.source.Source
 

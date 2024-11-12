@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrekmp.core
+package dev.sargunv.maplibrekmp.compose
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,6 +16,8 @@ import androidx.compose.ui.viewinterop.UIKitView
 import cocoapods.MapLibre.MLNMapView
 import cocoapods.MapLibre.MLNMapViewDelegateProtocol
 import cocoapods.MapLibre.MLNStyle
+import dev.sargunv.maplibrekmp.core.MapControl
+import dev.sargunv.maplibrekmp.core.Style
 import platform.CoreGraphics.CGPointMake
 import platform.Foundation.NSURL
 import platform.darwin.NSObject

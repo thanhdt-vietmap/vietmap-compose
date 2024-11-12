@@ -58,20 +58,6 @@ stable class StyleNode {
   stable val styleManager: StyleManager
   <runtime stability> = Stable
 }
-stable class Top {
-  <runtime stability> = Stable
-}
-stable class Bottom {
-  <runtime stability> = Stable
-}
-stable class Above {
-  stable val layerId: String
-  <runtime stability> = Stable
-}
-stable class Below {
-  stable val layerId: String
-  <runtime stability> = Stable
-}
 stable class CircleLayout {
   stable val sortKey: Expression<Number>
   <runtime stability> = Stable
@@ -126,6 +112,25 @@ stable class StyleManager {
   stable val layers: SnapshotStateMap<String, Layer>
   unstable val layersByAnchor: MutableMap<Anchor, MutableList<Pair<Int, Layer>>>
 }
+stable class Top {
+  <runtime stability> = Stable
+}
+stable class Bottom {
+  <runtime stability> = Stable
+}
+stable class Above {
+  stable val layerId: String
+  <runtime stability> = Stable
+}
+stable class Below {
+  stable val layerId: String
+  <runtime stability> = Stable
+}
+stable class ClusterProperty {
+  stable val operator: String
+  stable val mapper: Expression<*>
+  <runtime stability> = Stable
+}
 stable class GeoJsonOptions {
   stable val maxZoom: Int
   stable val buffer: Int
@@ -145,11 +150,6 @@ stable class GeoJson {
   <runtime stability> = Stable
 }
 stable class Shape {
-}
-stable class ClusterProperty {
-  stable val operator: String
-  stable val mapper: Expression<*>
-  <runtime stability> = Stable
 }
 stable class Expression {
   unstable val value: Any?

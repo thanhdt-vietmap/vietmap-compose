@@ -3,9 +3,9 @@ package dev.sargunv.maplibrekmp.compose.source
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
-import dev.sargunv.maplibrekmp.LocalStyleManager
-import dev.sargunv.maplibrekmp.core.source.Source
 import dev.sargunv.maplibrekmp.compose.IncrementingId
+import dev.sargunv.maplibrekmp.compose.LocalStyleManager
+import dev.sargunv.maplibrekmp.core.source.Source
 
 @Composable
 @PublishedApi

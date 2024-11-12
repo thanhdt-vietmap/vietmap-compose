@@ -1,6 +1,6 @@
 package,name,composable,skippable,restartable,readonly,inline,isLambda,hasDefaults,defaultsGroup,groups,calls,
-dev.sargunv.maplibrekmp.core.NativeMap,NativeMap,1,1,1,0,0,0,0,0,1,5,
-dev.sargunv.maplibrekmp.MaplibreMap,MaplibreMap,1,1,1,0,0,0,0,0,1,3,
+dev.sargunv.maplibrekmp.compose.NativeMap,NativeMap,1,1,1,0,0,0,0,0,1,5,
+dev.sargunv.maplibrekmp.compose.MaplibreMap,MaplibreMap,1,1,1,0,0,0,0,0,1,3,
 dev.sargunv.maplibrekmp.compose.layer.Anchor.Companion.Top,Top,1,1,1,0,0,0,0,0,1,2,
 dev.sargunv.maplibrekmp.compose.layer.Anchor.Companion.Bottom,Bottom,1,1,1,0,0,0,0,0,1,2,
 dev.sargunv.maplibrekmp.compose.layer.Anchor.Companion.Above,Above,1,1,1,0,0,0,0,0,1,2,

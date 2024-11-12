@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrekmp.core
+package dev.sargunv.maplibrekmp.compose
 
 import android.view.Gravity
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,6 +10,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import dev.sargunv.maplibrekmp.core.MapControl
+import dev.sargunv.maplibrekmp.core.Style
+import dev.sargunv.maplibrekmp.core.correctedAndroidUri
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
 

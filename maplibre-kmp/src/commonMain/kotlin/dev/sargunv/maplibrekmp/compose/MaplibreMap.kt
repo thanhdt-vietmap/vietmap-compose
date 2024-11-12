@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrekmp
+package dev.sargunv.maplibrekmp.compose
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
 import dev.sargunv.maplibrekmp.compose.engine.StyleNode
-import dev.sargunv.maplibrekmp.core.NativeMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.StyleManager
 import dev.sargunv.maplibrekmp.expression.Expression
