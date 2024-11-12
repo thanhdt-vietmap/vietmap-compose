@@ -54,66 +54,9 @@ unstable class MapNode {
 stable class MapNodeApplier {
   <runtime stability> = Stable
 }
-stable class StyleManager {
-  unstable val style: Style
-  stable val sources: SnapshotStateMap<String, Source>
-  stable val layers: SnapshotStateMap<String, Layer>
-  unstable val layersByAnchor: MutableMap<Anchor, MutableList<Pair<Int, Layer>>>
-}
 stable class StyleNode {
   stable val styleManager: StyleManager
   <runtime stability> = Stable
-}
-stable class GeoJsonOptions {
-  stable val maxZoom: Int
-  stable val buffer: Int
-  stable val tolerance: Float
-  stable val cluster: Boolean
-  stable val clusterRadius: Int
-  stable val clusterMaxZoom: Int
-  unstable val clusterProperties: Map<String, ClusterProperty>
-  stable val lineMetrics: Boolean
-}
-stable class Url {
-  stable val url: String
-  <runtime stability> = Stable
-}
-stable class GeoJson {
-  stable val json: String
-  <runtime stability> = Stable
-}
-stable class Shape {
-}
-stable class ClusterProperty {
-  stable val operator: String
-  stable val mapper: Expression<*>
-  <runtime stability> = Stable
-}
-stable class Expression {
-  unstable val value: Any?
-}
-stable class FormatStyle {
-  stable val textFont: Expression<String>?
-  stable val textColor: Expression<String>?
-  stable val fontScale: Expression<Number>?
-  <runtime stability> = Stable
-}
-stable class CaseBranch {
-  stable val test: Expression<Boolean>
-  stable val output: Expression<Output>
-  <runtime stability> = Stable
-}
-stable class MatchBranch {
-  stable val label: Expression<*>
-  stable val output: Expression<Output>
-  <runtime stability> = Stable
-}
-stable class Expressions {
-  <runtime stability> = Stable
-}
-stable class Point {
-  unstable val x: Number
-  unstable val y: Number
 }
 stable class Top {
   <runtime stability> = Stable
@@ -176,4 +119,61 @@ stable class SourceHandle {
 unstable class IncrementingId {
   stable var incrementingId: Int
   <runtime stability> = Unstable
+}
+stable class StyleManager {
+  unstable val style: Style
+  stable val sources: SnapshotStateMap<String, Source>
+  stable val layers: SnapshotStateMap<String, Layer>
+  unstable val layersByAnchor: MutableMap<Anchor, MutableList<Pair<Int, Layer>>>
+}
+stable class GeoJsonOptions {
+  stable val maxZoom: Int
+  stable val buffer: Int
+  stable val tolerance: Float
+  stable val cluster: Boolean
+  stable val clusterRadius: Int
+  stable val clusterMaxZoom: Int
+  unstable val clusterProperties: Map<String, ClusterProperty>
+  stable val lineMetrics: Boolean
+}
+stable class Url {
+  stable val url: String
+  <runtime stability> = Stable
+}
+stable class GeoJson {
+  stable val json: String
+  <runtime stability> = Stable
+}
+stable class Shape {
+}
+stable class ClusterProperty {
+  stable val operator: String
+  stable val mapper: Expression<*>
+  <runtime stability> = Stable
+}
+stable class Expression {
+  unstable val value: Any?
+}
+stable class FormatStyle {
+  stable val textFont: Expression<String>?
+  stable val textColor: Expression<String>?
+  stable val fontScale: Expression<Number>?
+  <runtime stability> = Stable
+}
+stable class CaseBranch {
+  stable val test: Expression<Boolean>
+  stable val output: Expression<Output>
+  <runtime stability> = Stable
+}
+stable class MatchBranch {
+  stable val label: Expression<*>
+  stable val output: Expression<Output>
+  <runtime stability> = Stable
+}
+stable class Expressions {
+  <runtime stability> = Stable
+}
+stable class Point {
+  unstable val x: Number
+  unstable val y: Number
 }

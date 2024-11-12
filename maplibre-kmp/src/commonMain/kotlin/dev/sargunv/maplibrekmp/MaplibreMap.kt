@@ -13,13 +13,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.sargunv.maplibrekmp.internal.compose.MapNodeApplier
-import dev.sargunv.maplibrekmp.internal.compose.StyleManager
-import dev.sargunv.maplibrekmp.internal.compose.StyleNode
-import dev.sargunv.maplibrekmp.internal.wrapper.NativeMap
-import dev.sargunv.maplibrekmp.internal.wrapper.Style
-import dev.sargunv.maplibrekmp.style.expression.ExpressionScope
-import dev.sargunv.maplibrekmp.style.expression.Expressions
+import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
+import dev.sargunv.maplibrekmp.compose.engine.StyleNode
+import dev.sargunv.maplibrekmp.core.NativeMap
+import dev.sargunv.maplibrekmp.core.Style
+import dev.sargunv.maplibrekmp.core.StyleManager
+import dev.sargunv.maplibrekmp.expression.ExpressionScope
+import dev.sargunv.maplibrekmp.expression.Expressions
 import kotlinx.coroutines.awaitCancellation
 
 @Composable

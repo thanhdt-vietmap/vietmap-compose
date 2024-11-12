@@ -68,16 +68,6 @@ inline fun LineLayer(
 inline fun rememberGeoJsonSource(
   stable key: String
   stable shape: Shape
-  stable shapeState: State<Shape>? = @dynamic $composer.startReplaceGroup(2072764899)
-sourceInformation($composer, "CC(remember):rememberGeoJsonSource.kt#9igjgp")
-val tmp0_group = $composer.cache($changed and 0b01110000 xor 0b00110000 > 32 && $composer.changed(shape) || $changed and 0b00110000 == 0b00100000) {
-  mutableStateOf  (
-    value     =     shape
-  )
-}
-
-$composer.endReplaceGroup()
-tmp0_group@dev.sargunv.maplibrekmp.style.source.rememberGeoJsonSource
   stable options: GeoJsonOptions? = @static GeoJsonOptions()
 ): SourceHandle
 fun rememberSource(
