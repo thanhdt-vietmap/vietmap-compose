@@ -13,7 +13,7 @@ import cocoapods.MapLibre.MLNShapeSourceOptionSimplificationTolerance
 import dev.sargunv.maplibrekmp.core.layer.ExpressionAdapter.toNSExpression
 import dev.sargunv.maplibrekmp.core.toNSData
 import dev.sargunv.maplibrekmp.expression.Expression
-import dev.sargunv.maplibrekmp.expression.Expressions.const
+import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
 import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
 import platform.Foundation.NSUTF8StringEncoding

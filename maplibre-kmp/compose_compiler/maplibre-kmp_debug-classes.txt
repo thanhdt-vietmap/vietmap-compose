@@ -170,9 +170,6 @@ stable class MatchBranch {
   stable val output: Expression<Output>
   <runtime stability> = Stable
 }
-stable class Expressions {
-  <runtime stability> = Stable
-}
 stable class Point {
   unstable val x: Number
   unstable val y: Number

@@ -3,13 +3,13 @@ package dev.sargunv.maplibrekmp.compose.layer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key as composeKey
 import androidx.compose.ui.graphics.Color
+import dev.sargunv.maplibrekmp.compose.source.SourceHandle
 import dev.sargunv.maplibrekmp.core.layer.CircleLayer
 import dev.sargunv.maplibrekmp.expression.Expression
-import dev.sargunv.maplibrekmp.expression.Expressions.const
-import dev.sargunv.maplibrekmp.expression.Expressions.nil
-import dev.sargunv.maplibrekmp.expression.Expressions.point
+import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
+import dev.sargunv.maplibrekmp.expression.Expression.Companion.nil
+import dev.sargunv.maplibrekmp.expression.Expression.Companion.point
 import dev.sargunv.maplibrekmp.expression.Point
-import dev.sargunv.maplibrekmp.compose.source.SourceHandle
 
 public data class CircleLayout(val sortKey: Expression<Number> = nil())
 
@@ -28,6 +28,7 @@ public data class CirclePaint(
 )
 
 @Composable
+@Suppress("NOTHING_TO_INLINE")
 public inline fun CircleLayer(
   key: String,
   source: SourceHandle,

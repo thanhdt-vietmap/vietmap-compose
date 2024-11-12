@@ -3,14 +3,14 @@ package dev.sargunv.maplibrekmp.compose.layer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key as composeKey
 import androidx.compose.ui.graphics.Color
+import dev.sargunv.maplibrekmp.compose.source.SourceHandle
 import dev.sargunv.maplibrekmp.core.layer.LineLayer
 import dev.sargunv.maplibrekmp.expression.Expression
-import dev.sargunv.maplibrekmp.expression.Expressions.const
-import dev.sargunv.maplibrekmp.expression.Expressions.nil
-import dev.sargunv.maplibrekmp.expression.Expressions.point
+import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
+import dev.sargunv.maplibrekmp.expression.Expression.Companion.nil
+import dev.sargunv.maplibrekmp.expression.Expression.Companion.point
 import dev.sargunv.maplibrekmp.expression.Point
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
-import dev.sargunv.maplibrekmp.compose.source.SourceHandle
 
 public data class LineLayout(
   val cap: Expression<String> = const("butt"),
@@ -35,6 +35,7 @@ public data class LinePaint(
 )
 
 @Composable
+@Suppress("NOTHING_TO_INLINE")
 public inline fun LineLayer(
   key: String,
   source: SourceHandle,

@@ -7,6 +7,7 @@ import dev.sargunv.maplibrekmp.core.source.GeoJsonSource
 import dev.sargunv.maplibrekmp.core.source.Shape
 
 @Composable
+@Suppress("NOTHING_TO_INLINE")
 public inline fun rememberGeoJsonSource(
   key: String,
   shape: Shape,

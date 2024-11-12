@@ -2,7 +2,7 @@ package dev.sargunv.maplibrekmp.core.source
 
 import dev.sargunv.maplibrekmp.core.correctedAndroidUri
 import dev.sargunv.maplibrekmp.core.layer.ExpressionAdapter.convert
-import dev.sargunv.maplibrekmp.expression.Expressions.const
+import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
 import org.maplibre.android.style.sources.GeoJsonOptions as MLNGeoJsonOptions
 import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
 

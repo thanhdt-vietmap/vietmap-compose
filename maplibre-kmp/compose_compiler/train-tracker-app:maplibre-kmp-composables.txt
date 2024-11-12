@@ -44,7 +44,7 @@ inline fun CircleLayer(
   stable sourceLayer: String? = @static ""
   stable minZoom: Float = @static 0.0f
   stable maxZoom: Float = @static 24.0f
-  stable filter: Expression<Boolean>? = @dynamic Expressions.nil()
+  stable filter: Expression<Boolean>? = @dynamic Companion.nil()
   stable visible: Boolean = @static true
   stable layout: CircleLayout? = @dynamic CircleLayout()
   stable paint: CirclePaint? = @dynamic CirclePaint()
@@ -60,7 +60,7 @@ inline fun LineLayer(
   stable sourceLayer: String? = @static ""
   stable minZoom: Float = @static 0.0f
   stable maxZoom: Float = @static 24.0f
-  stable filter: Expression<Boolean>? = @dynamic Expressions.nil()
+  stable filter: Expression<Boolean>? = @dynamic Companion.nil()
   stable visible: Boolean = @static true
   stable layout: LineLayout? = @dynamic LineLayout()
   stable paint: LinePaint? = @dynamic LinePaint()

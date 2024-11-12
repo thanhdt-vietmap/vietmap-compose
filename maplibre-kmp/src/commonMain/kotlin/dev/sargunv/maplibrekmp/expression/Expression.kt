@@ -7,24 +7,25 @@ import androidx.compose.ui.graphics.Color
 // https://youtrack.jetbrains.com/issue/KT-33565/Allow-vararg-parameter-of-inline-class-type
 @Immutable
 public data class Expression<out T> private constructor(internal val value: Any?) {
-  internal companion object {
-    fun ofString(string: String): Expression<String> = Expression(string)
+  public companion object : ExpressionScope {
+    internal fun ofString(string: String): Expression<String> = Expression(string)
 
-    fun ofNumber(number: Number): Expression<Number> = Expression(number)
+    internal fun ofNumber(number: Number): Expression<Number> = Expression(number)
 
-    fun ofBoolean(bool: Boolean): Expression<Boolean> = Expression(bool)
+    internal fun ofBoolean(bool: Boolean): Expression<Boolean> = Expression(bool)
 
-    fun ofNull(): Expression<Nothing?> = Expression(null)
+    internal fun ofNull(): Expression<Nothing?> = Expression(null)
 
-    fun ofColor(color: Color): Expression<Color> = Expression(color)
+    internal fun ofColor(color: Color): Expression<Color> = Expression(color)
 
-    fun ofPoint(point: Point): Expression<Point> = Expression(point)
-
-    // return Expression<*> because without ["literal" ... ] MapLibre may not treat it as a list
-    fun ofList(list: List<Expression<*>>): Expression<*> = Expression<Any?>(list.map { it.value })
+    internal fun ofPoint(point: Point): Expression<Point> = Expression(point)
 
     // return Expression<*> because without ["literal" ... ] MapLibre may not treat it as a list
-    fun ofMap(map: Map<String, Expression<*>>): Expression<*> =
+    internal fun ofList(list: List<Expression<*>>): Expression<*> =
+      Expression<Any?>(list.map { it.value })
+
+    // return Expression<*> because without ["literal" ... ] MapLibre may not treat it as a list
+    internal fun ofMap(map: Map<String, Expression<*>>): Expression<*> =
       Expression<Any?>(map.entries.associate { (key, value) -> key to value.value })
   }
 }

@@ -18,8 +18,8 @@ import dev.sargunv.maplibrekmp.compose.engine.StyleNode
 import dev.sargunv.maplibrekmp.core.NativeMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.StyleManager
+import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.ExpressionScope
-import dev.sargunv.maplibrekmp.expression.Expressions
 import kotlinx.coroutines.awaitCancellation
 
 @Composable
@@ -64,7 +64,7 @@ public fun MaplibreMap(
       val composition = Composition(MapNodeApplier(rootNode), compositionContext)
       composition.setContent {
         CompositionLocalProvider(LocalStyleManager provides rootNode.styleManager) {
-          styleContent(Expressions)
+          styleContent(Expression.Companion)
         }
       }
       try {
