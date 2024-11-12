@@ -1,8 +1,8 @@
 package dev.sargunv.maplibrekmp.internal.wrapper.source
 
-import dev.sargunv.maplibrekmp.internal.wrapper.source.Source
 import org.maplibre.android.style.sources.Source as MLNSource
 
+@PublishedApi
 internal actual class NativeSource private actual constructor(override val id: String) : Source() {
   private lateinit var _impl: MLNSource
 

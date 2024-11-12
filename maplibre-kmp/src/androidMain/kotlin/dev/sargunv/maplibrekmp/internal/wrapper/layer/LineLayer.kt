@@ -10,6 +10,7 @@ import org.maplibre.android.style.expressions.Expression as MLNExpression
 import org.maplibre.android.style.layers.LineLayer as MLNLineLayer
 import org.maplibre.android.style.layers.PropertyFactory
 
+@PublishedApi
 internal actual class LineLayer
 actual constructor(override val id: String, override val source: Source) : Layer() {
 

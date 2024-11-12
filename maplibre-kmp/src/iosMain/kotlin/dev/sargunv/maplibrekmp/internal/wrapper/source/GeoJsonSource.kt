@@ -12,49 +12,41 @@ import cocoapods.MapLibre.MLNShapeSourceOptionMaximumZoomLevelForClustering
 import cocoapods.MapLibre.MLNShapeSourceOptionSimplificationTolerance
 import dev.sargunv.maplibrekmp.internal.wrapper.layer.ExpressionAdapter.toNSExpression
 import dev.sargunv.maplibrekmp.internal.wrapper.toNSData
-import dev.sargunv.maplibrekmp.style.AnchoredLayersScope.const
 import dev.sargunv.maplibrekmp.style.expression.Expression
-import dev.sargunv.maplibrekmp.style.source.GeoJsonOptions
+import dev.sargunv.maplibrekmp.style.expression.Expressions.const
 import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
 import platform.Foundation.NSUTF8StringEncoding
 
+@PublishedApi
 internal actual class GeoJsonSource
-actual constructor(
-  override val id: String,
-  dataUrl: String?,
-  dataJson: String?,
-  options: GeoJsonOptions,
-) : Source() {
+actual constructor(override val id: String, shape: Shape, options: GeoJsonOptions) : Source() {
   override val impl: MLNShapeSource
 
   init {
-    require((dataUrl != null) or (dataJson != null)) {
-      "Either dataUrl or dataJson must be provided"
-    }
-    require((dataUrl == null) or (dataJson == null)) {
-      "Only one of dataUrl or dataJson may be provided"
-    }
-
-    val mlnOptions: Map<Any?, *> = buildMap {
-      put(MLNShapeSourceOptionMaximumZoomLevel, NSNumber(options.maxZoom))
-      put(MLNShapeSourceOptionBuffer, NSNumber(options.buffer))
-      put(MLNShapeSourceOptionLineDistanceMetrics, NSNumber(options.lineMetrics))
-      put(MLNShapeSourceOptionSimplificationTolerance, NSNumber(options.tolerance.toDouble()))
-      put(MLNShapeSourceOptionClustered, NSNumber(options.cluster))
-      put(MLNShapeSourceOptionMaximumZoomLevelForClustering, NSNumber(options.clusterMaxZoom))
-      put(MLNShapeSourceOptionClusterRadius, NSNumber(options.clusterRadius))
-      put(
-        MLNShapeSourceOptionClusterProperties,
-        options.clusterProperties.mapValues { (_, p) ->
-          Expression.ofList(listOf(const(p.operator), p.mapper)).toNSExpression()
-        },
-      )
-    }
+    val optionMap =
+      buildMap<Any?, Any?> {
+        put(MLNShapeSourceOptionMaximumZoomLevel, NSNumber(options.maxZoom))
+        put(MLNShapeSourceOptionBuffer, NSNumber(options.buffer))
+        put(MLNShapeSourceOptionLineDistanceMetrics, NSNumber(options.lineMetrics))
+        put(MLNShapeSourceOptionSimplificationTolerance, NSNumber(options.tolerance.toDouble()))
+        put(MLNShapeSourceOptionClustered, NSNumber(options.cluster))
+        put(MLNShapeSourceOptionMaximumZoomLevelForClustering, NSNumber(options.clusterMaxZoom))
+        put(MLNShapeSourceOptionClusterRadius, NSNumber(options.clusterRadius))
+        put(
+          MLNShapeSourceOptionClusterProperties,
+          options.clusterProperties.mapValues { (_, p) ->
+            Expression.ofList(listOf(const(p.operator), p.mapper)).toNSExpression()
+          },
+        )
+      }
     impl =
-      if (dataUrl != null)
-        MLNShapeSource(identifier = id, URL = NSURL(string = dataUrl), options = mlnOptions)
-      else MLNShapeSource(identifier = id, shape = jsonToShape(dataJson!!), options = mlnOptions)
+      when (shape) {
+        is Shape.Url ->
+          MLNShapeSource(identifier = id, URL = NSURL(string = shape.url), options = optionMap)
+        is Shape.GeoJson ->
+          MLNShapeSource(identifier = id, shape = jsonToShape(shape.json), options = optionMap)
+      }
   }
 
   actual fun setDataUrl(url: String) {

@@ -9,6 +9,7 @@ import dev.sargunv.maplibrekmp.style.expression.Expression
 import dev.sargunv.maplibrekmp.style.expression.Point
 import dev.sargunv.maplibrekmp.style.expression.TResolvedImage
 
+@PublishedApi
 internal actual class LineLayer
 actual constructor(override val id: String, override val source: Source) : Layer() {
 

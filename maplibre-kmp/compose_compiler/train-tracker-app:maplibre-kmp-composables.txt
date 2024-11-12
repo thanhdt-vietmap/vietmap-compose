@@ -18,47 +18,60 @@ restartable skippable scheme("[0, [0]]") fun MaplibreMap(
   stable isZoomGesturesEnabled: Boolean = @static true
   stable isRotateGesturesEnabled: Boolean = @static true
   stable isScrollGesturesEnabled: Boolean = @static true
-  stable styleContent: @[ExtensionFunctionType] Function3<StyleScope, Composer, Int, Unit>? = @static ComposableSingletons$MaplibreMapKt.lambda-1
+  stable styleContent: @[ExtensionFunctionType] Function3<ExpressionScope, Composer, Int, Unit>? = @static ComposableSingletons$MaplibreMapKt.lambda-1
 )
-restartable skippable scheme("[0, [0]]") fun AnchoredLayers(
-  unused stable <this>: SourceScope
-  stable anchor: LayerAnchor
-  stable content: @[ExtensionFunctionType] Function3<LayerContainerScope, Composer, Int, Unit>? = @static ComposableSingletons$AnchoredLayersKt.lambda-1
+restartable skippable scheme("[0, [0]]") fun Top(
+  stable block: Function2<Composer, Int, Unit>
+  unused stable <this>: Companion
 )
-restartable skippable fun CircleLayer(
-  <this>: LayerContainerScope
+restartable skippable scheme("[0, [0]]") fun Bottom(
+  stable block: Function2<Composer, Int, Unit>
+  unused stable <this>: Companion
+)
+restartable skippable scheme("[0, [0]]") fun Above(
+  stable layerId: String
+  stable block: Function2<Composer, Int, Unit>
+  unused stable <this>: Companion
+)
+restartable skippable scheme("[0, [0]]") fun Below(
+  stable layerId: String
+  stable block: Function2<Composer, Int, Unit>
+  unused stable <this>: Companion
+)
+inline fun CircleLayer(
+  stable key: String
   stable source: SourceHandle
   stable sourceLayer: String? = @static ""
   stable minZoom: Float = @static 0.0f
   stable maxZoom: Float = @static 24.0f
-  stable filter: Expression<Boolean>? = @dynamic nil()
+  stable filter: Expression<Boolean>? = @dynamic Expressions.nil()
   stable visible: Boolean = @static true
   stable layout: CircleLayout? = @dynamic CircleLayout()
   stable paint: CirclePaint? = @dynamic CirclePaint()
 )
-restartable skippable fun LineLayer(
-  <this>: LayerContainerScope
+restartable skippable fun LayerNode(
+  stable key: String
+  stable factory: Function1<@[ParameterName(name = 'id')] String, T>
+  stable update: @[ExtensionFunctionType] Function1<Updater<LayerNode<T>>, Unit>
+)
+inline fun LineLayer(
+  stable key: String
   stable source: SourceHandle
   stable sourceLayer: String? = @static ""
   stable minZoom: Float = @static 0.0f
   stable maxZoom: Float = @static 24.0f
-  stable filter: Expression<Boolean>? = @dynamic nil()
+  stable filter: Expression<Boolean>? = @dynamic Expressions.nil()
   stable visible: Boolean = @static true
   stable layout: LineLayout? = @dynamic LineLayout()
   stable paint: LinePaint? = @dynamic LinePaint()
 )
-restartable skippable scheme("[0, [0]]") fun GeoJsonUrlSource(
-  unused stable <this>: StyleScope
-  stable dataUrl: String
+inline fun rememberGeoJsonSource(
+  stable key: String
+  stable shape: Shape
   stable options: GeoJsonOptions? = @static GeoJsonOptions()
-  stable content: @[ExtensionFunctionType] Function4<SourceScope, @[ParameterName(name = 'source')] SourceHandle, Composer, Int, Unit>? = @static ComposableSingletons$GeoJsonSourceKt.lambda-1
-)
-restartable skippable scheme("[0, [0]]") fun GeoJsonSource(
-  unused stable <this>: StyleScope
-  stable dataJson: String
-  stable options: GeoJsonOptions? = @static GeoJsonOptions()
-  stable content: @[ExtensionFunctionType] Function4<SourceScope, @[ParameterName(name = 'source')] SourceHandle, Composer, Int, Unit>? = @static ComposableSingletons$GeoJsonSourceKt.lambda-2
-)
-fun getSource(
-  stable source: SourceHandle
-): Source?
+): SourceHandle
+fun rememberSource(
+  stable key: String
+  stable factory: Function1<@[ParameterName(name = 'id')] String, T>
+  stable update: @[ExtensionFunctionType] Function1<T, Unit>
+): SourceHandle

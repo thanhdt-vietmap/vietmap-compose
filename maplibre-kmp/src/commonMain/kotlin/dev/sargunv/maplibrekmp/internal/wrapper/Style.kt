@@ -21,4 +21,8 @@ internal expect class Style private constructor() {
   fun addLayerAt(index: Int, layer: Layer)
 
   fun removeLayer(layer: Layer)
+
+  fun getLayer(id: String): Layer?
+
+  fun getLayers(): List<Layer>
 }

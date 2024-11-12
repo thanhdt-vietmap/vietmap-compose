@@ -5,6 +5,7 @@ import org.maplibre.android.style.layers.Layer
 import org.maplibre.android.style.layers.Property
 import org.maplibre.android.style.layers.PropertyFactory
 
+@PublishedApi
 internal actual sealed class Layer {
   abstract val impl: Layer
 

@@ -8,6 +8,7 @@ import dev.sargunv.maplibrekmp.internal.wrapper.source.Source
 import dev.sargunv.maplibrekmp.style.expression.Expression
 import dev.sargunv.maplibrekmp.style.expression.Point
 
+@PublishedApi
 internal actual class CircleLayer
 actual constructor(override val id: String, override val source: Source) : Layer() {
 

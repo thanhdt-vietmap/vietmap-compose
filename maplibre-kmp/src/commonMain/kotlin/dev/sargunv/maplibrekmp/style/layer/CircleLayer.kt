@@ -1,41 +1,35 @@
 package dev.sargunv.maplibrekmp.style.layer
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposeNode
-import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.key as composeKey
 import androidx.compose.ui.graphics.Color
-import dev.sargunv.maplibrekmp.internal.compose.LayerNode
-import dev.sargunv.maplibrekmp.internal.compose.MapNodeApplier
 import dev.sargunv.maplibrekmp.internal.wrapper.layer.CircleLayer
-import dev.sargunv.maplibrekmp.style.IncrementingId
-import dev.sargunv.maplibrekmp.style.LayerContainerScope
-import dev.sargunv.maplibrekmp.style.SourceHandle
 import dev.sargunv.maplibrekmp.style.expression.Expression
 import dev.sargunv.maplibrekmp.style.expression.Expressions.const
 import dev.sargunv.maplibrekmp.style.expression.Expressions.nil
 import dev.sargunv.maplibrekmp.style.expression.Expressions.point
 import dev.sargunv.maplibrekmp.style.expression.Point
-import dev.sargunv.maplibrekmp.style.getSource
+import dev.sargunv.maplibrekmp.style.source.SourceHandle
 
-public data class CircleLayout(val circleSortKey: Expression<Number> = nil())
+public data class CircleLayout(val sortKey: Expression<Number> = nil())
 
 public data class CirclePaint(
-  val circleRadius: Expression<Number> = const(5),
-  val circleColor: Expression<Color> = const(Color.Black),
-  val circleBlur: Expression<Number> = const(0),
-  val circleOpacity: Expression<Number> = const(1),
-  val circleTranslate: Expression<Point> = point(0, 0),
-  val circleTranslateAnchor: Expression<String> = const("map"),
-  val circlePitchScale: Expression<String> = const("map"),
-  val circlePitchAlignment: Expression<String> = const("viewport"),
-  val circleStrokeWidth: Expression<Number> = const(0),
-  val circleStrokeColor: Expression<Color> = const(Color.Black),
-  val circleStrokeOpacity: Expression<Number> = const(1),
+  val radius: Expression<Number> = const(5),
+  val color: Expression<Color> = const(Color.Black),
+  val blur: Expression<Number> = const(0),
+  val opacity: Expression<Number> = const(1),
+  val translate: Expression<Point> = point(0, 0),
+  val translateAnchor: Expression<String> = const("map"),
+  val pitchScale: Expression<String> = const("map"),
+  val pitchAlignment: Expression<String> = const("viewport"),
+  val strokeWidth: Expression<Number> = const(0),
+  val strokeColor: Expression<Color> = const(Color.Black),
+  val strokeOpacity: Expression<Number> = const(1),
 )
 
 @Composable
-public fun LayerContainerScope.CircleLayer(
+public inline fun CircleLayer(
+  key: String,
   source: SourceHandle,
   sourceLayer: String = "",
   minZoom: Float = 0.0f,
@@ -45,29 +39,28 @@ public fun LayerContainerScope.CircleLayer(
   layout: CircleLayout = CircleLayout(),
   paint: CirclePaint = CirclePaint(),
 ) {
-  val id = remember { IncrementingId.next() }
-  val s = getSource(source) ?: return
-  key(id, s) {
-    ComposeNode<LayerNode<CircleLayer>, MapNodeApplier>(
-      factory = { LayerNode(CircleLayer(id = id, source = s)) },
+  composeKey(key) {
+    LayerNode(
+      key = key,
+      factory = { id -> CircleLayer(id = id, source = source.source) },
       update = {
         set(sourceLayer) { layer.sourceLayer = it }
         set(minZoom) { layer.minZoom = it }
         set(maxZoom) { layer.maxZoom = it }
         set(filter) { layer.setFilter(it) }
         set(visible) { layer.visible = it }
-        set(layout.circleSortKey) { layer.setCircleSortKey(it) }
-        set(paint.circleRadius) { layer.setCircleRadius(it) }
-        set(paint.circleColor) { layer.setCircleColor(it) }
-        set(paint.circleBlur) { layer.setCircleBlur(it) }
-        set(paint.circleOpacity) { layer.setCircleOpacity(it) }
-        set(paint.circleTranslate) { layer.setCircleTranslate(it) }
-        set(paint.circleTranslateAnchor) { layer.setCircleTranslateAnchor(it) }
-        set(paint.circlePitchScale) { layer.setCirclePitchScale(it) }
-        set(paint.circlePitchAlignment) { layer.setCirclePitchAlignment(it) }
-        set(paint.circleStrokeWidth) { layer.setCircleStrokeWidth(it) }
-        set(paint.circleStrokeColor) { layer.setCircleStrokeColor(it) }
-        set(paint.circleStrokeOpacity) { layer.setCircleStrokeOpacity(it) }
+        set(layout.sortKey) { layer.setCircleSortKey(it) }
+        set(paint.radius) { layer.setCircleRadius(it) }
+        set(paint.color) { layer.setCircleColor(it) }
+        set(paint.blur) { layer.setCircleBlur(it) }
+        set(paint.opacity) { layer.setCircleOpacity(it) }
+        set(paint.translate) { layer.setCircleTranslate(it) }
+        set(paint.translateAnchor) { layer.setCircleTranslateAnchor(it) }
+        set(paint.pitchScale) { layer.setCirclePitchScale(it) }
+        set(paint.pitchAlignment) { layer.setCirclePitchAlignment(it) }
+        set(paint.strokeWidth) { layer.setCircleStrokeWidth(it) }
+        set(paint.strokeColor) { layer.setCircleStrokeColor(it) }
+        set(paint.strokeOpacity) { layer.setCircleStrokeOpacity(it) }
       },
     )
   }

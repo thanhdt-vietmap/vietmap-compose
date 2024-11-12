@@ -5,6 +5,7 @@ import dev.sargunv.maplibrekmp.internal.wrapper.source.Source
 import dev.sargunv.maplibrekmp.style.expression.Expression
 import dev.sargunv.maplibrekmp.style.expression.Point
 
+@PublishedApi
 internal expect class CircleLayer(id: String, source: Source) : Layer {
   var sourceLayer: String
 

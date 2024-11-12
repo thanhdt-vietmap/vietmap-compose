@@ -3,19 +3,23 @@ package dev.sargunv.maplibrekmp
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.internal.compose.MapNodeApplier
+import dev.sargunv.maplibrekmp.internal.compose.StyleManager
 import dev.sargunv.maplibrekmp.internal.compose.StyleNode
 import dev.sargunv.maplibrekmp.internal.wrapper.NativeMap
 import dev.sargunv.maplibrekmp.internal.wrapper.Style
-import dev.sargunv.maplibrekmp.style.StyleScope
+import dev.sargunv.maplibrekmp.style.expression.ExpressionScope
+import dev.sargunv.maplibrekmp.style.expression.Expressions
 import kotlinx.coroutines.awaitCancellation
 
 @Composable
@@ -31,7 +35,7 @@ public fun MaplibreMap(
   isZoomGesturesEnabled: Boolean = true,
   isRotateGesturesEnabled: Boolean = true,
   isScrollGesturesEnabled: Boolean = true,
-  styleContent: @Composable StyleScope.() -> Unit = {},
+  styleContent: @Composable ExpressionScope.() -> Unit = {},
 ) {
   var style by remember { mutableStateOf<Style?>(null) }
   val compositionContext = rememberCompositionContext()
@@ -55,13 +59,22 @@ public fun MaplibreMap(
   )
 
   LaunchedEffect(style) {
-    val applier = style?.let { MapNodeApplier(StyleNode(it)) } ?: return@LaunchedEffect
-    val composition = Composition(applier, compositionContext)
-    composition.setContent { StyleScope.styleContent() }
-    try {
-      awaitCancellation()
-    } finally {
-      composition.dispose()
+    style?.let { style ->
+      val rootNode = StyleNode(style)
+      val composition = Composition(MapNodeApplier(rootNode), compositionContext)
+      composition.setContent {
+        CompositionLocalProvider(LocalStyleManager provides rootNode.styleManager) {
+          styleContent(Expressions)
+        }
+      }
+      try {
+        awaitCancellation()
+      } finally {
+        composition.dispose()
+      }
     }
   }
 }
+
+internal val LocalStyleManager =
+  staticCompositionLocalOf<StyleManager> { throw IllegalStateException() }

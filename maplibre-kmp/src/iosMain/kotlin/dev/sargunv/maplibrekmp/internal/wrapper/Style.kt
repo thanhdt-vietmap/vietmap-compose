@@ -2,7 +2,9 @@ package dev.sargunv.maplibrekmp.internal.wrapper
 
 import cocoapods.MapLibre.MLNSource
 import cocoapods.MapLibre.MLNStyle
+import cocoapods.MapLibre.MLNStyleLayer
 import dev.sargunv.maplibrekmp.internal.wrapper.layer.Layer
+import dev.sargunv.maplibrekmp.internal.wrapper.layer.NativeLayer
 import dev.sargunv.maplibrekmp.internal.wrapper.source.NativeSource
 import dev.sargunv.maplibrekmp.internal.wrapper.source.Source
 
@@ -47,5 +49,13 @@ internal actual class Style private actual constructor() {
 
   actual fun removeLayer(layer: Layer) {
     impl.removeLayer(layer.impl)
+  }
+
+  actual fun getLayer(id: String): Layer? {
+    return impl.layerWithIdentifier(id)?.let { NativeLayer(it) }
+  }
+
+  actual fun getLayers(): List<Layer> {
+    return impl.layers.map { NativeLayer(it as MLNStyleLayer) }
   }
 }
