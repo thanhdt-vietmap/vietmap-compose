@@ -11,12 +11,16 @@ internal class StyleManager(val style: Style) {
   // we queue up additions, but instantly execute removals
   // this way if an id is added and removed in the same frame, it will be removed before it's added
   private val sourcesToAdd = mutableListOf<UserSource>()
-  private val layersToAdd = mutableListOf<Pair<UserLayer, Anchor>>()
+  private val layersToAdd = mutableListOf<LayerLocation>()
 
   // TODO red black tree instead of ArrayList? since we're inserting/removing at arbitrary index
   private val layerLocations = mutableMapOf<Anchor, MutableList<LayerLocation>>()
 
-  private data class LayerLocation(var index: Int, val layer: UserLayer)
+  private data class LayerLocation(
+    var index: Int,
+    val layer: UserLayer,
+    var added: Boolean = false,
+  )
 
   internal fun addSource(source: UserSource) {
     println("addSource: $source")
@@ -43,31 +47,32 @@ internal class StyleManager(val style: Style) {
       if (a == layer.anchor) {
         newAnchor = false
         locs.add(pos, newLoc)
-
-        // and queue the layer to be added to the style above/below its neighbor
-        if (pos == 0) layersToAdd.add(layer to Anchor.Below(locs[pos + 1].layer.id))
-        else layersToAdd.add(layer to Anchor.Above(locs[pos - 1].layer.id))
       }
     }
 
-    // if the layer introduced a new anchor, create a new list and queue the layer to be added
+    // if the layer introduced a new anchor, create a new list
     if (newAnchor) {
       layerLocations[layer.anchor] = mutableListOf(newLoc)
-      layersToAdd.add(layer to layer.anchor)
     }
+
+    // and queue the layer for addition
+    layersToAdd.add(newLoc)
   }
 
   internal fun removeLayer(layer: UserLayer, oldIndex: Int) {
     println("removeLayer: $layer, $oldIndex")
+    var empty = false
     for ((a, locs) in layerLocations.entries) {
       val pos = locs.binarySearch { it.index.compareTo(oldIndex) }.invIfNegative()
 
       // if the layer is in this list, remove it
       if (a == layer.anchor) locs.removeAt(pos)
+      if (locs.isEmpty()) empty = true
 
       // decrement indexes after the removed layer's index
       locs.subList(pos, locs.size).forEach { it.index-- }
     }
+    if (empty) layerLocations.remove(layer.anchor)
     style.removeLayer(layer)
   }
 
@@ -76,11 +81,14 @@ internal class StyleManager(val style: Style) {
     for ((a, locs) in layerLocations.entries) {
       // if the layer is in this list, remove it from its current position
       val oldPos = locs.binarySearch { it.index.compareTo(oldIndex) }.invIfNegative()
-      if (a == layer.anchor) locs.removeAt(oldPos)
+      val movedLoc = if (a == layer.anchor) locs.removeAt(oldPos) else null
 
       // and add it to its new position
       val newPos = locs.binarySearch { it.index.compareTo(index) }.invIfNegative()
-      if (a == layer.anchor) locs.add(newPos, LayerLocation(index, layer))
+      if (a == layer.anchor) {
+        locs.add(newPos, movedLoc!!)
+        movedLoc.index = index
+      }
 
       // adjust indexes for layers between the old and new positions
       if (oldPos < newPos) locs.subList(oldPos, newPos).forEach { it.index-- }
@@ -89,22 +97,41 @@ internal class StyleManager(val style: Style) {
       // if the layer moved relative to other layers in this list, remove and queue re-addition
       if (a == layer.anchor && oldPos != newPos) {
         style.removeLayer(layer)
-        if (newPos == 0) layersToAdd.add(layer to Anchor.Below(locs[newPos + 1].layer.id))
-        else layersToAdd.add(layer to Anchor.Above(locs[newPos - 1].layer.id))
+        layersToAdd.add(movedLoc!!)
       }
     }
   }
 
   internal fun applyChanges() {
+    // sources are easy to add
     sourcesToAdd.onEach(style::addSource).clear()
+
+    // layers are tricky
     layersToAdd
-      .onEach { (layer, anchor) ->
-        when (anchor) {
-          is Anchor.Top -> style.addLayer(layer)
-          is Anchor.Bottom -> style.addLayerAt(0, layer)
-          is Anchor.Above -> style.addLayerAbove(anchor.layerId, layer)
-          is Anchor.Below -> style.addLayerBelow(anchor.layerId, layer)
+      .onEach { (index, layer) ->
+        // find our layer in the list
+        val locs = layerLocations[layer.anchor]!!
+        val pos = locs.binarySearch { it.index.compareTo(index) }
+
+        // add above the previous layer, if possible
+        val prevLayer = locs.subList(0, pos).lastOrNull { it.added }?.layer
+        if (prevLayer != null) style.addLayerAbove(prevLayer.id, layer)
+        else {
+          // add below the next layer, if possible
+          val nextLayer = locs.subList(pos + 1, locs.size).firstOrNull { it.added }?.layer
+          if (nextLayer != null) style.addLayerBelow(nextLayer.id, layer)
+          else {
+            // otherwise, we're the first layer for this anchor, so add as per the anchor
+            when (val anchor = layer.anchor) {
+              is Anchor.Top -> style.addLayer(layer)
+              is Anchor.Bottom -> style.addLayerAt(0, layer)
+              is Anchor.Above -> style.addLayerAbove(anchor.layerId, layer)
+              is Anchor.Below -> style.addLayerBelow(anchor.layerId, layer)
+            }
+          }
         }
+
+        locs[pos].added = true
       }
       .clear()
   }

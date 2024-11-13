@@ -113,7 +113,7 @@ stable class LinePaint {
 stable class StyleManager {
   unstable val style: Style
   unstable val sourcesToAdd: MutableList<UserSource>
-  unstable val layersToAdd: MutableList<Pair<UserLayer, Anchor>>
+  unstable val layersToAdd: MutableList<LayerLocation>
   unstable val layerLocations: MutableMap<Anchor, MutableList<LayerLocation>>
 }
 stable class Top {
