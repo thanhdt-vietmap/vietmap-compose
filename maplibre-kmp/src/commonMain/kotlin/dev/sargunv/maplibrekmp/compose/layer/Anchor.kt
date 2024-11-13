@@ -27,6 +27,11 @@ public sealed interface Anchor {
     public fun Below(layerId: String, block: @Composable () -> Unit) {
       CompositionLocalProvider(LocalAnchor provides Anchor.Below(layerId)) { block() }
     }
+
+    @Composable
+    public fun Replace(layerId: String, block: @Composable () -> Unit) {
+      CompositionLocalProvider(LocalAnchor provides Anchor.Replace(layerId)) { block() }
+    }
   }
 }
 

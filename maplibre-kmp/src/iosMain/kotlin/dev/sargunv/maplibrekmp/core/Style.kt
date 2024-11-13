@@ -2,6 +2,7 @@ package dev.sargunv.maplibrekmp.core
 
 import cocoapods.MapLibre.MLNStyle
 import dev.sargunv.maplibrekmp.core.layer.Layer
+import dev.sargunv.maplibrekmp.core.layer.PlatformLayer
 import dev.sargunv.maplibrekmp.core.source.Source
 
 internal actual class Style private actual constructor() {
@@ -17,6 +18,10 @@ internal actual class Style private actual constructor() {
 
   actual fun removeSource(source: Source) {
     impl.removeSource(source.impl)
+  }
+
+  actual fun getLayer(id: String): PlatformLayer? {
+    return impl.layerWithIdentifier(id)?.let { PlatformLayer(it) }
   }
 
   actual fun addLayer(layer: Layer) {

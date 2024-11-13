@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrekmp.core
 
 import dev.sargunv.maplibrekmp.core.layer.Layer
+import dev.sargunv.maplibrekmp.core.layer.PlatformLayer
 import dev.sargunv.maplibrekmp.core.source.Source
 import org.maplibre.android.maps.Style as MLNStyle
 
@@ -18,6 +19,10 @@ internal actual class Style private actual constructor() {
 
   actual fun removeSource(source: Source) {
     impl.removeSource(source.impl)
+  }
+
+  actual fun getLayer(id: String): PlatformLayer? {
+    return impl.getLayer(id)?.let { PlatformLayer(it) }
   }
 
   actual fun addLayer(layer: Layer) {

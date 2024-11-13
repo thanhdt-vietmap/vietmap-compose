@@ -115,6 +115,7 @@ stable class StyleManager {
   unstable val sourcesToAdd: MutableList<UserSource>
   unstable val layersToAdd: MutableList<LayerLocation>
   unstable val layerLocations: MutableMap<Anchor, MutableList<LayerLocation>>
+  unstable val removedLayers: MutableMap<Replace, PlatformLayer>
 }
 stable class Top {
   <runtime stability> = Stable
@@ -127,6 +128,10 @@ stable class Above {
   <runtime stability> = Stable
 }
 stable class Below {
+  stable val layerId: String
+  <runtime stability> = Stable
+}
+stable class Replace {
   stable val layerId: String
   <runtime stability> = Stable
 }

@@ -5,6 +5,7 @@ dev.sargunv.maplibrekmp.compose.layer.Anchor.Companion.Top,Top,1,1,1,0,0,0,0,0,1
 dev.sargunv.maplibrekmp.compose.layer.Anchor.Companion.Bottom,Bottom,1,1,1,0,0,0,0,0,1,2,
 dev.sargunv.maplibrekmp.compose.layer.Anchor.Companion.Above,Above,1,1,1,0,0,0,0,0,1,2,
 dev.sargunv.maplibrekmp.compose.layer.Anchor.Companion.Below,Below,1,1,1,0,0,0,0,0,1,2,
+dev.sargunv.maplibrekmp.compose.layer.Anchor.Companion.Replace,Replace,1,1,1,0,0,0,0,0,1,2,
 dev.sargunv.maplibrekmp.compose.layer.CircleLayer,CircleLayer,1,0,0,0,1,0,0,0,1,1,
 dev.sargunv.maplibrekmp.compose.layer.LayerNode,LayerNode,1,1,1,0,0,0,0,0,1,2,
 dev.sargunv.maplibrekmp.compose.layer.LineLayer,LineLayer,1,0,0,0,1,0,0,0,1,1,

@@ -2,6 +2,7 @@ package dev.sargunv.maplibrekmp.core
 
 import androidx.compose.runtime.Stable
 import dev.sargunv.maplibrekmp.core.layer.Anchor
+import dev.sargunv.maplibrekmp.core.layer.PlatformLayer
 import dev.sargunv.maplibrekmp.core.layer.UserLayer
 import dev.sargunv.maplibrekmp.core.source.UserSource
 import kotlin.math.min
@@ -15,6 +16,7 @@ internal class StyleManager(val style: Style) {
 
   // TODO red black tree instead of ArrayList? since we're inserting/removing at arbitrary index
   private val layerLocations = mutableMapOf<Anchor, MutableList<LayerLocation>>()
+  private val removedLayers = mutableMapOf<Anchor.Replace, PlatformLayer>()
 
   private data class LayerLocation(
     var index: Int,
@@ -72,7 +74,13 @@ internal class StyleManager(val style: Style) {
       // decrement indexes after the removed layer's index
       locs.subList(pos, locs.size).forEach { it.index-- }
     }
-    if (empty) layerLocations.remove(layer.anchor)
+    if (empty) {
+      layerLocations.remove(layer.anchor)
+      if (layer.anchor is Anchor.Replace) {
+        val removed = removedLayers.remove(layer.anchor)!!
+        style.addLayerBelow(layer.id, removed)
+      }
+    }
     style.removeLayer(layer)
   }
 
@@ -127,6 +135,12 @@ internal class StyleManager(val style: Style) {
               is Anchor.Bottom -> style.addLayerAt(0, layer)
               is Anchor.Above -> style.addLayerAbove(anchor.layerId, layer)
               is Anchor.Below -> style.addLayerBelow(anchor.layerId, layer)
+              is Anchor.Replace -> {
+                val removedLayer = style.getLayer(anchor.layerId)!!
+                style.addLayerBelow(removedLayer.id, layer)
+                style.removeLayer(removedLayer)
+                removedLayers[anchor] = removedLayer
+              }
             }
           }
         }

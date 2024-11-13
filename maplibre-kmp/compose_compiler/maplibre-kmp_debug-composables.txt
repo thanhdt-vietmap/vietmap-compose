@@ -30,6 +30,11 @@ restartable skippable scheme("[0, [0]]") fun Below(
   stable block: Function2<Composer, Int, Unit>
   unused stable <this>: Companion
 )
+restartable skippable scheme("[0, [0]]") fun Replace(
+  stable layerId: String
+  stable block: Function2<Composer, Int, Unit>
+  unused stable <this>: Companion
+)
 inline fun CircleLayer(
   stable key: String
   stable source: Source

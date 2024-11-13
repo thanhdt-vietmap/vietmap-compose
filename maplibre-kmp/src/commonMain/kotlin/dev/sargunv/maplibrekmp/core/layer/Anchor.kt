@@ -11,4 +11,6 @@ internal sealed interface Anchor {
   data class Above(val layerId: String) : Anchor
 
   data class Below(val layerId: String) : Anchor
+
+  data class Replace(val layerId: String) : Anchor
 }
