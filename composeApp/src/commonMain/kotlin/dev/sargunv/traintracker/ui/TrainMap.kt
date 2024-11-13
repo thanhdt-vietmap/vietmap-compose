@@ -1,21 +1,12 @@
 package dev.sargunv.traintracker.ui
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
 import dev.sargunv.maplibrekmp.compose.MapUiSettings
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
@@ -51,29 +42,9 @@ data class TrainMapState(val loading: Boolean = false, val error: String? = null
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun TrainMap(sheetPadding: PaddingValues) {
+fun TrainMap(uiPadding: PaddingValues) {
   val viewModel = koinViewModel<TrainMapViewModel>()
   val state by remember { viewModel.state }
-
-  val insetsPadding = WindowInsets.safeDrawing.asPaddingValues(LocalDensity.current)
-
-  val uiPadding =
-    remember(sheetPadding, insetsPadding) {
-      val start =
-        max(
-          8.dp + sheetPadding.calculateLeftPadding(LayoutDirection.Ltr),
-          insetsPadding.calculateLeftPadding(LayoutDirection.Ltr),
-        )
-      val end =
-        max(
-          8.dp + sheetPadding.calculateRightPadding(LayoutDirection.Ltr),
-          insetsPadding.calculateRightPadding(LayoutDirection.Ltr),
-        )
-      val top = max(8.dp + sheetPadding.calculateTopPadding(), insetsPadding.calculateTopPadding())
-      val bottom =
-        max(8.dp + sheetPadding.calculateBottomPadding(), insetsPadding.calculateBottomPadding())
-      PaddingValues(start = start, end = end, top = top, bottom = bottom)
-    }
 
   MaplibreMap(
     styleUrl = Res.getUri("files/maplibre/style/positron.json"),
