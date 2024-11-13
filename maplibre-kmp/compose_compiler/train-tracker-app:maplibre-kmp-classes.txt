@@ -116,13 +116,14 @@ stable class SourceHandle {
 }
 stable class StyleManager {
   unstable val style: Style
-  stable val sources: SnapshotStateMap<String, Source>
-  stable val layers: SnapshotStateMap<String, Layer>
+  stable val userSources: SnapshotStateMap<String, Source>
+  stable val userLayers: SnapshotStateMap<String, Layer>
   unstable val sourcesToRemove: MutableList<Source>
   unstable val layersToRemove: MutableList<Layer>
   unstable val sourcesToAdd: MutableList<Source>
   unstable val layersToAdd: MutableList<Pair<Anchor, Layer>>
   unstable val layerAnchorList: MutableList<Pair<Anchor, Layer>>
+  stable var isLayersDirty: Boolean
 }
 stable class Top {
   <runtime stability> = Stable

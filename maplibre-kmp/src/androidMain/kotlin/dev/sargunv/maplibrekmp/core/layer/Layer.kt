@@ -7,4 +7,6 @@ internal actual sealed class Layer {
   abstract val impl: MlnLayer
   actual val id: String
     get() = impl.id
+
+  override fun toString() = "${this::class.simpleName}(id=\"$id\")"
 }

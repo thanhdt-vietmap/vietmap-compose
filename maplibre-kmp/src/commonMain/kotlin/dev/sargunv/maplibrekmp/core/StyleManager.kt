@@ -21,37 +21,35 @@ internal class StyleManager(val style: Style) {
   private var isLayersDirty = false
 
   internal fun enqueueAddSource(source: Source) {
-    println("Adding source ${source.id}")
+    println("enqueueAddSource: $source")
     sourcesToAdd.add(source)
   }
 
   internal fun enqueueRemoveSource(source: Source) {
-    println("Removing source ${source.id}")
+    println("enqueueRemoveSource: $source")
     sourcesToRemove.add(source)
   }
 
   internal fun enqueueAddLayer(layer: Layer, anchor: Anchor, index: Int) {
-    println("Adding layer ${layer.id} with anchor $anchor and index $index")
+    println("enqueueAddLayer: $layer, $anchor, $index")
     layerAnchorList.add(index, anchor to layer)
     layersToAdd.add(anchor to layer)
   }
 
   internal fun enqueueRemoveLayer(layer: Layer, anchor: Anchor, index: Int) {
-    println("Removing layer ${layer.id} with anchor $anchor and sort key $index")
+    println("enqueueRemoveLayer: $layer, $anchor, $index")
     layerAnchorList.removeAt(index)
     layersToRemove.add(layer)
   }
 
   internal fun enqueueMoveLayer(layer: Layer, anchor: Anchor, oldIndex: Int, index: Int) {
-    println("Moving layer ${layer.id} with anchor $anchor from $oldIndex to $index")
+    println("enqueueMoveLayer: $layer, $anchor, $oldIndex, $index")
     layerAnchorList.removeAt(oldIndex)
     layerAnchorList.add(index, anchor to layer)
     isLayersDirty = true
   }
 
   internal fun applyChanges() {
-    println("Applying changes")
-
     sourcesToRemove
       .onEach {
         style.removeSource(it)
