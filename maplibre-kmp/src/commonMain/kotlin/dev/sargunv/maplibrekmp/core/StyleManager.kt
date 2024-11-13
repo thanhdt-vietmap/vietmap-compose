@@ -9,6 +9,8 @@ import kotlin.math.min
 
 @Stable
 internal class StyleManager(val style: Style) {
+  private val baseLayerIds = style.getLayers().map { it.id }.toSet()
+
   // we queue up additions, but instantly execute removals
   // this way if an id is added and removed in the same frame, it will be removed before it's added
   private val sourcesToAdd = mutableListOf<UserSource>()
@@ -34,8 +36,20 @@ internal class StyleManager(val style: Style) {
     style.removeSource(source)
   }
 
+  private fun validateAnchorTarget(layerId: String) {
+    require(layerId in baseLayerIds) { "Layer ID '${layerId}' not found in base style" }
+  }
+
   internal fun addLayer(layer: UserLayer, index: Int) {
     println("addLayer: $layer, $index")
+
+    when (val anchor = layer.anchor) {
+      is Anchor.Above -> validateAnchorTarget(anchor.layerId)
+      is Anchor.Below -> validateAnchorTarget(anchor.layerId)
+      is Anchor.Replace -> validateAnchorTarget(anchor.layerId)
+      else -> Unit
+    }
+
     val newLoc = LayerLocation(index, layer)
     var newAnchor = true
 

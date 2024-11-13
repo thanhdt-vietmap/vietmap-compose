@@ -25,6 +25,10 @@ internal actual class Style private actual constructor() {
     return impl.getLayer(id)?.let { PlatformLayer(it) }
   }
 
+  actual fun getLayers(): List<PlatformLayer> {
+    return impl.layers.map { PlatformLayer(it) }
+  }
+
   actual fun addLayer(layer: Layer) {
     impl.addLayer(layer.impl)
   }

@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrekmp.core
 
 import cocoapods.MapLibre.MLNStyle
+import cocoapods.MapLibre.MLNStyleLayer
 import dev.sargunv.maplibrekmp.core.layer.Layer
 import dev.sargunv.maplibrekmp.core.layer.PlatformLayer
 import dev.sargunv.maplibrekmp.core.source.Source
@@ -22,6 +23,10 @@ internal actual class Style private actual constructor() {
 
   actual fun getLayer(id: String): PlatformLayer? {
     return impl.layerWithIdentifier(id)?.let { PlatformLayer(it) }
+  }
+
+  actual fun getLayers(): List<PlatformLayer> {
+    return impl.layers.map { PlatformLayer(it as MLNStyleLayer) }
   }
 
   actual fun addLayer(layer: Layer) {

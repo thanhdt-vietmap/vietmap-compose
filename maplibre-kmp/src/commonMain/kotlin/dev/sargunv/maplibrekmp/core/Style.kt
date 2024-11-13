@@ -11,6 +11,8 @@ internal expect class Style private constructor() {
 
   fun getLayer(id: String): PlatformLayer?
 
+  fun getLayers(): List<PlatformLayer>
+
   fun addLayer(layer: Layer)
 
   fun addLayerAbove(id: String, layer: Layer)
