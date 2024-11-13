@@ -5,6 +5,7 @@ import androidx.compose.runtime.key as composeKey
 import dev.sargunv.maplibrekmp.core.source.GeoJsonOptions
 import dev.sargunv.maplibrekmp.core.source.GeoJsonSource
 import dev.sargunv.maplibrekmp.core.source.Shape
+import dev.sargunv.maplibrekmp.core.source.Source
 
 @Composable
 @Suppress("NOTHING_TO_INLINE")
@@ -12,7 +13,7 @@ public inline fun rememberGeoJsonSource(
   key: String,
   shape: Shape,
   options: GeoJsonOptions = GeoJsonOptions(),
-): SourceHandle =
+): Source =
   composeKey(key) {
     rememberSource(
       key = key,

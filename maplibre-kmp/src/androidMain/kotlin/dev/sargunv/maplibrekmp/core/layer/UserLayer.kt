@@ -5,7 +5,8 @@ import org.maplibre.android.style.layers.Property
 import org.maplibre.android.style.layers.PropertyFactory
 
 @PublishedApi
-internal actual sealed class UserLayer actual constructor(actual val source: Source) : Layer() {
+internal actual sealed class UserLayer
+actual constructor(actual val source: Source, actual val anchor: Anchor) : Layer() {
 
   actual var minZoom: Float
     get() = impl.minZoom

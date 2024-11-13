@@ -11,17 +11,17 @@ internal class StyleNode(style: Style) : MapNode() {
 
   override fun onChildRemoved(oldIndex: Int, node: MapNode) {
     node as LayerNode<*>
-    styleManager.enqueueRemoveLayer(node.layer, node.anchor, oldIndex)
+    styleManager.removeLayer(node.layer, oldIndex)
   }
 
   override fun onChildInserted(index: Int, node: MapNode) {
     node as LayerNode<*>
-    styleManager.enqueueAddLayer(node.layer, node.anchor, index)
+    styleManager.addLayer(node.layer, index)
   }
 
   override fun onChildMoved(oldIndex: Int, index: Int, node: MapNode) {
     node as LayerNode<*>
-    styleManager.enqueueMoveLayer(node.layer, node.anchor, oldIndex, index)
+    styleManager.moveLayer(node.layer, oldIndex, index)
   }
 
   override fun onEndChanges() {

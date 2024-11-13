@@ -32,7 +32,7 @@ restartable skippable scheme("[0, [0]]") fun Below(
 )
 inline fun CircleLayer(
   stable key: String
-  stable source: SourceHandle
+  stable source: Source
   stable sourceLayer: String? = @static ""
   stable minZoom: Float = @static 0.0f
   stable maxZoom: Float = @static 24.0f
@@ -43,12 +43,12 @@ inline fun CircleLayer(
 )
 restartable skippable fun LayerNode(
   stable key: String
-  stable factory: Function1<@[ParameterName(name = 'id')] String, T>
+  stable factory: Function2<@[ParameterName(name = 'id')] String, @[ParameterName(name = 'anchor')] Anchor, T>
   stable update: @[ExtensionFunctionType] Function1<Updater<LayerNode<T>>, Unit>
 )
 inline fun LineLayer(
   stable key: String
-  stable source: SourceHandle
+  stable source: Source
   stable sourceLayer: String? = @static ""
   stable minZoom: Float = @static 0.0f
   stable maxZoom: Float = @static 24.0f
@@ -61,9 +61,9 @@ inline fun rememberGeoJsonSource(
   stable key: String
   stable shape: Shape
   stable options: GeoJsonOptions? = @static GeoJsonOptions()
-): SourceHandle
+): Source
 fun rememberSource(
   stable key: String
   stable factory: Function1<@[ParameterName(name = 'id')] String, T>
   stable update: @[ExtensionFunctionType] Function1<T, Unit>
-): SourceHandle
+): Source

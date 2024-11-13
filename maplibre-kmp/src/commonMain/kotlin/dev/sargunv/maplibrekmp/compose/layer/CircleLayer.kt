@@ -1,15 +1,15 @@
 package dev.sargunv.maplibrekmp.compose.layer
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key as composeKey
 import androidx.compose.ui.graphics.Color
-import dev.sargunv.maplibrekmp.compose.source.SourceHandle
 import dev.sargunv.maplibrekmp.core.layer.CircleLayer
+import dev.sargunv.maplibrekmp.core.source.Source
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.nil
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.point
 import dev.sargunv.maplibrekmp.expression.Point
+import androidx.compose.runtime.key as composeKey
 
 public data class CircleLayout(val sortKey: Expression<Number> = nil())
 
@@ -31,7 +31,7 @@ public data class CirclePaint(
 @Suppress("NOTHING_TO_INLINE")
 public inline fun CircleLayer(
   key: String,
-  source: SourceHandle,
+  source: Source,
   sourceLayer: String = "",
   minZoom: Float = 0.0f,
   maxZoom: Float = 24.0f,
@@ -43,7 +43,7 @@ public inline fun CircleLayer(
   composeKey(key) {
     LayerNode(
       key = key,
-      factory = { id -> CircleLayer(id = id, source = source.source) },
+      factory = { id, anchor -> CircleLayer(id = id, source = source, anchor) },
       update = {
         set(sourceLayer) { layer.sourceLayer = it }
         set(minZoom) { layer.minZoom = it }

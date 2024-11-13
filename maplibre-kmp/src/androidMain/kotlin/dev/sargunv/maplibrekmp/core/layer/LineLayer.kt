@@ -6,12 +6,13 @@ import dev.sargunv.maplibrekmp.core.source.Source
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Point
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
+import org.maplibre.android.style.layers.PropertyFactory
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 import org.maplibre.android.style.layers.LineLayer as MLNLineLayer
-import org.maplibre.android.style.layers.PropertyFactory
 
 @PublishedApi
-internal actual class LineLayer actual constructor(id: String, source: Source) : UserLayer(source) {
+internal actual class LineLayer actual constructor(id: String, source: Source, anchor: Anchor) :
+  UserLayer(source, anchor) {
 
   override val impl = MLNLineLayer(id, source.id)
 

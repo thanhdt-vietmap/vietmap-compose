@@ -5,22 +5,19 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import dev.sargunv.maplibrekmp.compose.LocalStyleManager
 import dev.sargunv.maplibrekmp.core.source.Source
+import dev.sargunv.maplibrekmp.core.source.UserSource
 
 @Composable
 @PublishedApi
-internal fun <T : Source> rememberSource(
+internal fun <T : UserSource> rememberSource(
   key: String,
   factory: (id: String) -> T,
   update: T.() -> Unit,
-): SourceHandle {
+): Source {
   val styleManager = LocalStyleManager.current
   val source =
-    remember(factory, key, styleManager) { factory(key).also { styleManager.enqueueAddSource(it) } }
+    remember(factory, key, styleManager) { factory(key).also { styleManager.addSource(it) } }
   remember(source, update) { source.update() }
-
-  DisposableEffect(styleManager, source) { onDispose { styleManager.enqueueRemoveSource(source) } }
-
-  return remember(source) { SourceHandle(source) }
+  DisposableEffect(styleManager, source) { onDispose { styleManager.removeSource(source) } }
+  return source
 }
-
-public data class SourceHandle internal constructor(@PublishedApi internal val source: Source)

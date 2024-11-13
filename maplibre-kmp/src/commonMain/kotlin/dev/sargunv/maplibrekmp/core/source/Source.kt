@@ -1,6 +1,5 @@
 package dev.sargunv.maplibrekmp.core.source
 
-@PublishedApi
-internal expect sealed class Source {
-  val id: String
+public expect sealed class Source {
+  internal val id: String
 }

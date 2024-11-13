@@ -1,16 +1,16 @@
 package dev.sargunv.maplibrekmp.compose.layer
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key as composeKey
 import androidx.compose.ui.graphics.Color
-import dev.sargunv.maplibrekmp.compose.source.SourceHandle
 import dev.sargunv.maplibrekmp.core.layer.LineLayer
+import dev.sargunv.maplibrekmp.core.source.Source
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.nil
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.point
 import dev.sargunv.maplibrekmp.expression.Point
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
+import androidx.compose.runtime.key as composeKey
 
 public data class LineLayout(
   val cap: Expression<String> = const("butt"),
@@ -38,7 +38,7 @@ public data class LinePaint(
 @Suppress("NOTHING_TO_INLINE")
 public inline fun LineLayer(
   key: String,
-  source: SourceHandle,
+  source: Source,
   sourceLayer: String = "",
   minZoom: Float = 0.0f,
   maxZoom: Float = 24.0f,
@@ -50,7 +50,7 @@ public inline fun LineLayer(
   composeKey(key) {
     LayerNode(
       key = key,
-      factory = { id -> LineLayer(id = id, source = source.source) },
+      factory = { id, anchor -> LineLayer(id = id, source = source, anchor) },
       update = {
         set(sourceLayer) { layer.sourceLayer = it }
         set(minZoom) { layer.minZoom = it }

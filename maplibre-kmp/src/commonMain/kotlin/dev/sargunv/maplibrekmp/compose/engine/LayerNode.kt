@@ -1,9 +1,8 @@
 package dev.sargunv.maplibrekmp.compose.engine
 
-import dev.sargunv.maplibrekmp.core.layer.Anchor
-import dev.sargunv.maplibrekmp.core.layer.Layer
+import dev.sargunv.maplibrekmp.core.layer.UserLayer
 
 @PublishedApi
-internal class LayerNode<T : Layer>(val layer: T, val anchor: Anchor) : MapNode() {
+internal class LayerNode<T : UserLayer>(val layer: T) : MapNode() {
   override fun allowsChild(node: MapNode) = false
 }

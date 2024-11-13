@@ -7,7 +7,7 @@ import dev.sargunv.maplibrekmp.expression.Point
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
 @PublishedApi
-internal expect class LineLayer(id: String, source: Source) : UserLayer {
+internal expect class LineLayer(id: String, source: Source, anchor: Anchor) : UserLayer {
   var sourceLayer: String
 
   fun setFilter(filter: Expression<Boolean>)
