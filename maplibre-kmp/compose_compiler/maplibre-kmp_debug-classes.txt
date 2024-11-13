@@ -42,10 +42,6 @@ stable class Source {
 stable class UserSource {
   <runtime stability> = Stable
 }
-unstable class IncrementingId {
-  stable var incrementingId: Int
-  <runtime stability> = Unstable
-}
 stable class MapUiSettings {
   stable val uiPadding: PaddingValues
   stable val isDebugEnabled: Boolean
@@ -122,7 +118,7 @@ stable class StyleManager {
   unstable val style: Style
   stable val sources: SnapshotStateMap<String, Source>
   stable val layers: SnapshotStateMap<String, Layer>
-  unstable val layersByAnchor: MutableMap<Anchor, MutableList<Pair<Int, Layer>>>
+  unstable val layerAnchorList: MutableList<Pair<Anchor, Layer>>
 }
 stable class Top {
   <runtime stability> = Stable

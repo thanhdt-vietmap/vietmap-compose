@@ -42,10 +42,6 @@ stable class Source {
 stable class UserSource {
   <runtime stability> = Stable
 }
-unstable class IncrementingId {
-  stable var incrementingId: Int
-  <runtime stability> = Unstable
-}
 stable class MapUiSettings {
   stable val uiPadding: PaddingValues
   stable val isDebugEnabled: Boolean

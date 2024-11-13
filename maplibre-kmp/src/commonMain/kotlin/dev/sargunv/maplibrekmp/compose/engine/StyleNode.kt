@@ -10,18 +10,17 @@ internal class StyleNode(style: Style) : MapNode() {
   override fun allowsChild(node: MapNode) = node is LayerNode<*>
 
   override fun onChildRemoved(oldIndex: Int, node: MapNode) {
-    val layerNode = node as LayerNode<*>
-    styleManager.removeLayer(layerNode.layer, layerNode.anchor, oldIndex)
+    node as LayerNode<*>
+    styleManager.removeLayer(node.layer, node.anchor, oldIndex)
   }
 
   override fun onChildInserted(index: Int, node: MapNode) {
-    val layerNode = node as LayerNode<*>
-    styleManager.addLayer(layerNode.layer, layerNode.anchor, index)
+    node as LayerNode<*>
+    styleManager.addLayer(node.layer, node.anchor, index)
   }
 
   override fun onChildMoved(oldIndex: Int, index: Int, node: MapNode) {
-    val layerNode = node as LayerNode<*>
-    styleManager.removeLayer(layerNode.layer, layerNode.anchor, oldIndex)
-    styleManager.addLayer(layerNode.layer, layerNode.anchor, index)
+    node as LayerNode<*>
+    styleManager.moveLayer(node.layer, node.anchor, oldIndex, index)
   }
 }

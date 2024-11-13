@@ -6,7 +6,6 @@ import androidx.compose.runtime.Updater
 import dev.sargunv.maplibrekmp.compose.engine.LayerNode
 import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
 import dev.sargunv.maplibrekmp.core.layer.Layer
-import dev.sargunv.maplibrekmp.compose.IncrementingId
 
 @PublishedApi
 @Composable
@@ -17,7 +16,7 @@ internal fun <T : Layer> LayerNode(
 ) {
   val anchor = LocalAnchor.current
   ComposeNode<LayerNode<T>, MapNodeApplier>(
-    factory = { LayerNode(layer = factory(IncrementingId.next(key)), anchor = anchor) },
+    factory = { LayerNode(layer = factory(key), anchor = anchor) },
     update = update,
   )
 }

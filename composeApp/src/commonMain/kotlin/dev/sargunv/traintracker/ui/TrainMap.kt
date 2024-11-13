@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -19,16 +18,14 @@ import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
 import dev.sargunv.maplibrekmp.compose.MapUiSettings
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
-import dev.sargunv.maplibrekmp.compose.layer.Anchor
 import dev.sargunv.maplibrekmp.compose.layer.CircleLayer
-import dev.sargunv.maplibrekmp.compose.layer.CirclePaint
 import dev.sargunv.maplibrekmp.compose.layer.LineLayer
-import dev.sargunv.maplibrekmp.compose.layer.LinePaint
 import dev.sargunv.maplibrekmp.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrekmp.core.source.GeoJsonOptions
 import dev.sargunv.maplibrekmp.core.source.Shape
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.gtfs.GtfsSdk
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.compose.viewmodel.koinViewModel
@@ -80,18 +77,15 @@ fun TrainMap(sheetPadding: PaddingValues) {
     styleUrl = Res.getUri("files/maplibre/style/positron.json"),
     uiSettings = MapUiSettings(uiPadding = uiPadding),
   ) {
-    var sec by remember { mutableStateOf(0) }
-
-    LaunchedEffect(Unit) {
-      while (true) {
-        delay(1600)
-        sec += 1600
-      }
-    }
-
-    val changingColor by
-      remember(sec) { mutableStateOf(Color.hsl((sec / 15 % 360).toFloat(), 1.0f, 0.5f)) }
-
+    val trackSource =
+      rememberGeoJsonSource(
+        key = "amtrak-tracks",
+        shape =
+          Shape.Url(
+            "https://raw.githubusercontent.com/datanews/amtrak-geojson/master/amtrak-track.geojson"
+          ),
+        options = GeoJsonOptions(tolerance = 0.001f),
+      )
     val routeSource =
       rememberGeoJsonSource(
         key = "amtrak-routes",
@@ -104,55 +98,73 @@ fun TrainMap(sheetPadding: PaddingValues) {
         shape = Shape.Url(Res.getUri("files/geojson/amtrak/stations.geojson")),
       )
 
-    Anchor.Below("boundary_3") {
-      LineLayer(
-        key = "routes-outline",
-        source = routeSource,
-        paint =
-          LinePaint(
-            color = const(Color.White),
-            width = interpolate(exponential(const(2)), zoom(), 0 to const(2), 10 to const(4)),
-          ),
-      )
-      LineLayer(
-        key = "routes-fill",
-        source = routeSource,
-        paint =
-          LinePaint(
-            color = const(changingColor),
-            width = interpolate(exponential(const(2)), zoom(), 0 to const(1), 10 to const(2)),
-          ),
-      )
+    var bool by remember { mutableStateOf(true) }
+
+    LaunchedEffect(trackSource, routeSource) {
+      while (true) {
+        delay(1.seconds)
+        bool = !bool
+      }
     }
 
-    Anchor.Top {
-      CircleLayer(
-        key = "stations-bus",
-        source = stationSource,
-        filter = const("BUS") eq get<String>(const("StnType"), properties<String>()),
-        minZoom = 4f,
-        paint =
-          CirclePaint(
-            color = const(changingColor),
-            strokeColor = const(Color.White),
-            radius = interpolate(exponential(const(2)), zoom(), 0 to const(1), 10 to const(2)),
-            strokeWidth =
-              interpolate(exponential(const(2)), zoom(), 0 to const(0.5), 10 to const(1)),
-          ),
-      )
-      CircleLayer(
-        key = "stations-train",
-        source = stationSource,
-        filter = const("TRAIN") eq get<String>(const("StnType"), properties<String>()),
-        minZoom = 2f,
-        paint =
-          CirclePaint(
-            color = const(changingColor),
-            strokeColor = const(Color.White),
-            radius = interpolate(exponential(const(2)), zoom(), 0 to const(2), 10 to const(4)),
-            strokeWidth = interpolate(exponential(const(2)), zoom(), 0 to const(1), 10 to const(2)),
-          ),
-      )
-    }
+    if (bool) LineLayer(key = "tracks", source = trackSource)
+    CircleLayer(key = "stations", source = stationSource)
+    if (!bool) LineLayer(key = "tracks", source = trackSource)
+
+    //    Anchor.Below("boundary_3") {
+    //      LineLayer(
+    //        key = "routes-outline",
+    //        source = routeSource,
+    //        paint =
+    //          LinePaint(
+    //            color = const(Color.White),
+    //            width = interpolate(exponential(const(2)), zoom(), 0 to const(2), 10 to const(4)),
+    //          ),
+    //      )
+    //        LineLayer(
+    //          key = "routes-fill",
+    //          source = routeSource,
+    //          paint =
+    //            LinePaint(
+    //              color = const(Color.Cyan),
+    //              width = interpolate(exponential(const(2)), zoom(), 0 to const(1), 10 to
+    // const(2)),
+    //            ),
+    //        )
+    //      }
+    //    }
+
+    //    Anchor.Top {
+    //      CircleLayer(
+    //        key = "stations-bus",
+    //        source = stationSource,
+    //        filter = const("BUS") eq get<String>(const("StnType"), properties<String>()),
+    //        minZoom = 4f,
+    //        paint =
+    //          CirclePaint(
+    //            color = const(Color.Cyan),
+    //            strokeColor = const(Color.White),
+    //            radius = interpolate(exponential(const(2)), zoom(), 0 to const(1), 10 to
+    // const(2)),
+    //            strokeWidth =
+    //              interpolate(exponential(const(2)), zoom(), 0 to const(0.5), 10 to const(1)),
+    //          ),
+    //      )
+    //      CircleLayer(
+    //        key = "stations-train",
+    //        source = stationSource,
+    //        filter = const("TRAIN") eq get<String>(const("StnType"), properties<String>()),
+    //        minZoom = 2f,
+    //        paint =
+    //          CirclePaint(
+    //            color = const(Color.Cyan),
+    //            strokeColor = const(Color.White),
+    //            radius = interpolate(exponential(const(2)), zoom(), 0 to const(2), 10 to
+    // const(4)),
+    //            strokeWidth = interpolate(exponential(const(2)), zoom(), 0 to const(1), 10 to
+    // const(2)),
+    //          ),
+    //      )
+    //    }
   }
 }
