@@ -4,8 +4,8 @@ import cocoapods.MapLibre.MLNSource
 import cocoapods.MapLibre.MLNStyle
 import cocoapods.MapLibre.MLNStyleLayer
 import dev.sargunv.maplibrekmp.core.layer.Layer
-import dev.sargunv.maplibrekmp.core.layer.NativeLayer
-import dev.sargunv.maplibrekmp.core.source.NativeSource
+import dev.sargunv.maplibrekmp.core.layer.BaseLayer
+import dev.sargunv.maplibrekmp.core.source.BaseSource
 import dev.sargunv.maplibrekmp.core.source.Source
 
 internal actual class Style private actual constructor() {
@@ -24,11 +24,11 @@ internal actual class Style private actual constructor() {
   }
 
   actual fun getSource(id: String): Source? {
-    return impl.sourceWithIdentifier(id)?.let { NativeSource(it) }
+    return impl.sourceWithIdentifier(id)?.let { BaseSource(it) }
   }
 
   actual fun getSources(): List<Source> {
-    return impl.sources.map { NativeSource(it as MLNSource) }
+    return impl.sources.map { BaseSource(it as MLNSource) }
   }
 
   actual fun addLayer(layer: Layer) {
@@ -52,10 +52,10 @@ internal actual class Style private actual constructor() {
   }
 
   actual fun getLayer(id: String): Layer? {
-    return impl.layerWithIdentifier(id)?.let { NativeLayer(it) }
+    return impl.layerWithIdentifier(id)?.let { BaseLayer(it) }
   }
 
   actual fun getLayers(): List<Layer> {
-    return impl.layers.map { NativeLayer(it as MLNStyleLayer) }
+    return impl.layers.map { BaseLayer(it as MLNStyleLayer) }
   }
 }

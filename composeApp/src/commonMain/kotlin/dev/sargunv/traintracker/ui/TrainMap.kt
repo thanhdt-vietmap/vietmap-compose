@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
+import dev.sargunv.maplibrekmp.compose.MapUiSettings
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
 import dev.sargunv.maplibrekmp.compose.layer.Anchor
 import dev.sargunv.maplibrekmp.compose.layer.CircleLayer
@@ -75,7 +76,10 @@ fun TrainMap(sheetPadding: PaddingValues) {
       PaddingValues(start = start, end = end, top = top, bottom = bottom)
     }
 
-  MaplibreMap(styleUrl = Res.getUri("files/maplibre/style/positron.json"), uiPadding = uiPadding) {
+  MaplibreMap(
+    styleUrl = Res.getUri("files/maplibre/style/positron.json"),
+    uiSettings = MapUiSettings(uiPadding = uiPadding),
+  ) {
     var sec by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {

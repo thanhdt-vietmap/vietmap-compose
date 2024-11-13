@@ -6,7 +6,7 @@ import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Point
 
 @PublishedApi
-internal expect class CircleLayer(id: String, source: Source) : Layer {
+internal expect class CircleLayer(id: String, source: Source) : UserLayer {
   var sourceLayer: String
 
   fun setFilter(filter: Expression<Boolean>)

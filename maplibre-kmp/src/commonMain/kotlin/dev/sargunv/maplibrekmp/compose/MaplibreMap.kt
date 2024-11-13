@@ -1,6 +1,5 @@
 package dev.sargunv.maplibrekmp.compose
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.CompositionLocalProvider
@@ -12,7 +11,6 @@ import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
 import dev.sargunv.maplibrekmp.compose.engine.StyleNode
 import dev.sargunv.maplibrekmp.core.Style
@@ -25,33 +23,25 @@ import kotlinx.coroutines.awaitCancellation
 public fun MaplibreMap(
   modifier: Modifier = Modifier,
   styleUrl: String = "https://demotiles.maplibre.org/style.json",
-  uiPadding: PaddingValues = PaddingValues(8.dp),
-  isDebugEnabled: Boolean = false,
-  isLogoEnabled: Boolean = true,
-  isAttributionEnabled: Boolean = true,
-  isCompassEnabled: Boolean = true,
-  isTiltGesturesEnabled: Boolean = true,
-  isZoomGesturesEnabled: Boolean = true,
-  isRotateGesturesEnabled: Boolean = true,
-  isScrollGesturesEnabled: Boolean = true,
+  uiSettings: MapUiSettings = MapUiSettings(),
   styleContent: @Composable ExpressionScope.() -> Unit = {},
 ) {
   var style by remember { mutableStateOf<Style?>(null) }
   val compositionContext = rememberCompositionContext()
 
-  NativeMap(
+  PlatformMap(
     modifier = modifier,
-    uiPadding = uiPadding,
+    uiPadding = uiSettings.uiPadding,
     styleUrl = styleUrl,
     updateMap = { map ->
-      map.isDebugEnabled = isDebugEnabled
-      map.isLogoEnabled = isLogoEnabled
-      map.isAttributionEnabled = isAttributionEnabled
-      map.isCompassEnabled = isCompassEnabled
-      map.isTiltGesturesEnabled = isTiltGesturesEnabled
-      map.isZoomGesturesEnabled = isZoomGesturesEnabled
-      map.isRotateGesturesEnabled = isRotateGesturesEnabled
-      map.isScrollGesturesEnabled = isScrollGesturesEnabled
+      map.isDebugEnabled = uiSettings.isDebugEnabled
+      map.isLogoEnabled = uiSettings.isLogoEnabled
+      map.isAttributionEnabled = uiSettings.isAttributionEnabled
+      map.isCompassEnabled = uiSettings.isCompassEnabled
+      map.isTiltGesturesEnabled = uiSettings.isTiltGesturesEnabled
+      map.isZoomGesturesEnabled = uiSettings.isZoomGesturesEnabled
+      map.isRotateGesturesEnabled = uiSettings.isRotateGesturesEnabled
+      map.isScrollGesturesEnabled = uiSettings.isScrollGesturesEnabled
     },
     onStyleLoaded = { style = it },
     onRelease = { style = null },

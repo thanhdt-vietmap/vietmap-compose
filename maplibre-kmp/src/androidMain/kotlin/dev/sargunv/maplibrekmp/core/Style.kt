@@ -1,8 +1,8 @@
 package dev.sargunv.maplibrekmp.core
 
 import dev.sargunv.maplibrekmp.core.layer.Layer
-import dev.sargunv.maplibrekmp.core.layer.NativeLayer
-import dev.sargunv.maplibrekmp.core.source.NativeSource
+import dev.sargunv.maplibrekmp.core.layer.BaseLayer
+import dev.sargunv.maplibrekmp.core.source.BaseSource
 import dev.sargunv.maplibrekmp.core.source.Source
 import org.maplibre.android.maps.Style as MLNStyle
 
@@ -23,11 +23,11 @@ internal actual class Style private actual constructor() {
   }
 
   actual fun getSource(id: String): Source? {
-    return impl.getSource(id)?.let { NativeSource(it) }
+    return impl.getSource(id)?.let { BaseSource(it) }
   }
 
   actual fun getSources(): List<Source> {
-    return impl.sources.map { NativeSource(it) }
+    return impl.sources.map { BaseSource(it) }
   }
 
   actual fun addLayer(layer: Layer) {
@@ -51,10 +51,10 @@ internal actual class Style private actual constructor() {
   }
 
   actual fun getLayer(id: String): Layer? {
-    return impl.getLayer(id)?.let { NativeLayer(it) }
+    return impl.getLayer(id)?.let { BaseLayer(it) }
   }
 
   actual fun getLayers(): List<Layer> {
-    return impl.layers.map { NativeLayer(it) }
+    return impl.layers.map { BaseLayer(it) }
   }
 }

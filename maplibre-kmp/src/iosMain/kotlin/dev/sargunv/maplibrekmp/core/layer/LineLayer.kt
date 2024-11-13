@@ -10,8 +10,7 @@ import dev.sargunv.maplibrekmp.expression.Point
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
 @PublishedApi
-internal actual class LineLayer
-actual constructor(override val id: String, override val source: Source) : Layer() {
+internal actual class LineLayer actual constructor(id: String, source: Source) : UserLayer(source) {
 
   override val impl = MLNLineStyleLayer(id, source.impl)
 

@@ -11,8 +11,7 @@ import org.maplibre.android.style.layers.LineLayer as MLNLineLayer
 import org.maplibre.android.style.layers.PropertyFactory
 
 @PublishedApi
-internal actual class LineLayer
-actual constructor(override val id: String, override val source: Source) : Layer() {
+internal actual class LineLayer actual constructor(id: String, source: Source) : UserLayer(source) {
 
   override val impl = MLNLineLayer(id, source.id)
 

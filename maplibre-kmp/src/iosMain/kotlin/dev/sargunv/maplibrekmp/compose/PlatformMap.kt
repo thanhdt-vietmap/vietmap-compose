@@ -23,7 +23,7 @@ import platform.Foundation.NSURL
 import platform.darwin.NSObject
 
 @Composable
-internal actual fun NativeMap(
+internal actual fun PlatformMap(
   modifier: Modifier,
   uiPadding: PaddingValues,
   styleUrl: String,

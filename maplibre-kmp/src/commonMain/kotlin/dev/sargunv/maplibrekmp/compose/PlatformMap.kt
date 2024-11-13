@@ -7,7 +7,7 @@ import dev.sargunv.maplibrekmp.core.MapControl
 import dev.sargunv.maplibrekmp.core.Style
 
 @Composable
-internal expect fun NativeMap(
+internal expect fun PlatformMap(
   modifier: Modifier,
   uiPadding: PaddingValues,
   styleUrl: String,

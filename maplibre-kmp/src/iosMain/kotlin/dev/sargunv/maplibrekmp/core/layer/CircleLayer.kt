@@ -9,8 +9,8 @@ import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Point
 
 @PublishedApi
-internal actual class CircleLayer
-actual constructor(override val id: String, override val source: Source) : Layer() {
+internal actual class CircleLayer actual constructor(id: String, source: Source) :
+  UserLayer(source) {
 
   override val impl = MLNCircleStyleLayer(id, source.impl)
 

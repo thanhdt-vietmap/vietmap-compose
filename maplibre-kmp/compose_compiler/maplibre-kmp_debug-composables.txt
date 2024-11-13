@@ -1,4 +1,4 @@
-restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun NativeMap(
+restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun PlatformMap(
   stable modifier: Modifier
   stable uiPadding: PaddingValues
   stable styleUrl: String
@@ -9,15 +9,7 @@ restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun NativeMap
 restartable skippable scheme("[androidx.compose.ui.UiComposable, [androidx.compose.ui.UiComposable]]") fun MaplibreMap(
   stable modifier: Modifier? = @static Companion
   stable styleUrl: String? = @static "https://demotiles.maplibre.org/style.json"
-  stable uiPadding: PaddingValues? = @static PaddingValues(8.dp)
-  stable isDebugEnabled: Boolean = @static false
-  stable isLogoEnabled: Boolean = @static true
-  stable isAttributionEnabled: Boolean = @static true
-  stable isCompassEnabled: Boolean = @static true
-  stable isTiltGesturesEnabled: Boolean = @static true
-  stable isZoomGesturesEnabled: Boolean = @static true
-  stable isRotateGesturesEnabled: Boolean = @static true
-  stable isScrollGesturesEnabled: Boolean = @static true
+  stable uiSettings: MapUiSettings? = @dynamic MapUiSettings()
   stable styleContent: @[ExtensionFunctionType] Function3<ExpressionScope, Composer, Int, Unit>? = @static ComposableSingletons$MaplibreMapKt.lambda-1
 )
 restartable skippable scheme("[0, [0]]") fun Top(

@@ -17,7 +17,7 @@ import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
 
 @Composable
-internal actual fun NativeMap(
+internal actual fun PlatformMap(
   modifier: Modifier,
   uiPadding: PaddingValues,
   styleUrl: String,

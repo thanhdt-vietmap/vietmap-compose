@@ -20,7 +20,7 @@ import platform.Foundation.NSUTF8StringEncoding
 
 @PublishedApi
 internal actual class GeoJsonSource
-actual constructor(override val id: String, shape: Shape, options: GeoJsonOptions) : Source() {
+actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : UserSource() {
   override val impl: MLNShapeSource
 
   init {

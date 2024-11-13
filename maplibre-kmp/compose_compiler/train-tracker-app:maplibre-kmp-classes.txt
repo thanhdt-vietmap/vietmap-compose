@@ -6,9 +6,11 @@ unstable class Style {
   unstable var impl: MLNStyle
   <runtime stability> = Unstable
 }
+unstable class BaseLayer {
+  unstable val impl: MLNStyleLayer
+  <runtime stability> = Unstable
+}
 unstable class CircleLayer {
-  stable val id: String
-  stable val source: Source
   unstable val impl: MLNCircleStyleLayer
   <runtime stability> = Unstable
 }
@@ -19,27 +21,41 @@ stable class Layer {
   <runtime stability> = Stable
 }
 unstable class LineLayer {
-  stable val id: String
-  stable val source: Source
   unstable val impl: MLNLineStyleLayer
   <runtime stability> = Unstable
 }
-unstable class NativeLayer {
-  stable val id: String
-  unstable var _impl: MLNStyleLayer
+stable class UserLayer {
+  stable val source: Source
+  <runtime stability> = Stable
+}
+unstable class BaseSource {
+  unstable val impl: MLNSource
   <runtime stability> = Unstable
 }
 unstable class GeoJsonSource {
-  stable val id: String
   unstable val impl: MLNShapeSource
   <runtime stability> = Unstable
 }
-unstable class NativeSource {
-  stable val id: String
-  unstable var _impl: MLNSource
+stable class Source {
+  <runtime stability> = Stable
+}
+stable class UserSource {
+  <runtime stability> = Stable
+}
+unstable class IncrementingId {
+  stable var incrementingId: Int
   <runtime stability> = Unstable
 }
-stable class Source {
+stable class MapUiSettings {
+  stable val uiPadding: PaddingValues
+  stable val isDebugEnabled: Boolean
+  stable val isLogoEnabled: Boolean
+  stable val isAttributionEnabled: Boolean
+  stable val isCompassEnabled: Boolean
+  stable val isTiltGesturesEnabled: Boolean
+  stable val isZoomGesturesEnabled: Boolean
+  stable val isRotateGesturesEnabled: Boolean
+  stable val isScrollGesturesEnabled: Boolean
   <runtime stability> = Stable
 }
 runtime class LayerNode {
@@ -101,10 +117,6 @@ stable class LinePaint {
 stable class SourceHandle {
   stable val source: Source
   <runtime stability> = Stable
-}
-unstable class IncrementingId {
-  stable var incrementingId: Int
-  <runtime stability> = Unstable
 }
 stable class StyleManager {
   unstable val style: Style
