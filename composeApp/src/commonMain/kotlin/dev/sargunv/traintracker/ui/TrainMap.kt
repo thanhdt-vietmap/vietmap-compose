@@ -52,19 +52,19 @@ fun TrainMap(uiPadding: PaddingValues) {
   ) {
     val routeSource =
       rememberGeoJsonSource(
-        key = "amtrak-routes",
+        id = "amtrak-routes",
         shape = Shape.Url(Res.getUri("files/geojson/amtrak/routes.geojson")),
         options = GeoJsonOptions(tolerance = 0.001f),
       )
     val stationSource =
       rememberGeoJsonSource(
-        key = "amtrak-stations",
+        id = "amtrak-stations",
         shape = Shape.Url(Res.getUri("files/geojson/amtrak/stations.geojson")),
       )
 
     Anchor.Below("boundary_3") {
       LineLayer(
-        key = "routes-outline",
+        id = "routes-outline",
         source = routeSource,
         paint =
           LinePaint(
@@ -73,7 +73,7 @@ fun TrainMap(uiPadding: PaddingValues) {
           ),
       )
       LineLayer(
-        key = "routes-fill",
+        id = "routes-fill",
         source = routeSource,
         paint =
           LinePaint(
@@ -85,7 +85,7 @@ fun TrainMap(uiPadding: PaddingValues) {
 
     Anchor.Top {
       CircleLayer(
-        key = "stations-bus",
+        id = "stations-bus",
         source = stationSource,
         filter = const("BUS") eq get<String>(const("StnType"), properties<String>()),
         minZoom = 3f,
@@ -99,7 +99,7 @@ fun TrainMap(uiPadding: PaddingValues) {
           ),
       )
       CircleLayer(
-        key = "stations-train",
+        id = "stations-train",
         source = stationSource,
         filter = const("TRAIN") eq get<String>(const("StnType"), properties<String>()),
         minZoom = 2f,

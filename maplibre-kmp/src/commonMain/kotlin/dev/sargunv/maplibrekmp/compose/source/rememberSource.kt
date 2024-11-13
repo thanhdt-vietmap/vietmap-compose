@@ -9,14 +9,9 @@ import dev.sargunv.maplibrekmp.core.source.UserSource
 
 @Composable
 @PublishedApi
-internal fun <T : UserSource> rememberSource(
-  key: String,
-  factory: (id: String) -> T,
-  update: T.() -> Unit,
-): Source {
+internal fun <T : UserSource> rememberSource(factory: () -> T, update: T.() -> Unit): Source {
   val styleManager = LocalStyleManager.current
-  val source =
-    remember(factory, key, styleManager) { factory(key).also { styleManager.addSource(it) } }
+  val source = remember(factory, styleManager) { factory().also { styleManager.addSource(it) } }
   remember(source, update) { source.update() }
   DisposableEffect(styleManager, source) { onDispose { styleManager.removeSource(source) } }
   return source

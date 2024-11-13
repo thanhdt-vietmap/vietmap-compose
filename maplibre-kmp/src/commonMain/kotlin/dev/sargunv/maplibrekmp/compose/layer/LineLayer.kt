@@ -37,7 +37,7 @@ public data class LinePaint(
 @Composable
 @Suppress("NOTHING_TO_INLINE")
 public inline fun LineLayer(
-  key: String,
+  id: String,
   source: Source,
   sourceLayer: String = "",
   minZoom: Float = 0.0f,
@@ -47,10 +47,9 @@ public inline fun LineLayer(
   layout: LineLayout = LineLayout(),
   paint: LinePaint = LinePaint(),
 ) {
-  composeKey(key) {
+  composeKey(id) {
     LayerNode(
-      key = key,
-      factory = { id, anchor -> LineLayer(id = id, source = source, anchor) },
+      factory = { anchor -> LineLayer(id = id, source = source, anchor = anchor) },
       update = {
         set(sourceLayer) { layer.sourceLayer = it }
         set(minZoom) { layer.minZoom = it }

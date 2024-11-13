@@ -11,13 +11,12 @@ import dev.sargunv.maplibrekmp.core.layer.Anchor as CoreAnchor
 @PublishedApi
 @Composable
 internal fun <T : UserLayer> LayerNode(
-  key: String,
-  factory: (id: String, anchor: CoreAnchor) -> T,
+  factory: (anchor: CoreAnchor) -> T,
   update: Updater<LayerNode<T>>.() -> Unit,
 ) {
   val anchor = LocalAnchor.current
   ComposeNode<LayerNode<T>, MapNodeApplier>(
-    factory = { LayerNode(layer = factory(key, anchor)) },
+    factory = { LayerNode(layer = factory(anchor)) },
     update = update,
   )
 }

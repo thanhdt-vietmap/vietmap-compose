@@ -30,7 +30,7 @@ public data class CirclePaint(
 @Composable
 @Suppress("NOTHING_TO_INLINE")
 public inline fun CircleLayer(
-  key: String,
+  id: String,
   source: Source,
   sourceLayer: String = "",
   minZoom: Float = 0.0f,
@@ -40,10 +40,9 @@ public inline fun CircleLayer(
   layout: CircleLayout = CircleLayout(),
   paint: CirclePaint = CirclePaint(),
 ) {
-  composeKey(key) {
+  composeKey(id) {
     LayerNode(
-      key = key,
-      factory = { id, anchor -> CircleLayer(id = id, source = source, anchor) },
+      factory = { anchor -> CircleLayer(id = id, source = source, anchor = anchor) },
       update = {
         set(sourceLayer) { layer.sourceLayer = it }
         set(minZoom) { layer.minZoom = it }
