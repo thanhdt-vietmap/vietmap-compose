@@ -9,108 +9,87 @@ import dev.sargunv.maplibrekmp.core.source.Source
 @Stable
 internal class StyleManager(val style: Style) {
 
-  private val sources =
-    mutableStateMapOf<String, Source>().apply { style.getSources().forEach { put(it.id, it) } }
+  private val userSources = mutableStateMapOf<String, Source>()
+  private val userLayers = mutableStateMapOf<String, Layer>()
 
-  private val layers =
-    mutableStateMapOf<String, Layer>().apply { style.getLayers().forEach { put(it.id, it) } }
+  private val sourcesToRemove = mutableListOf<Source>()
+  private val layersToRemove = mutableListOf<Layer>()
+  private val sourcesToAdd = mutableListOf<Source>()
+  private val layersToAdd = mutableListOf<Pair<Anchor, Layer>>()
 
   private val layerAnchorList = mutableListOf<Pair<Anchor, Layer>>()
+  private var isLayersDirty = false
 
-  internal fun addSource(source: Source) {
+  internal fun enqueueAddSource(source: Source) {
     println("Adding source ${source.id}")
-    require(source.id !in sources) { "Source with ID ${source.id} already exists" }
-    sources[source.id] = source
-    style.addSource(source)
+    sourcesToAdd.add(source)
   }
 
-  internal fun removeSource(source: Source) {
+  internal fun enqueueRemoveSource(source: Source) {
     println("Removing source ${source.id}")
-    require(source.id in sources) { "Source with ID ${source.id} does not exist" }
-    sources.remove(source.id)
-    style.removeSource(source)
+    sourcesToRemove.add(source)
   }
 
-  internal fun addLayer(layer: Layer, anchor: Anchor, index: Int) {
+  internal fun enqueueAddLayer(layer: Layer, anchor: Anchor, index: Int) {
     println("Adding layer ${layer.id} with anchor $anchor and index $index")
-    require(layer.id !in layers) { "Layer with ID ${layer.id} already exists" }
-
     layerAnchorList.add(index, anchor to layer)
-    layers[layer.id] = layer
-
-    val nextLayer = nextLayerIdForAnchor(anchor, index)
-    if (nextLayer != null) style.addLayerBelow(nextLayer, layer)
-    else {
-      val prevLayer = prevLayerIdForAnchor(anchor, index)
-      if (prevLayer != null) {
-        style.addLayerAbove(prevLayer, layer)
-      } else {
-        initAnchor(anchor, layer)
-      }
-    }
+    layersToAdd.add(anchor to layer)
   }
 
-  internal fun removeLayer(layer: Layer, anchor: Anchor, index: Int) {
+  internal fun enqueueRemoveLayer(layer: Layer, anchor: Anchor, index: Int) {
     println("Removing layer ${layer.id} with anchor $anchor and sort key $index")
-    require(layer.id in layers) { "Layer with ID ${layer.id} does not exist" }
     layerAnchorList.removeAt(index)
-    layers.remove(layer.id)
-    style.removeLayer(layer)
+    layersToRemove.add(layer)
   }
 
-  internal fun moveLayer(layer: Layer, anchor: Anchor, oldIndex: Int, index: Int) {
+  internal fun enqueueMoveLayer(layer: Layer, anchor: Anchor, oldIndex: Int, index: Int) {
     println("Moving layer ${layer.id} with anchor $anchor from $oldIndex to $index")
-    require(layer.id in layers) { "Layer with ID ${layer.id} does not exist" }
-
-    if (oldIndex < index) {
-      val oldNextLayer = nextLayerIdForAnchor(anchor, oldIndex)
-      layerAnchorList.removeAt(oldIndex)
-      layerAnchorList.add(index, anchor to layer)
-      val newNextLayer = nextLayerIdForAnchor(anchor, index)
-      if (oldNextLayer != newNextLayer) {
-        println("Position changed relative to other layers on the same anchor")
-        style.removeLayer(layer)
-        if (newNextLayer != null) style.addLayerBelow(newNextLayer, layer)
-        else {
-          val prevLayer = prevLayerIdForAnchor(anchor, index)
-          if (prevLayer != null) style.addLayerAbove(prevLayer, layer)
-          else initAnchor(anchor, layer)
-        }
-      }
-    } else {
-      val oldPrevLayer = prevLayerIdForAnchor(anchor, oldIndex)
-      layerAnchorList.removeAt(oldIndex)
-      layerAnchorList.add(index, anchor to layer)
-      val newPrevLayer = prevLayerIdForAnchor(anchor, index)
-      if (oldPrevLayer != newPrevLayer) {
-        println("Position changed relative to other layers on the same anchor")
-        style.removeLayer(layer)
-        if (newPrevLayer != null) style.addLayerAbove(newPrevLayer, layer)
-        else {
-          val nextLayer = nextLayerIdForAnchor(anchor, index)
-          if (nextLayer != null) style.addLayerBelow(nextLayer, layer)
-          else initAnchor(anchor, layer)
-        }
-      }
-    }
+    layerAnchorList.removeAt(oldIndex)
+    layerAnchorList.add(index, anchor to layer)
+    isLayersDirty = true
   }
 
-  private fun initAnchor(anchor: Anchor, layer: Layer) {
-    when (anchor) {
-      Anchor.Top -> style.addLayer(layer)
-      Anchor.Bottom -> style.addLayerAt(0, layer)
-      is Anchor.Above -> style.addLayerAbove(anchor.layerId, layer)
-      is Anchor.Below -> style.addLayerBelow(anchor.layerId, layer)
+  internal fun applyChanges() {
+    println("Applying changes")
+
+    sourcesToRemove
+      .onEach {
+        style.removeSource(it)
+        userSources.remove(it.id)
+      }
+      .clear()
+
+    sourcesToAdd
+      .onEach {
+        style.addSource(it)
+        userSources[it.id] = it
+      }
+      .clear()
+
+    // TODO something better than removing and re-adding all layers
+
+    if (isLayersDirty || layersToRemove.isNotEmpty() || layersToAdd.isNotEmpty()) {
+      // remove all user layers
+      userLayers.values.forEach { style.removeLayer(it) }
+      layersToRemove.onEach { userLayers.remove(it.id) }.clear()
+
+      // re-add all user layers
+      val prevLayerIdForAnchor = mutableMapOf<Anchor, String?>()
+      layerAnchorList.forEach { (anchor, layer) ->
+        val prevLayerId = prevLayerIdForAnchor[anchor]
+        if (prevLayerId != null) style.addLayerAbove(prevLayerId, layer)
+        else
+          when (anchor) {
+            is Anchor.Top -> style.addLayer(layer)
+            is Anchor.Bottom -> style.addLayerAt(0, layer)
+            is Anchor.Below -> style.addLayerBelow(anchor.layerId, layer)
+            is Anchor.Above -> style.addLayerAbove(anchor.layerId, layer)
+          }
+        prevLayerIdForAnchor[anchor] = layer.id
+      }
+      layersToAdd.onEach { (_, layer) -> userLayers[layer.id] = layer }.clear()
+
+      isLayersDirty = false
     }
   }
-
-  private fun nextLayerIdForAnchor(anchor: Anchor, index: Int) =
-    layerAnchorList
-      .subList(index, layerAnchorList.size)
-      .firstOrNull { it.first == anchor }
-      ?.second
-      ?.id
-
-  private fun prevLayerIdForAnchor(anchor: Anchor, index: Int) =
-    layerAnchorList.subList(0, index).lastOrNull { it.first == anchor }?.second?.id
 }

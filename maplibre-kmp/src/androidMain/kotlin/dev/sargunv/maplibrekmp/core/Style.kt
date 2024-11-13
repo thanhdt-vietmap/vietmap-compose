@@ -1,7 +1,7 @@
 package dev.sargunv.maplibrekmp.core
 
-import dev.sargunv.maplibrekmp.core.layer.Layer
 import dev.sargunv.maplibrekmp.core.layer.BaseLayer
+import dev.sargunv.maplibrekmp.core.layer.Layer
 import dev.sargunv.maplibrekmp.core.source.BaseSource
 import dev.sargunv.maplibrekmp.core.source.Source
 import org.maplibre.android.maps.Style as MLNStyle
@@ -31,22 +31,32 @@ internal actual class Style private actual constructor() {
   }
 
   actual fun addLayer(layer: Layer) {
+    println("+Adding layer ${layer.id}")
+    println("Layers: ${impl.layers.joinToString { it.id }}")
     impl.addLayer(layer.impl)
   }
 
   actual fun addLayerAbove(id: String, layer: Layer) {
+    println("+Adding layer ${layer.id} above $id")
+    println("Layers: ${impl.layers.joinToString { it.id }}")
     impl.addLayerAbove(layer.impl, id)
   }
 
   actual fun addLayerBelow(id: String, layer: Layer) {
+    println("+Adding layer ${layer.id} below $id")
+    println("Layers: ${impl.layers.joinToString { it.id }}")
     impl.addLayerBelow(layer.impl, id)
   }
 
   actual fun addLayerAt(index: Int, layer: Layer) {
+    println("+Adding layer ${layer.id} at $index")
+    println("Layers: ${impl.layers.joinToString { it.id }}")
     impl.addLayerAt(layer.impl, index)
   }
 
   actual fun removeLayer(layer: Layer) {
+    println("+Removing layer ${layer.id}")
+    println("Layers: ${impl.layers.joinToString { it.id }}")
     impl.removeLayer(layer.id)
   }
 

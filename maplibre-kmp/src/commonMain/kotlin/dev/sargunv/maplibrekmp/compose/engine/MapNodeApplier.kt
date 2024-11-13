@@ -26,4 +26,8 @@ internal class MapNodeApplier(root: StyleNode) : AbstractApplier<MapNode>(root) 
     current.children.remove(index, count)
     removed.forEach { instance -> current.onChildRemoved(index, instance) }
   }
+
+  override fun onEndChanges() {
+    root.onEndChanges()
+  }
 }

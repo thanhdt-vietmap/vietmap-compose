@@ -15,10 +15,10 @@ internal fun <T : Source> rememberSource(
 ): SourceHandle {
   val styleManager = LocalStyleManager.current
   val source =
-    remember(factory, key, styleManager) { factory(key).also { styleManager.addSource(it) } }
+    remember(factory, key, styleManager) { factory(key).also { styleManager.enqueueAddSource(it) } }
   remember(source, update) { source.update() }
 
-  DisposableEffect(styleManager, source) { onDispose { styleManager.removeSource(source) } }
+  DisposableEffect(styleManager, source) { onDispose { styleManager.enqueueRemoveSource(source) } }
 
   return remember(source) { SourceHandle(source) }
 }

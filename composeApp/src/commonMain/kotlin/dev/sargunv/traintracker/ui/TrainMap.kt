@@ -102,7 +102,7 @@ fun TrainMap(sheetPadding: PaddingValues) {
 
     LaunchedEffect(trackSource, routeSource) {
       while (true) {
-        delay(1.seconds)
+        delay(3.seconds)
         bool = !bool
       }
     }
