@@ -7,5 +7,5 @@ public actual sealed class Source {
   internal actual val id: String
     get() = impl.identifier
 
-  override fun toString() = "${this::class.simpleName}(id=\"$id\")"
+  override fun toString(): String = "${this::class.simpleName}(id=\"$id\")"
 }

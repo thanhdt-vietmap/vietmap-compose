@@ -5,164 +5,126 @@ import dev.sargunv.maplibrekmp.core.layer.Anchor
 import dev.sargunv.maplibrekmp.core.layer.PlatformLayer
 import dev.sargunv.maplibrekmp.core.layer.UserLayer
 import dev.sargunv.maplibrekmp.core.source.UserSource
-import kotlin.math.min
 
 @Stable
 internal class StyleManager(val style: Style) {
-  private val baseLayerIds = style.getLayers().map { it.id }.toSet()
+  private val baseLayers = style.getLayers().associateBy { it.id }
 
   // we queue up additions, but instantly execute removals
   // this way if an id is added and removed in the same frame, it will be removed before it's added
   private val sourcesToAdd = mutableListOf<UserSource>()
-  private val layersToAdd = mutableListOf<LayerLocation>()
+  private val userLayers = mutableListOf<LayerStatus>()
 
-  // TODO red black tree instead of ArrayList? since we're inserting/removing at arbitrary index
-  private val layerLocations = mutableMapOf<Anchor, MutableList<LayerLocation>>()
-  private val removedLayers = mutableMapOf<Anchor.Replace, PlatformLayer>()
+  // special handling for Replace anchors
+  private val replacedLayers = mutableMapOf<Anchor.Replace, PlatformLayer>()
+  private val replacementCounters = mutableMapOf<Anchor.Replace, Int>()
 
-  private data class LayerLocation(
-    var index: Int,
-    val layer: UserLayer,
-    var added: Boolean = false,
-  )
+  private data class LayerStatus(val layer: UserLayer, var added: Boolean = false)
 
   internal fun addSource(source: UserSource) {
-    println("addSource: $source")
+    // TODO check if source already exists in base style
     sourcesToAdd.add(source)
   }
 
   internal fun removeSource(source: UserSource) {
-    println("removeSource: $source")
     style.removeSource(source)
   }
 
-  private fun validateAnchorTarget(layerId: String) {
-    require(layerId in baseLayerIds) { "Layer ID '${layerId}' not found in base style" }
-  }
-
   internal fun addLayer(layer: UserLayer, index: Int) {
-    println("addLayer: $layer, $index")
-
-    when (val anchor = layer.anchor) {
-      is Anchor.Above -> validateAnchorTarget(anchor.layerId)
-      is Anchor.Below -> validateAnchorTarget(anchor.layerId)
-      is Anchor.Replace -> validateAnchorTarget(anchor.layerId)
-      else -> Unit
-    }
-
-    val newLoc = LayerLocation(index, layer)
-    var newAnchor = true
-
-    for ((a, locs) in layerLocations.entries) {
-      val pos = locs.binarySearch { it.index.compareTo(index) }.invIfNegative()
-
-      // increment indexes after the new layer's index
-      locs.subList(min(pos + 1, locs.size), locs.size).forEach { it.index++ }
-
-      // if this is the list where the layer belongs, add it
-      if (a == layer.anchor) {
-        newAnchor = false
-        locs.add(pos, newLoc)
-      }
-    }
-
-    // if the layer introduced a new anchor, create a new list
-    if (newAnchor) {
-      layerLocations[layer.anchor] = mutableListOf(newLoc)
-    }
-
-    // and queue the layer for addition
-    layersToAdd.add(newLoc)
+    require(layer.id !in baseLayers) { "Layer ID '${layer.id}' already exists in base style" }
+    layer.anchor.validate(baseLayers)
+    userLayers.add(index, LayerStatus(layer))
   }
 
   internal fun removeLayer(layer: UserLayer, oldIndex: Int) {
-    println("removeLayer: $layer, $oldIndex")
-    var empty = false
-    for ((a, locs) in layerLocations.entries) {
-      val pos = locs.binarySearch { it.index.compareTo(oldIndex) }.invIfNegative()
+    userLayers.removeAt(oldIndex)
 
-      // if the layer is in this list, remove it
-      if (a == layer.anchor) locs.removeAt(pos)
-      if (locs.isEmpty()) empty = true
-
-      // decrement indexes after the removed layer's index
-      locs.subList(pos, locs.size).forEach { it.index-- }
-    }
-    if (empty) {
-      layerLocations.remove(layer.anchor)
-      if (layer.anchor is Anchor.Replace) {
-        val removed = removedLayers.remove(layer.anchor)!!
-        style.addLayerBelow(layer.id, removed)
+    // special handling for Replace anchors
+    // restore the original before removing if this layer was the last replacement
+    val anchor = layer.anchor
+    if (anchor is Anchor.Replace) {
+      val count = replacementCounters.getValue(anchor) - 1
+      if (count > 0) replacementCounters[anchor] = count
+      else {
+        replacementCounters.remove(anchor)
+        style.addLayerBelow(layer.id, replacedLayers.remove(anchor)!!)
       }
     }
+
     style.removeLayer(layer)
   }
 
   internal fun moveLayer(layer: UserLayer, oldIndex: Int, index: Int) {
     println("moveLayer: $layer, $oldIndex, $index")
-    for ((a, locs) in layerLocations.entries) {
-      // if the layer is in this list, remove it from its current position
-      val oldPos = locs.binarySearch { it.index.compareTo(oldIndex) }.invIfNegative()
-      val movedLoc = if (a == layer.anchor) locs.removeAt(oldPos) else null
-
-      // and add it to its new position
-      val newPos = locs.binarySearch { it.index.compareTo(index) }.invIfNegative()
-      if (a == layer.anchor) {
-        locs.add(newPos, movedLoc!!)
-        movedLoc.index = index
-      }
-
-      // adjust indexes for layers between the old and new positions
-      if (oldPos < newPos) locs.subList(oldPos, newPos).forEach { it.index-- }
-      else locs.subList(newPos + 1, oldPos + 1).forEach { it.index++ }
-
-      // if the layer moved relative to other layers in this list, remove and queue re-addition
-      if (a == layer.anchor && oldPos != newPos) {
-        style.removeLayer(layer)
-        layersToAdd.add(movedLoc!!)
-      }
-    }
+    removeLayer(layer, oldIndex)
+    addLayer(layer, index)
   }
 
   internal fun applyChanges() {
-    // sources are easy to add
     sourcesToAdd.onEach(style::addSource).clear()
 
-    // layers are tricky
-    layersToAdd
-      .onEach { (index, layer) ->
-        // find our layer in the list
-        val locs = layerLocations[layer.anchor]!!
-        val pos = locs.binarySearch { it.index.compareTo(index) }
+    val tailLayerIds = mutableMapOf<Anchor, String>()
+    val missedLayers = mutableMapOf<Anchor, MutableList<LayerStatus>>()
 
-        // add above the previous layer, if possible
-        val prevLayer = locs.subList(0, pos).lastOrNull { it.added }?.layer
-        if (prevLayer != null) style.addLayerAbove(prevLayer.id, layer)
-        else {
-          // add below the next layer, if possible
-          val nextLayer = locs.subList(pos + 1, locs.size).firstOrNull { it.added }?.layer
-          if (nextLayer != null) style.addLayerBelow(nextLayer.id, layer)
-          else {
-            // otherwise, we're the first layer for this anchor, so add as per the anchor
-            when (val anchor = layer.anchor) {
-              is Anchor.Top -> style.addLayer(layer)
-              is Anchor.Bottom -> style.addLayerAt(0, layer)
-              is Anchor.Above -> style.addLayerAbove(anchor.layerId, layer)
-              is Anchor.Below -> style.addLayerBelow(anchor.layerId, layer)
-              is Anchor.Replace -> {
-                val removedLayer = style.getLayer(anchor.layerId)!!
-                style.addLayerBelow(removedLayer.id, layer)
-                style.removeLayer(removedLayer)
-                removedLayers[anchor] = removedLayer
-              }
-            }
-          }
+    userLayers.forEach {
+      val layer = it.layer
+      val anchor = layer.anchor
+
+      if (it.added && anchor in missedLayers) {
+        // we found an existing head; let's add the missed layers
+        val layersToAdd = missedLayers.remove(anchor)!!
+        layersToAdd.forEach { missedLayer ->
+          style.addLayerBelow(layer.id, missedLayer.layer)
+          missedLayer.markAdded()
         }
-
-        locs[pos].added = true
       }
-      .clear()
+
+      if (!it.added) {
+        // we found a layer to add; let's try to add it, or queue it up until we find a head
+        tailLayerIds[anchor]?.let { tailLayerId ->
+          style.addLayerAbove(tailLayerId, layer)
+          it.markAdded()
+        } ?: missedLayers.getOrPut(anchor) { mutableListOf() }.add(it)
+      }
+
+      // update the tail
+      if (it.added) tailLayerIds[anchor] = layer.id
+    }
+
+    // anything left in missedLayers is a new anchor
+    missedLayers.forEach { (anchor, layers) ->
+      // let's initialize the anchor with one layer
+      val tail = layers.removeLast()
+      when (anchor) {
+        is Anchor.Top -> style.addLayer(tail.layer)
+        is Anchor.Bottom -> style.addLayerAt(0, tail.layer)
+        is Anchor.Above -> style.addLayerAbove(anchor.layerId, tail.layer)
+        is Anchor.Below -> style.addLayerBelow(anchor.layerId, tail.layer)
+        is Anchor.Replace -> {
+          val layerToReplace = style.getLayer(anchor.layerId)!!
+          style.addLayerAbove(layerToReplace.id, tail.layer)
+          style.removeLayer(layerToReplace)
+          replacedLayers[anchor] = layerToReplace
+          replacementCounters[anchor] = 0
+        }
+      }
+      tail.markAdded()
+
+      // and add the rest below it
+      layers.forEach {
+        style.addLayerBelow(tail.layer.id, it.layer)
+        it.markAdded()
+      }
+    }
+
+    // TODO remove this check when I'm confident in the implementation and/or write tests
+    require(userLayers.all { it.added }) { "Not all layers were added; this is a bug" }
   }
 
-  private fun Int.invIfNegative() = if (this < 0) this.inv() else this
+  private fun LayerStatus.markAdded() {
+    val anchor = layer.anchor
+    if (anchor is Anchor.Replace)
+      replacementCounters[anchor] = replacementCounters.getValue(anchor) + 1
+    added = true
+  }
 }

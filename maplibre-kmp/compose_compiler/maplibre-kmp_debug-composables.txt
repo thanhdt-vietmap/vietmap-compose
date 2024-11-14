@@ -1,15 +1,21 @@
-restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun PlatformMap(
+restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun PlatformMapView(
   stable modifier: Modifier
   stable uiPadding: PaddingValues
   stable styleUrl: String
-  stable updateMap: Function1<@[ParameterName(name = 'map')] MapControl, Unit>
+  stable updateMap: Function1<@[ParameterName(name = 'map')] PlatformMap, Unit>
+  stable onMapLoaded: Function1<@[ParameterName(name = 'map')] PlatformMap, Unit>
   stable onStyleLoaded: Function1<@[ParameterName(name = 'style')] Style, Unit>
   stable onRelease: Function0<Unit>
+  stable onCameraMove: Function0<Unit>
+  stable onClick: Function1<@[ParameterName(name = 'pos')] LatLng, Unit>
+  stable onLongClick: Function1<@[ParameterName(name = 'pos')] LatLng, Unit>
 )
+fun rememberCameraState()
 restartable skippable scheme("[androidx.compose.ui.UiComposable, [androidx.compose.ui.UiComposable]]") fun MaplibreMap(
   stable modifier: Modifier? = @static Companion
   stable styleUrl: String? = @static "https://demotiles.maplibre.org/style.json"
   stable uiSettings: MapUiSettings? = @dynamic MapUiSettings()
+  stable cameraState: CameraState? = @dynamic rememberCameraState($composer, 0)
   stable styleContent: @[ExtensionFunctionType] Function3<ExpressionScope, Composer, Int, Unit>? = @static ComposableSingletons$MaplibreMapKt.lambda-1
 )
 restartable skippable scheme("[0, [0]]") fun Top(
@@ -36,7 +42,7 @@ restartable skippable scheme("[0, [0]]") fun Replace(
   unused stable <this>: Companion
 )
 inline fun CircleLayer(
-  stable key: String
+  stable id: String
   stable source: Source
   stable sourceLayer: String? = @static ""
   stable minZoom: Float = @static 0.0f
@@ -47,12 +53,11 @@ inline fun CircleLayer(
   stable paint: CirclePaint? = @dynamic CirclePaint()
 )
 restartable skippable fun LayerNode(
-  stable key: String
-  stable factory: Function2<@[ParameterName(name = 'id')] String, @[ParameterName(name = 'anchor')] Anchor, T>
+  stable factory: Function1<@[ParameterName(name = 'anchor')] Anchor, T>
   stable update: @[ExtensionFunctionType] Function1<Updater<LayerNode<T>>, Unit>
 )
 inline fun LineLayer(
-  stable key: String
+  stable id: String
   stable source: Source
   stable sourceLayer: String? = @static ""
   stable minZoom: Float = @static 0.0f
@@ -63,12 +68,11 @@ inline fun LineLayer(
   stable paint: LinePaint? = @dynamic LinePaint()
 )
 inline fun rememberGeoJsonSource(
-  stable key: String
+  stable id: String
   stable shape: Shape
   stable options: GeoJsonOptions? = @static GeoJsonOptions()
 ): Source
 fun rememberSource(
-  stable key: String
-  stable factory: Function1<@[ParameterName(name = 'id')] String, T>
+  stable factory: Function0<T>
   stable update: @[ExtensionFunctionType] Function1<T, Unit>
 ): Source

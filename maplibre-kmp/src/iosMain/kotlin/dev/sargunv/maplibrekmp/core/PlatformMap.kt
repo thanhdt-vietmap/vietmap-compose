@@ -6,8 +6,11 @@ import cocoapods.MapLibre.MLNMapDebugTileInfoMask
 import cocoapods.MapLibre.MLNMapDebugTimestampsMask
 import cocoapods.MapLibre.MLNMapView
 import cocoapods.MapLibre.allowsTilting
+import kotlinx.cinterop.useContents
+import platform.CoreLocation.CLLocationCoordinate2DMake
+import platform.UIKit.UIEdgeInsetsMake
 
-internal actual class MapControl private actual constructor() {
+internal actual class PlatformMap private actual constructor() {
   private lateinit var impl: MLNMapView
 
   internal constructor(impl: MLNMapView) : this() {
@@ -17,7 +20,13 @@ internal actual class MapControl private actual constructor() {
   actual var isDebugEnabled: Boolean
     get() = impl.debugMask != 0uL
     set(value) {
-      impl.debugMask = if (value) MAP_DEBUG_VALUE else 0uL
+      impl.debugMask =
+        if (value)
+          MLNMapDebugTileBoundariesMask or
+            MLNMapDebugTileInfoMask or
+            MLNMapDebugTimestampsMask or
+            MLNMapDebugCollisionBoxesMask
+        else 0uL
     }
 
   actual var isLogoEnabled: Boolean
@@ -62,11 +71,42 @@ internal actual class MapControl private actual constructor() {
       impl.zoomEnabled = value
     }
 
-  companion object {
-    val MAP_DEBUG_VALUE =
-      MLNMapDebugTileBoundariesMask or
-        MLNMapDebugTileInfoMask or
-        MLNMapDebugTimestampsMask or
-        MLNMapDebugCollisionBoxesMask
-  }
+  actual var cameraBearing: Double
+    get() = impl.direction
+    set(value) {
+      impl.direction = value
+    }
+
+  actual var cameraPadding: CameraPadding
+    get() =
+      impl.contentInset.useContents {
+        CameraPadding(left = left, top = top, right = right, bottom = bottom)
+      }
+    set(value) {
+      impl.contentInset =
+        UIEdgeInsetsMake(
+          left = value.left,
+          top = value.top,
+          right = value.right,
+          bottom = value.bottom,
+        )
+    }
+
+  actual var cameraTarget: LatLng
+    get() = impl.centerCoordinate.useContents { LatLng(latitude, longitude) }
+    set(value) {
+      impl.centerCoordinate = CLLocationCoordinate2DMake(value.latitude, value.longitude)
+    }
+
+  actual var cameraTilt: Double
+    get() = impl.camera.pitch
+    set(value) {
+      impl.camera.pitch = value
+    }
+
+  actual var cameraZoom: Double
+    get() = impl.zoomLevel
+    set(value) {
+      impl.zoomLevel = value
+    }
 }

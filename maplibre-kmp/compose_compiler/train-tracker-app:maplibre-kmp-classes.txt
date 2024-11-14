@@ -1,13 +1,20 @@
-unstable class MapControl {
+stable class MapDelegate {
+  stable val onStyleLoaded: Function1<@[ParameterName(name = 'style')] MLNStyle, Unit>
+  stable val onCameraMove: Function0<Unit>
+  <runtime stability> = Stable
+}
+unstable class MapGestureManager {
+  unstable val mapView: MLNMapView
+  stable val onClick: Function1<@[ParameterName(name = 'pos')] LatLng, Unit>
+  stable val onLongClick: Function1<@[ParameterName(name = 'pos')] LatLng, Unit>
+  <runtime stability> = Unstable
+}
+unstable class PlatformMap {
   unstable var impl: MLNMapView
   <runtime stability> = Unstable
 }
 unstable class Style {
   unstable var impl: MLNStyle
-  <runtime stability> = Unstable
-}
-unstable class BaseLayer {
-  unstable val impl: MLNStyleLayer
   <runtime stability> = Unstable
 }
 unstable class CircleLayer {
@@ -24,16 +31,21 @@ unstable class LineLayer {
   unstable val impl: MLNLineStyleLayer
   <runtime stability> = Unstable
 }
+unstable class PlatformLayer {
+  unstable val impl: MLNStyleLayer
+  <runtime stability> = Unstable
+}
 stable class UserLayer {
   stable val source: Source
+  stable val anchor: Anchor
   <runtime stability> = Stable
-}
-unstable class BaseSource {
-  unstable val impl: MLNSource
-  <runtime stability> = Unstable
 }
 unstable class GeoJsonSource {
   unstable val impl: MLNShapeSource
+  <runtime stability> = Unstable
+}
+unstable class PlatformSource {
+  unstable val impl: MLNSource
   <runtime stability> = Unstable
 }
 stable class Source {
@@ -54,9 +66,17 @@ stable class MapUiSettings {
   stable val isScrollGesturesEnabled: Boolean
   <runtime stability> = Stable
 }
+unstable class CameraState {
+  stable var bearing$delegate: MutableState<Double>
+  stable var padding$delegate: MutableState<DoubleArray>
+  stable var target$delegate: MutableState<LatLng>
+  stable var tilt$delegate: MutableState<Double>
+  stable var zoom$delegate: MutableState<Double>
+  unstable var map: PlatformMap?
+  <runtime stability> = Unstable
+}
 runtime class LayerNode {
   runtime val layer: T
-  stable val anchor: Anchor
   <runtime stability> = Parameter(T)
 }
 unstable class MapNode {
@@ -110,20 +130,18 @@ stable class LinePaint {
   stable val gradient: Expression<Color>
   <runtime stability> = Stable
 }
-stable class SourceHandle {
-  stable val source: Source
+stable class LatLng {
+  stable val latitude: Double
+  stable val longitude: Double
   <runtime stability> = Stable
 }
 stable class StyleManager {
   unstable val style: Style
-  stable val userSources: SnapshotStateMap<String, Source>
-  stable val userLayers: SnapshotStateMap<String, Layer>
-  unstable val sourcesToRemove: MutableList<Source>
-  unstable val layersToRemove: MutableList<Layer>
-  unstable val sourcesToAdd: MutableList<Source>
-  unstable val layersToAdd: MutableList<Pair<Anchor, Layer>>
-  unstable val layerAnchorList: MutableList<Pair<Anchor, Layer>>
-  stable var isLayersDirty: Boolean
+  unstable val baseLayers: Map<String, PlatformLayer>
+  unstable val sourcesToAdd: MutableList<UserSource>
+  unstable val userLayers: MutableList<LayerStatus>
+  unstable val replacedLayers: MutableMap<Replace, PlatformLayer>
+  unstable val replacementCounters: MutableMap<Replace, Int>
 }
 stable class Top {
   <runtime stability> = Stable
@@ -136,6 +154,10 @@ stable class Above {
   <runtime stability> = Stable
 }
 stable class Below {
+  stable val layerId: String
+  <runtime stability> = Stable
+}
+stable class Replace {
   stable val layerId: String
   <runtime stability> = Stable
 }

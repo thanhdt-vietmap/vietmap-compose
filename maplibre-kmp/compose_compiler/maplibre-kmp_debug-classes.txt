@@ -1,4 +1,4 @@
-unstable class MapControl {
+unstable class PlatformMap {
   unstable var impl: MapLibreMap
   <runtime stability> = Unstable
 }
@@ -54,6 +54,14 @@ stable class MapUiSettings {
   stable val isRotateGesturesEnabled: Boolean
   stable val isScrollGesturesEnabled: Boolean
   <runtime stability> = Stable
+}
+stable class CameraState {
+  unstable var map: PlatformMap?
+  stable var bearing$delegate: MutableState<Double>
+  stable var padding$delegate: MutableState<CameraPadding>
+  stable var target$delegate: MutableState<LatLng>
+  stable var tilt$delegate: MutableState<Double>
+  stable var zoom$delegate: MutableState<Double>
 }
 runtime class LayerNode {
   runtime val layer: T
@@ -112,10 +120,11 @@ stable class LinePaint {
 }
 stable class StyleManager {
   unstable val style: Style
+  unstable val baseLayers: Map<String, PlatformLayer>
   unstable val sourcesToAdd: MutableList<UserSource>
-  unstable val layersToAdd: MutableList<LayerLocation>
-  unstable val layerLocations: MutableMap<Anchor, MutableList<LayerLocation>>
-  unstable val removedLayers: MutableMap<Replace, PlatformLayer>
+  unstable val userLayers: MutableList<LayerStatus>
+  unstable val replacedLayers: MutableMap<Replace, PlatformLayer>
+  unstable val replacementCounters: MutableMap<Replace, Int>
 }
 stable class Top {
   <runtime stability> = Stable
@@ -159,6 +168,18 @@ stable class GeoJson {
   <runtime stability> = Stable
 }
 stable class Shape {
+}
+stable class LatLng {
+  stable val latitude: Double
+  stable val longitude: Double
+  <runtime stability> = Stable
+}
+stable class CameraPadding {
+  stable val left: Double
+  stable val top: Double
+  stable val right: Double
+  stable val bottom: Double
+  <runtime stability> = Stable
 }
 stable class Expression {
   unstable val value: Any?

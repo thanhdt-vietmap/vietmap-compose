@@ -1,5 +1,11 @@
 package dev.sargunv.traintracker.ui
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -15,6 +21,7 @@ import dev.sargunv.maplibrekmp.compose.layer.CircleLayer
 import dev.sargunv.maplibrekmp.compose.layer.CirclePaint
 import dev.sargunv.maplibrekmp.compose.layer.LineLayer
 import dev.sargunv.maplibrekmp.compose.layer.LinePaint
+import dev.sargunv.maplibrekmp.compose.rememberCameraState
 import dev.sargunv.maplibrekmp.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrekmp.core.source.GeoJsonOptions
 import dev.sargunv.maplibrekmp.core.source.Shape
@@ -46,9 +53,28 @@ fun TrainMap(uiPadding: PaddingValues) {
   val viewModel = koinViewModel<TrainMapViewModel>()
   val state by remember { viewModel.state }
 
+  val cameraState = rememberCameraState()
+
+  val infiniteTransition = rememberInfiniteTransition(label = "test")
+  val zoom by
+    infiniteTransition.animateFloat(
+      initialValue = 1f,
+      targetValue = 5f,
+      animationSpec =
+        infiniteRepeatable(
+          animation = tween(1000, easing = LinearEasing),
+          repeatMode = RepeatMode.Reverse,
+        ),
+      label = "zoom",
+    )
+
+  cameraState.zoom = zoom.toDouble()
+  println("set zoom to ${cameraState.zoom}")
+
   MaplibreMap(
     styleUrl = Res.getUri("files/maplibre/style/positron.json"),
     uiSettings = MapUiSettings(uiPadding = uiPadding),
+    cameraState = cameraState,
   ) {
     val routeSource =
       rememberGeoJsonSource(

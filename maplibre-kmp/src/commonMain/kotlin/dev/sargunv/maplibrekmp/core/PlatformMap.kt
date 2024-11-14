@@ -1,6 +1,6 @@
 package dev.sargunv.maplibrekmp.core
 
-internal expect class MapControl private constructor() {
+internal expect class PlatformMap private constructor() {
   var isDebugEnabled: Boolean
   var isLogoEnabled: Boolean
   var isAttributionEnabled: Boolean
@@ -9,4 +9,9 @@ internal expect class MapControl private constructor() {
   var isScrollGesturesEnabled: Boolean
   var isTiltGesturesEnabled: Boolean
   var isZoomGesturesEnabled: Boolean
+  var cameraBearing: Double
+  var cameraPadding: CameraPadding
+  var cameraTarget: LatLng
+  var cameraTilt: Double
+  var cameraZoom: Double
 }
