@@ -1,6 +1,9 @@
 package dev.sargunv.maplibrekmp.core
 
+import dev.sargunv.maplibrekmp.compose.CameraPosition
+
 internal expect class PlatformMap private constructor() {
+
   var isDebugEnabled: Boolean
   var isLogoEnabled: Boolean
   var isAttributionEnabled: Boolean
@@ -9,9 +12,12 @@ internal expect class PlatformMap private constructor() {
   var isScrollGesturesEnabled: Boolean
   var isTiltGesturesEnabled: Boolean
   var isZoomGesturesEnabled: Boolean
-  var cameraBearing: Double
+
+  var cameraPosition: CameraPosition
+
+  fun animateCameraPosition(finalPosition: CameraPosition)
+
   var cameraPadding: CameraPadding
-  var cameraTarget: LatLng
-  var cameraTilt: Double
-  var cameraZoom: Double
+
+  fun animateCameraPadding(finalPadding: CameraPadding)
 }

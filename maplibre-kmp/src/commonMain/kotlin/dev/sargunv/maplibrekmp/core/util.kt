@@ -6,8 +6,8 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 public data class CameraPadding(
-  val left: Double,
-  val top: Double,
-  val right: Double,
-  val bottom: Double,
+  val left: Double = 0.0,
+  val top: Double = 0.0,
+  val right: Double = 0.0,
+  val bottom: Double = 0.0,
 )

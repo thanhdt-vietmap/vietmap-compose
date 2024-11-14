@@ -27,33 +27,36 @@ import kotlinx.coroutines.awaitCancellation
 @Immutable
 public data class CameraPosition(
   public val bearing: Double = 0.0,
-  public val padding: CameraPadding = CameraPadding(0.0, 0.0, 0.0, 0.0),
   public val target: LatLng = LatLng(0.0, 0.0),
   public val tilt: Double = 0.0,
   public val zoom: Double = 1.0,
 )
 
 @Stable
-public class CameraState internal constructor(firstPosition: CameraPosition) {
+public class CameraState
+internal constructor(firstPosition: CameraPosition, firstPadding: CameraPadding) {
   internal var map: PlatformMap? = null
   public var position: CameraPosition by mutableStateOf(firstPosition)
+  public var padding: CameraPadding by mutableStateOf(firstPadding)
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is CameraState) return false
-    return position == other.position
+  public fun animateTo(finalPosition: CameraPosition) {
+    map?.animateCameraPosition(finalPosition)
+      ?: error("Map must be initialized before calling animate")
   }
 
-  override fun hashCode(): Int {
-    return position.hashCode()
+  public fun animateTo(finalPadding: CameraPadding) {
+    map?.animateCameraPadding(finalPadding)
+      ?: error("Map must be initialized before calling animate")
   }
 }
 
 @Composable
-public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition()): CameraState =
-  remember {
-    CameraState(firstPosition)
-  }
+public fun rememberCameraState(
+  firstPosition: CameraPosition = CameraPosition(),
+  firstPadding: CameraPadding = CameraPadding(),
+): CameraState = remember {
+  CameraState(firstPosition = firstPosition, firstPadding = firstPadding)
+}
 
 @Composable
 public fun MaplibreMap(
@@ -71,7 +74,9 @@ public fun MaplibreMap(
 
   var lastUiSettings by remember { mutableStateOf<MapUiSettings?>(null) }
   var lastPosition by remember { mutableStateOf<CameraPosition?>(null) }
+  var lastPadding by remember { mutableStateOf<CameraPadding?>(null) }
   val position = cameraState.position
+  val padding = cameraState.padding
 
   PlatformMapView(
     modifier = modifier,
@@ -90,28 +95,24 @@ public fun MaplibreMap(
         lastUiSettings = uiSettings
       }
       if (position != lastPosition) {
-        it.cameraBearing = position.bearing
-        it.cameraPadding = position.padding
-        it.cameraTarget = position.target
-        it.cameraTilt = position.tilt
-        it.cameraZoom = position.zoom
+        it.cameraPosition = position
         lastPosition = position
+      }
+      if (padding != lastPadding) {
+        it.cameraPadding = padding
+        lastPadding = padding
       }
     },
     onMapLoaded = { map = it },
     onStyleLoaded = { style = it },
     onCameraMove = {
       map!!.let {
-        val pos =
-          CameraPosition(
-            bearing = it.cameraBearing,
-            padding = it.cameraPadding,
-            target = it.cameraTarget,
-            tilt = it.cameraTilt,
-            zoom = it.cameraZoom,
-          )
+        val pos = it.cameraPosition
+        val pad = it.cameraPadding
         lastPosition = pos
         cameraState.position = pos
+        lastPadding = pad
+        cameraState.padding = pad
       }
     },
     onClick = { println("onClick: $it") },

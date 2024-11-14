@@ -2,12 +2,14 @@ package dev.sargunv.traintracker.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import dev.sargunv.maplibrekmp.compose.CameraPosition
 import dev.sargunv.maplibrekmp.compose.MapUiSettings
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
 import dev.sargunv.maplibrekmp.compose.layer.Anchor
@@ -15,11 +17,14 @@ import dev.sargunv.maplibrekmp.compose.layer.CircleLayer
 import dev.sargunv.maplibrekmp.compose.layer.CirclePaint
 import dev.sargunv.maplibrekmp.compose.layer.LineLayer
 import dev.sargunv.maplibrekmp.compose.layer.LinePaint
+import dev.sargunv.maplibrekmp.compose.rememberCameraState
 import dev.sargunv.maplibrekmp.compose.source.rememberGeoJsonSource
+import dev.sargunv.maplibrekmp.core.LatLng
 import dev.sargunv.maplibrekmp.core.source.GeoJsonOptions
 import dev.sargunv.maplibrekmp.core.source.Shape
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.gtfs.GtfsSdk
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -46,9 +51,26 @@ fun TrainMap(uiPadding: PaddingValues) {
   val viewModel = koinViewModel<TrainMapViewModel>()
   val state by remember { viewModel.state }
 
+  val cameraState = rememberCameraState()
+
+  LaunchedEffect(true) {
+    while (true) {
+      delay(2000)
+      cameraState.animateTo(
+        CameraPosition(
+          target = LatLng(37.7749, -122.4194),
+          zoom = 10.0,
+          tilt = 30.0,
+          bearing = 45.0,
+        )
+      )
+    }
+  }
+
   MaplibreMap(
     styleUrl = Res.getUri("files/maplibre/style/positron.json"),
     uiSettings = MapUiSettings(uiPadding = uiPadding),
+    cameraState = cameraState,
   ) {
     val routeSource =
       rememberGeoJsonSource(

@@ -11,6 +11,7 @@ unstable class MapGestureManager {
 }
 unstable class PlatformMap {
   unstable var impl: MLNMapView
+  unstable var mapViewSize: CValue<CGSize>
   <runtime stability> = Unstable
 }
 unstable class Style {
@@ -68,7 +69,6 @@ stable class MapUiSettings {
 }
 stable class CameraPosition {
   stable val bearing: Double
-  stable val padding: CameraPadding
   stable val target: LatLng
   stable val tilt: Double
   stable val zoom: Double
@@ -76,6 +76,7 @@ stable class CameraPosition {
 stable class CameraState {
   unstable var map: PlatformMap?
   stable var position$delegate: MutableState<CameraPosition>
+  stable var padding$delegate: MutableState<CameraPadding>
 }
 runtime class LayerNode {
   runtime val layer: T

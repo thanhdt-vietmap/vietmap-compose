@@ -12,7 +12,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.viewinterop.UIKitInteropInteractionMode
 import androidx.compose.ui.viewinterop.UIKitInteropProperties
 import androidx.compose.ui.viewinterop.UIKitView
@@ -28,6 +31,7 @@ import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGPointMake
+import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSURL
 import platform.UIKit.UIGestureRecognizerStateBegan
 import platform.UIKit.UIGestureRecognizerStateEnded
@@ -50,6 +54,7 @@ internal actual fun PlatformMapView(
   onLongClick: (pos: LatLng) -> Unit,
 ) {
   val layoutDir = LocalLayoutDirection.current
+  val density = LocalDensity.current
   val insetPadding = WindowInsets.safeDrawing.asPaddingValues()
 
   val margins =
@@ -79,15 +84,25 @@ internal actual fun PlatformMapView(
   // Probably some weirdness with integration between Kotlin GC and ObjC ARC.
   var gestureManager by remember { mutableStateOf<MapGestureManager?>(null) }
 
+  var platformMap by remember { mutableStateOf<PlatformMap?>(null) }
+
   UIKitView(
-    modifier = modifier.fillMaxSize(),
+    modifier =
+      modifier.fillMaxSize().onSizeChanged {
+        platformMap?.mapViewSize =
+          with(density) { it.toSize().toDpSize() }
+            .let { dpSize ->
+              CGSizeMake(dpSize.width.value.toDouble(), dpSize.height.value.toDouble())
+            }
+      },
     properties =
       UIKitInteropProperties(interactionMode = UIKitInteropInteractionMode.NonCooperative),
     factory = {
       MLNMapView().also { mapView ->
         mapView.automaticallyAdjustsContentInset = false
 
-        onMapLoaded(PlatformMap(mapView))
+        platformMap = PlatformMap(mapView)
+        onMapLoaded(platformMap!!)
 
         mapView.delegate =
           MapDelegate(
@@ -104,7 +119,7 @@ internal actual fun PlatformMapView(
       }
     },
     update = { mapView ->
-      updateMap(PlatformMap(mapView))
+      updateMap(platformMap!!)
 
       if (margins != lastMargins) {
         mapView.setLogoViewMargins(margins[0])

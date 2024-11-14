@@ -12,12 +12,13 @@ restartable skippable fun PlatformMapView(
 )
 fun rememberCameraState(
   stable firstPosition: CameraPosition? = @static CameraPosition()
+  stable firstPadding: CameraPadding? = @static CameraPadding()
 ): CameraState
 restartable skippable scheme("[0, [0]]") fun MaplibreMap(
   stable modifier: Modifier? = @static Companion
   stable styleUrl: String? = @static "https://demotiles.maplibre.org/style.json"
   stable uiSettings: MapUiSettings? = @dynamic MapUiSettings()
-  stable cameraState: CameraState? = @dynamic rememberCameraState(null, $composer, 0, 0b0001)
+  stable cameraState: CameraState? = @dynamic rememberCameraState(null, null, $composer, 0, 0b0011)
   stable styleContent: @[ExtensionFunctionType] Function3<ExpressionScope, Composer, Int, Unit>? = @static ComposableSingletons$MaplibreMapKt.lambda-1
 )
 restartable skippable scheme("[0, [0]]") fun Top(
