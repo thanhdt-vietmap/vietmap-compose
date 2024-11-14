@@ -37,9 +37,27 @@ internal actual fun PlatformMapView(
   onLongClick: (pos: LatLng) -> Unit,
 ) {
   var observer by remember { mutableStateOf<LifecycleEventObserver?>(null) }
+
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
 
+  val margins =
+    remember(uiPadding, layoutDir, density) {
+      with(density) {
+        listOf(
+          uiPadding.calculateLeftPadding(layoutDir).roundToPx(),
+          uiPadding.calculateTopPadding().roundToPx(),
+          uiPadding.calculateRightPadding(layoutDir).roundToPx(),
+          uiPadding.calculateBottomPadding().roundToPx(),
+        )
+      }
+    }
+
+  var lastStyleUrl by remember { mutableStateOf<String?>(null) }
+  var lastMargins by remember { mutableStateOf<List<Int>?>(null) }
+
+  val currentOnStyleLoaded by rememberUpdatedState(onStyleLoaded)
+  val currentOnRelease by rememberUpdatedState(onRelease)
   val currentOnCameraMove by rememberUpdatedState(onCameraMove)
   val currentOnClick by rememberUpdatedState(onClick)
   val currentOnLongClick by rememberUpdatedState(onLongClick)
@@ -63,12 +81,16 @@ internal actual fun PlatformMapView(
 
         mapView.getMapAsync { map ->
           map.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
+
           onMapLoaded(PlatformMap(map))
+
           map.addOnCameraMoveListener { currentOnCameraMove() }
+
           map.addOnMapClickListener {
             currentOnClick(LatLng(it.latitude, it.longitude))
             false
           }
+
           map.addOnMapLongClickListener {
             currentOnLongClick(LatLng(it.latitude, it.longitude))
             false
@@ -78,20 +100,24 @@ internal actual fun PlatformMapView(
     },
     update = { mapView ->
       mapView.getMapAsync { map ->
-        with(density) {
-          val top = uiPadding.calculateTopPadding().roundToPx()
-          val bottom = uiPadding.calculateBottomPadding().roundToPx()
-          val left = uiPadding.calculateLeftPadding(layoutDir).roundToPx()
-          val right = uiPadding.calculateRightPadding(layoutDir).roundToPx()
-          map.uiSettings.setAttributionMargins(left, top, right, bottom)
-          map.uiSettings.setLogoMargins(left, top, right, bottom)
-          map.uiSettings.setCompassMargins(left, top, right, bottom)
-        }
         updateMap(PlatformMap(map))
-        map.setStyle(styleUrl.correctedAndroidUri().toString()) { onStyleLoaded(Style(it)) }
+
+        if (margins != lastMargins) {
+          map.uiSettings.setAttributionMargins(margins[0], margins[1], margins[2], margins[3])
+          map.uiSettings.setLogoMargins(margins[0], margins[1], margins[2], margins[3])
+          map.uiSettings.setCompassMargins(margins[0], margins[1], margins[2], margins[3])
+          lastMargins = margins
+        }
+
+        if (styleUrl != lastStyleUrl) {
+          map.setStyle(styleUrl.correctedAndroidUri().toString()) {
+            currentOnStyleLoaded(Style(it))
+          }
+          lastStyleUrl = styleUrl
+        }
       }
     },
-    onRelease = { onRelease() },
+    onRelease = { currentOnRelease() },
   )
 
   val lifecycle = LocalLifecycleOwner.current.lifecycle

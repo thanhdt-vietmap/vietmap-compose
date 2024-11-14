@@ -66,14 +66,16 @@ stable class MapUiSettings {
   stable val isScrollGesturesEnabled: Boolean
   <runtime stability> = Stable
 }
-unstable class CameraState {
-  stable var bearing$delegate: MutableState<Double>
-  stable var padding$delegate: MutableState<DoubleArray>
-  stable var target$delegate: MutableState<LatLng>
-  stable var tilt$delegate: MutableState<Double>
-  stable var zoom$delegate: MutableState<Double>
+stable class CameraPosition {
+  stable val bearing: Double
+  stable val padding: CameraPadding
+  stable val target: LatLng
+  stable val tilt: Double
+  stable val zoom: Double
+}
+stable class CameraState {
   unstable var map: PlatformMap?
-  <runtime stability> = Unstable
+  stable var position$delegate: MutableState<CameraPosition>
 }
 runtime class LayerNode {
   runtime val layer: T
@@ -130,11 +132,6 @@ stable class LinePaint {
   stable val gradient: Expression<Color>
   <runtime stability> = Stable
 }
-stable class LatLng {
-  stable val latitude: Double
-  stable val longitude: Double
-  <runtime stability> = Stable
-}
 stable class StyleManager {
   unstable val style: Style
   unstable val baseLayers: Map<String, PlatformLayer>
@@ -185,6 +182,16 @@ stable class GeoJson {
   <runtime stability> = Stable
 }
 stable class Shape {
+}
+stable class LatLng {
+  stable val latitude: Double
+  stable val longitude: Double
+}
+stable class CameraPadding {
+  stable val left: Double
+  stable val top: Double
+  stable val right: Double
+  stable val bottom: Double
 }
 stable class Expression {
   unstable val value: Any?

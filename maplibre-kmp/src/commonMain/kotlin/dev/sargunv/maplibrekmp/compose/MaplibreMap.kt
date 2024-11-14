@@ -3,6 +3,7 @@ package dev.sargunv.maplibrekmp.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -23,38 +24,36 @@ import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.ExpressionScope
 import kotlinx.coroutines.awaitCancellation
 
+@Immutable
+public data class CameraPosition(
+  public val bearing: Double = 0.0,
+  public val padding: CameraPadding = CameraPadding(0.0, 0.0, 0.0, 0.0),
+  public val target: LatLng = LatLng(0.0, 0.0),
+  public val tilt: Double = 0.0,
+  public val zoom: Double = 1.0,
+)
+
 @Stable
-public class CameraState {
+public class CameraState internal constructor(firstPosition: CameraPosition) {
   internal var map: PlatformMap? = null
+  public var position: CameraPosition by mutableStateOf(firstPosition)
 
-  public var bearing: Double by mutableStateOf(0.0)
-  public var padding: CameraPadding by mutableStateOf(CameraPadding(0.0, 0.0, 0.0, 0.0))
-  public var target: LatLng by mutableStateOf(LatLng(0.0, 0.0))
-  public var tilt: Double by mutableStateOf(0.0)
-  public var zoom: Double by mutableStateOf(0.0)
-
-  internal fun updateFromMap() {
-    map!!.let {
-      bearing = it.cameraBearing
-      padding = it.cameraPadding
-      target = it.cameraTarget
-      tilt = it.cameraTilt
-      zoom = it.cameraZoom
-    }
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is CameraState) return false
+    return position == other.position
   }
 
-  internal fun applyToMap() {
-    map!!.let {
-      it.cameraBearing = bearing
-      it.cameraPadding = padding
-      it.cameraTarget = target
-      it.cameraTilt = tilt
-      it.cameraZoom = zoom
-    }
+  override fun hashCode(): Int {
+    return position.hashCode()
   }
 }
 
-@Composable public fun rememberCameraState(): CameraState = remember { CameraState() }
+@Composable
+public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition()): CameraState =
+  remember {
+    CameraState(firstPosition)
+  }
 
 @Composable
 public fun MaplibreMap(
@@ -64,31 +63,57 @@ public fun MaplibreMap(
   cameraState: CameraState = rememberCameraState(),
   styleContent: @Composable ExpressionScope.() -> Unit = {},
 ) {
-  var style by remember { mutableStateOf<Style?>(null) }
   val compositionContext = rememberCompositionContext()
+
+  var map by remember { mutableStateOf<PlatformMap?>(null) }
+  var style by remember { mutableStateOf<Style?>(null) }
+  remember(map, cameraState) { cameraState.map = map }
+
+  var lastUiSettings by remember { mutableStateOf<MapUiSettings?>(null) }
+  var lastPosition by remember { mutableStateOf<CameraPosition?>(null) }
+  val position = cameraState.position
 
   PlatformMapView(
     modifier = modifier,
     uiPadding = uiSettings.uiPadding,
     styleUrl = styleUrl,
-    updateMap = { map ->
-      println("updated map, zoom=${cameraState.zoom}")
-      map.isDebugEnabled = uiSettings.isDebugEnabled
-      map.isLogoEnabled = uiSettings.isLogoEnabled
-      map.isAttributionEnabled = uiSettings.isAttributionEnabled
-      map.isCompassEnabled = uiSettings.isCompassEnabled
-      map.isTiltGesturesEnabled = uiSettings.isTiltGesturesEnabled
-      map.isZoomGesturesEnabled = uiSettings.isZoomGesturesEnabled
-      map.isRotateGesturesEnabled = uiSettings.isRotateGesturesEnabled
-      map.isScrollGesturesEnabled = uiSettings.isScrollGesturesEnabled
-      cameraState.applyToMap()
+    updateMap = {
+      if (lastUiSettings != uiSettings) {
+        it.isDebugEnabled = uiSettings.isDebugEnabled
+        it.isLogoEnabled = uiSettings.isLogoEnabled
+        it.isAttributionEnabled = uiSettings.isAttributionEnabled
+        it.isCompassEnabled = uiSettings.isCompassEnabled
+        it.isTiltGesturesEnabled = uiSettings.isTiltGesturesEnabled
+        it.isZoomGesturesEnabled = uiSettings.isZoomGesturesEnabled
+        it.isRotateGesturesEnabled = uiSettings.isRotateGesturesEnabled
+        it.isScrollGesturesEnabled = uiSettings.isScrollGesturesEnabled
+        lastUiSettings = uiSettings
+      }
+      if (position != lastPosition) {
+        it.cameraBearing = position.bearing
+        it.cameraPadding = position.padding
+        it.cameraTarget = position.target
+        it.cameraTilt = position.tilt
+        it.cameraZoom = position.zoom
+        lastPosition = position
+      }
     },
-    onMapLoaded = {
-      cameraState.map = it
-      cameraState.applyToMap()
-    },
+    onMapLoaded = { map = it },
     onStyleLoaded = { style = it },
-    onCameraMove = { cameraState.updateFromMap() },
+    onCameraMove = {
+      map!!.let {
+        val pos =
+          CameraPosition(
+            bearing = it.cameraBearing,
+            padding = it.cameraPadding,
+            target = it.cameraTarget,
+            tilt = it.cameraTilt,
+            zoom = it.cameraZoom,
+          )
+        lastPosition = pos
+        cameraState.position = pos
+      }
+    },
     onClick = { println("onClick: $it") },
     onLongClick = { println("onLongClick: $it") },
     onRelease = { style = null },

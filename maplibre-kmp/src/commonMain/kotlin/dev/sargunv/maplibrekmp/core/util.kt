@@ -1,7 +1,10 @@
 package dev.sargunv.maplibrekmp.core
 
-public data class LatLng(val latitude: Double, val longitude: Double)
+import androidx.compose.runtime.Immutable
 
+@Immutable public data class LatLng(val latitude: Double, val longitude: Double)
+
+@Immutable
 public data class CameraPadding(
   val left: Double,
   val top: Double,

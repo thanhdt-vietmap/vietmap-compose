@@ -23,8 +23,10 @@ import dev.sargunv.maplibrekmp.core.LatLng
 import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
 import kotlinx.cinterop.BetaInteropApi
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGPointMake
 import platform.Foundation.NSURL
 import platform.UIKit.UIGestureRecognizerStateBegan
@@ -49,6 +51,23 @@ internal actual fun PlatformMapView(
 ) {
   val layoutDir = LocalLayoutDirection.current
   val insetPadding = WindowInsets.safeDrawing.asPaddingValues()
+
+  val margins =
+    remember(insetPadding, uiPadding, layoutDir) {
+      val leftSafeInset = insetPadding.calculateLeftPadding(layoutDir).value
+      val rightSafeInset = insetPadding.calculateRightPadding(layoutDir).value
+      val bottomSafeInset = insetPadding.calculateBottomPadding().value
+      val leftUiPadding = uiPadding.calculateLeftPadding(layoutDir).value - leftSafeInset
+      val rightUiPadding = uiPadding.calculateRightPadding(layoutDir).value - rightSafeInset
+      val bottomUiPadding = uiPadding.calculateBottomPadding().value - bottomSafeInset
+      listOf(
+        CGPointMake(leftUiPadding.toDouble(), bottomUiPadding.toDouble()),
+        CGPointMake(rightUiPadding.toDouble(), bottomUiPadding.toDouble()),
+      )
+    }
+
+  var lastStyleUrl by remember { mutableStateOf<String?>(null) }
+  var lastMargins by remember { mutableStateOf<List<CValue<CGPoint>>?>(null) }
 
   val currentOnStyleLoaded by rememberUpdatedState(onStyleLoaded)
   val currentOnRelease by rememberUpdatedState(onRelease)
@@ -85,18 +104,18 @@ internal actual fun PlatformMapView(
       }
     },
     update = { mapView ->
-      val leftSafeInset = insetPadding.calculateLeftPadding(layoutDir).value
-      val rightSafeInset = insetPadding.calculateRightPadding(layoutDir).value
-      val bottomSafeInset = insetPadding.calculateBottomPadding().value
-      val leftUiPadding = uiPadding.calculateLeftPadding(layoutDir).value - leftSafeInset
-      val rightUiPadding = uiPadding.calculateRightPadding(layoutDir).value - rightSafeInset
-      val bottomUiPadding = uiPadding.calculateBottomPadding().value - bottomSafeInset
-      mapView.setLogoViewMargins(CGPointMake(leftUiPadding.toDouble(), bottomUiPadding.toDouble()))
-      mapView.setAttributionButtonMargins(
-        CGPointMake(rightUiPadding.toDouble(), bottomUiPadding.toDouble())
-      )
-      mapView.setStyleURL(NSURL(string = styleUrl))
       updateMap(PlatformMap(mapView))
+
+      if (margins != lastMargins) {
+        mapView.setLogoViewMargins(margins[0])
+        mapView.setAttributionButtonMargins(margins[1])
+        lastMargins = margins
+      }
+
+      if (styleUrl != lastStyleUrl) {
+        mapView.setStyleURL(NSURL(string = styleUrl))
+        lastStyleUrl = styleUrl
+      }
     },
     onRelease = {
       gestureManager = null
