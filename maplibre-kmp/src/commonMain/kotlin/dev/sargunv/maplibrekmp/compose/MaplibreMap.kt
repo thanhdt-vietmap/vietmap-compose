@@ -48,6 +48,12 @@ internal constructor(firstPosition: CameraPosition, firstPadding: CameraPadding)
     map?.animateCameraPadding(finalPadding)
       ?: error("Map must be initialized before calling animate")
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is CameraState) return false
+    return position == other.position && padding == other.padding
+  }
 }
 
 @Composable
@@ -75,8 +81,6 @@ public fun MaplibreMap(
   var lastUiSettings by remember { mutableStateOf<MapUiSettings?>(null) }
   var lastPosition by remember { mutableStateOf<CameraPosition?>(null) }
   var lastPadding by remember { mutableStateOf<CameraPadding?>(null) }
-  val position = cameraState.position
-  val padding = cameraState.padding
 
   PlatformMapView(
     modifier = modifier,
@@ -94,10 +98,12 @@ public fun MaplibreMap(
         it.isScrollGesturesEnabled = uiSettings.isScrollGesturesEnabled
         lastUiSettings = uiSettings
       }
+      val position = cameraState.position
       if (position != lastPosition) {
         it.cameraPosition = position
         lastPosition = position
       }
+      val padding = cameraState.padding
       if (padding != lastPadding) {
         it.cameraPadding = padding
         lastPadding = padding

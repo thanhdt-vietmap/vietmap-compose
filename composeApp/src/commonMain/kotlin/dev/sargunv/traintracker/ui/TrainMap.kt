@@ -1,5 +1,6 @@
 package dev.sargunv.traintracker.ui
 
+import androidx.compose.animation.core.animate
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -9,7 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import dev.sargunv.maplibrekmp.compose.CameraPosition
 import dev.sargunv.maplibrekmp.compose.MapUiSettings
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
 import dev.sargunv.maplibrekmp.compose.layer.Anchor
@@ -19,7 +19,6 @@ import dev.sargunv.maplibrekmp.compose.layer.LineLayer
 import dev.sargunv.maplibrekmp.compose.layer.LinePaint
 import dev.sargunv.maplibrekmp.compose.rememberCameraState
 import dev.sargunv.maplibrekmp.compose.source.rememberGeoJsonSource
-import dev.sargunv.maplibrekmp.core.LatLng
 import dev.sargunv.maplibrekmp.core.source.GeoJsonOptions
 import dev.sargunv.maplibrekmp.core.source.Shape
 import dev.sargunv.traintracker.generated.Res
@@ -27,6 +26,7 @@ import dev.sargunv.traintracker.gtfs.GtfsSdk
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.random.Random
 
 class TrainMapViewModel(private val gtfsSdk: GtfsSdk) : ViewModel() {
   private val _state = mutableStateOf(TrainMapState())
@@ -56,14 +56,9 @@ fun TrainMap(uiPadding: PaddingValues) {
   LaunchedEffect(true) {
     while (true) {
       delay(2000)
-      cameraState.animateTo(
-        CameraPosition(
-          target = LatLng(37.7749, -122.4194),
-          zoom = 10.0,
-          tilt = 30.0,
-          bearing = 45.0,
-        )
-      )
+      animate(cameraState.position.zoom.toFloat(), Random.nextFloat() * 5) { value, _ ->
+        cameraState.position = cameraState.position.copy(zoom = value.toDouble())
+      }
     }
   }
 

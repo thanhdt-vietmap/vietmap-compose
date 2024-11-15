@@ -63,7 +63,9 @@ internal actual class PlatformMap private actual constructor() {
 
   private fun MLNCameraPosition.toCameraPosition(): CameraPosition =
     CameraPosition(
-      target = target?.let { LatLng(it.latitude, it.longitude) } ?: LatLng(0.0, 0.0),
+      target =
+        target?.let { LatLng(it.latitude, it.longitude) }
+          ?: LatLng(0.0, 0.0).also { println("target is null") },
       zoom = zoom,
       bearing = bearing,
       tilt = tilt,
@@ -79,7 +81,9 @@ internal actual class PlatformMap private actual constructor() {
 
   actual var cameraPosition: CameraPosition
     get() = impl.cameraPosition.toCameraPosition()
-    set(value) = impl.moveCamera(CameraUpdateFactory.newCameraPosition(value.toMLNCameraPosition()))
+    set(value) {
+      impl.cameraPosition = value.toMLNCameraPosition()
+    }
 
   actual fun animateCameraPosition(finalPosition: CameraPosition) =
     impl.animateCamera(CameraUpdateFactory.newCameraPosition(finalPosition.toMLNCameraPosition()))
@@ -91,7 +95,9 @@ internal actual class PlatformMap private actual constructor() {
 
   actual var cameraPadding: CameraPadding
     get() = impl.cameraPosition.padding?.toCameraPadding() ?: CameraPadding()
-    set(value) = impl.moveCamera(CameraUpdateFactory.paddingTo(value.toDoubleArray()))
+    set(value) {
+      impl.moveCamera(CameraUpdateFactory.paddingTo(value.toDoubleArray()))
+    }
 
   actual fun animateCameraPadding(finalPadding: CameraPadding) =
     impl.animateCamera(CameraUpdateFactory.paddingTo(finalPadding.toDoubleArray()))

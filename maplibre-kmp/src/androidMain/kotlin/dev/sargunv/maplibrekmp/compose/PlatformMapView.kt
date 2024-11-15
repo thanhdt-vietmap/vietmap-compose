@@ -62,6 +62,8 @@ internal actual fun PlatformMapView(
   val currentOnClick by rememberUpdatedState(onClick)
   val currentOnLongClick by rememberUpdatedState(onLongClick)
 
+  var platformMap by remember { mutableStateOf<PlatformMap?>(null) }
+
   AndroidView(
     modifier = modifier,
     factory = { context ->
@@ -82,7 +84,8 @@ internal actual fun PlatformMapView(
         mapView.getMapAsync { map ->
           map.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
 
-          onMapLoaded(PlatformMap(map))
+          platformMap = PlatformMap(map)
+          onMapLoaded(platformMap!!)
 
           map.addOnCameraMoveListener { currentOnCameraMove() }
 
@@ -99,9 +102,9 @@ internal actual fun PlatformMapView(
       }
     },
     update = { mapView ->
-      mapView.getMapAsync { map ->
-        updateMap(PlatformMap(map))
+      platformMap?.let(updateMap)
 
+      mapView.getMapAsync { map ->
         if (margins != lastMargins) {
           map.uiSettings.setAttributionMargins(margins[0], margins[1], margins[2], margins[3])
           map.uiSettings.setLogoMargins(margins[0], margins[1], margins[2], margins[3])
