@@ -56,6 +56,12 @@ stable class Source {
 stable class UserSource {
   <runtime stability> = Stable
 }
+unstable class CameraState {
+  unstable var map: PlatformMap?
+  unstable val mapAttachSignal: Channel<PlatformMap>
+  stable val positionState: MutableState<CameraPosition>
+  <runtime stability> = Unstable
+}
 stable class MapUiSettings {
   stable val uiPadding: PaddingValues
   stable val isDebugEnabled: Boolean
@@ -68,15 +74,11 @@ stable class MapUiSettings {
   stable val isScrollGesturesEnabled: Boolean
   <runtime stability> = Stable
 }
-unstable class CameraState {
-  unstable var map: PlatformMap?
-  unstable val mapAttachSignal: Channel<PlatformMap>
-  stable val positionState: MutableState<CameraPosition>
-  <runtime stability> = Unstable
-}
-runtime class LayerNode {
+unstable class LayerNode {
   runtime val layer: T
-  <runtime stability> = Parameter(T)
+  stable var onClick: Function1<List<Feature>, Unit>?
+  stable var onLongClick: Function1<List<Feature>, Unit>?
+  <runtime stability> = Unstable
 }
 unstable class MapNode {
   unstable val children: MutableList<MapNode>
@@ -85,9 +87,9 @@ unstable class MapNode {
 stable class MapNodeApplier {
   <runtime stability> = Stable
 }
-stable class StyleNode {
-  stable val styleManager: StyleManager
-  <runtime stability> = Stable
+unstable class StyleNode {
+  unstable val styleManager: StyleManager
+  <runtime stability> = Unstable
 }
 stable class CircleLayout {
   stable val sortKey: Expression<Number>
@@ -129,21 +131,18 @@ stable class LinePaint {
   stable val gradient: Expression<Color>
   <runtime stability> = Stable
 }
-stable class LatLng {
-  stable val latitude: Double
-  stable val longitude: Double
-}
-stable class StyleManager {
+unstable class StyleManager {
   unstable val style: Style
   unstable val baseLayers: Map<String, PlatformLayer>
   unstable val sourcesToAdd: MutableList<UserSource>
   unstable val userLayers: MutableList<LayerStatus>
   unstable val replacedLayers: MutableMap<Replace, PlatformLayer>
   unstable val replacementCounters: MutableMap<Replace, Int>
+  <runtime stability> = Unstable
 }
 stable class CameraPosition {
   stable val bearing: Double
-  stable val target: LatLng
+  unstable val target: Position
   stable val tilt: Double
   stable val zoom: Double
   stable val padding: PaddingValues

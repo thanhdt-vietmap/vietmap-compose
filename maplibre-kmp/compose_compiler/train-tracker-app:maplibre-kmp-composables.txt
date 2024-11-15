@@ -7,8 +7,8 @@ restartable skippable fun PlatformMapView(
   stable onStyleLoaded: Function1<@[ParameterName(name = 'style')] Style, Unit>
   stable onRelease: Function0<Unit>
   stable onCameraMove: Function0<Unit>
-  stable onClick: Function1<@[ParameterName(name = 'pos')] LatLng, Unit>
-  stable onLongClick: Function1<@[ParameterName(name = 'pos')] LatLng, Unit>
+  stable onClick: Function2<@[ParameterName(name = 'latLng')] Position, @[ParameterName(name = 'xy')] Pair<Float, Float>, Unit>
+  stable onLongClick: Function2<@[ParameterName(name = 'latLng')] Position, @[ParameterName(name = 'xy')] Pair<Float, Float>, Unit>
 )
 fun rememberCameraState(
   stable firstPosition: CameraPosition? = @static CameraPosition()
@@ -53,10 +53,14 @@ inline fun CircleLayer(
   stable visible: Boolean = @static true
   stable layout: CircleLayout? = @dynamic CircleLayout()
   stable paint: CirclePaint? = @dynamic CirclePaint()
+  stable onClick: Function1<@[ParameterName(name = 'features')] List<Feature>, Unit>? = @static null
+  stable onLongClick: Function1<@[ParameterName(name = 'features')] List<Feature>, Unit>? = @static null
 )
 restartable skippable fun LayerNode(
   stable factory: Function1<@[ParameterName(name = 'anchor')] Anchor, T>
   stable update: @[ExtensionFunctionType] Function1<Updater<LayerNode<T>>, Unit>
+  stable onClick: Function1<@[ParameterName(name = 'features')] List<Feature>, Unit>?
+  stable onLongClick: Function1<@[ParameterName(name = 'features')] List<Feature>, Unit>?
 )
 inline fun LineLayer(
   stable id: String
@@ -68,6 +72,8 @@ inline fun LineLayer(
   stable visible: Boolean = @static true
   stable layout: LineLayout? = @dynamic LineLayout()
   stable paint: LinePaint? = @dynamic LinePaint()
+  stable onClick: Function1<@[ParameterName(name = 'features')] List<Feature>, Unit>? = @static null
+  stable onLongClick: Function1<@[ParameterName(name = 'features')] List<Feature>, Unit>? = @static null
 )
 inline fun rememberGeoJsonSource(
   stable id: String

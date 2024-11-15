@@ -1,12 +1,10 @@
 package dev.sargunv.maplibrekmp.core
 
-import androidx.compose.runtime.Stable
 import dev.sargunv.maplibrekmp.core.layer.Anchor
 import dev.sargunv.maplibrekmp.core.layer.PlatformLayer
 import dev.sargunv.maplibrekmp.core.layer.UserLayer
 import dev.sargunv.maplibrekmp.core.source.UserSource
 
-@Stable
 internal class StyleManager(val style: Style) {
   private val baseLayers = style.getLayers().associateBy { it.id }
 

@@ -12,6 +12,7 @@ import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import dev.sargunv.maplibrekmp.compose.engine.LayerNode
 import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
 import dev.sargunv.maplibrekmp.compose.engine.StyleNode
 import dev.sargunv.maplibrekmp.core.PlatformMap
@@ -21,49 +22,6 @@ import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.ExpressionScope
 import kotlinx.coroutines.awaitCancellation
-import kotlinx.coroutines.channels.Channel
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
-
-public class CameraState internal constructor(firstPosition: CameraPosition) {
-  internal var map: PlatformMap? = null
-    set(map) {
-      val oldMap = field
-      field = map
-      if (map != oldMap && map != null) {
-        map.cameraPosition = position
-        mapAttachSignal.trySend(map)
-      }
-    }
-
-  private val mapAttachSignal = Channel<PlatformMap>()
-
-  internal val positionState = mutableStateOf(firstPosition)
-
-  // the map has its own internal state, so our State here is read-only
-  // the setter directly updates the map, which will call onCameraMove and update the State
-  // if the map is not yet initialized, we store the value to apply it later
-  public var position: CameraPosition
-    get() = positionState.value
-    set(value) {
-      map?.cameraPosition = value
-      positionState.value = value
-    }
-
-  public suspend fun animateTo(
-    finalPosition: CameraPosition,
-    duration: Duration = 300.milliseconds,
-  ) {
-    val map = map ?: mapAttachSignal.receive()
-    map.animateCameraPosition(finalPosition, duration)
-  }
-}
-
-@Composable
-public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition()): CameraState =
-  remember {
-    CameraState(firstPosition)
-  }
 
 @Composable
 public fun MaplibreMap(
@@ -78,10 +36,9 @@ public fun MaplibreMap(
   var map by remember { mutableStateOf<PlatformMap?>(null) }
   var style by remember { mutableStateOf<Style?>(null) }
 
-  SideEffect {
-    println("Setting cameraState.map to $map")
-    cameraState.map = map
-  }
+  var styleCompositionRootNode by mutableStateOf<StyleNode?>(null)
+
+  SideEffect { cameraState.map = map }
 
   PlatformMapView(
     modifier = modifier,
@@ -100,14 +57,30 @@ public fun MaplibreMap(
     onMapLoaded = { map = it },
     onStyleLoaded = { style = it },
     onCameraMove = { cameraState.positionState.value = map!!.cameraPosition },
-    onClick = { println("onClick: $it") },
-    onLongClick = { println("onLongClick: $it") },
+    onClick = { _, xy ->
+      styleCompositionRootNode!!
+        .children
+        .mapNotNull { node -> (node as? LayerNode<*>)?.onClick?.let { node.layer.id to it } }
+        .forEach { (layerId, handle) ->
+          val features = map!!.queryRenderedFeatures(xy, setOf(layerId))
+          if (features.isNotEmpty()) handle(features)
+        }
+    },
+    onLongClick = { _, xy ->
+      styleCompositionRootNode!!
+        .children
+        .mapNotNull { node -> (node as? LayerNode<*>)?.onLongClick?.let { node.layer.id to it } }
+        .forEach { (layerId, handle) ->
+          val features = map!!.queryRenderedFeatures(xy, setOf(layerId))
+          if (features.isNotEmpty()) handle(features)
+        }
+    },
     onRelease = { style = null },
   )
 
   LaunchedEffect(style) {
     style?.let { style ->
-      val rootNode = StyleNode(style)
+      val rootNode = StyleNode(style).also { styleCompositionRootNode = it }
       val composition = Composition(MapNodeApplier(rootNode), compositionContext)
       composition.setContent {
         CompositionLocalProvider(LocalStyleManager provides rootNode.styleManager) {

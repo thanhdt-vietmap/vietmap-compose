@@ -9,6 +9,7 @@ import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.nil
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.point
 import dev.sargunv.maplibrekmp.expression.Point
+import io.github.dellisd.spatialk.geojson.Feature
 import androidx.compose.runtime.key as composeKey
 
 public data class CircleLayout(val sortKey: Expression<Number> = nil())
@@ -39,6 +40,8 @@ public inline fun CircleLayer(
   visible: Boolean = true,
   layout: CircleLayout = CircleLayout(),
   paint: CirclePaint = CirclePaint(),
+  noinline onClick: ((features: List<Feature>) -> Unit)? = null,
+  noinline onLongClick: ((features: List<Feature>) -> Unit)? = null,
 ) {
   composeKey(id) {
     LayerNode(
@@ -62,6 +65,8 @@ public inline fun CircleLayer(
         set(paint.strokeColor) { layer.setCircleStrokeColor(it) }
         set(paint.strokeOpacity) { layer.setCircleStrokeOpacity(it) }
       },
+      onClick = onClick,
+      onLongClick = onLongClick,
     )
   }
 }

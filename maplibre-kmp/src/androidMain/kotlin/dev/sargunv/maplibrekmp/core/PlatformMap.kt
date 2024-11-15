@@ -1,9 +1,11 @@
 package dev.sargunv.maplibrekmp.core
 
+import android.graphics.PointF
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
+import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
@@ -118,5 +120,13 @@ internal actual class PlatformMap private actual constructor() {
           override fun onCancel() = cont.resume(Unit)
         },
       )
+    }
+
+  actual fun queryRenderedFeatures(
+    xy: Pair<Float, Float>,
+    layerIds: Set<String>,
+  ): List<Feature> =
+    impl.queryRenderedFeatures(PointF(xy.first, xy.second), *layerIds.toTypedArray()).map {
+      Feature.fromJson(it.toJson())
     }
 }

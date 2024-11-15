@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import cocoapods.MapLibre.MLNAltitudeForZoomLevel
+import cocoapods.MapLibre.MLNFeatureProtocol
 import cocoapods.MapLibre.MLNMapCamera
 import cocoapods.MapLibre.MLNMapDebugCollisionBoxesMask
 import cocoapods.MapLibre.MLNMapDebugTileBoundariesMask
@@ -13,9 +14,11 @@ import cocoapods.MapLibre.MLNMapView
 import cocoapods.MapLibre.MLNZoomLevelForAltitude
 import cocoapods.MapLibre.allowsTilting
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
+import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGSize
 import platform.CoreLocation.CLLocationCoordinate2DMake
 import platform.UIKit.UIEdgeInsets
@@ -159,4 +162,9 @@ internal actual class PlatformMap private actual constructor() {
         completionHandler = { cont.resume(Unit) },
       )
     }
+
+  actual fun queryRenderedFeatures(xy: Pair<Float, Float>, layerIds: Set<String>): List<Feature> =
+    impl
+      .visibleFeaturesAtPoint(CGPointMake(xy.first.toDouble(), xy.second.toDouble()), layerIds)
+      .map { Feature.fromJson((it as MLNFeatureProtocol).toJson()) }
 }

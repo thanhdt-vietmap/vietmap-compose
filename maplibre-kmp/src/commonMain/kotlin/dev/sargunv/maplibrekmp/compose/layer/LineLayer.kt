@@ -10,6 +10,7 @@ import dev.sargunv.maplibrekmp.expression.Expression.Companion.nil
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.point
 import dev.sargunv.maplibrekmp.expression.Point
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
+import io.github.dellisd.spatialk.geojson.Feature
 import androidx.compose.runtime.key as composeKey
 
 public data class LineLayout(
@@ -46,6 +47,8 @@ public inline fun LineLayer(
   visible: Boolean = true,
   layout: LineLayout = LineLayout(),
   paint: LinePaint = LinePaint(),
+  noinline onClick: ((features: List<Feature>) -> Unit)? = null,
+  noinline onLongClick: ((features: List<Feature>) -> Unit)? = null,
 ) {
   composeKey(id) {
     LayerNode(
@@ -73,6 +76,8 @@ public inline fun LineLayer(
         set(paint.pattern) { layer.setLinePattern(it) }
         set(paint.gradient) { layer.setLineGradient(it) }
       },
+      onClick = onClick,
+      onLongClick = onLongClick,
     )
   }
 }

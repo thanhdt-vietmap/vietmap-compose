@@ -83,7 +83,8 @@ internal actual fun PlatformMapView(
 
   // We shouldn't need to hold on to this, but for some reason it stops working if we don't.
   // Probably some weirdness with integration between Kotlin GC and ObjC ARC.
-  var gestureManager by remember { mutableStateOf<MapGestureManager?>(null) }
+  var mapDelegate by remember { mutableStateOf<MapDelegate?>(null) }
+  var mapGestureManager by remember { mutableStateOf<MapGestureManager?>(null) }
 
   var platformMap by remember { mutableStateOf<PlatformMap?>(null) }
   SideEffect { platformMap?.layoutDirection = layoutDir }
@@ -112,13 +113,14 @@ internal actual fun PlatformMapView(
         platformMap = PlatformMap(mapView)
         calledOnMapLoaded = false
 
-        mapView.delegate =
+        mapDelegate =
           MapDelegate(
+            mapView = mapView,
             onStyleLoaded = { currentOnStyleLoaded(Style(it)) },
             onCameraMove = { currentOnCameraMove() },
           )
 
-        gestureManager =
+        mapGestureManager =
           MapGestureManager(
             mapView = mapView,
             onClick = { point ->
@@ -156,16 +158,21 @@ internal actual fun PlatformMapView(
       }
     },
     onRelease = {
-      gestureManager = null
+      mapGestureManager = null
       currentOnRelease()
     },
   )
 }
 
 internal class MapDelegate(
+  mapView: MLNMapView,
   private val onStyleLoaded: (style: MLNStyle) -> Unit,
   private val onCameraMove: () -> Unit,
 ) : NSObject(), MLNMapViewDelegateProtocol {
+  init {
+    mapView.delegate = this
+  }
+
   override fun mapView(mapView: MLNMapView, didFinishLoadingStyle: MLNStyle) =
     onStyleLoaded(didFinishLoadingStyle)
 
