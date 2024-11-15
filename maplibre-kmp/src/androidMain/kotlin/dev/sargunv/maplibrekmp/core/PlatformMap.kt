@@ -30,46 +30,25 @@ internal actual class PlatformMap private actual constructor() {
       impl.isDebugActive = value
     }
 
-  actual var isLogoEnabled
-    get() = impl.uiSettings.isLogoEnabled
+  actual var controlSettings
+    get() =
+      ControlSettings(
+        isLogoEnabled = impl.uiSettings.isLogoEnabled,
+        isAttributionEnabled = impl.uiSettings.isAttributionEnabled,
+        isCompassEnabled = impl.uiSettings.isCompassEnabled,
+        isRotateGesturesEnabled = impl.uiSettings.isRotateGesturesEnabled,
+        isScrollGesturesEnabled = impl.uiSettings.isScrollGesturesEnabled,
+        isTiltGesturesEnabled = impl.uiSettings.isTiltGesturesEnabled,
+        isZoomGesturesEnabled = impl.uiSettings.isZoomGesturesEnabled,
+      )
     set(value) {
-      impl.uiSettings.isLogoEnabled = value
-    }
-
-  actual var isAttributionEnabled
-    get() = impl.uiSettings.isAttributionEnabled
-    set(value) {
-      impl.uiSettings.isAttributionEnabled = value
-    }
-
-  actual var isCompassEnabled
-    get() = impl.uiSettings.isCompassEnabled
-    set(value) {
-      impl.uiSettings.isCompassEnabled = value
-    }
-
-  actual var isRotateGesturesEnabled
-    get() = impl.uiSettings.isRotateGesturesEnabled
-    set(value) {
-      impl.uiSettings.isRotateGesturesEnabled = value
-    }
-
-  actual var isScrollGesturesEnabled
-    get() = impl.uiSettings.isScrollGesturesEnabled
-    set(value) {
-      impl.uiSettings.isScrollGesturesEnabled = value
-    }
-
-  actual var isTiltGesturesEnabled
-    get() = impl.uiSettings.isTiltGesturesEnabled
-    set(value) {
-      impl.uiSettings.isTiltGesturesEnabled = value
-    }
-
-  actual var isZoomGesturesEnabled
-    get() = impl.uiSettings.isZoomGesturesEnabled
-    set(value) {
-      impl.uiSettings.isZoomGesturesEnabled = value
+      impl.uiSettings.isLogoEnabled = value.isLogoEnabled
+      impl.uiSettings.isAttributionEnabled = value.isAttributionEnabled
+      impl.uiSettings.isCompassEnabled = value.isCompassEnabled
+      impl.uiSettings.isRotateGesturesEnabled = value.isRotateGesturesEnabled
+      impl.uiSettings.isScrollGesturesEnabled = value.isScrollGesturesEnabled
+      impl.uiSettings.isTiltGesturesEnabled = value.isTiltGesturesEnabled
+      impl.uiSettings.isZoomGesturesEnabled = value.isZoomGesturesEnabled
     }
 
   private fun MLNCameraPosition.toCameraPosition(): CameraPosition =
@@ -122,10 +101,7 @@ internal actual class PlatformMap private actual constructor() {
       )
     }
 
-  actual fun queryRenderedFeatures(
-    xy: Pair<Float, Float>,
-    layerIds: Set<String>,
-  ): List<Feature> =
+  actual fun queryRenderedFeatures(xy: Pair<Float, Float>, layerIds: Set<String>): List<Feature> =
     impl.queryRenderedFeatures(PointF(xy.first, xy.second), *layerIds.toTypedArray()).map {
       Feature.fromJson(it.toJson())
     }

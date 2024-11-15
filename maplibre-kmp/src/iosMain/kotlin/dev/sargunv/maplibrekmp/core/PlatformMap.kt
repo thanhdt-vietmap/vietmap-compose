@@ -30,9 +30,8 @@ import kotlin.time.DurationUnit
 
 internal actual class PlatformMap private actual constructor() {
   private lateinit var impl: MLNMapView
-  //  internal var mapViewSize: CValue<CGSize> = CGSizeMake(0.0, 0.0)
   internal lateinit var mapViewSize: CValue<CGSize>
-  internal var layoutDirection: LayoutDirection = LayoutDirection.Ltr
+  internal lateinit var layoutDirection: LayoutDirection
 
   internal constructor(impl: MLNMapView) : this() {
     this.impl = impl
@@ -50,46 +49,25 @@ internal actual class PlatformMap private actual constructor() {
         else 0uL
     }
 
-  actual var isLogoEnabled: Boolean
-    get() = !impl.logoView.hidden
+  actual var controlSettings
+    get() =
+      ControlSettings(
+        isLogoEnabled = !impl.logoView.hidden,
+        isAttributionEnabled = !impl.attributionButton.hidden,
+        isCompassEnabled = !impl.compassView.hidden,
+        isRotateGesturesEnabled = impl.rotateEnabled,
+        isScrollGesturesEnabled = impl.scrollEnabled,
+        isTiltGesturesEnabled = impl.allowsTilting,
+        isZoomGesturesEnabled = impl.zoomEnabled,
+      )
     set(value) {
-      impl.logoView.hidden = !value
-    }
-
-  actual var isAttributionEnabled: Boolean
-    get() = !impl.attributionButton.hidden
-    set(value) {
-      impl.attributionButton.hidden = !value
-    }
-
-  actual var isCompassEnabled: Boolean
-    get() = !impl.compassView.hidden
-    set(value) {
-      impl.compassView.hidden = !value
-    }
-
-  actual var isRotateGesturesEnabled: Boolean
-    get() = impl.rotateEnabled
-    set(value) {
-      impl.rotateEnabled = value
-    }
-
-  actual var isScrollGesturesEnabled: Boolean
-    get() = impl.scrollEnabled
-    set(value) {
-      impl.scrollEnabled = value
-    }
-
-  actual var isTiltGesturesEnabled: Boolean
-    get() = impl.allowsTilting
-    set(value) {
-      impl.allowsTilting = value
-    }
-
-  actual var isZoomGesturesEnabled: Boolean
-    get() = impl.zoomEnabled
-    set(value) {
-      impl.zoomEnabled = value
+      impl.logoView.hidden = !value.isLogoEnabled
+      impl.attributionButton.hidden = !value.isAttributionEnabled
+      impl.compassView.hidden = !value.isCompassEnabled
+      impl.rotateEnabled = value.isRotateGesturesEnabled
+      impl.scrollEnabled = value.isScrollGesturesEnabled
+      impl.allowsTilting = value.isTiltGesturesEnabled
+      impl.zoomEnabled = value.isZoomGesturesEnabled
     }
 
   private fun MLNMapCamera.toCameraPosition(paddingValues: PaddingValues) =

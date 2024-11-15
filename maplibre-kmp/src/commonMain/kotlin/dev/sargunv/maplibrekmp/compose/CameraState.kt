@@ -17,12 +17,11 @@ public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition())
 public class CameraState internal constructor(firstPosition: CameraPosition) {
   internal var map: PlatformMap? = null
     set(map) {
-      val oldMap = field
-      field = map
-      if (map != oldMap && map != null) {
+      if (map != field && map != null) {
         map.cameraPosition = position
         mapAttachSignal.trySend(map)
       }
+      field = map
     }
 
   private val mapAttachSignal = Channel<PlatformMap>()

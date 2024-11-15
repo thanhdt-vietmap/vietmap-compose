@@ -27,8 +27,8 @@ import org.maplibre.android.maps.MapView
 @Composable
 internal actual fun PlatformMapView(
   modifier: Modifier,
-  uiPadding: PaddingValues,
   styleUrl: String,
+  uiPadding: PaddingValues,
   updateMap: (map: PlatformMap) -> Unit,
   onMapLoaded: (map: PlatformMap) -> Unit,
   onStyleLoaded: (style: Style) -> Unit,
@@ -55,7 +55,6 @@ internal actual fun PlatformMapView(
     }
 
   var lastStyleUrl by remember { mutableStateOf<String?>(null) }
-  var lastMargins by remember { mutableStateOf<List<Int>?>(null) }
 
   val currentOnStyleLoaded by rememberUpdatedState(onStyleLoaded)
   val currentOnRelease by rememberUpdatedState(onRelease)
@@ -113,12 +112,9 @@ internal actual fun PlatformMapView(
       platformMap?.let { updateMap(it) }
 
       mapView.getMapAsync { map ->
-        if (margins != lastMargins) {
-          map.uiSettings.setAttributionMargins(margins[0], margins[1], margins[2], margins[3])
-          map.uiSettings.setLogoMargins(margins[0], margins[1], margins[2], margins[3])
-          map.uiSettings.setCompassMargins(margins[0], margins[1], margins[2], margins[3])
-          lastMargins = margins
-        }
+        map.uiSettings.setAttributionMargins(margins[0], margins[1], margins[2], margins[3])
+        map.uiSettings.setLogoMargins(margins[0], margins[1], margins[2], margins[3])
+        map.uiSettings.setCompassMargins(margins[0], margins[1], margins[2], margins[3])
 
         if (styleUrl != lastStyleUrl) {
           map.setStyle(styleUrl.correctedAndroidUri().toString()) {

@@ -44,8 +44,8 @@ import platform.darwin.sel_registerName
 @Composable
 internal actual fun PlatformMapView(
   modifier: Modifier,
-  uiPadding: PaddingValues,
   styleUrl: String,
+  uiPadding: PaddingValues,
   updateMap: (map: PlatformMap) -> Unit,
   onMapLoaded: (map: PlatformMap) -> Unit,
   onStyleLoaded: (style: Style) -> Unit,
@@ -73,7 +73,6 @@ internal actual fun PlatformMapView(
     }
 
   var lastStyleUrl by remember { mutableStateOf<String?>(null) }
-  var lastMargins by remember { mutableStateOf<List<CValue<CGPoint>>?>(null) }
 
   val currentOnStyleLoaded by rememberUpdatedState(onStyleLoaded)
   val currentOnRelease by rememberUpdatedState(onRelease)
@@ -146,11 +145,8 @@ internal actual fun PlatformMapView(
       platformMap!!.layoutDirection = layoutDir
       updateMap(platformMap!!)
 
-      if (margins != lastMargins) {
-        mapView.setLogoViewMargins(margins[0])
-        mapView.setAttributionButtonMargins(margins[1])
-        lastMargins = margins
-      }
+      mapView.setLogoViewMargins(margins[0])
+      mapView.setAttributionButtonMargins(margins[1])
 
       if (styleUrl != lastStyleUrl) {
         mapView.setStyleURL(NSURL(string = styleUrl))

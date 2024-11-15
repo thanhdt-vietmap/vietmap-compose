@@ -7,13 +7,7 @@ import kotlin.time.Duration
 internal expect class PlatformMap private constructor() {
 
   var isDebugEnabled: Boolean
-  var isLogoEnabled: Boolean
-  var isAttributionEnabled: Boolean
-  var isCompassEnabled: Boolean
-  var isRotateGesturesEnabled: Boolean
-  var isScrollGesturesEnabled: Boolean
-  var isTiltGesturesEnabled: Boolean
-  var isZoomGesturesEnabled: Boolean
+  var controlSettings: ControlSettings
 
   var cameraPosition: CameraPosition
 

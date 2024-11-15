@@ -1,5 +1,6 @@
 package dev.sargunv.maplibrekmp.compose
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.CompositionLocalProvider
@@ -12,13 +13,14 @@ import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.compose.engine.LayerNode
 import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
 import dev.sargunv.maplibrekmp.compose.engine.StyleNode
+import dev.sargunv.maplibrekmp.core.ControlSettings
 import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.StyleManager
-import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.ExpressionScope
 import kotlinx.coroutines.awaitCancellation
@@ -27,8 +29,10 @@ import kotlinx.coroutines.awaitCancellation
 public fun MaplibreMap(
   modifier: Modifier = Modifier,
   styleUrl: String = "https://demotiles.maplibre.org/style.json",
-  uiSettings: MapUiSettings = MapUiSettings(),
+  uiPadding: PaddingValues = PaddingValues(8.dp),
+  controlSettings: ControlSettings = ControlSettings(),
   cameraState: CameraState = rememberCameraState(),
+  isDebugEnabled: Boolean = false,
   styleContent: @Composable ExpressionScope.() -> Unit = {},
 ) {
   val compositionContext = rememberCompositionContext()
@@ -42,17 +46,11 @@ public fun MaplibreMap(
 
   PlatformMapView(
     modifier = modifier,
-    uiPadding = uiSettings.uiPadding,
     styleUrl = styleUrl,
+    uiPadding = uiPadding,
     updateMap = {
-      it.isDebugEnabled = uiSettings.isDebugEnabled
-      it.isLogoEnabled = uiSettings.isLogoEnabled
-      it.isAttributionEnabled = uiSettings.isAttributionEnabled
-      it.isCompassEnabled = uiSettings.isCompassEnabled
-      it.isTiltGesturesEnabled = uiSettings.isTiltGesturesEnabled
-      it.isZoomGesturesEnabled = uiSettings.isZoomGesturesEnabled
-      it.isRotateGesturesEnabled = uiSettings.isRotateGesturesEnabled
-      it.isScrollGesturesEnabled = uiSettings.isScrollGesturesEnabled
+      it.isDebugEnabled = isDebugEnabled
+      it.controlSettings = controlSettings
     },
     onMapLoaded = { map = it },
     onStyleLoaded = { style = it },

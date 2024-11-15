@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import dev.sargunv.maplibrekmp.compose.MapUiSettings
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
 import dev.sargunv.maplibrekmp.compose.layer.Anchor
 import dev.sargunv.maplibrekmp.compose.layer.CircleLayer
@@ -55,7 +54,7 @@ fun TrainMap(uiPadding: PaddingValues) {
 
   MaplibreMap(
     styleUrl = "https://tiles.openfreemap.org/styles/liberty",
-    uiSettings = MapUiSettings(uiPadding = uiPadding),
+    uiPadding = uiPadding,
     cameraState = cameraState,
   ) {
     val routeSource =

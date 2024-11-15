@@ -44,18 +44,6 @@ stable class Source {
 stable class UserSource {
   <runtime stability> = Stable
 }
-stable class MapUiSettings {
-  stable val uiPadding: PaddingValues
-  stable val isDebugEnabled: Boolean
-  stable val isLogoEnabled: Boolean
-  stable val isAttributionEnabled: Boolean
-  stable val isCompassEnabled: Boolean
-  stable val isTiltGesturesEnabled: Boolean
-  stable val isZoomGesturesEnabled: Boolean
-  stable val isRotateGesturesEnabled: Boolean
-  stable val isScrollGesturesEnabled: Boolean
-  <runtime stability> = Stable
-}
 unstable class CameraState {
   unstable var map: PlatformMap?
   unstable val mapAttachSignal: Channel<PlatformMap>
@@ -117,6 +105,17 @@ stable class LinePaint {
   stable val dasharray: Expression<List<Number>>
   stable val pattern: Expression<TResolvedImage>
   stable val gradient: Expression<Color>
+  <runtime stability> = Stable
+}
+stable class ControlSettings {
+  stable val isLogoEnabled: Boolean
+  stable val isAttributionEnabled: Boolean
+  stable val isCompassEnabled: Boolean
+  stable val isMapToolbarEnabled: Boolean
+  stable val isTiltGesturesEnabled: Boolean
+  stable val isZoomGesturesEnabled: Boolean
+  stable val isRotateGesturesEnabled: Boolean
+  stable val isScrollGesturesEnabled: Boolean
   <runtime stability> = Stable
 }
 unstable class StyleManager {

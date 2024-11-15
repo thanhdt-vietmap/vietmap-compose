@@ -10,8 +10,8 @@ import io.github.dellisd.spatialk.geojson.Position
 @Composable
 internal expect fun PlatformMapView(
   modifier: Modifier,
-  uiPadding: PaddingValues,
   styleUrl: String,
+  uiPadding: PaddingValues,
   updateMap: (map: PlatformMap) -> Unit,
   onMapLoaded: (map: PlatformMap) -> Unit,
   onStyleLoaded: (style: Style) -> Unit,

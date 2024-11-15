@@ -1,7 +1,7 @@
 restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun PlatformMapView(
   stable modifier: Modifier
-  stable uiPadding: PaddingValues
   stable styleUrl: String
+  stable uiPadding: PaddingValues
   stable updateMap: Function1<@[ParameterName(name = 'map')] PlatformMap, Unit>
   stable onMapLoaded: Function1<@[ParameterName(name = 'map')] PlatformMap, Unit>
   stable onStyleLoaded: Function1<@[ParameterName(name = 'style')] Style, Unit>
@@ -16,8 +16,10 @@ fun rememberCameraState(
 restartable skippable scheme("[androidx.compose.ui.UiComposable, [androidx.compose.ui.UiComposable]]") fun MaplibreMap(
   stable modifier: Modifier? = @static Companion
   stable styleUrl: String? = @static "https://demotiles.maplibre.org/style.json"
-  stable uiSettings: MapUiSettings? = @dynamic MapUiSettings()
+  stable uiPadding: PaddingValues? = @static PaddingValues(8.dp)
+  stable controlSettings: ControlSettings? = @dynamic ControlSettings()
   unstable cameraState: CameraState? = @dynamic rememberCameraState(null, $composer, 0, 0b0001)
+  stable isDebugEnabled: Boolean = @static false
   stable styleContent: @[ExtensionFunctionType] Function3<ExpressionScope, Composer, Int, Unit>? = @static ComposableSingletons$MaplibreMapKt.lambda-1
 )
 restartable skippable scheme("[0, [0]]") fun Top(
