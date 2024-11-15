@@ -80,8 +80,7 @@ internal actual fun PlatformMapView(
   val currentOnClick by rememberUpdatedState(onClick)
   val currentOnLongClick by rememberUpdatedState(onLongClick)
 
-  // We shouldn't need to hold on to this, but for some reason it stops working if we don't.
-  // Probably some weirdness with integration between Kotlin GC and ObjC ARC.
+  // these are held as weak references in objc land, so we need to hold them here
   var mapDelegate by remember { mutableStateOf<MapDelegate?>(null) }
   var mapGestureManager by remember { mutableStateOf<MapGestureManager?>(null) }
 
@@ -92,9 +91,9 @@ internal actual fun PlatformMapView(
 
   UIKitView(
     modifier =
-      modifier.fillMaxSize().onSizeChanged {
+      modifier.fillMaxSize().onSizeChanged { newSize ->
         platformMap?.mapViewSize =
-          with(density) { it.toSize().toDpSize() }
+          with(density) { newSize.toSize().toDpSize() }
             .let { dpSize ->
               CGSizeMake(dpSize.width.value.toDouble(), dpSize.height.value.toDouble())
             }
@@ -154,6 +153,8 @@ internal actual fun PlatformMapView(
       }
     },
     onRelease = {
+      platformMap = null
+      mapDelegate = null
       mapGestureManager = null
       currentOnRelease()
     },

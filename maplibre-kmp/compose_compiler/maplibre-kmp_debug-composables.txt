@@ -20,6 +20,28 @@ restartable skippable scheme("[androidx.compose.ui.UiComposable, [androidx.compo
   stable controlSettings: ControlSettings? = @dynamic ControlSettings()
   unstable cameraState: CameraState? = @dynamic rememberCameraState(null, $composer, 0, 0b0001)
   stable isDebugEnabled: Boolean = @static false
+  stable onClick: Function2<@[ParameterName(name = 'latLng')] Position, @[ParameterName(name = 'xy')] Pair<Float, Float>, Unit>? = @static $composer.startReplaceGroup(-1904066074)
+sourceInformation($composer, "CC(remember):MaplibreMap.kt#9igjgp")
+val tmp0_group = $composer.cache(false) {
+  {     <unused var>  :   Position  ,   <unused var>  :   Pair<Float, Float>   ->
+
+  }
+
+}
+
+$composer.endReplaceGroup()
+tmp0_group@dev.sargunv.maplibrekmp.compose.MaplibreMap
+  stable onLongClick: Function2<@[ParameterName(name = 'latLng')] Position, @[ParameterName(name = 'xy')] Pair<Float, Float>, Unit>? = @static $composer.startReplaceGroup(-1904063482)
+sourceInformation($composer, "CC(remember):MaplibreMap.kt#9igjgp")
+val tmp1_group = $composer.cache(false) {
+  {     <unused var>  :   Position  ,   <unused var>  :   Pair<Float, Float>   ->
+
+  }
+
+}
+
+$composer.endReplaceGroup()
+tmp1_group@dev.sargunv.maplibrekmp.compose.MaplibreMap
   stable styleContent: @[ExtensionFunctionType] Function3<ExpressionScope, Composer, Int, Unit>? = @static ComposableSingletons$MaplibreMapKt.lambda-1
 )
 restartable skippable scheme("[0, [0]]") fun Top(

@@ -23,6 +23,7 @@ import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.StyleManager
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.ExpressionScope
+import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.coroutines.awaitCancellation
 
 @Composable
@@ -33,6 +34,8 @@ public fun MaplibreMap(
   controlSettings: ControlSettings = ControlSettings(),
   cameraState: CameraState = rememberCameraState(),
   isDebugEnabled: Boolean = false,
+  onClick: (latLng: Position, xy: Pair<Float, Float>) -> Unit = { _, _ -> },
+  onLongClick: (latLng: Position, xy: Pair<Float, Float>) -> Unit = { _, _ -> },
   styleContent: @Composable ExpressionScope.() -> Unit = {},
 ) {
   val compositionContext = rememberCompositionContext()
@@ -41,41 +44,6 @@ public fun MaplibreMap(
   var style by remember { mutableStateOf<Style?>(null) }
 
   var styleCompositionRootNode by mutableStateOf<StyleNode?>(null)
-
-  SideEffect { cameraState.map = map }
-
-  PlatformMapView(
-    modifier = modifier,
-    styleUrl = styleUrl,
-    uiPadding = uiPadding,
-    updateMap = {
-      it.isDebugEnabled = isDebugEnabled
-      it.controlSettings = controlSettings
-    },
-    onMapLoaded = { map = it },
-    onStyleLoaded = { style = it },
-    onCameraMove = { cameraState.positionState.value = map!!.cameraPosition },
-    onClick = { _, xy ->
-      styleCompositionRootNode!!
-        .children
-        .mapNotNull { node -> (node as? LayerNode<*>)?.onClick?.let { node.layer.id to it } }
-        .forEach { (layerId, handle) ->
-          val features = map!!.queryRenderedFeatures(xy, setOf(layerId))
-          if (features.isNotEmpty()) handle(features)
-        }
-    },
-    onLongClick = { _, xy ->
-      styleCompositionRootNode!!
-        .children
-        .mapNotNull { node -> (node as? LayerNode<*>)?.onLongClick?.let { node.layer.id to it } }
-        .forEach { (layerId, handle) ->
-          val features = map!!.queryRenderedFeatures(xy, setOf(layerId))
-          if (features.isNotEmpty()) handle(features)
-        }
-    },
-    onRelease = { style = null },
-  )
-
   LaunchedEffect(style) {
     style?.let { style ->
       val rootNode = StyleNode(style).also { styleCompositionRootNode = it }
@@ -92,6 +60,45 @@ public fun MaplibreMap(
       }
     }
   }
+
+  SideEffect { cameraState.map = map }
+
+  PlatformMapView(
+    modifier = modifier,
+    styleUrl = styleUrl,
+    uiPadding = uiPadding,
+    updateMap = {
+      it.isDebugEnabled = isDebugEnabled
+      it.controlSettings = controlSettings
+    },
+    onMapLoaded = { map = it },
+    onStyleLoaded = { style = it },
+    onCameraMove = { cameraState.positionState.value = map!!.cameraPosition },
+    onClick = { latLng, xy ->
+      onClick(latLng, xy)
+      styleCompositionRootNode!!
+        .children
+        .mapNotNull { node -> (node as? LayerNode<*>)?.onClick?.let { node.layer.id to it } }
+        .forEach { (layerId, handle) ->
+          val features = map!!.queryRenderedFeatures(xy, setOf(layerId))
+          if (features.isNotEmpty()) handle(features)
+        }
+    },
+    onLongClick = { latLng, xy ->
+      onLongClick(latLng, xy)
+      styleCompositionRootNode!!
+        .children
+        .mapNotNull { node -> (node as? LayerNode<*>)?.onLongClick?.let { node.layer.id to it } }
+        .forEach { (layerId, handle) ->
+          val features = map!!.queryRenderedFeatures(xy, setOf(layerId))
+          if (features.isNotEmpty()) handle(features)
+        }
+    },
+    onRelease = {
+      style = null
+      map = null
+    },
+  )
 }
 
 internal val LocalStyleManager =
