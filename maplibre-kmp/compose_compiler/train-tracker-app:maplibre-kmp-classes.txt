@@ -5,8 +5,8 @@ stable class MapDelegate {
 }
 unstable class MapGestureManager {
   unstable val mapView: MLNMapView
-  stable val onClick: Function1<@[ParameterName(name = 'pos')] LatLng, Unit>
-  stable val onLongClick: Function1<@[ParameterName(name = 'pos')] LatLng, Unit>
+  stable val onClick: Function1<@[ParameterName(name = 'point')] CValue<CGPoint>, Unit>
+  stable val onLongClick: Function1<@[ParameterName(name = 'pos')] CValue<CGPoint>, Unit>
   <runtime stability> = Unstable
 }
 unstable class PlatformMap {

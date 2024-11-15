@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.viewinterop.UIKitInteropInteractionMode
 import androidx.compose.ui.viewinterop.UIKitInteropProperties
 import androidx.compose.ui.viewinterop.UIKitView
+import cocoapods.MapLibre.MLNFeatureProtocol
 import cocoapods.MapLibre.MLNMapView
 import cocoapods.MapLibre.MLNMapViewDelegateProtocol
 import cocoapods.MapLibre.MLNStyle
@@ -122,8 +123,25 @@ internal actual fun PlatformMapView(
         gestureManager =
           MapGestureManager(
             mapView = mapView,
-            onClick = { currentOnClick(it) },
-            onLongClick = { currentOnLongClick(it) },
+            onClick = { point ->
+              val features =
+                mapView.visibleFeaturesAtPoint(point).map {
+                  (it as MLNFeatureProtocol).geoJSONDictionary()
+                }
+              println("Clicked: $features")
+              currentOnClick(
+                mapView.convertPoint(point = point, toCoordinateFromView = null).useContents {
+                  LatLng(latitude, longitude)
+                }
+              )
+            },
+            onLongClick = { point ->
+              currentOnLongClick(
+                mapView.convertPoint(point = point, toCoordinateFromView = null).useContents {
+                  LatLng(latitude, longitude)
+                }
+              )
+            },
           )
       }
     },
@@ -162,8 +180,8 @@ internal class MapDelegate(
 @OptIn(BetaInteropApi::class)
 internal class MapGestureManager(
   private val mapView: MLNMapView,
-  private val onClick: (pos: LatLng) -> Unit,
-  private val onLongClick: (pos: LatLng) -> Unit,
+  private val onClick: (point: CValue<CGPoint>) -> Unit,
+  private val onLongClick: (pos: CValue<CGPoint>) -> Unit,
 ) : NSObject() {
   init {
     val singleTap = UITapGestureRecognizer(this, sel_registerName(::handleTap.name + ":"))
@@ -183,20 +201,12 @@ internal class MapGestureManager(
   @ObjCAction
   fun handleTap(sender: UITapGestureRecognizer) {
     if (sender.state != UIGestureRecognizerStateEnded) return
-    onClick(
-      mapView
-        .convertPoint(sender.locationInView(mapView), toCoordinateFromView = null)
-        .useContents { LatLng(latitude, longitude) }
-    )
+    onClick(sender.locationInView(mapView))
   }
 
   @ObjCAction
   fun handleLongPress(sender: UILongPressGestureRecognizer) {
     if (sender.state != UIGestureRecognizerStateBegan) return
-    onLongClick(
-      mapView
-        .convertPoint(sender.locationInView(mapView), toCoordinateFromView = null)
-        .useContents { LatLng(latitude, longitude) }
-    )
+    onLongClick(sender.locationInView(mapView))
   }
 }

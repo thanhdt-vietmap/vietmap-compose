@@ -2,7 +2,6 @@ package dev.sargunv.traintracker.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,18 +15,13 @@ import dev.sargunv.maplibrekmp.compose.layer.CircleLayer
 import dev.sargunv.maplibrekmp.compose.layer.CirclePaint
 import dev.sargunv.maplibrekmp.compose.layer.LineLayer
 import dev.sargunv.maplibrekmp.compose.layer.LinePaint
-import dev.sargunv.maplibrekmp.compose.rememberCameraState
 import dev.sargunv.maplibrekmp.compose.source.rememberGeoJsonSource
-import dev.sargunv.maplibrekmp.core.LatLng
-import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.core.source.GeoJsonOptions
 import dev.sargunv.maplibrekmp.core.source.Shape
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.gtfs.GtfsSdk
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.random.Random
-import kotlin.time.Duration.Companion.seconds
 
 class TrainMapViewModel(private val gtfsSdk: GtfsSdk) : ViewModel() {
   private val _state = mutableStateOf(TrainMapState())
@@ -52,26 +46,9 @@ fun TrainMap(uiPadding: PaddingValues) {
   val viewModel = koinViewModel<TrainMapViewModel>()
   val state by remember { viewModel.state }
 
-  val cameraState = rememberCameraState()
-
-  LaunchedEffect(Unit) {
-    cameraState.position = CameraPosition(target = LatLng(37.7749, -122.4194), zoom = 10.0)
-    while (true) {
-      cameraState.animateTo(
-        cameraState.position.copy(
-          zoom = Random.nextDouble(8.0, 12.0),
-          tilt = Random.nextDouble(0.0, 60.0),
-          bearing = Random.nextDouble(0.0, 360.0),
-        ),
-        duration = 1.seconds,
-      )
-    }
-  }
-
   MaplibreMap(
-    styleUrl = Res.getUri("files/maplibre/style/positron.json"),
+    styleUrl = "https://tiles.openfreemap.org/styles/liberty",
     uiSettings = MapUiSettings(uiPadding = uiPadding),
-    cameraState = cameraState,
   ) {
     val routeSource =
       rememberGeoJsonSource(

@@ -27,9 +27,10 @@ import kotlin.time.Duration.Companion.milliseconds
 
 public class CameraState internal constructor(firstPosition: CameraPosition) {
   internal var map: PlatformMap? = null
-    set(value) {
-      field = value
-      value?.let { map ->
+    set(map) {
+      val oldMap = field
+      field = map
+      if (map != oldMap && map != null) {
         map.cameraPosition = position
         mapAttachSignal.trySend(map)
       }

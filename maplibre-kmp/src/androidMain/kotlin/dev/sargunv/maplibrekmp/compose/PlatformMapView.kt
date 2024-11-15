@@ -1,5 +1,6 @@
 package dev.sargunv.maplibrekmp.compose
 
+import android.graphics.PointF
 import android.view.Gravity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.correctedAndroidUri
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
+import org.maplibre.geojson.Feature
 
 @Composable
 internal actual fun PlatformMapView(
@@ -91,13 +93,18 @@ internal actual fun PlatformMapView(
 
           map.addOnCameraMoveListener { currentOnCameraMove() }
 
-          map.addOnMapClickListener {
-            currentOnClick(LatLng(it.latitude, it.longitude))
+          map.addOnMapClickListener { coords ->
+            val point = map.projection.toScreenLocation(coords)
+            val queryRenderedFeatures: (PointF, Array<String>?) -> List<Feature> =
+              map::queryRenderedFeatures
+            val features = queryRenderedFeatures(point, null).map { it.toJson() }
+            println("Clicked: $features")
+            currentOnClick(LatLng(coords.latitude, coords.longitude))
             false
           }
 
-          map.addOnMapLongClickListener {
-            currentOnLongClick(LatLng(it.latitude, it.longitude))
+          map.addOnMapLongClickListener { coords ->
+            currentOnLongClick(LatLng(coords.latitude, coords.longitude))
             false
           }
         }
