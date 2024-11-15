@@ -48,7 +48,8 @@ kotlin {
     commonMain.dependencies {
       implementation(compose.runtime)
       implementation(compose.foundation)
-      implementation(compose.ui)
+      api(compose.ui)
+      api(libs.spatialk.geojson)
     }
   }
 }

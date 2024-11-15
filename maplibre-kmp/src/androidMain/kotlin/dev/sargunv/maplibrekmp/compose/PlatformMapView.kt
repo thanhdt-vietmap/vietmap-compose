@@ -22,9 +22,10 @@ import dev.sargunv.maplibrekmp.core.LatLng
 import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.correctedAndroidUri
+import io.github.dellisd.spatialk.geojson.Feature
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
-import org.maplibre.geojson.Feature
+import org.maplibre.geojson.Feature as MLNFeature
 
 @Composable
 internal actual fun PlatformMapView(
@@ -95,10 +96,10 @@ internal actual fun PlatformMapView(
 
           map.addOnMapClickListener { coords ->
             val point = map.projection.toScreenLocation(coords)
-            val queryRenderedFeatures: (PointF, Array<String>?) -> List<Feature> =
+            val queryRenderedFeatures: (PointF, Array<String>?) -> List<MLNFeature> =
               map::queryRenderedFeatures
-            val features = queryRenderedFeatures(point, null).map { it.toJson() }
-            println("Clicked: $features")
+            val features = queryRenderedFeatures(point, null).map { Feature.fromJson(it.toJson()) }
+            println("Clicked: ${features.map { "${it::class.simpleName}(id=${it.id})" }}")
             currentOnClick(LatLng(coords.latitude, coords.longitude))
             false
           }

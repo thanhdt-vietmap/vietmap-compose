@@ -27,6 +27,8 @@ import cocoapods.MapLibre.MLNStyle
 import dev.sargunv.maplibrekmp.core.LatLng
 import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
+import dev.sargunv.maplibrekmp.core.toJson
+import io.github.dellisd.spatialk.geojson.Feature
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCAction
@@ -94,7 +96,6 @@ internal actual fun PlatformMapView(
   UIKitView(
     modifier =
       modifier.fillMaxSize().onSizeChanged {
-        println("Map size changed: $it")
         platformMap?.mapViewSize =
           with(density) { it.toSize().toDpSize() }
             .let { dpSize ->
@@ -126,9 +127,9 @@ internal actual fun PlatformMapView(
             onClick = { point ->
               val features =
                 mapView.visibleFeaturesAtPoint(point).map {
-                  (it as MLNFeatureProtocol).geoJSONDictionary()
+                  Feature.fromJson((it as MLNFeatureProtocol).toJson())
                 }
-              println("Clicked: $features")
+              println("Clicked: ${features.map { "${it::class.simpleName}(id=${it.id})" }}")
               currentOnClick(
                 mapView.convertPoint(point = point, toCoordinateFromView = null).useContents {
                   LatLng(latitude, longitude)
