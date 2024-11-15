@@ -1,6 +1,5 @@
 package dev.sargunv.maplibrekmp.compose
 
-import android.graphics.PointF
 import android.view.Gravity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -18,14 +17,12 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import dev.sargunv.maplibrekmp.core.LatLng
 import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.correctedAndroidUri
-import io.github.dellisd.spatialk.geojson.Feature
+import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
-import org.maplibre.geojson.Feature as MLNFeature
 
 @Composable
 internal actual fun PlatformMapView(
@@ -37,8 +34,8 @@ internal actual fun PlatformMapView(
   onStyleLoaded: (style: Style) -> Unit,
   onRelease: () -> Unit,
   onCameraMove: () -> Unit,
-  onClick: (pos: LatLng) -> Unit,
-  onLongClick: (pos: LatLng) -> Unit,
+  onClick: (latLng: Position, xy: Pair<Float, Float>) -> Unit,
+  onLongClick: (latLng: Position, xy: Pair<Float, Float>) -> Unit,
 ) {
   var observer by remember { mutableStateOf<LifecycleEventObserver?>(null) }
 
@@ -95,17 +92,18 @@ internal actual fun PlatformMapView(
           map.addOnCameraMoveListener { currentOnCameraMove() }
 
           map.addOnMapClickListener { coords ->
-            val point = map.projection.toScreenLocation(coords)
-            val queryRenderedFeatures: (PointF, Array<String>?) -> List<MLNFeature> =
-              map::queryRenderedFeatures
-            val features = queryRenderedFeatures(point, null).map { Feature.fromJson(it.toJson()) }
-            println("Clicked: ${features.map { "${it::class.simpleName}(id=${it.id})" }}")
-            currentOnClick(LatLng(coords.latitude, coords.longitude))
+            currentOnClick(
+              Position(coords.latitude, coords.longitude),
+              map.projection.toScreenLocation(coords).let { it.x to it.y },
+            )
             false
           }
 
           map.addOnMapLongClickListener { coords ->
-            currentOnLongClick(LatLng(coords.latitude, coords.longitude))
+            currentOnLongClick(
+              Position(coords.latitude, coords.longitude),
+              map.projection.toScreenLocation(coords).let { it.x to it.y },
+            )
             false
           }
         }

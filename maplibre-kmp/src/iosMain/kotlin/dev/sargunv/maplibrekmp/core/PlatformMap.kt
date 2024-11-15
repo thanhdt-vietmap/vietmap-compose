@@ -13,6 +13,7 @@ import cocoapods.MapLibre.MLNMapView
 import cocoapods.MapLibre.MLNZoomLevelForAltitude
 import cocoapods.MapLibre.allowsTilting
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
+import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGSize
@@ -90,7 +91,7 @@ internal actual class PlatformMap private actual constructor() {
 
   private fun MLNMapCamera.toCameraPosition(paddingValues: PaddingValues) =
     CameraPosition(
-      target = centerCoordinate.useContents { LatLng(latitude, longitude) },
+      target = centerCoordinate.useContents { Position(latitude, longitude) },
       bearing = heading,
       tilt = pitch,
       zoom =

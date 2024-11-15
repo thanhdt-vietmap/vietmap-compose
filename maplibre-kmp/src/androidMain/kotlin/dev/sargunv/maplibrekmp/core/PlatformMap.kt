@@ -4,14 +4,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
+import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.camera.CameraUpdateFactory
+import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
-import org.maplibre.android.geometry.LatLng as MLNLatLng
 
 internal actual class PlatformMap private actual constructor() {
   private lateinit var impl: MapLibreMap
@@ -71,9 +72,7 @@ internal actual class PlatformMap private actual constructor() {
 
   private fun MLNCameraPosition.toCameraPosition(): CameraPosition =
     CameraPosition(
-      target =
-        target?.let { LatLng(it.latitude, it.longitude) }
-          ?: LatLng(0.0, 0.0).also { println("target is null") },
+      target = target?.let { Position(it.latitude, it.longitude) } ?: Position(0.0, 0.0),
       zoom = zoom,
       bearing = bearing,
       tilt = tilt,
@@ -90,7 +89,7 @@ internal actual class PlatformMap private actual constructor() {
 
   private fun CameraPosition.toMLNCameraPosition(): MLNCameraPosition =
     MLNCameraPosition.Builder()
-      .target(MLNLatLng(target.latitude, target.longitude))
+      .target(LatLng(target.latitude, target.longitude))
       .zoom(zoom)
       .tilt(tilt)
       .bearing(bearing)

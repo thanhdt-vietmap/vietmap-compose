@@ -20,15 +20,12 @@ import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.viewinterop.UIKitInteropInteractionMode
 import androidx.compose.ui.viewinterop.UIKitInteropProperties
 import androidx.compose.ui.viewinterop.UIKitView
-import cocoapods.MapLibre.MLNFeatureProtocol
 import cocoapods.MapLibre.MLNMapView
 import cocoapods.MapLibre.MLNMapViewDelegateProtocol
 import cocoapods.MapLibre.MLNStyle
-import dev.sargunv.maplibrekmp.core.LatLng
 import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
-import dev.sargunv.maplibrekmp.core.toJson
-import io.github.dellisd.spatialk.geojson.Feature
+import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCAction
@@ -54,8 +51,8 @@ internal actual fun PlatformMapView(
   onStyleLoaded: (style: Style) -> Unit,
   onRelease: () -> Unit,
   onCameraMove: () -> Unit,
-  onClick: (pos: LatLng) -> Unit,
-  onLongClick: (pos: LatLng) -> Unit,
+  onClick: (latLng: Position, xy: Pair<Float, Float>) -> Unit,
+  onLongClick: (latLng: Position, xy: Pair<Float, Float>) -> Unit,
 ) {
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
@@ -125,22 +122,19 @@ internal actual fun PlatformMapView(
           MapGestureManager(
             mapView = mapView,
             onClick = { point ->
-              val features =
-                mapView.visibleFeaturesAtPoint(point).map {
-                  Feature.fromJson((it as MLNFeatureProtocol).toJson())
-                }
-              println("Clicked: ${features.map { "${it::class.simpleName}(id=${it.id})" }}")
               currentOnClick(
-                mapView.convertPoint(point = point, toCoordinateFromView = null).useContents {
-                  LatLng(latitude, longitude)
-                }
+                mapView.convertPoint(point, toCoordinateFromView = null).useContents {
+                  Position(latitude, longitude)
+                },
+                point.useContents { Pair(x.toFloat(), y.toFloat()) },
               )
             },
             onLongClick = { point ->
               currentOnLongClick(
-                mapView.convertPoint(point = point, toCoordinateFromView = null).useContents {
-                  LatLng(latitude, longitude)
-                }
+                mapView.convertPoint(point, toCoordinateFromView = null).useContents {
+                  Position(latitude, longitude)
+                },
+                point.useContents { Pair(x.toFloat(), y.toFloat()) },
               )
             },
           )
