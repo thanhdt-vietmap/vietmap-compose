@@ -1,13 +1,21 @@
 package dev.sargunv.maplibrekmp.core
 
-import dev.sargunv.maplibrekmp.compose.CameraPosition
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.maps.MapLibreMap
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
 import org.maplibre.android.geometry.LatLng as MLNLatLng
 
 internal actual class PlatformMap private actual constructor() {
   private lateinit var impl: MapLibreMap
+  internal var layoutDirection: LayoutDirection = LayoutDirection.Ltr
 
   internal constructor(mapView: MapLibreMap) : this() {
     impl = mapView
@@ -69,6 +77,15 @@ internal actual class PlatformMap private actual constructor() {
       zoom = zoom,
       bearing = bearing,
       tilt = tilt,
+      padding =
+        padding?.let {
+          PaddingValues.Absolute(
+            left = it[0].dp,
+            top = it[1].dp,
+            right = it[2].dp,
+            bottom = it[3].dp,
+          )
+        } ?: PaddingValues.Absolute(0.dp),
     )
 
   private fun CameraPosition.toMLNCameraPosition(): MLNCameraPosition =
@@ -77,28 +94,30 @@ internal actual class PlatformMap private actual constructor() {
       .zoom(zoom)
       .tilt(tilt)
       .bearing(bearing)
+      .padding(
+        left = padding.calculateLeftPadding(layoutDirection).value.toDouble(),
+        top = padding.calculateTopPadding().value.toDouble(),
+        right = padding.calculateRightPadding(layoutDirection).value.toDouble(),
+        bottom = padding.calculateBottomPadding().value.toDouble(),
+      )
       .build()
 
   actual var cameraPosition: CameraPosition
     get() = impl.cameraPosition.toCameraPosition()
     set(value) {
-      impl.cameraPosition = value.toMLNCameraPosition()
+      impl.moveCamera(CameraUpdateFactory.newCameraPosition(value.toMLNCameraPosition()))
     }
 
-  actual fun animateCameraPosition(finalPosition: CameraPosition) =
-    impl.animateCamera(CameraUpdateFactory.newCameraPosition(finalPosition.toMLNCameraPosition()))
+  actual suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
+    suspendCoroutine { cont ->
+      impl.animateCamera(
+        CameraUpdateFactory.newCameraPosition(finalPosition.toMLNCameraPosition()),
+        duration.toInt(DurationUnit.MILLISECONDS),
+        object : MapLibreMap.CancelableCallback {
+          override fun onFinish() = cont.resume(Unit)
 
-  private fun CameraPadding.toDoubleArray(): DoubleArray = doubleArrayOf(left, top, right, bottom)
-
-  private fun DoubleArray.toCameraPadding(): CameraPadding =
-    CameraPadding(get(0), get(1), get(2), get(3))
-
-  actual var cameraPadding: CameraPadding
-    get() = impl.cameraPosition.padding?.toCameraPadding() ?: CameraPadding()
-    set(value) {
-      impl.moveCamera(CameraUpdateFactory.paddingTo(value.toDoubleArray()))
+          override fun onCancel() = cont.resume(Unit)
+        },
+      )
     }
-
-  actual fun animateCameraPadding(finalPadding: CameraPadding) =
-    impl.animateCamera(CameraUpdateFactory.paddingTo(finalPadding.toDoubleArray()))
 }

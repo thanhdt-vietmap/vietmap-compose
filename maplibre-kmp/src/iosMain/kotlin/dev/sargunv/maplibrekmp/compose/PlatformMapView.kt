@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -85,15 +86,23 @@ internal actual fun PlatformMapView(
   var gestureManager by remember { mutableStateOf<MapGestureManager?>(null) }
 
   var platformMap by remember { mutableStateOf<PlatformMap?>(null) }
+  SideEffect { platformMap?.layoutDirection = layoutDir }
+
+  var calledOnMapLoaded by remember { mutableStateOf(false) }
 
   UIKitView(
     modifier =
       modifier.fillMaxSize().onSizeChanged {
+        println("Map size changed: $it")
         platformMap?.mapViewSize =
           with(density) { it.toSize().toDpSize() }
             .let { dpSize ->
               CGSizeMake(dpSize.width.value.toDouble(), dpSize.height.value.toDouble())
             }
+        if (!calledOnMapLoaded) {
+          onMapLoaded(platformMap!!)
+          calledOnMapLoaded = true
+        }
       },
     properties =
       UIKitInteropProperties(interactionMode = UIKitInteropInteractionMode.NonCooperative),
@@ -102,7 +111,7 @@ internal actual fun PlatformMapView(
         mapView.automaticallyAdjustsContentInset = false
 
         platformMap = PlatformMap(mapView)
-        onMapLoaded(platformMap!!)
+        calledOnMapLoaded = false
 
         mapView.delegate =
           MapDelegate(
@@ -119,6 +128,7 @@ internal actual fun PlatformMapView(
       }
     },
     update = { mapView ->
+      platformMap!!.layoutDirection = layoutDir
       updateMap(platformMap!!)
 
       if (margins != lastMargins) {

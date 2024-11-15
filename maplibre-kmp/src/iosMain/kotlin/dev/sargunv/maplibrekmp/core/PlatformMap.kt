@@ -1,5 +1,8 @@
 package dev.sargunv.maplibrekmp.core
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import cocoapods.MapLibre.MLNAltitudeForZoomLevel
 import cocoapods.MapLibre.MLNMapCamera
 import cocoapods.MapLibre.MLNMapDebugCollisionBoxesMask
@@ -9,17 +12,23 @@ import cocoapods.MapLibre.MLNMapDebugTimestampsMask
 import cocoapods.MapLibre.MLNMapView
 import cocoapods.MapLibre.MLNZoomLevelForAltitude
 import cocoapods.MapLibre.allowsTilting
-import dev.sargunv.maplibrekmp.compose.CameraPosition
+import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGSize
 import platform.CoreLocation.CLLocationCoordinate2DMake
 import platform.UIKit.UIEdgeInsets
 import platform.UIKit.UIEdgeInsetsMake
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 internal actual class PlatformMap private actual constructor() {
   private lateinit var impl: MLNMapView
+  //  internal var mapViewSize: CValue<CGSize> = CGSizeMake(0.0, 0.0)
   internal lateinit var mapViewSize: CValue<CGSize>
+  internal var layoutDirection: LayoutDirection = LayoutDirection.Ltr
 
   internal constructor(impl: MLNMapView) : this() {
     this.impl = impl
@@ -79,7 +88,7 @@ internal actual class PlatformMap private actual constructor() {
       impl.zoomEnabled = value
     }
 
-  private fun MLNMapCamera.toCameraPosition() =
+  private fun MLNMapCamera.toCameraPosition(paddingValues: PaddingValues) =
     CameraPosition(
       target = centerCoordinate.useContents { LatLng(latitude, longitude) },
       bearing = heading,
@@ -91,6 +100,7 @@ internal actual class PlatformMap private actual constructor() {
           latitude = centerCoordinate.useContents { latitude },
           size = mapViewSize,
         ),
+      padding = paddingValues,
     )
 
   private fun CameraPosition.toMLNMapCamera(): MLNMapCamera {
@@ -100,39 +110,52 @@ internal actual class PlatformMap private actual constructor() {
       it.heading = bearing
       it.altitude =
         MLNAltitudeForZoomLevel(
-            zoomLevel = zoom,
-            pitch = tilt,
-            latitude = target.latitude,
-            size = mapViewSize,
-          )
-          .also {
-            println(
-              "Altitude: $it for zoom level $zoom, pitch $tilt, latitude ${target.latitude}, size ${mapViewSize.useContents { width to height }}"
-            )
-          }
+          zoomLevel = zoom,
+          pitch = tilt,
+          latitude = target.latitude,
+          size = mapViewSize,
+        )
       it
     }
   }
 
   actual var cameraPosition: CameraPosition
-    get() = impl.camera.toCameraPosition()
-    set(value) = impl.setCamera(value.toMLNMapCamera(), animated = false)
+    get() =
+      impl.camera.toCameraPosition(
+        paddingValues =
+          impl.cameraEdgeInsets.useContents {
+            PaddingValues.Absolute(
+              left = left.dp,
+              top = top.dp,
+              right = right.dp,
+              bottom = bottom.dp,
+            )
+          }
+      )
+    set(value) =
+      impl.setCamera(
+        value.toMLNMapCamera(),
+        withDuration = 0.0,
+        animationTimingFunction = null,
+        edgePadding = value.padding.toEdgeInsets(),
+        completionHandler = null,
+      )
 
-  actual fun animateCameraPosition(finalPosition: CameraPosition) =
-    impl.setCamera(finalPosition.toMLNMapCamera(), animated = true)
+  private fun PaddingValues.toEdgeInsets(): CValue<UIEdgeInsets> =
+    UIEdgeInsetsMake(
+      top = calculateTopPadding().value.toDouble(),
+      left = calculateLeftPadding(layoutDirection).value.toDouble(),
+      bottom = calculateBottomPadding().value.toDouble(),
+      right = calculateRightPadding(layoutDirection).value.toDouble(),
+    )
 
-  private fun UIEdgeInsets.toCameraPadding() =
-    CameraPadding(left = left, top = top, right = right, bottom = bottom)
-
-  private fun CameraPadding.toUIEdgeInsets() =
-    UIEdgeInsetsMake(left = left, top = top, right = right, bottom = bottom)
-
-  actual var cameraPadding: CameraPadding
-    get() = impl.contentInset.useContents { toCameraPadding() }
-    set(value) {
-      impl.contentInset = value.toUIEdgeInsets()
+  actual suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
+    suspendCoroutine { cont ->
+      impl.flyToCamera(
+        finalPosition.toMLNMapCamera(),
+        withDuration = duration.toDouble(DurationUnit.SECONDS),
+        edgePadding = finalPosition.padding.toEdgeInsets(),
+        completionHandler = { cont.resume(Unit) },
+      )
     }
-
-  actual fun animateCameraPadding(finalPadding: CameraPadding) =
-    impl.setContentInset(finalPadding.toUIEdgeInsets(), animated = true)
 }

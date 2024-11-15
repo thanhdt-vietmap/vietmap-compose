@@ -12,6 +12,7 @@ unstable class MapGestureManager {
 unstable class PlatformMap {
   unstable var impl: MLNMapView
   unstable var mapViewSize: CValue<CGSize>
+  stable var layoutDirection: LayoutDirection
   <runtime stability> = Unstable
 }
 unstable class Style {
@@ -67,16 +68,11 @@ stable class MapUiSettings {
   stable val isScrollGesturesEnabled: Boolean
   <runtime stability> = Stable
 }
-stable class CameraPosition {
-  stable val bearing: Double
-  stable val target: LatLng
-  stable val tilt: Double
-  stable val zoom: Double
-}
-stable class CameraState {
+unstable class CameraState {
   unstable var map: PlatformMap?
-  stable var position$delegate: MutableState<CameraPosition>
-  stable var padding$delegate: MutableState<CameraPadding>
+  unstable val mapAttachSignal: Channel<PlatformMap>
+  stable val positionState: MutableState<CameraPosition>
+  <runtime stability> = Unstable
 }
 runtime class LayerNode {
   runtime val layer: T
@@ -133,6 +129,10 @@ stable class LinePaint {
   stable val gradient: Expression<Color>
   <runtime stability> = Stable
 }
+stable class LatLng {
+  stable val latitude: Double
+  stable val longitude: Double
+}
 stable class StyleManager {
   unstable val style: Style
   unstable val baseLayers: Map<String, PlatformLayer>
@@ -140,6 +140,13 @@ stable class StyleManager {
   unstable val userLayers: MutableList<LayerStatus>
   unstable val replacedLayers: MutableMap<Replace, PlatformLayer>
   unstable val replacementCounters: MutableMap<Replace, Int>
+}
+stable class CameraPosition {
+  stable val bearing: Double
+  stable val target: LatLng
+  stable val tilt: Double
+  stable val zoom: Double
+  stable val padding: PaddingValues
 }
 stable class Top {
   <runtime stability> = Stable
@@ -183,16 +190,6 @@ stable class GeoJson {
   <runtime stability> = Stable
 }
 stable class Shape {
-}
-stable class LatLng {
-  stable val latitude: Double
-  stable val longitude: Double
-}
-stable class CameraPadding {
-  stable val left: Double
-  stable val top: Double
-  stable val right: Double
-  stable val bottom: Double
 }
 stable class Expression {
   unstable val value: Any?

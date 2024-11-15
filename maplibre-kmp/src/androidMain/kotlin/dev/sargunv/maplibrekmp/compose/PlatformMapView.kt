@@ -4,6 +4,7 @@ import android.view.Gravity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,6 +64,7 @@ internal actual fun PlatformMapView(
   val currentOnLongClick by rememberUpdatedState(onLongClick)
 
   var platformMap by remember { mutableStateOf<PlatformMap?>(null) }
+  SideEffect { platformMap?.layoutDirection = layoutDir }
 
   AndroidView(
     modifier = modifier,
@@ -102,7 +104,7 @@ internal actual fun PlatformMapView(
       }
     },
     update = { mapView ->
-      platformMap?.let(updateMap)
+      platformMap?.let { updateMap(it) }
 
       mapView.getMapAsync { map ->
         if (margins != lastMargins) {

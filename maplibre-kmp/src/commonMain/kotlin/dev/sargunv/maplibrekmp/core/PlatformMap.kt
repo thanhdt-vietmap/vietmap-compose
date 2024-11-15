@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrekmp.core
 
-import dev.sargunv.maplibrekmp.compose.CameraPosition
+import dev.sargunv.maplibrekmp.core.camera.CameraPosition
+import kotlin.time.Duration
 
 internal expect class PlatformMap private constructor() {
 
@@ -15,9 +16,5 @@ internal expect class PlatformMap private constructor() {
 
   var cameraPosition: CameraPosition
 
-  fun animateCameraPosition(finalPosition: CameraPosition)
-
-  var cameraPadding: CameraPadding
-
-  fun animateCameraPadding(finalPadding: CameraPadding)
+  suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration)
 }
