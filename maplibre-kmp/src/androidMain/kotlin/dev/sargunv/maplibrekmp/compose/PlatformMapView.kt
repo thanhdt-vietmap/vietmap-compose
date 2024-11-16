@@ -1,7 +1,5 @@
 package dev.sargunv.maplibrekmp.compose
 
-import android.view.Gravity
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -53,7 +51,6 @@ internal fun MapViewLifecycleEffect(mapView: MapView) {
 internal actual fun PlatformMapView(
   modifier: Modifier,
   styleUrl: String,
-  uiPadding: PaddingValues,
   updateMap: (map: PlatformMap) -> Unit,
   onReset: () -> Unit,
   onStyleChanged: (map: PlatformMap, style: Style) -> Unit,
@@ -64,17 +61,6 @@ internal actual fun PlatformMapView(
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
 
-  val margins =
-    remember(uiPadding, layoutDir, density) {
-      with(density) {
-        listOf(
-          uiPadding.calculateLeftPadding(layoutDir).roundToPx(),
-          uiPadding.calculateTopPadding().roundToPx(),
-          uiPadding.calculateRightPadding(layoutDir).roundToPx(),
-          uiPadding.calculateBottomPadding().roundToPx(),
-        )
-      }
-    }
   var lastStyleUrl by remember { mutableStateOf<String?>(null) }
 
   val currentOnReset by rememberUpdatedState(onReset)
@@ -100,24 +86,21 @@ internal actual fun PlatformMapView(
       MapLibre.getInstance(context)
       MapView(context).also { mapView ->
         mapView.getMapAsync { mapLibreMap ->
-          currentMap = PlatformMap(mapView, mapLibreMap, layoutDir)
+          currentMap = PlatformMap(mapView, mapLibreMap, layoutDir, density)
         }
       }
     },
     update = { _ ->
       currentMap?.let { map ->
         map.layoutDir = layoutDir
+        map.density = density
 
         map.mapLibreMap.let { mlnMap ->
           map.onCameraMove = currentOnCameraMove
           map.onClick = currentOnClick
           map.onLongClick = currentOnLongClick
 
-          // TODO push these into the PlatformMap class
-          mlnMap.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
-          mlnMap.uiSettings.setAttributionMargins(margins[0], margins[1], margins[2], margins[3])
-          mlnMap.uiSettings.setLogoMargins(margins[0], margins[1], margins[2], margins[3])
-          mlnMap.uiSettings.setCompassMargins(margins[0], margins[1], margins[2], margins[3])
+          // TODO push this into the PlatformMap class
           if (styleUrl != lastStyleUrl) {
             lastStyleUrl = styleUrl
             mlnMap.setStyle(styleUrl.correctedAndroidUri().toString()) { mlnStyle ->

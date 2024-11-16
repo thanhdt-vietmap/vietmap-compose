@@ -12,7 +12,6 @@ import io.github.dellisd.spatialk.geojson.Position
 internal expect fun PlatformMapView(
   modifier: Modifier,
   styleUrl: String,
-  uiPadding: PaddingValues,
   updateMap: (map: PlatformMap) -> Unit,
   onReset: () -> Unit,
   onStyleChanged: (map: PlatformMap, style: Style) -> Unit,

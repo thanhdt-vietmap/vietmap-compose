@@ -1,6 +1,5 @@
 package dev.sargunv.maplibrekmp.compose
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.CompositionLocalProvider
@@ -13,13 +12,12 @@ import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.compose.engine.LayerNode
 import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
 import dev.sargunv.maplibrekmp.compose.engine.StyleNode
-import dev.sargunv.maplibrekmp.core.ControlSettings
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.StyleManager
+import dev.sargunv.maplibrekmp.core.UiSettings
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.ExpressionScope
 import kotlinx.coroutines.awaitCancellation
@@ -60,23 +58,21 @@ internal val LocalStyleManager =
 public fun MaplibreMap(
   modifier: Modifier = Modifier,
   styleUrl: String = "https://demotiles.maplibre.org/style.json",
-  uiPadding: PaddingValues = PaddingValues(8.dp),
-  controlSettings: ControlSettings = ControlSettings(),
+  uiSettings: UiSettings = uiSettings(),
   cameraState: CameraState = rememberCameraState(),
   isDebugEnabled: Boolean = false,
-  styleContent: @Composable ExpressionScope.() -> Unit = {},
+  content: @Composable ExpressionScope.() -> Unit = {},
 ) {
   var rememberedStyle by remember { mutableStateOf<Style?>(null) }
-  val styleCompositionState by rememberStyleCompositionState(rememberedStyle, styleContent)
+  val styleCompositionState by rememberStyleCompositionState(rememberedStyle, content)
 
   PlatformMapView(
     modifier = modifier,
     styleUrl = styleUrl,
-    uiPadding = uiPadding,
     updateMap = { map ->
       cameraState.map = map
       map.isDebugEnabled = isDebugEnabled
-      map.controlSettings = controlSettings
+      map.uiSettings = uiSettings
     },
     onReset = {
       cameraState.map = null

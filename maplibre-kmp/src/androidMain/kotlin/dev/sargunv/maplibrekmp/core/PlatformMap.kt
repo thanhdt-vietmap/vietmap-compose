@@ -1,7 +1,9 @@
 package dev.sargunv.maplibrekmp.core
 
 import android.graphics.PointF
+import android.view.Gravity
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
@@ -21,15 +23,24 @@ internal actual class PlatformMap private actual constructor() {
   internal lateinit var mapView: MapView
   internal lateinit var mapLibreMap: MapLibreMap
   internal lateinit var layoutDir: LayoutDirection
+  internal lateinit var density: Density
 
   internal var onCameraMove: () -> Unit = {}
   internal var onClick: (Position, XY) -> Unit = { _, _ -> }
   internal var onLongClick: (Position, XY) -> Unit = { _, _ -> }
 
-  internal constructor(mapView: MapView, map: MapLibreMap, layoutDir: LayoutDirection) : this() {
+  private lateinit var lastUiPadding: PaddingValues
+
+  internal constructor(
+    mapView: MapView,
+    map: MapLibreMap,
+    layoutDir: LayoutDirection,
+    density: Density,
+  ) : this() {
     this.mapView = mapView
     this.mapLibreMap = map
     this.layoutDir = layoutDir
+    this.density = density
 
     map.addOnCameraMoveListener { onCameraMove() }
     map.addOnMapClickListener { coords ->
@@ -50,9 +61,10 @@ internal actual class PlatformMap private actual constructor() {
       mapLibreMap.isDebugActive = value
     }
 
-  actual var controlSettings
+  actual var uiSettings
     get() =
-      ControlSettings(
+      UiSettings(
+        padding = lastUiPadding,
         isLogoEnabled = mapLibreMap.uiSettings.isLogoEnabled,
         isAttributionEnabled = mapLibreMap.uiSettings.isAttributionEnabled,
         isCompassEnabled = mapLibreMap.uiSettings.isCompassEnabled,
@@ -62,6 +74,22 @@ internal actual class PlatformMap private actual constructor() {
         isZoomGesturesEnabled = mapLibreMap.uiSettings.isZoomGesturesEnabled,
       )
     set(value) {
+      if (!::lastUiPadding.isInitialized || value.padding != lastUiPadding) {
+        lastUiPadding = value.padding
+        with(density) {
+          // TODO make this configurable
+          mapLibreMap.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
+
+          val left = value.padding.calculateLeftPadding(layoutDir).roundToPx()
+          val top = value.padding.calculateTopPadding().roundToPx()
+          val right = value.padding.calculateRightPadding(layoutDir).roundToPx()
+          val bottom = value.padding.calculateBottomPadding().roundToPx()
+
+          mapLibreMap.uiSettings.setAttributionMargins(left, top, right, bottom)
+          mapLibreMap.uiSettings.setLogoMargins(left, top, right, bottom)
+          mapLibreMap.uiSettings.setCompassMargins(left, top, right, bottom)
+        }
+      }
       mapLibreMap.uiSettings.isLogoEnabled = value.isLogoEnabled
       mapLibreMap.uiSettings.isAttributionEnabled = value.isAttributionEnabled
       mapLibreMap.uiSettings.isCompassEnabled = value.isCompassEnabled

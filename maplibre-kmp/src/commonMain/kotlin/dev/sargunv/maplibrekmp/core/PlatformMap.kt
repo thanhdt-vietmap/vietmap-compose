@@ -9,7 +9,7 @@ import kotlin.time.Duration
 internal expect class PlatformMap private constructor() {
 
   var isDebugEnabled: Boolean
-  var controlSettings: ControlSettings
+  var uiSettings: UiSettings
 
   var cameraPosition: CameraPosition
 

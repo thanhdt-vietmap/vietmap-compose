@@ -1,6 +1,5 @@
 package dev.sargunv.maplibrekmp.compose
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +29,6 @@ import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.core.toCGSize
 import dev.sargunv.maplibrekmp.core.toXY
 import io.github.dellisd.spatialk.geojson.Position
-import platform.CoreGraphics.CGPointMake
 import platform.Foundation.NSURL
 import platform.UIKit.UIGestureRecognizerStateBegan
 import platform.UIKit.UIGestureRecognizerStateEnded
@@ -41,7 +39,6 @@ import platform.UIKit.UITapGestureRecognizer
 internal actual fun PlatformMapView(
   modifier: Modifier,
   styleUrl: String,
-  uiPadding: PaddingValues,
   updateMap: (map: PlatformMap) -> Unit,
   onReset: () -> Unit,
   onStyleChanged: (map: PlatformMap, style: Style) -> Unit,
@@ -52,20 +49,6 @@ internal actual fun PlatformMapView(
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
   val insetPadding = WindowInsets.safeDrawing.asPaddingValues()
-
-  val margins =
-    remember(insetPadding, uiPadding, layoutDir) {
-      val leftSafeInset = insetPadding.calculateLeftPadding(layoutDir).value
-      val rightSafeInset = insetPadding.calculateRightPadding(layoutDir).value
-      val bottomSafeInset = insetPadding.calculateBottomPadding().value
-      val leftUiPadding = uiPadding.calculateLeftPadding(layoutDir).value - leftSafeInset
-      val rightUiPadding = uiPadding.calculateRightPadding(layoutDir).value - rightSafeInset
-      val bottomUiPadding = uiPadding.calculateBottomPadding().value - bottomSafeInset
-      listOf(
-        CGPointMake(leftUiPadding.toDouble(), bottomUiPadding.toDouble()),
-        CGPointMake(rightUiPadding.toDouble(), bottomUiPadding.toDouble()),
-      )
-    }
 
   var lastStyleUrl by remember { mutableStateOf<String?>(null) }
 
@@ -88,7 +71,7 @@ internal actual fun PlatformMapView(
       mapView.automaticallyAdjustsContentInset = false
 
       if (currentMap == null && size.isSpecified) {
-        val map = PlatformMap(mapView, size.toCGSize(), layoutDir)
+        val map = PlatformMap(mapView, size.toCGSize(), layoutDir, insetPadding)
         currentMap = map
 
         map.addGestures(
@@ -114,11 +97,9 @@ internal actual fun PlatformMapView(
       currentMap?.let {
         if (size.isSpecified) it.size = size.toCGSize()
         it.layoutDir = layoutDir
+        it.insetPadding = insetPadding
         updateMap(it)
       }
-
-      mapView.setLogoViewMargins(margins[0])
-      mapView.setAttributionButtonMargins(margins[1])
 
       if (styleUrl != lastStyleUrl) {
         mapView.setStyleURL(NSURL(string = styleUrl))

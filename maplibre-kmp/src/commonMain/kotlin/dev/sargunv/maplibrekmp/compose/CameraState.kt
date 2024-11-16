@@ -44,3 +44,4 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
     map.animateCameraPosition(finalPosition, duration)
   }
 }
+

@@ -33,6 +33,18 @@ kotlin {
   }
 
   sourceSets {
+    all {
+      compilerOptions {
+        freeCompilerArgs.apply {
+          add("-Xexpect-actual-classes")
+          add("-Xconsistent-data-class-copy-visibility")
+        }
+      }
+      languageSettings {
+        optIn("androidx.compose.material3.ExperimentalMaterial3Api")
+        optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
+      }
+    }
     androidMain.dependencies {
       implementation(libs.androidx.activity.compose)
       implementation(libs.koin.android)

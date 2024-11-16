@@ -30,43 +30,49 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
 internal actual class PlatformMap private actual constructor() {
-  private lateinit var impl: MLNMapView
+  private lateinit var mapView: MLNMapView
   internal lateinit var size: CValue<CGSize>
   internal lateinit var layoutDir: LayoutDirection
+  internal lateinit var insetPadding: PaddingValues
+
+  private lateinit var lastUiPadding: PaddingValues
 
   // hold strong references to things that the sdk keeps weak references to
   private val gestures = mutableListOf<Gesture<*>>()
   var delegate: MapViewDelegate? = null
     set(value) {
-      field = value.also(impl::setDelegate)
+      mapView.delegate = value
+      field = value
     }
 
   internal constructor(
     impl: MLNMapView,
     size: CValue<CGSize>,
     layoutDir: LayoutDirection,
+    insetPadding: PaddingValues,
   ) : this() {
-    this.impl = impl
+    this.mapView = impl
     this.size = size
     this.layoutDir = layoutDir
+    this.insetPadding = insetPadding
   }
 
   inline fun <reified T : UIGestureRecognizer> addGestures(vararg gestures: Gesture<T>) {
     gestures.forEach { gesture ->
       if (gesture.isCooperative) {
-        impl.gestureRecognizers!!.filterIsInstance<T>().forEach {
+        mapView.gestureRecognizers!!.filterIsInstance<T>().forEach {
           gesture.recognizer.requireGestureRecognizerToFail(it)
         }
       }
-      impl.addGestureRecognizer(gesture.recognizer)
+      mapView.addGestureRecognizer(gesture.recognizer)
       this.gestures.add(gesture)
     }
   }
 
   actual var isDebugEnabled: Boolean
-    get() = impl.debugMask != 0uL
+    get() = mapView.debugMask != 0uL
     set(value) {
-      impl.debugMask =
+      mapView.debugMask =
         if (value)
           MLNMapDebugTileBoundariesMask or
             MLNMapDebugTileInfoMask or
@@ -75,25 +81,45 @@ internal actual class PlatformMap private actual constructor() {
         else 0uL
     }
 
-  actual var controlSettings
+  actual var uiSettings
     get() =
-      ControlSettings(
-        isLogoEnabled = !impl.logoView.hidden,
-        isAttributionEnabled = !impl.attributionButton.hidden,
-        isCompassEnabled = !impl.compassView.hidden,
-        isRotateGesturesEnabled = impl.rotateEnabled,
-        isScrollGesturesEnabled = impl.scrollEnabled,
-        isTiltGesturesEnabled = impl.allowsTilting,
-        isZoomGesturesEnabled = impl.zoomEnabled,
+      UiSettings(
+        padding = lastUiPadding,
+        isLogoEnabled = !mapView.logoView.hidden,
+        isAttributionEnabled = !mapView.attributionButton.hidden,
+        isCompassEnabled = !mapView.compassView.hidden,
+        isRotateGesturesEnabled = mapView.rotateEnabled,
+        isScrollGesturesEnabled = mapView.scrollEnabled,
+        isTiltGesturesEnabled = mapView.allowsTilting,
+        isZoomGesturesEnabled = mapView.zoomEnabled,
       )
     set(value) {
-      impl.logoView.hidden = !value.isLogoEnabled
-      impl.attributionButton.hidden = !value.isAttributionEnabled
-      impl.compassView.hidden = !value.isCompassEnabled
-      impl.rotateEnabled = value.isRotateGesturesEnabled
-      impl.scrollEnabled = value.isScrollGesturesEnabled
-      impl.allowsTilting = value.isTiltGesturesEnabled
-      impl.zoomEnabled = value.isZoomGesturesEnabled
+      if (!::lastUiPadding.isInitialized || value.padding != lastUiPadding) {
+        lastUiPadding = value.padding
+        val topSafeInset = insetPadding.calculateTopPadding().value
+        val leftSafeInset = insetPadding.calculateLeftPadding(layoutDir).value
+        val rightSafeInset = insetPadding.calculateRightPadding(layoutDir).value
+        val bottomSafeInset = insetPadding.calculateBottomPadding().value
+
+        val topUiPadding = value.padding.calculateTopPadding().value - topSafeInset // TODO gravity
+        val leftUiPadding = value.padding.calculateLeftPadding(layoutDir).value - leftSafeInset
+        val rightUiPadding = value.padding.calculateRightPadding(layoutDir).value - rightSafeInset
+        val bottomUiPadding = value.padding.calculateBottomPadding().value - bottomSafeInset
+
+        mapView.setLogoViewMargins(
+          CGPointMake(leftUiPadding.toDouble(), bottomUiPadding.toDouble())
+        )
+        mapView.setAttributionButtonMargins(
+          CGPointMake(rightUiPadding.toDouble(), bottomUiPadding.toDouble())
+        )
+      }
+      mapView.logoView.hidden = !value.isLogoEnabled
+      mapView.attributionButton.hidden = !value.isAttributionEnabled
+      mapView.compassView.hidden = !value.isCompassEnabled
+      mapView.rotateEnabled = value.isRotateGesturesEnabled
+      mapView.scrollEnabled = value.isScrollGesturesEnabled
+      mapView.allowsTilting = value.isTiltGesturesEnabled
+      mapView.zoomEnabled = value.isZoomGesturesEnabled
     }
 
   private fun MLNMapCamera.toCameraPosition(paddingValues: PaddingValues) =
@@ -129,9 +155,9 @@ internal actual class PlatformMap private actual constructor() {
 
   actual var cameraPosition: CameraPosition
     get() =
-      impl.camera.toCameraPosition(
+      mapView.camera.toCameraPosition(
         paddingValues =
-          impl.cameraEdgeInsets.useContents {
+          mapView.cameraEdgeInsets.useContents {
             PaddingValues.Absolute(
               left = left.dp,
               top = top.dp,
@@ -141,7 +167,7 @@ internal actual class PlatformMap private actual constructor() {
           }
       )
     set(value) =
-      impl.setCamera(
+      mapView.setCamera(
         value.toMLNMapCamera(),
         withDuration = 0.0,
         animationTimingFunction = null,
@@ -159,7 +185,7 @@ internal actual class PlatformMap private actual constructor() {
 
   actual suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
     suspendCoroutine { cont ->
-      impl.flyToCamera(
+      mapView.flyToCamera(
         finalPosition.toMLNMapCamera(),
         withDuration = duration.toDouble(DurationUnit.SECONDS),
         edgePadding = finalPosition.padding.toEdgeInsets(),
@@ -168,13 +194,13 @@ internal actual class PlatformMap private actual constructor() {
     }
 
   actual fun positionFromScreenLocation(xy: XY): Position =
-    impl.convertPoint(point = xy.toCGPoint(), toCoordinateFromView = null).toPosition()
+    mapView.convertPoint(point = xy.toCGPoint(), toCoordinateFromView = null).toPosition()
 
   actual fun screenLocationFromPosition(position: Position): XY =
-    impl.convertCoordinate(position.toCLLocationCoordinate2D(), toPointToView = null).toXY()
+    mapView.convertCoordinate(position.toCLLocationCoordinate2D(), toPointToView = null).toXY()
 
   actual fun queryRenderedFeatures(xy: XY, layerIds: Set<String>): List<Feature> =
-    impl.visibleFeaturesAtPoint(CGPointMake(xy.x.toDouble(), xy.y.toDouble()), layerIds).map {
+    mapView.visibleFeaturesAtPoint(CGPointMake(xy.x.toDouble(), xy.y.toDouble()), layerIds).map {
       (it as MLNFeatureProtocol).toFeature()
     }
 }
