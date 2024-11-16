@@ -51,14 +51,16 @@ internal actual class PlatformMap private actual constructor() {
     this.layoutDir = layoutDir
   }
 
-  inline fun <reified T : UIGestureRecognizer> addGesture(gesture: Gesture<T>) {
-    if (gesture.isCooperative) {
-      impl.gestureRecognizers!!.filterIsInstance<T>().forEach {
-        gesture.recognizer.requireGestureRecognizerToFail(it)
+  inline fun <reified T : UIGestureRecognizer> addGestures(vararg gestures: Gesture<T>) {
+    gestures.forEach { gesture ->
+      if (gesture.isCooperative) {
+        impl.gestureRecognizers!!.filterIsInstance<T>().forEach {
+          gesture.recognizer.requireGestureRecognizerToFail(it)
+        }
       }
+      impl.addGestureRecognizer(gesture.recognizer)
+      this.gestures.add(gesture)
     }
-    impl.addGestureRecognizer(gesture.recognizer)
-    gestures.add(gesture)
   }
 
   actual var isDebugEnabled: Boolean

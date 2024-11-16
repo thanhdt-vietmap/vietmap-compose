@@ -15,16 +15,39 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.correctedAndroidUri
 import dev.sargunv.maplibrekmp.core.data.XY
-import dev.sargunv.maplibrekmp.core.toPosition
 import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.MapLibre
-import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.MapView
+
+internal class MapViewLifecycleObserver(private val mapView: MapView) : LifecycleEventObserver {
+  override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+    when (event) {
+      Lifecycle.Event.ON_CREATE -> mapView.onCreate(null)
+      Lifecycle.Event.ON_START -> mapView.onStart()
+      Lifecycle.Event.ON_RESUME -> mapView.onResume()
+      Lifecycle.Event.ON_PAUSE -> mapView.onPause()
+      Lifecycle.Event.ON_STOP -> mapView.onStop()
+      Lifecycle.Event.ON_DESTROY -> mapView.onDestroy()
+      Lifecycle.Event.ON_ANY -> {}
+    }
+  }
+}
+
+@Composable
+internal fun MapViewLifecycleEffect(mapView: MapView) {
+  val observer = remember(mapView) { MapViewLifecycleObserver(mapView) }
+  val lifecycle = LocalLifecycleOwner.current.lifecycle
+  DisposableEffect(lifecycle, observer) {
+    lifecycle.addObserver(observer)
+    onDispose { lifecycle.removeObserver(observer) }
+  }
+}
 
 @Composable
 internal actual fun PlatformMapView(
@@ -32,15 +55,12 @@ internal actual fun PlatformMapView(
   styleUrl: String,
   uiPadding: PaddingValues,
   updateMap: (map: PlatformMap) -> Unit,
-  onMapLoaded: (map: PlatformMap) -> Unit,
-  onStyleLoaded: (style: Style) -> Unit,
   onReset: () -> Unit,
-  onCameraMove: () -> Unit,
-  onClick: (latLng: Position, xy: XY) -> Unit,
-  onLongClick: (latLng: Position, xy: XY) -> Unit,
+  onStyleChanged: (map: PlatformMap, style: Style) -> Unit,
+  onCameraMove: (map: PlatformMap) -> Unit,
+  onClick: (map: PlatformMap, latLng: Position, xy: XY) -> Unit,
+  onLongClick: (map: PlatformMap, latLng: Position, xy: XY) -> Unit,
 ) {
-  var observer by remember { mutableStateOf<LifecycleEventObserver?>(null) }
-
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
 
@@ -55,86 +75,63 @@ internal actual fun PlatformMapView(
         )
       }
     }
-
   var lastStyleUrl by remember { mutableStateOf<String?>(null) }
 
-  val currentOnStyleLoaded by rememberUpdatedState(onStyleLoaded)
   val currentOnReset by rememberUpdatedState(onReset)
-  val currentOnCameraMove by rememberUpdatedState(onCameraMove)
-  val currentOnClick by rememberUpdatedState(onClick)
-  val currentOnLongClick by rememberUpdatedState(onLongClick)
+  val currentOnStyleChanged by rememberUpdatedState(onStyleChanged)
 
-  var maplibreMap by remember { mutableStateOf<MapLibreMap?>(null) }
-  var platformMap by remember { mutableStateOf<PlatformMap?>(null) }
+  var currentMap by remember { mutableStateOf<PlatformMap?>(null) }
+  currentMap?.let { MapViewLifecycleEffect(it.mapView) }
+
+  val currentOnCameraMove =
+    remember(currentMap, onCameraMove) { { currentMap?.let { onCameraMove(it) } ?: Unit } }
+  val currentOnClick =
+    remember(currentMap, onClick) {
+      { pos: Position, xy: XY -> currentMap?.let { onClick(it, pos, xy) } ?: Unit }
+    }
+  val currentOnLongClick =
+    remember(currentMap, onLongClick) {
+      { pos: Position, xy: XY -> currentMap?.let { onLongClick(it, pos, xy) } ?: Unit }
+    }
 
   AndroidView(
     modifier = modifier,
     factory = { context ->
       MapLibre.getInstance(context)
       MapView(context).also { mapView ->
-        observer = LifecycleEventObserver { _, event ->
-          when (event) {
-            Lifecycle.Event.ON_CREATE -> mapView.onCreate(null)
-            Lifecycle.Event.ON_START -> mapView.onStart()
-            Lifecycle.Event.ON_RESUME -> mapView.onResume()
-            Lifecycle.Event.ON_PAUSE -> mapView.onPause()
-            Lifecycle.Event.ON_STOP -> mapView.onStop()
-            Lifecycle.Event.ON_DESTROY -> mapView.onDestroy()
-            else -> throw IllegalStateException()
-          }
+        mapView.getMapAsync { mapLibreMap ->
+          currentMap = PlatformMap(mapView, mapLibreMap, layoutDir)
         }
-        mapView.getMapAsync { maplibreMap = it }
       }
     },
     update = { _ ->
-      if (platformMap == null && maplibreMap != null) {
-        val mlMap = maplibreMap!!
-        val map = PlatformMap(mlMap, layoutDir)
-
-        mlMap.addOnCameraMoveListener { currentOnCameraMove() }
-        mlMap.addOnMapClickListener { coords ->
-          val pos = coords.toPosition()
-          currentOnClick(pos, map.screenLocationFromPosition(pos))
-          false
-        }
-        mlMap.addOnMapLongClickListener { coords ->
-          val pos = coords.toPosition()
-          currentOnLongClick(pos, map.screenLocationFromPosition(pos))
-          false
-        }
-
-        onMapLoaded(map)
-      }
-
-      platformMap?.let { map ->
+      currentMap?.let { map ->
         map.layoutDir = layoutDir
-        updateMap(map)
-      }
 
-      maplibreMap?.let { map ->
-        map.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
-        map.uiSettings.setAttributionMargins(margins[0], margins[1], margins[2], margins[3])
-        map.uiSettings.setLogoMargins(margins[0], margins[1], margins[2], margins[3])
-        map.uiSettings.setCompassMargins(margins[0], margins[1], margins[2], margins[3])
+        map.mapLibreMap.let { mlnMap ->
+          map.onCameraMove = currentOnCameraMove
+          map.onClick = currentOnClick
+          map.onLongClick = currentOnLongClick
 
-        if (styleUrl != lastStyleUrl) {
-          map.setStyle(styleUrl.correctedAndroidUri().toString()) {
-            currentOnStyleLoaded(Style(it))
+          // TODO push these into the PlatformMap class
+          mlnMap.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
+          mlnMap.uiSettings.setAttributionMargins(margins[0], margins[1], margins[2], margins[3])
+          mlnMap.uiSettings.setLogoMargins(margins[0], margins[1], margins[2], margins[3])
+          mlnMap.uiSettings.setCompassMargins(margins[0], margins[1], margins[2], margins[3])
+          if (styleUrl != lastStyleUrl) {
+            lastStyleUrl = styleUrl
+            mlnMap.setStyle(styleUrl.correctedAndroidUri().toString()) { mlnStyle ->
+              currentOnStyleChanged(map, Style(mlnStyle))
+            }
           }
-          lastStyleUrl = styleUrl
         }
+
+        updateMap(map)
       }
     },
     onReset = {
-      maplibreMap = null
-      platformMap = null
       currentOnReset()
+      currentMap = null
     },
   )
-
-  val lifecycle = LocalLifecycleOwner.current.lifecycle
-  DisposableEffect(lifecycle, observer) {
-    observer?.let { lifecycle.addObserver(it) }
-    onDispose { observer?.let { lifecycle.removeObserver(it) } }
-  }
 }

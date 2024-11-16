@@ -43,12 +43,11 @@ internal actual fun PlatformMapView(
   styleUrl: String,
   uiPadding: PaddingValues,
   updateMap: (map: PlatformMap) -> Unit,
-  onMapLoaded: (map: PlatformMap) -> Unit,
-  onStyleLoaded: (style: Style) -> Unit,
   onReset: () -> Unit,
-  onCameraMove: () -> Unit,
-  onClick: (latLng: Position, xy: XY) -> Unit,
-  onLongClick: (latLng: Position, xy: XY) -> Unit,
+  onStyleChanged: (map: PlatformMap, style: Style) -> Unit,
+  onCameraMove: (map: PlatformMap) -> Unit,
+  onClick: (map: PlatformMap, latLng: Position, xy: XY) -> Unit,
+  onLongClick: (map: PlatformMap, latLng: Position, xy: XY) -> Unit,
 ) {
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
@@ -70,14 +69,14 @@ internal actual fun PlatformMapView(
 
   var lastStyleUrl by remember { mutableStateOf<String?>(null) }
 
-  val currentOnStyleLoaded by rememberUpdatedState(onStyleLoaded)
   val currentOnReset by rememberUpdatedState(onReset)
+  val currentOnStyleChanged by rememberUpdatedState(onStyleChanged)
   val currentOnCameraMove by rememberUpdatedState(onCameraMove)
   val currentOnClick by rememberUpdatedState(onClick)
   val currentOnLongClick by rememberUpdatedState(onLongClick)
 
   var size by remember { mutableStateOf(DpSize.Unspecified) }
-  var platformMap by remember { mutableStateOf<PlatformMap?>(null) }
+  var currentMap by remember { mutableStateOf<PlatformMap?>(null) }
 
   UIKitView(
     modifier =
@@ -88,36 +87,31 @@ internal actual fun PlatformMapView(
     update = { mapView ->
       mapView.automaticallyAdjustsContentInset = false
 
-      if (platformMap == null && size.isSpecified) {
+      if (currentMap == null && size.isSpecified) {
         val map = PlatformMap(mapView, size.toCGSize(), layoutDir)
+        currentMap = map
 
-        map.addGesture(
+        map.addGestures(
           Gesture(UITapGestureRecognizer()) {
             if (state != UIGestureRecognizerStateEnded) return@Gesture
             val point = locationInView(mapView).toXY()
-            currentOnClick(map.positionFromScreenLocation(point), point)
-          }
-        )
-
-        map.addGesture(
+            currentOnClick(map, map.positionFromScreenLocation(point), point)
+          },
           Gesture(UILongPressGestureRecognizer()) {
             if (state != UIGestureRecognizerStateBegan) return@Gesture
             val point = locationInView(mapView).toXY()
-            currentOnLongClick(map.positionFromScreenLocation(point), point)
-          }
+            currentOnLongClick(map, map.positionFromScreenLocation(point), point)
+          },
         )
 
         map.delegate =
           MapViewDelegate(
-            onStyleLoaded = { currentOnStyleLoaded(Style(it)) },
-            onCameraMove = { currentOnCameraMove() },
+            onStyleLoaded = { mlnStyle -> currentOnStyleChanged(map, Style(mlnStyle)) },
+            onCameraMove = { currentOnCameraMove(map) },
           )
-
-        platformMap = map
-        onMapLoaded(map)
       }
 
-      platformMap?.let {
+      currentMap?.let {
         if (size.isSpecified) it.size = size.toCGSize()
         it.layoutDir = layoutDir
         updateMap(it)
@@ -132,8 +126,8 @@ internal actual fun PlatformMapView(
       }
     },
     onReset = {
-      platformMap = null
       currentOnReset()
+      currentMap = null
     },
   )
 }

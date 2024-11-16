@@ -10,6 +10,7 @@ import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.maps.MapView
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
@@ -17,39 +18,57 @@ import kotlin.time.DurationUnit
 import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
 
 internal actual class PlatformMap private actual constructor() {
-  internal lateinit var impl: MapLibreMap
+  internal lateinit var mapView: MapView
+  internal lateinit var mapLibreMap: MapLibreMap
   internal lateinit var layoutDir: LayoutDirection
 
-  internal constructor(mapView: MapLibreMap, layoutDir: LayoutDirection) : this() {
-    this.impl = mapView
+  internal var onCameraMove: () -> Unit = {}
+  internal var onClick: (Position, XY) -> Unit = { _, _ -> }
+  internal var onLongClick: (Position, XY) -> Unit = { _, _ -> }
+
+  internal constructor(mapView: MapView, map: MapLibreMap, layoutDir: LayoutDirection) : this() {
+    this.mapView = mapView
+    this.mapLibreMap = map
     this.layoutDir = layoutDir
+
+    map.addOnCameraMoveListener { onCameraMove() }
+    map.addOnMapClickListener { coords ->
+      val pos = coords.toPosition()
+      onClick(pos, screenLocationFromPosition(pos))
+      true
+    }
+    map.addOnMapLongClickListener { coords ->
+      val pos = coords.toPosition()
+      onLongClick(pos, screenLocationFromPosition(pos))
+      true
+    }
   }
 
   actual var isDebugEnabled
-    get() = impl.isDebugActive
+    get() = mapLibreMap.isDebugActive
     set(value) {
-      impl.isDebugActive = value
+      mapLibreMap.isDebugActive = value
     }
 
   actual var controlSettings
     get() =
       ControlSettings(
-        isLogoEnabled = impl.uiSettings.isLogoEnabled,
-        isAttributionEnabled = impl.uiSettings.isAttributionEnabled,
-        isCompassEnabled = impl.uiSettings.isCompassEnabled,
-        isRotateGesturesEnabled = impl.uiSettings.isRotateGesturesEnabled,
-        isScrollGesturesEnabled = impl.uiSettings.isScrollGesturesEnabled,
-        isTiltGesturesEnabled = impl.uiSettings.isTiltGesturesEnabled,
-        isZoomGesturesEnabled = impl.uiSettings.isZoomGesturesEnabled,
+        isLogoEnabled = mapLibreMap.uiSettings.isLogoEnabled,
+        isAttributionEnabled = mapLibreMap.uiSettings.isAttributionEnabled,
+        isCompassEnabled = mapLibreMap.uiSettings.isCompassEnabled,
+        isRotateGesturesEnabled = mapLibreMap.uiSettings.isRotateGesturesEnabled,
+        isScrollGesturesEnabled = mapLibreMap.uiSettings.isScrollGesturesEnabled,
+        isTiltGesturesEnabled = mapLibreMap.uiSettings.isTiltGesturesEnabled,
+        isZoomGesturesEnabled = mapLibreMap.uiSettings.isZoomGesturesEnabled,
       )
     set(value) {
-      impl.uiSettings.isLogoEnabled = value.isLogoEnabled
-      impl.uiSettings.isAttributionEnabled = value.isAttributionEnabled
-      impl.uiSettings.isCompassEnabled = value.isCompassEnabled
-      impl.uiSettings.isRotateGesturesEnabled = value.isRotateGesturesEnabled
-      impl.uiSettings.isScrollGesturesEnabled = value.isScrollGesturesEnabled
-      impl.uiSettings.isTiltGesturesEnabled = value.isTiltGesturesEnabled
-      impl.uiSettings.isZoomGesturesEnabled = value.isZoomGesturesEnabled
+      mapLibreMap.uiSettings.isLogoEnabled = value.isLogoEnabled
+      mapLibreMap.uiSettings.isAttributionEnabled = value.isAttributionEnabled
+      mapLibreMap.uiSettings.isCompassEnabled = value.isCompassEnabled
+      mapLibreMap.uiSettings.isRotateGesturesEnabled = value.isRotateGesturesEnabled
+      mapLibreMap.uiSettings.isScrollGesturesEnabled = value.isScrollGesturesEnabled
+      mapLibreMap.uiSettings.isTiltGesturesEnabled = value.isTiltGesturesEnabled
+      mapLibreMap.uiSettings.isZoomGesturesEnabled = value.isZoomGesturesEnabled
     }
 
   private fun MLNCameraPosition.toCameraPosition(): CameraPosition =
@@ -84,14 +103,14 @@ internal actual class PlatformMap private actual constructor() {
       .build()
 
   actual var cameraPosition: CameraPosition
-    get() = impl.cameraPosition.toCameraPosition()
+    get() = mapLibreMap.cameraPosition.toCameraPosition()
     set(value) {
-      impl.moveCamera(CameraUpdateFactory.newCameraPosition(value.toMLNCameraPosition()))
+      mapLibreMap.moveCamera(CameraUpdateFactory.newCameraPosition(value.toMLNCameraPosition()))
     }
 
   actual suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
     suspendCoroutine { cont ->
-      impl.animateCamera(
+      mapLibreMap.animateCamera(
         CameraUpdateFactory.newCameraPosition(finalPosition.toMLNCameraPosition()),
         duration.toInt(DurationUnit.MILLISECONDS),
         object : MapLibreMap.CancelableCallback {
@@ -103,13 +122,13 @@ internal actual class PlatformMap private actual constructor() {
     }
 
   actual fun positionFromScreenLocation(xy: XY): Position =
-    impl.projection.fromScreenLocation(PointF(xy.x, xy.y)).toPosition()
+    mapLibreMap.projection.fromScreenLocation(PointF(xy.x, xy.y)).toPosition()
 
   actual fun screenLocationFromPosition(position: Position): XY =
-    impl.projection.toScreenLocation(position.toLatLng()).toXY()
+    mapLibreMap.projection.toScreenLocation(position.toLatLng()).toXY()
 
   actual fun queryRenderedFeatures(xy: XY, layerIds: Set<String>): List<Feature> =
-    impl.queryRenderedFeatures(xy.toPointF(), *layerIds.toTypedArray()).map {
+    mapLibreMap.queryRenderedFeatures(xy.toPointF(), *layerIds.toTypedArray()).map {
       Feature.fromJson(it.toJson())
     }
 }

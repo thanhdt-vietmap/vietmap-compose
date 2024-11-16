@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,14 +18,43 @@ import dev.sargunv.maplibrekmp.compose.engine.LayerNode
 import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
 import dev.sargunv.maplibrekmp.compose.engine.StyleNode
 import dev.sargunv.maplibrekmp.core.ControlSettings
-import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.StyleManager
-import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.ExpressionScope
-import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.coroutines.awaitCancellation
+
+@Composable
+internal fun rememberStyleCompositionState(
+  maybeStyle: Style?,
+  content: @Composable ExpressionScope.() -> Unit,
+): State<StyleNode?> {
+  val ret = remember { mutableStateOf<StyleNode?>(null) }
+  val compositionContext = rememberCompositionContext()
+
+  LaunchedEffect(maybeStyle, compositionContext) {
+    val rootNode = StyleNode(maybeStyle ?: return@LaunchedEffect).also { ret.value = it }
+    val composition = Composition(MapNodeApplier(rootNode), compositionContext)
+
+    composition.setContent {
+      CompositionLocalProvider(LocalStyleManager provides rootNode.styleManager) {
+        content(Expression.Companion)
+      }
+    }
+
+    try {
+      awaitCancellation()
+    } finally {
+      ret.value = null
+      composition.dispose()
+    }
+  }
+
+  return ret
+}
+
+internal val LocalStyleManager =
+  staticCompositionLocalOf<StyleManager> { throw IllegalStateException() }
 
 @Composable
 public fun MaplibreMap(
@@ -35,76 +64,43 @@ public fun MaplibreMap(
   controlSettings: ControlSettings = ControlSettings(),
   cameraState: CameraState = rememberCameraState(),
   isDebugEnabled: Boolean = false,
-  onClick: (latLng: Position, xy: XY) -> Unit = { _, _ -> },
-  onLongClick: (latLng: Position, xy: XY) -> Unit = { _, _ -> },
   styleContent: @Composable ExpressionScope.() -> Unit = {},
 ) {
-  val compositionContext = rememberCompositionContext()
-
-  var rememberedMap by remember { mutableStateOf<PlatformMap?>(null) }
   var rememberedStyle by remember { mutableStateOf<Style?>(null) }
-
-  var styleCompositionRootNode by mutableStateOf<StyleNode?>(null)
-  LaunchedEffect(rememberedStyle) {
-    val style =
-      rememberedStyle
-        ?: run {
-          styleCompositionRootNode = null
-          return@LaunchedEffect
-        }
-    val rootNode = StyleNode(style).also { styleCompositionRootNode = it }
-    val composition = Composition(MapNodeApplier(rootNode), compositionContext)
-    composition.setContent {
-      CompositionLocalProvider(LocalStyleManager provides rootNode.styleManager) {
-        styleContent(Expression.Companion)
-      }
-    }
-    try {
-      awaitCancellation()
-    } finally {
-      composition.dispose()
-    }
-  }
-
-  SideEffect { cameraState.map = rememberedMap }
+  val styleCompositionState by rememberStyleCompositionState(rememberedStyle, styleContent)
 
   PlatformMapView(
     modifier = modifier,
     styleUrl = styleUrl,
     uiPadding = uiPadding,
-    updateMap = {
-      it.isDebugEnabled = isDebugEnabled
-      it.controlSettings = controlSettings
+    updateMap = { map ->
+      cameraState.map = map
+      map.isDebugEnabled = isDebugEnabled
+      map.controlSettings = controlSettings
     },
-    onMapLoaded = { rememberedMap = it },
-    onStyleLoaded = { rememberedStyle = it },
-    onCameraMove = { cameraState.positionState.value = rememberedMap!!.cameraPosition },
-    onClick = { latLng, xy ->
-      onClick(latLng, xy)
-      styleCompositionRootNode
+    onReset = {
+      cameraState.map = null
+      rememberedStyle = null
+    },
+    onStyleChanged = { _, style -> rememberedStyle = style },
+    onCameraMove = { map -> cameraState.positionState.value = map.cameraPosition },
+    onClick = { map, _, xy ->
+      styleCompositionState
         ?.children
         ?.mapNotNull { node -> (node as? LayerNode<*>)?.onClick?.let { node.layer.id to it } }
         ?.forEach { (layerId, handle) ->
-          val features = rememberedMap!!.queryRenderedFeatures(xy, setOf(layerId))
+          val features = map.queryRenderedFeatures(xy, setOf(layerId))
           if (features.isNotEmpty()) handle(features)
         }
     },
-    onLongClick = { latLng, xy ->
-      onLongClick(latLng, xy)
-      styleCompositionRootNode
+    onLongClick = { map, _, xy ->
+      styleCompositionState
         ?.children
         ?.mapNotNull { node -> (node as? LayerNode<*>)?.onLongClick?.let { node.layer.id to it } }
         ?.forEach { (layerId, handle) ->
-          val features = rememberedMap!!.queryRenderedFeatures(xy, setOf(layerId))
+          val features = map.queryRenderedFeatures(xy, setOf(layerId))
           if (features.isNotEmpty()) handle(features)
         }
     },
-    onReset = {
-      rememberedStyle = null
-      rememberedMap = null
-    },
   )
 }
-
-internal val LocalStyleManager =
-  staticCompositionLocalOf<StyleManager> { throw IllegalStateException() }

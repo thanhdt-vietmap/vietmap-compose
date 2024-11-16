@@ -28,8 +28,6 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
 
   internal val positionState = mutableStateOf(firstPosition)
 
-  // the map has its own internal state, so our State here is read-only
-  // the setter directly updates the map, which will call onCameraMove and update the State
   // if the map is not yet initialized, we store the value to apply it later
   public var position: CameraPosition
     get() = positionState.value
