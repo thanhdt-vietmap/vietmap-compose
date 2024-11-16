@@ -7,9 +7,9 @@ import io.github.dellisd.spatialk.geojson.Position
 import kotlin.time.Duration
 
 internal expect class PlatformMap private constructor() {
+  var styleUrl: String?
   var isDebugEnabled: Boolean
   var uiSettings: UiSettings
-
   var cameraPosition: CameraPosition
 
   suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration)

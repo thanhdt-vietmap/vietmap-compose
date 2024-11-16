@@ -1,6 +1,5 @@
 package dev.sargunv.maplibrekmp.compose
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.sargunv.maplibrekmp.core.PlatformMap
@@ -12,7 +11,7 @@ import io.github.dellisd.spatialk.geojson.Position
 internal expect fun PlatformMapView(
   modifier: Modifier,
   styleUrl: String,
-  updateMap: (map: PlatformMap) -> Unit,
+  update: (map: PlatformMap) -> Unit,
   onReset: () -> Unit,
   onStyleChanged: (map: PlatformMap, style: Style) -> Unit,
   onCameraMove: (map: PlatformMap) -> Unit,

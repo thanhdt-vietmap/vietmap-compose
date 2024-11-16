@@ -69,7 +69,7 @@ public fun MaplibreMap(
   PlatformMapView(
     modifier = modifier,
     styleUrl = styleUrl,
-    updateMap = { map ->
+    update = { map ->
       cameraState.map = map
       map.isDebugEnabled = isDebugEnabled
       map.uiSettings = uiSettings

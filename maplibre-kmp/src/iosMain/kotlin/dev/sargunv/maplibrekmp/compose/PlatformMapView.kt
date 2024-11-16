@@ -26,13 +26,12 @@ import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.core.toCGSize
 import io.github.dellisd.spatialk.geojson.Position
-import platform.Foundation.NSURL
 
 @Composable
 internal actual fun PlatformMapView(
   modifier: Modifier,
   styleUrl: String,
-  updateMap: (map: PlatformMap) -> Unit,
+  update: (map: PlatformMap) -> Unit,
   onReset: () -> Unit,
   onStyleChanged: (map: PlatformMap, style: Style) -> Unit,
   onCameraMove: (map: PlatformMap) -> Unit,
@@ -42,8 +41,6 @@ internal actual fun PlatformMapView(
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
   val insetPadding = WindowInsets.safeDrawing.asPaddingValues()
-
-  var lastStyleUrl by remember { mutableStateOf<String?>(null) }
 
   val currentOnReset by rememberUpdatedState(onReset)
 
@@ -57,12 +54,11 @@ internal actual fun PlatformMapView(
       UIKitInteropProperties(interactionMode = UIKitInteropInteractionMode.NonCooperative),
     factory = ::MLNMapView,
     update = { mapView ->
-      val map = currentMap
-      if (map == null) {
-        if (size.isSpecified)
-          currentMap = PlatformMap(mapView, size.toCGSize(), layoutDir, insetPadding)
-        return@UIKitView
-      }
+      val map =
+        currentMap
+          ?: if (size.isSpecified)
+            PlatformMap(mapView, size.toCGSize(), layoutDir, insetPadding).also { currentMap = it }
+          else return@UIKitView
 
       if (size.isSpecified) map.size = size.toCGSize()
       map.layoutDir = layoutDir
@@ -71,14 +67,8 @@ internal actual fun PlatformMapView(
       map.onCameraMove = onCameraMove
       map.onClick = onClick
       map.onLongClick = onLongClick
-
-      // TODO push this into the PlatformMap
-      if (styleUrl != lastStyleUrl) {
-        mapView.setStyleURL(NSURL(string = styleUrl))
-        lastStyleUrl = styleUrl
-      }
-
-      updateMap(map)
+      map.styleUrl = styleUrl
+      update(map)
     },
     onReset = {
       currentOnReset()

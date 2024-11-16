@@ -12,7 +12,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
-import dev.sargunv.maplibrekmp.core.correctedAndroidUri
 import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.MapLibre
@@ -22,7 +21,7 @@ import org.maplibre.android.maps.MapView
 internal actual fun PlatformMapView(
   modifier: Modifier,
   styleUrl: String,
-  updateMap: (map: PlatformMap) -> Unit,
+  update: (map: PlatformMap) -> Unit,
   onReset: () -> Unit,
   onStyleChanged: (map: PlatformMap, style: Style) -> Unit,
   onCameraMove: (map: PlatformMap) -> Unit,
@@ -31,12 +30,7 @@ internal actual fun PlatformMapView(
 ) {
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
-
-  var lastStyleUrl by remember { mutableStateOf<String?>(null) }
-
   val currentOnReset by rememberUpdatedState(onReset)
-  val currentOnStyleChanged by rememberUpdatedState(onStyleChanged)
-
   var currentMap by remember { mutableStateOf<PlatformMap?>(null) }
 
   MapViewLifecycleEffect(currentMap)
@@ -51,22 +45,14 @@ internal actual fun PlatformMapView(
     },
     update = { _ ->
       val map = currentMap ?: return@AndroidView
-
       map.layoutDir = layoutDir
       map.density = density
+      map.onStyleChanged = onStyleChanged
       map.onCameraMove = onCameraMove
       map.onClick = onClick
       map.onLongClick = onLongClick
-
-      // TODO push this into the PlatformMap class
-      if (styleUrl != lastStyleUrl) {
-        lastStyleUrl = styleUrl
-        map.mapLibreMap.setStyle(styleUrl.correctedAndroidUri().toString()) { mlnStyle ->
-          currentOnStyleChanged(map, Style(mlnStyle))
-        }
-      }
-
-      updateMap(map)
+      map.styleUrl = styleUrl
+      update(map)
     },
     onReset = {
       currentOnReset()

@@ -21,6 +21,7 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGSize
+import platform.Foundation.NSURL
 import platform.UIKit.UIEdgeInsets
 import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.UIGestureRecognizer
@@ -95,6 +96,13 @@ internal actual class PlatformMap private actual constructor() {
       mapView.addGestureRecognizer(gesture.recognizer)
     }
   }
+
+  actual var styleUrl: String? = null
+    set(value) {
+      if (field == value) return
+      mapView.setStyleURL(value?.let { NSURL(string = it) })
+      field = value
+    }
 
   actual var isDebugEnabled: Boolean
     get() = mapView.debugMask != 0uL

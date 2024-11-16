@@ -18,6 +18,7 @@ import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
+import org.maplibre.android.maps.Style as MlnStyle
 
 internal actual class PlatformMap private actual constructor() {
   internal lateinit var mapView: MapView
@@ -25,6 +26,7 @@ internal actual class PlatformMap private actual constructor() {
   internal lateinit var layoutDir: LayoutDirection
   internal lateinit var density: Density
 
+  internal var onStyleChanged: (PlatformMap, Style) -> Unit = { _, _ -> }
   internal var onCameraMove: (PlatformMap) -> Unit = { _ -> }
   internal var onClick: (PlatformMap, Position, XY) -> Unit = { _, _, _ -> }
   internal var onLongClick: (PlatformMap, Position, XY) -> Unit = { _, _, _ -> }
@@ -55,6 +57,15 @@ internal actual class PlatformMap private actual constructor() {
     }
   }
 
+  actual var styleUrl: String? = null
+    set(value) {
+      if (field == value) return
+      val builder = MlnStyle.Builder()
+      if (value != null) builder.fromUri(value.correctedAndroidUri().toString())
+      mapLibreMap.setStyle(builder) { onStyleChanged(this, Style(it)) }
+      field = value
+    }
+
   actual var isDebugEnabled
     get() = mapLibreMap.isDebugActive
     set(value) {
@@ -74,12 +85,12 @@ internal actual class PlatformMap private actual constructor() {
         isZoomGesturesEnabled = mapLibreMap.uiSettings.isZoomGesturesEnabled,
       )
     set(value) {
+      // TODO make this configurable
+      mapLibreMap.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
+
       if (!::lastUiPadding.isInitialized || value.padding != lastUiPadding) {
         lastUiPadding = value.padding
         with(density) {
-          // TODO make this configurable
-          mapLibreMap.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
-
           val left = value.padding.calculateLeftPadding(layoutDir).roundToPx()
           val top = value.padding.calculateTopPadding().roundToPx()
           val right = value.padding.calculateRightPadding(layoutDir).roundToPx()
