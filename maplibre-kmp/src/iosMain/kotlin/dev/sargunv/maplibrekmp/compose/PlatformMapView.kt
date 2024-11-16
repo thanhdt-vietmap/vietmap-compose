@@ -20,8 +20,10 @@ import dev.sargunv.maplibrekmp.core.IosMap
 import dev.sargunv.maplibrekmp.core.MaplibreMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.data.XY
-import dev.sargunv.maplibrekmp.core.toCGSize
 import io.github.dellisd.spatialk.geojson.Position
+import platform.CoreGraphics.CGRectMake
+import platform.CoreGraphics.CGSizeMake
+import platform.Foundation.NSURL
 
 @Composable
 internal actual fun PlatformMapView(
@@ -34,7 +36,7 @@ internal actual fun PlatformMapView(
   onClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
   onLongClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
 ) {
-  MeasuredBox(modifier = modifier.fillMaxSize()) { measuredSize ->
+  MeasuredBox(modifier = modifier.fillMaxSize()) { x, y, width, height ->
     val layoutDir = LocalLayoutDirection.current
     val insetPadding = WindowInsets.safeDrawing.asPaddingValues()
 
@@ -46,24 +48,33 @@ internal actual fun PlatformMapView(
       properties =
         UIKitInteropProperties(interactionMode = UIKitInteropInteractionMode.NonCooperative),
       factory = {
-        MLNMapView().also { mapView ->
-          IosMap(
-              mapView = mapView,
-              size = measuredSize.toCGSize(),
-              layoutDir = layoutDir,
-              insetPadding = insetPadding,
-              onStyleChanged = onStyleChanged,
-              onCameraMove = onCameraMove,
-              onClick = onClick,
-              onLongClick = onLongClick,
-              onMapLoaded = { currentMap = it },
-            )
-            .also { it.styleUrl = styleUrl }
-        }
+        MLNMapView(
+            frame =
+              CGRectMake(
+                x = x.value.toDouble(),
+                y = y.value.toDouble(),
+                width = width.value.toDouble(),
+                height = height.value.toDouble(),
+              ),
+            styleURL = NSURL(string = styleUrl),
+          )
+          .also { mapView ->
+            currentMap =
+              IosMap(
+                mapView = mapView,
+                size = CGSizeMake(width.value.toDouble(), height.value.toDouble()),
+                layoutDir = layoutDir,
+                insetPadding = insetPadding,
+                onStyleChanged = onStyleChanged,
+                onCameraMove = onCameraMove,
+                onClick = onClick,
+                onLongClick = onLongClick,
+              )
+          }
       },
       update = { _ ->
         val map = currentMap ?: return@UIKitView
-        map.size = measuredSize.toCGSize()
+        map.size = CGSizeMake(width.value.toDouble(), height.value.toDouble())
         map.layoutDir = layoutDir
         map.insetPadding = insetPadding
         map.onStyleChanged = onStyleChanged

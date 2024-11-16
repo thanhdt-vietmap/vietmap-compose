@@ -50,7 +50,6 @@ internal class IosMap(
   internal var onCameraMove: (IosMap) -> Unit,
   internal var onClick: (IosMap, Position, XY) -> Unit,
   internal var onLongClick: (IosMap, Position, XY) -> Unit,
-  onMapLoaded: (IosMap) -> Unit,
 ) : MaplibreMap {
 
   private lateinit var lastUiPadding: PaddingValues
@@ -61,8 +60,8 @@ internal class IosMap(
 
   override var styleUrl: String = ""
     set(value) {
-      println("Setting style URL to $value")
       if (field == value) return
+      println("Setting style URL to $value")
       mapView.setStyleURL(NSURL(string = value))
       field = value
     }
@@ -83,12 +82,11 @@ internal class IosMap(
       },
     )
 
-    delegate = Delegate(this, onMapLoaded)
+    delegate = Delegate(this)
     mapView.delegate = delegate
   }
 
-  private class Delegate(private val map: IosMap, private val onMapLoaded: (IosMap) -> Unit) :
-    NSObject(), MLNMapViewDelegateProtocol {
+  private class Delegate(private val map: IosMap) : NSObject(), MLNMapViewDelegateProtocol {
 
     override fun mapViewWillStartLoadingMap(mapView: MLNMapView) {
       println("Map will start loading")
@@ -104,7 +102,6 @@ internal class IosMap(
 
     override fun mapView(mapView: MLNMapView, didFinishLoadingStyle: MLNStyle) {
       println("Style finished loading")
-      onMapLoaded(map)
       map.onStyleChanged(map, IosStyle(didFinishLoadingStyle))
     }
 
