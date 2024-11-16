@@ -1,5 +1,6 @@
 package dev.sargunv.traintracker.ui
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -34,6 +35,7 @@ import dev.sargunv.maplibrekmp.compose.uiSettings
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.core.source.GeoJsonOptions
 import dev.sargunv.maplibrekmp.core.source.Shape
+import dev.sargunv.traintracker.generated.BuildKonfig
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.getColorScheme
 import dev.sargunv.traintracker.getSheetHeight
@@ -71,13 +73,15 @@ fun App() {
         val insetsPadding = safeDrawingInsets.asPaddingValues()
 
         val cameraState =
-          rememberCameraState(CameraPosition(target = Position(
-            longitude = -98.5795,
-            latitude = 39.8283
-          ), zoom = 4.0))
+          rememberCameraState(
+            CameraPosition(target = Position(longitude = -98.5795, latitude = 39.8283), zoom = 4.0)
+          )
+
+        val style = if (isSystemInDarkTheme()) "dark" else "white"
 
         MaplibreMap(
-          styleUrl = "https://tiles.openfreemap.org/styles/liberty",
+          styleUrl =
+            "https://api.protomaps.com/styles/v2/$style.json?key=${BuildKonfig.PROTOMAPS_KEY}",
           uiSettings =
             uiSettings(
               padding =
@@ -99,26 +103,26 @@ fun App() {
               shape = Shape.Url(Res.getUri("files/geojson/amtrak/stations.geojson")),
             )
 
-          Anchor.Below("boundary_3") {
-            LineLayer(
-              id = "routes-outline",
-              source = routeSource,
-              paint =
-                LinePaint(
-                  color = const(Color.White),
-                  width = interpolate(exponential(const(2)), zoom(), 0 to const(2), 10 to const(4)),
-                ),
-            )
-            LineLayer(
-              id = "routes-fill",
-              source = routeSource,
-              paint =
-                LinePaint(
-                  color = const(Color.Magenta),
-                  width = interpolate(exponential(const(2)), zoom(), 0 to const(1), 10 to const(2)),
-                ),
-            )
-          }
+          //          Anchor.Below("boundary_3") {
+          LineLayer(
+            id = "routes-outline",
+            source = routeSource,
+            paint =
+              LinePaint(
+                color = const(Color.White),
+                width = interpolate(exponential(const(2)), zoom(), 0 to const(2), 10 to const(4)),
+              ),
+          )
+          LineLayer(
+            id = "routes-fill",
+            source = routeSource,
+            paint =
+              LinePaint(
+                color = const(Color.Magenta),
+                width = interpolate(exponential(const(2)), zoom(), 0 to const(1), 10 to const(2)),
+              ),
+          )
+          //          }
 
           Anchor.Top {
             CircleLayer(

@@ -9,6 +9,7 @@ plugins {
   alias(libs.plugins.kotlin.cocoapods) apply false
   alias(libs.plugins.sqldelight) apply false
   alias(libs.plugins.spotless)
+  alias(libs.plugins.buildkonfig) apply false
 }
 
 subprojects {

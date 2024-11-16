@@ -48,12 +48,17 @@ internal actual fun PlatformMapView(
       factory = {
         MLNMapView().also { mapView ->
           IosMap(
-            mapView = mapView,
-            size = measuredSize.toCGSize(),
-            layoutDir = layoutDir,
-            insetPadding = insetPadding,
-            onMapLoaded = { currentMap = it },
-          )
+              mapView = mapView,
+              size = measuredSize.toCGSize(),
+              layoutDir = layoutDir,
+              insetPadding = insetPadding,
+              onStyleChanged = onStyleChanged,
+              onCameraMove = onCameraMove,
+              onClick = onClick,
+              onLongClick = onLongClick,
+              onMapLoaded = { currentMap = it },
+            )
+            .also { it.styleUrl = styleUrl }
         }
       },
       update = { _ ->

@@ -7,7 +7,7 @@ import io.github.dellisd.spatialk.geojson.Position
 import kotlin.time.Duration
 
 internal interface MaplibreMap {
-  var styleUrl: String?
+  var styleUrl: String
   var isDebugEnabled: Boolean
   var uiSettings: UiSettings
   var cameraPosition: CameraPosition

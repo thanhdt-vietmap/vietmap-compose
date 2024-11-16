@@ -5,6 +5,7 @@ android-minSdk = "24"
 android-targetSdk = "34"
 androidx-activityCompose = "1.9.3"
 androidx-lifecycle = "2.8.3"
+buildkonfig = "0.15.2"
 compose-plugin = "1.7.0"
 koin = "4.0.0"
 kotlin = "2.0.21"
@@ -47,6 +48,7 @@ sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+buildkonfig = {id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }

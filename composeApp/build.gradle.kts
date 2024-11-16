@@ -1,5 +1,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -12,6 +14,7 @@ plugins {
   alias(libs.plugins.serialization)
   alias(libs.plugins.sqldelight)
   alias(libs.plugins.spotless)
+  alias(libs.plugins.buildkonfig)
 }
 
 version = "0.1.0"
@@ -103,6 +106,15 @@ android {
 }
 
 compose.resources { packageOfResClass = "dev.sargunv.traintracker.generated" }
+
+buildkonfig {
+  packageName = "dev.sargunv.traintracker.generated"
+
+  val props = gradleLocalProperties(rootDir, providers)
+  require(props.containsKey("PROTOMAPS_KEY")) { "PROTOMAPS_KEY not found in local.properties" }
+
+  defaultConfigs { buildConfigField(FieldSpec.Type.STRING, "PROTOMAPS_KEY", props.getProperty("PROTOMAPS_KEY")) }
+}
 
 sqldelight {
   databases {

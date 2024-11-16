@@ -25,6 +25,7 @@ import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGSize
+import platform.Foundation.NSError
 import platform.Foundation.NSURL
 import platform.UIKit.UIEdgeInsets
 import platform.UIKit.UIEdgeInsetsMake
@@ -45,19 +46,26 @@ internal class IosMap(
   internal var size: CValue<CGSize>,
   internal var layoutDir: LayoutDirection,
   internal var insetPadding: PaddingValues,
+  internal var onStyleChanged: (IosMap, IosStyle) -> Unit,
+  internal var onCameraMove: (IosMap) -> Unit,
+  internal var onClick: (IosMap, Position, XY) -> Unit,
+  internal var onLongClick: (IosMap, Position, XY) -> Unit,
   onMapLoaded: (IosMap) -> Unit,
 ) : MaplibreMap {
-
-  internal var onStyleChanged: (IosMap, IosStyle) -> Unit = { _, _ -> }
-  internal var onCameraMove: (IosMap) -> Unit = { _ -> }
-  internal var onClick: (IosMap, Position, XY) -> Unit = { _, _, _ -> }
-  internal var onLongClick: (IosMap, Position, XY) -> Unit = { _, _, _ -> }
 
   private lateinit var lastUiPadding: PaddingValues
 
   // hold strong references to things that the sdk keeps weak references to
   private val gestures = mutableListOf<Gesture<*>>()
-  private var delegate: Delegate
+  private val delegate: Delegate
+
+  override var styleUrl: String = ""
+    set(value) {
+      println("Setting style URL to $value")
+      if (field == value) return
+      mapView.setStyleURL(NSURL(string = value))
+      field = value
+    }
 
   init {
     mapView.automaticallyAdjustsContentInset = false
@@ -82,9 +90,21 @@ internal class IosMap(
   private class Delegate(private val map: IosMap, private val onMapLoaded: (IosMap) -> Unit) :
     NSObject(), MLNMapViewDelegateProtocol {
 
-    override fun mapViewDidFinishLoadingMap(mapView: MLNMapView) = onMapLoaded(map)
+    override fun mapViewWillStartLoadingMap(mapView: MLNMapView) {
+      println("Map will start loading")
+    }
+
+    override fun mapViewDidFailLoadingMap(mapView: MLNMapView, withError: NSError) {
+      println("Map failed to load: $withError")
+    }
+
+    override fun mapViewDidFinishLoadingMap(mapView: MLNMapView) {
+      println("Map finished loading")
+    }
 
     override fun mapView(mapView: MLNMapView, didFinishLoadingStyle: MLNStyle) {
+      println("Style finished loading")
+      onMapLoaded(map)
       map.onStyleChanged(map, IosStyle(didFinishLoadingStyle))
     }
 
@@ -120,13 +140,6 @@ internal class IosMap(
       mapView.addGestureRecognizer(gesture.recognizer)
     }
   }
-
-  override var styleUrl: String? = null
-    set(value) {
-      if (field == value) return
-      mapView.setStyleURL(value?.let { NSURL(string = it) })
-      field = value
-    }
 
   override var isDebugEnabled: Boolean
     get() = mapView.debugMask != 0uL

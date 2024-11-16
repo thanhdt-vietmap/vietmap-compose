@@ -10,14 +10,14 @@ import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import org.maplibre.android.camera.CameraUpdateFactory
+import org.maplibre.android.maps.MapView
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
-import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.maps.MapLibreMap as MLNMap
-import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.Style as MlnStyle
 
 internal class AndroidMap(
@@ -47,11 +47,10 @@ internal class AndroidMap(
     }
   }
 
-  override var styleUrl: String? = null
+  override var styleUrl: String = ""
     set(value) {
       if (field == value) return
-      val builder = MlnStyle.Builder()
-      if (value != null) builder.fromUri(value.correctedAndroidUri().toString())
+      val builder = MlnStyle.Builder().fromUri(value.correctedAndroidUri().toString())
       map.setStyle(builder) { onStyleChanged(this, AndroidStyle(it)) }
       field = value
     }
