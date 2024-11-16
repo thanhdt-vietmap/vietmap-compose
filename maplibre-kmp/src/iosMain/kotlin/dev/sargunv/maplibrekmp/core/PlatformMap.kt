@@ -14,15 +14,16 @@ import cocoapods.MapLibre.MLNMapView
 import cocoapods.MapLibre.MLNZoomLevelForAltitude
 import cocoapods.MapLibre.allowsTilting
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
+import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGSize
-import platform.CoreLocation.CLLocationCoordinate2DMake
 import platform.UIKit.UIEdgeInsets
 import platform.UIKit.UIEdgeInsetsMake
+import platform.UIKit.UIGestureRecognizer
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
@@ -30,11 +31,34 @@ import kotlin.time.DurationUnit
 
 internal actual class PlatformMap private actual constructor() {
   private lateinit var impl: MLNMapView
-  internal lateinit var mapViewSize: CValue<CGSize>
-  internal lateinit var layoutDirection: LayoutDirection
+  internal lateinit var size: CValue<CGSize>
+  internal lateinit var layoutDir: LayoutDirection
 
-  internal constructor(impl: MLNMapView) : this() {
+  // hold strong references to things that the sdk keeps weak references to
+  private val gestures = mutableListOf<Gesture<*>>()
+  var delegate: MapViewDelegate? = null
+    set(value) {
+      field = value.also(impl::setDelegate)
+    }
+
+  internal constructor(
+    impl: MLNMapView,
+    size: CValue<CGSize>,
+    layoutDir: LayoutDirection,
+  ) : this() {
     this.impl = impl
+    this.size = size
+    this.layoutDir = layoutDir
+  }
+
+  inline fun <reified T : UIGestureRecognizer> addGesture(gesture: Gesture<T>) {
+    if (gesture.isCooperative) {
+      impl.gestureRecognizers!!.filterIsInstance<T>().forEach {
+        gesture.recognizer.requireGestureRecognizerToFail(it)
+      }
+    }
+    impl.addGestureRecognizer(gesture.recognizer)
+    gestures.add(gesture)
   }
 
   actual var isDebugEnabled: Boolean
@@ -72,7 +96,7 @@ internal actual class PlatformMap private actual constructor() {
 
   private fun MLNMapCamera.toCameraPosition(paddingValues: PaddingValues) =
     CameraPosition(
-      target = centerCoordinate.useContents { Position(latitude, longitude) },
+      target = centerCoordinate.toPosition(),
       bearing = heading,
       tilt = pitch,
       zoom =
@@ -80,14 +104,14 @@ internal actual class PlatformMap private actual constructor() {
           altitude = altitude,
           pitch = pitch,
           latitude = centerCoordinate.useContents { latitude },
-          size = mapViewSize,
+          size = size,
         ),
       padding = paddingValues,
     )
 
   private fun CameraPosition.toMLNMapCamera(): MLNMapCamera {
     return MLNMapCamera().let {
-      it.centerCoordinate = CLLocationCoordinate2DMake(target.latitude, target.longitude)
+      it.centerCoordinate = target.toCLLocationCoordinate2D()
       it.pitch = tilt
       it.heading = bearing
       it.altitude =
@@ -95,7 +119,7 @@ internal actual class PlatformMap private actual constructor() {
           zoomLevel = zoom,
           pitch = tilt,
           latitude = target.latitude,
-          size = mapViewSize,
+          size = size,
         )
       it
     }
@@ -126,9 +150,9 @@ internal actual class PlatformMap private actual constructor() {
   private fun PaddingValues.toEdgeInsets(): CValue<UIEdgeInsets> =
     UIEdgeInsetsMake(
       top = calculateTopPadding().value.toDouble(),
-      left = calculateLeftPadding(layoutDirection).value.toDouble(),
+      left = calculateLeftPadding(layoutDir).value.toDouble(),
       bottom = calculateBottomPadding().value.toDouble(),
-      right = calculateRightPadding(layoutDirection).value.toDouble(),
+      right = calculateRightPadding(layoutDir).value.toDouble(),
     )
 
   actual suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
@@ -141,8 +165,14 @@ internal actual class PlatformMap private actual constructor() {
       )
     }
 
-  actual fun queryRenderedFeatures(xy: Pair<Float, Float>, layerIds: Set<String>): List<Feature> =
-    impl
-      .visibleFeaturesAtPoint(CGPointMake(xy.first.toDouble(), xy.second.toDouble()), layerIds)
-      .map { Feature.fromJson((it as MLNFeatureProtocol).toJson()) }
+  actual fun positionFromScreenLocation(xy: XY): Position =
+    impl.convertPoint(point = xy.toCGPoint(), toCoordinateFromView = null).toPosition()
+
+  actual fun screenLocationFromPosition(position: Position): XY =
+    impl.convertCoordinate(position.toCLLocationCoordinate2D(), toPointToView = null).toXY()
+
+  actual fun queryRenderedFeatures(xy: XY, layerIds: Set<String>): List<Feature> =
+    impl.visibleFeaturesAtPoint(CGPointMake(xy.x.toDouble(), xy.y.toDouble()), layerIds).map {
+      (it as MLNFeatureProtocol).toFeature()
+    }
 }

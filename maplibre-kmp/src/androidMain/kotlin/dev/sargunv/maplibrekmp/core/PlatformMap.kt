@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
+import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.camera.CameraUpdateFactory
-import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -17,11 +17,12 @@ import kotlin.time.DurationUnit
 import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
 
 internal actual class PlatformMap private actual constructor() {
-  private lateinit var impl: MapLibreMap
-  internal var layoutDirection: LayoutDirection = LayoutDirection.Ltr
+  internal lateinit var impl: MapLibreMap
+  internal lateinit var layoutDir: LayoutDirection
 
-  internal constructor(mapView: MapLibreMap) : this() {
-    impl = mapView
+  internal constructor(mapView: MapLibreMap, layoutDir: LayoutDirection) : this() {
+    this.impl = mapView
+    this.layoutDir = layoutDir
   }
 
   actual var isDebugEnabled
@@ -70,14 +71,14 @@ internal actual class PlatformMap private actual constructor() {
 
   private fun CameraPosition.toMLNCameraPosition(): MLNCameraPosition =
     MLNCameraPosition.Builder()
-      .target(LatLng(target.latitude, target.longitude))
+      .target(target.toLatLng())
       .zoom(zoom)
       .tilt(tilt)
       .bearing(bearing)
       .padding(
-        left = padding.calculateLeftPadding(layoutDirection).value.toDouble(),
+        left = padding.calculateLeftPadding(layoutDir).value.toDouble(),
         top = padding.calculateTopPadding().value.toDouble(),
-        right = padding.calculateRightPadding(layoutDirection).value.toDouble(),
+        right = padding.calculateRightPadding(layoutDir).value.toDouble(),
         bottom = padding.calculateBottomPadding().value.toDouble(),
       )
       .build()
@@ -101,8 +102,14 @@ internal actual class PlatformMap private actual constructor() {
       )
     }
 
-  actual fun queryRenderedFeatures(xy: Pair<Float, Float>, layerIds: Set<String>): List<Feature> =
-    impl.queryRenderedFeatures(PointF(xy.first, xy.second), *layerIds.toTypedArray()).map {
+  actual fun positionFromScreenLocation(xy: XY): Position =
+    impl.projection.fromScreenLocation(PointF(xy.x, xy.y)).toPosition()
+
+  actual fun screenLocationFromPosition(position: Position): XY =
+    impl.projection.toScreenLocation(position.toLatLng()).toXY()
+
+  actual fun queryRenderedFeatures(xy: XY, layerIds: Set<String>): List<Feature> =
+    impl.queryRenderedFeatures(xy.toPointF(), *layerIds.toTypedArray()).map {
       Feature.fromJson(it.toJson())
     }
 }

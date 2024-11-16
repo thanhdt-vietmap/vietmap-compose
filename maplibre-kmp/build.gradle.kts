@@ -72,5 +72,3 @@ spotless {
     ktfmt().googleStyle()
   }
 }
-
-composeCompiler { reportsDestination = layout.projectDirectory.dir("compose_compiler") }

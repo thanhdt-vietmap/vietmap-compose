@@ -4,7 +4,6 @@ import android.view.Gravity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,8 +19,11 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.correctedAndroidUri
+import dev.sargunv.maplibrekmp.core.data.XY
+import dev.sargunv.maplibrekmp.core.toPosition
 import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.MapLibre
+import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.MapView
 
 @Composable
@@ -34,8 +36,8 @@ internal actual fun PlatformMapView(
   onStyleLoaded: (style: Style) -> Unit,
   onRelease: () -> Unit,
   onCameraMove: () -> Unit,
-  onClick: (latLng: Position, xy: Pair<Float, Float>) -> Unit,
-  onLongClick: (latLng: Position, xy: Pair<Float, Float>) -> Unit,
+  onClick: (latLng: Position, xy: XY) -> Unit,
+  onLongClick: (latLng: Position, xy: XY) -> Unit,
 ) {
   var observer by remember { mutableStateOf<LifecycleEventObserver?>(null) }
 
@@ -62,8 +64,8 @@ internal actual fun PlatformMapView(
   val currentOnClick by rememberUpdatedState(onClick)
   val currentOnLongClick by rememberUpdatedState(onLongClick)
 
+  var maplibreMap by remember { mutableStateOf<MapLibreMap?>(null) }
   var platformMap by remember { mutableStateOf<PlatformMap?>(null) }
-  SideEffect { platformMap?.layoutDirection = layoutDir }
 
   AndroidView(
     modifier = modifier,
@@ -81,37 +83,37 @@ internal actual fun PlatformMapView(
             else -> throw IllegalStateException()
           }
         }
-
-        mapView.getMapAsync { map ->
-          map.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
-
-          platformMap = PlatformMap(map)
-          onMapLoaded(platformMap!!)
-
-          map.addOnCameraMoveListener { currentOnCameraMove() }
-
-          map.addOnMapClickListener { coords ->
-            currentOnClick(
-              Position(coords.latitude, coords.longitude),
-              map.projection.toScreenLocation(coords).let { it.x to it.y },
-            )
-            false
-          }
-
-          map.addOnMapLongClickListener { coords ->
-            currentOnLongClick(
-              Position(coords.latitude, coords.longitude),
-              map.projection.toScreenLocation(coords).let { it.x to it.y },
-            )
-            false
-          }
-        }
+        mapView.getMapAsync { maplibreMap = it }
       }
     },
-    update = { mapView ->
-      platformMap?.let { updateMap(it) }
+    update = { _ ->
+      if (platformMap == null && maplibreMap != null) {
+        val mlMap = maplibreMap!!
+        val map = PlatformMap(mlMap, layoutDir)
 
-      mapView.getMapAsync { map ->
+        mlMap.addOnCameraMoveListener { currentOnCameraMove() }
+        mlMap.addOnMapClickListener { coords ->
+          val pos = coords.toPosition()
+          currentOnClick(pos, map.screenLocationFromPosition(pos))
+          false
+        }
+        mlMap.addOnMapLongClickListener { coords ->
+          val pos = coords.toPosition()
+          currentOnLongClick(pos, map.screenLocationFromPosition(pos))
+          false
+        }
+
+        platformMap = map
+        onMapLoaded(map)
+      }
+
+      platformMap?.let { map ->
+        map.layoutDir = layoutDir
+        //        updateMap(map)
+      }
+
+      maplibreMap?.let { map ->
+        map.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
         map.uiSettings.setAttributionMargins(margins[0], margins[1], margins[2], margins[3])
         map.uiSettings.setLogoMargins(margins[0], margins[1], margins[2], margins[3])
         map.uiSettings.setCompassMargins(margins[0], margins[1], margins[2], margins[3])
@@ -124,7 +126,11 @@ internal actual fun PlatformMapView(
         }
       }
     },
-    onRelease = { currentOnRelease() },
+    onRelease = {
+      maplibreMap = null
+      platformMap = null
+      currentOnRelease()
+    },
   )
 
   val lifecycle = LocalLifecycleOwner.current.lifecycle

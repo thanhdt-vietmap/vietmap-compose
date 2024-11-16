@@ -21,6 +21,7 @@ import dev.sargunv.maplibrekmp.core.ControlSettings
 import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.StyleManager
+import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.ExpressionScope
 import io.github.dellisd.spatialk.geojson.Position
@@ -34,8 +35,8 @@ public fun MaplibreMap(
   controlSettings: ControlSettings = ControlSettings(),
   cameraState: CameraState = rememberCameraState(),
   isDebugEnabled: Boolean = false,
-  onClick: (latLng: Position, xy: Pair<Float, Float>) -> Unit = { _, _ -> },
-  onLongClick: (latLng: Position, xy: Pair<Float, Float>) -> Unit = { _, _ -> },
+  onClick: (latLng: Position, xy: XY) -> Unit = { _, _ -> },
+  onLongClick: (latLng: Position, xy: XY) -> Unit = { _, _ -> },
   styleContent: @Composable ExpressionScope.() -> Unit = {},
 ) {
   val compositionContext = rememberCompositionContext()
