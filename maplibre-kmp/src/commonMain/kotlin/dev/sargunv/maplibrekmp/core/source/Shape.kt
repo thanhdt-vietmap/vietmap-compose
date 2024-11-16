@@ -6,5 +6,5 @@ import androidx.compose.runtime.Immutable
 public sealed class Shape {
   public data class Url(val url: String) : Shape()
 
-  public data class GeoJson(val json: String) : Shape()
+  public data class GeoJson(val geoJson: io.github.dellisd.spatialk.geojson.GeoJson) : Shape()
 }

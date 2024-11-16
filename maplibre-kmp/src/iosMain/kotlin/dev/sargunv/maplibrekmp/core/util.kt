@@ -2,8 +2,10 @@ package dev.sargunv.maplibrekmp.core
 
 import androidx.compose.ui.unit.DpSize
 import cocoapods.MapLibre.MLNFeatureProtocol
+import cocoapods.MapLibre.MLNShape
 import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Feature
+import io.github.dellisd.spatialk.geojson.GeoJson
 import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.addressOf
@@ -20,8 +22,8 @@ import platform.CoreGraphics.CGSizeMake
 import platform.CoreLocation.CLLocationCoordinate2D
 import platform.CoreLocation.CLLocationCoordinate2DMake
 import platform.Foundation.NSData
+import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.dataWithBytes
-import kotlin.collections.Map
 
 internal fun ByteArray.toNSData(): NSData {
   return usePinned { NSData.dataWithBytes(it.addressOf(0), it.get().size.toULong()) }
@@ -56,3 +58,11 @@ internal fun Position.toCLLocationCoordinate2D(): CValue<CLLocationCoordinate2D>
 
 internal fun DpSize.toCGSize() =
   CGSizeMake(width = width.value.toDouble(), height = height.value.toDouble())
+
+internal fun GeoJson.toMLNShape(): MLNShape {
+  return MLNShape.shapeWithData(
+    data = json().encodeToByteArray().toNSData(),
+    encoding = NSUTF8StringEncoding,
+    error = null,
+  )!!
+}

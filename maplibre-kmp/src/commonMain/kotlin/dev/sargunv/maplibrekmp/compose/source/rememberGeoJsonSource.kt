@@ -19,8 +19,8 @@ public inline fun rememberGeoJsonSource(
       factory = { GeoJsonSource(id = id, shape = shape, options = options) },
       update = {
         when (shape) {
-          is Shape.Url -> setDataUrl(shape.url)
-          is Shape.GeoJson -> setDataJson(shape.json)
+          is Shape.Url -> setShapeUrl(shape.url)
+          is Shape.GeoJson -> setShape(shape.geoJson)
         }
       },
     )

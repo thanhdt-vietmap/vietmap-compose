@@ -1,6 +1,5 @@
 package dev.sargunv.maplibrekmp.core.source
 
-import cocoapods.MapLibre.MLNShape
 import cocoapods.MapLibre.MLNShapeSource
 import cocoapods.MapLibre.MLNShapeSourceOptionBuffer
 import cocoapods.MapLibre.MLNShapeSourceOptionClusterProperties
@@ -11,12 +10,12 @@ import cocoapods.MapLibre.MLNShapeSourceOptionMaximumZoomLevel
 import cocoapods.MapLibre.MLNShapeSourceOptionMaximumZoomLevelForClustering
 import cocoapods.MapLibre.MLNShapeSourceOptionSimplificationTolerance
 import dev.sargunv.maplibrekmp.core.layer.ExpressionAdapter.toNSExpression
-import dev.sargunv.maplibrekmp.core.toNSData
+import dev.sargunv.maplibrekmp.core.toMLNShape
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
+import io.github.dellisd.spatialk.geojson.GeoJson
 import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
-import platform.Foundation.NSUTF8StringEncoding
 
 @PublishedApi
 internal actual class GeoJsonSource
@@ -45,23 +44,15 @@ actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : UserSour
         is Shape.Url ->
           MLNShapeSource(identifier = id, URL = NSURL(string = shape.url), options = optionMap)
         is Shape.GeoJson ->
-          MLNShapeSource(identifier = id, shape = jsonToShape(shape.json), options = optionMap)
+          MLNShapeSource(identifier = id, shape = shape.geoJson.toMLNShape(), options = optionMap)
       }
   }
 
-  actual fun setDataUrl(url: String) {
+  actual fun setShapeUrl(url: String) {
     impl.setURL(NSURL(string = url))
   }
 
-  actual fun setDataJson(json: String) {
-    impl.setShape(jsonToShape(json))
-  }
-
-  private fun jsonToShape(json: String): MLNShape {
-    return MLNShape.shapeWithData(
-      data = json.encodeToByteArray().toNSData(),
-      encoding = NSUTF8StringEncoding,
-      error = null,
-    )!!
+  actual fun setShape(geoJson: GeoJson) {
+    impl.setShape(geoJson.toMLNShape())
   }
 }

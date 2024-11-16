@@ -3,6 +3,7 @@ package dev.sargunv.maplibrekmp.core.source
 import dev.sargunv.maplibrekmp.core.correctedAndroidUri
 import dev.sargunv.maplibrekmp.core.layer.ExpressionAdapter.convert
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
+import io.github.dellisd.spatialk.geojson.GeoJson
 import org.maplibre.android.style.sources.GeoJsonOptions as MLNGeoJsonOptions
 import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
 
@@ -30,15 +31,16 @@ actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : UserSour
       when (shape) {
         is Shape.Url ->
           MLNGeoJsonSource(id = id, uri = shape.url.correctedAndroidUri(), options = optionMap)
-        is Shape.GeoJson -> MLNGeoJsonSource(id = id, geoJson = shape.json, options = optionMap)
+        is Shape.GeoJson ->
+          MLNGeoJsonSource(id = id, geoJson = shape.geoJson.json(), options = optionMap)
       }
   }
 
-  actual fun setDataUrl(url: String) {
+  actual fun setShapeUrl(url: String) {
     impl.setUri(url.correctedAndroidUri())
   }
 
-  actual fun setDataJson(json: String) {
-    impl.setGeoJson(json)
+  actual fun setShape(geoJson: GeoJson) {
+    impl.setGeoJson(geoJson.json())
   }
 }
