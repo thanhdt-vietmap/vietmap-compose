@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +31,7 @@ import dev.sargunv.maplibrekmp.compose.layer.LinePaint
 import dev.sargunv.maplibrekmp.compose.rememberCameraState
 import dev.sargunv.maplibrekmp.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrekmp.compose.uiSettings
+import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.core.source.GeoJsonOptions
 import dev.sargunv.maplibrekmp.core.source.Shape
 import dev.sargunv.traintracker.generated.Res
@@ -39,6 +39,7 @@ import dev.sargunv.traintracker.getColorScheme
 import dev.sargunv.traintracker.getSheetHeight
 import dev.sargunv.traintracker.max
 import dev.sargunv.traintracker.plus
+import io.github.dellisd.spatialk.geojson.Position
 import org.koin.compose.KoinContext
 
 @Composable
@@ -69,8 +70,8 @@ fun App() {
       ) { sheetPadding ->
         val insetsPadding = safeDrawingInsets.asPaddingValues()
 
-        val cameraState = rememberCameraState()
-        val coroutineScope = rememberCoroutineScope()
+        val cameraState =
+          rememberCameraState(CameraPosition(target = Position(-98.5795, 39.8283), zoom = 4.0))
 
         MaplibreMap(
           styleUrl = "https://tiles.openfreemap.org/styles/liberty",

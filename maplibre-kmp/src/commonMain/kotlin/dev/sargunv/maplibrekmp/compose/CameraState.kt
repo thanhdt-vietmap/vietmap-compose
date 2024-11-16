@@ -17,7 +17,7 @@ public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition())
 public class CameraState internal constructor(firstPosition: CameraPosition) {
   internal var map: PlatformMap? = null
     set(map) {
-      if (map != field && map != null) {
+      if (map != null) {
         map.cameraPosition = position
         mapAttachSignal.trySend(map)
       }
@@ -44,4 +44,3 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
     map.animateCameraPosition(finalPosition, duration)
   }
 }
-

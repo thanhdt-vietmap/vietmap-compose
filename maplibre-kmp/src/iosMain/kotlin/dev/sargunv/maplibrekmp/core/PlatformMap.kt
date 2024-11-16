@@ -56,6 +56,7 @@ internal actual class PlatformMap private actual constructor() {
     size: CValue<CGSize>,
     layoutDir: LayoutDirection,
     insetPadding: PaddingValues,
+    onMapLoaded: (PlatformMap) -> Unit,
   ) : this() {
     this.mapView = mapView
     this.size = size
@@ -81,6 +82,7 @@ internal actual class PlatformMap private actual constructor() {
       MapViewDelegate(
         onStyleLoaded = { mlnStyle -> onStyleChanged(this, Style(mlnStyle)) },
         onCameraMove = { onCameraMove(this) },
+        onMapLoaded = { onMapLoaded(this) },
       )
     mapView.delegate = delegate
   }
@@ -201,7 +203,7 @@ internal actual class PlatformMap private actual constructor() {
             )
           }
       )
-    set(value) =
+    set(value) {
       mapView.setCamera(
         value.toMLNMapCamera(),
         withDuration = 0.0,
@@ -209,6 +211,7 @@ internal actual class PlatformMap private actual constructor() {
         edgePadding = value.padding.toEdgeInsets(),
         completionHandler = null,
       )
+    }
 
   private fun PaddingValues.toEdgeInsets(): CValue<UIEdgeInsets> =
     UIEdgeInsetsMake(
