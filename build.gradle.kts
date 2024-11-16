@@ -14,6 +14,11 @@ plugins {
 subprojects {
   apply(plugin = "com.diffplug.spotless")
   spotless { kotlinGradle { ktfmt().googleStyle() } }
+  if (plugins.hasPlugin("org.jetbrains.compose")) {
+    composeCompiler {
+      reportsDestination = rootProject.layout.projectDirectory.dir("compose_compiler")
+    }
+  }
 }
 
 spotless {
@@ -32,5 +37,3 @@ spotless {
     nativeCmd("swiftFormat","/usr/bin/env", listOf("swift-format"))
   }
 }
-
-composeCompiler { reportsDestination = layout.projectDirectory.dir("compose_compiler") }

@@ -21,19 +21,12 @@ import androidx.compose.ui.viewinterop.UIKitInteropInteractionMode
 import androidx.compose.ui.viewinterop.UIKitInteropProperties
 import androidx.compose.ui.viewinterop.UIKitView
 import cocoapods.MapLibre.MLNMapView
-import dev.sargunv.maplibrekmp.core.Gesture
-import dev.sargunv.maplibrekmp.core.MapViewDelegate
 import dev.sargunv.maplibrekmp.core.PlatformMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.core.toCGSize
-import dev.sargunv.maplibrekmp.core.toXY
 import io.github.dellisd.spatialk.geojson.Position
 import platform.Foundation.NSURL
-import platform.UIKit.UIGestureRecognizerStateBegan
-import platform.UIKit.UIGestureRecognizerStateEnded
-import platform.UIKit.UILongPressGestureRecognizer
-import platform.UIKit.UITapGestureRecognizer
 
 @Composable
 internal actual fun PlatformMapView(
@@ -53,10 +46,6 @@ internal actual fun PlatformMapView(
   var lastStyleUrl by remember { mutableStateOf<String?>(null) }
 
   val currentOnReset by rememberUpdatedState(onReset)
-  val currentOnStyleChanged by rememberUpdatedState(onStyleChanged)
-  val currentOnCameraMove by rememberUpdatedState(onCameraMove)
-  val currentOnClick by rememberUpdatedState(onClick)
-  val currentOnLongClick by rememberUpdatedState(onLongClick)
 
   var size by remember { mutableStateOf(DpSize.Unspecified) }
   var currentMap by remember { mutableStateOf<PlatformMap?>(null) }
@@ -68,43 +57,28 @@ internal actual fun PlatformMapView(
       UIKitInteropProperties(interactionMode = UIKitInteropInteractionMode.NonCooperative),
     factory = ::MLNMapView,
     update = { mapView ->
-      mapView.automaticallyAdjustsContentInset = false
-
-      if (currentMap == null && size.isSpecified) {
-        val map = PlatformMap(mapView, size.toCGSize(), layoutDir, insetPadding)
-        currentMap = map
-
-        map.addGestures(
-          Gesture(UITapGestureRecognizer()) {
-            if (state != UIGestureRecognizerStateEnded) return@Gesture
-            val point = locationInView(mapView).toXY()
-            currentOnClick(map, map.positionFromScreenLocation(point), point)
-          },
-          Gesture(UILongPressGestureRecognizer()) {
-            if (state != UIGestureRecognizerStateBegan) return@Gesture
-            val point = locationInView(mapView).toXY()
-            currentOnLongClick(map, map.positionFromScreenLocation(point), point)
-          },
-        )
-
-        map.delegate =
-          MapViewDelegate(
-            onStyleLoaded = { mlnStyle -> currentOnStyleChanged(map, Style(mlnStyle)) },
-            onCameraMove = { currentOnCameraMove(map) },
-          )
+      val map = currentMap
+      if (map == null) {
+        if (size.isSpecified)
+          currentMap = PlatformMap(mapView, size.toCGSize(), layoutDir, insetPadding)
+        return@UIKitView
       }
 
-      currentMap?.let {
-        if (size.isSpecified) it.size = size.toCGSize()
-        it.layoutDir = layoutDir
-        it.insetPadding = insetPadding
-        updateMap(it)
-      }
+      if (size.isSpecified) map.size = size.toCGSize()
+      map.layoutDir = layoutDir
+      map.insetPadding = insetPadding
+      map.onStyleChanged = onStyleChanged
+      map.onCameraMove = onCameraMove
+      map.onClick = onClick
+      map.onLongClick = onLongClick
 
+      // TODO push this into the PlatformMap
       if (styleUrl != lastStyleUrl) {
         mapView.setStyleURL(NSURL(string = styleUrl))
         lastStyleUrl = styleUrl
       }
+
+      updateMap(map)
     },
     onReset = {
       currentOnReset()

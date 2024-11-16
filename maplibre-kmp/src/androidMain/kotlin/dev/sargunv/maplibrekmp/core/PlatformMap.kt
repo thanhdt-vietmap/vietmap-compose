@@ -25,9 +25,9 @@ internal actual class PlatformMap private actual constructor() {
   internal lateinit var layoutDir: LayoutDirection
   internal lateinit var density: Density
 
-  internal var onCameraMove: () -> Unit = {}
-  internal var onClick: (Position, XY) -> Unit = { _, _ -> }
-  internal var onLongClick: (Position, XY) -> Unit = { _, _ -> }
+  internal var onCameraMove: (PlatformMap) -> Unit = { _ -> }
+  internal var onClick: (PlatformMap, Position, XY) -> Unit = { _, _, _ -> }
+  internal var onLongClick: (PlatformMap, Position, XY) -> Unit = { _, _, _ -> }
 
   private lateinit var lastUiPadding: PaddingValues
 
@@ -42,15 +42,15 @@ internal actual class PlatformMap private actual constructor() {
     this.layoutDir = layoutDir
     this.density = density
 
-    map.addOnCameraMoveListener { onCameraMove() }
+    map.addOnCameraMoveListener { onCameraMove(this) }
     map.addOnMapClickListener { coords ->
       val pos = coords.toPosition()
-      onClick(pos, screenLocationFromPosition(pos))
+      onClick(this, pos, screenLocationFromPosition(pos))
       true
     }
     map.addOnMapLongClickListener { coords ->
       val pos = coords.toPosition()
-      onLongClick(pos, screenLocationFromPosition(pos))
+      onClick(this, pos, screenLocationFromPosition(pos))
       true
     }
   }

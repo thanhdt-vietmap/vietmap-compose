@@ -7,7 +7,6 @@ import io.github.dellisd.spatialk.geojson.Position
 import kotlin.time.Duration
 
 internal expect class PlatformMap private constructor() {
-
   var isDebugEnabled: Boolean
   var uiSettings: UiSettings
 

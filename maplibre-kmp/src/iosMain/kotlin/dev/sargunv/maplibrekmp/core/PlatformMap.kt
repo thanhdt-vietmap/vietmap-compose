@@ -24,6 +24,10 @@ import platform.CoreGraphics.CGSize
 import platform.UIKit.UIEdgeInsets
 import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.UIGestureRecognizer
+import platform.UIKit.UIGestureRecognizerStateBegan
+import platform.UIKit.UIGestureRecognizerStateEnded
+import platform.UIKit.UILongPressGestureRecognizer
+import platform.UIKit.UITapGestureRecognizer
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
@@ -35,37 +39,60 @@ internal actual class PlatformMap private actual constructor() {
   internal lateinit var layoutDir: LayoutDirection
   internal lateinit var insetPadding: PaddingValues
 
+  internal var onStyleChanged: (PlatformMap, Style) -> Unit = { _, _ -> }
+  internal var onCameraMove: (PlatformMap) -> Unit = { _ -> }
+  internal var onClick: (PlatformMap, Position, XY) -> Unit = { _, _, _ -> }
+  internal var onLongClick: (PlatformMap, Position, XY) -> Unit = { _, _, _ -> }
+
   private lateinit var lastUiPadding: PaddingValues
 
   // hold strong references to things that the sdk keeps weak references to
   private val gestures = mutableListOf<Gesture<*>>()
-  var delegate: MapViewDelegate? = null
-    set(value) {
-      mapView.delegate = value
-      field = value
-    }
+  private lateinit var delegate: MapViewDelegate
 
   internal constructor(
-    impl: MLNMapView,
+    mapView: MLNMapView,
     size: CValue<CGSize>,
     layoutDir: LayoutDirection,
     insetPadding: PaddingValues,
   ) : this() {
-    this.mapView = impl
+    this.mapView = mapView
     this.size = size
     this.layoutDir = layoutDir
     this.insetPadding = insetPadding
+
+    mapView.automaticallyAdjustsContentInset = false
+
+    addGestures(
+      Gesture(UITapGestureRecognizer()) {
+        if (state != UIGestureRecognizerStateEnded) return@Gesture
+        val point = locationInView(this@PlatformMap.mapView).toXY()
+        onClick(this@PlatformMap, positionFromScreenLocation(point), point)
+      },
+      Gesture(UILongPressGestureRecognizer()) {
+        if (state != UIGestureRecognizerStateBegan) return@Gesture
+        val point = locationInView(this@PlatformMap.mapView).toXY()
+        onLongClick(this@PlatformMap, positionFromScreenLocation(point), point)
+      },
+    )
+
+    delegate =
+      MapViewDelegate(
+        onStyleLoaded = { mlnStyle -> onStyleChanged(this, Style(mlnStyle)) },
+        onCameraMove = { onCameraMove(this) },
+      )
+    mapView.delegate = delegate
   }
 
-  inline fun <reified T : UIGestureRecognizer> addGestures(vararg gestures: Gesture<T>) {
+  private inline fun <reified T : UIGestureRecognizer> addGestures(vararg gestures: Gesture<T>) {
     gestures.forEach { gesture ->
       if (gesture.isCooperative) {
         mapView.gestureRecognizers!!.filterIsInstance<T>().forEach {
           gesture.recognizer.requireGestureRecognizerToFail(it)
         }
       }
-      mapView.addGestureRecognizer(gesture.recognizer)
       this.gestures.add(gesture)
+      mapView.addGestureRecognizer(gesture.recognizer)
     }
   }
 
