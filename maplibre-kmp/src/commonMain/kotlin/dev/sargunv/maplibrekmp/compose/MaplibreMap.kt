@@ -41,28 +41,32 @@ public fun MaplibreMap(
 ) {
   val compositionContext = rememberCompositionContext()
 
-  var map by remember { mutableStateOf<PlatformMap?>(null) }
-  var style by remember { mutableStateOf<Style?>(null) }
+  var rememberedMap by remember { mutableStateOf<PlatformMap?>(null) }
+  var rememberedStyle by remember { mutableStateOf<Style?>(null) }
 
   var styleCompositionRootNode by mutableStateOf<StyleNode?>(null)
-  LaunchedEffect(style) {
-    style?.let { style ->
-      val rootNode = StyleNode(style).also { styleCompositionRootNode = it }
-      val composition = Composition(MapNodeApplier(rootNode), compositionContext)
-      composition.setContent {
-        CompositionLocalProvider(LocalStyleManager provides rootNode.styleManager) {
-          styleContent(Expression.Companion)
+  LaunchedEffect(rememberedStyle) {
+    val style =
+      rememberedStyle
+        ?: run {
+          styleCompositionRootNode = null
+          return@LaunchedEffect
         }
+    val rootNode = StyleNode(style).also { styleCompositionRootNode = it }
+    val composition = Composition(MapNodeApplier(rootNode), compositionContext)
+    composition.setContent {
+      CompositionLocalProvider(LocalStyleManager provides rootNode.styleManager) {
+        styleContent(Expression.Companion)
       }
-      try {
-        awaitCancellation()
-      } finally {
-        composition.dispose()
-      }
+    }
+    try {
+      awaitCancellation()
+    } finally {
+      composition.dispose()
     }
   }
 
-  SideEffect { cameraState.map = map }
+  SideEffect { cameraState.map = rememberedMap }
 
   PlatformMapView(
     modifier = modifier,
@@ -72,32 +76,32 @@ public fun MaplibreMap(
       it.isDebugEnabled = isDebugEnabled
       it.controlSettings = controlSettings
     },
-    onMapLoaded = { map = it },
-    onStyleLoaded = { style = it },
-    onCameraMove = { cameraState.positionState.value = map!!.cameraPosition },
+    onMapLoaded = { rememberedMap = it },
+    onStyleLoaded = { rememberedStyle = it },
+    onCameraMove = { cameraState.positionState.value = rememberedMap!!.cameraPosition },
     onClick = { latLng, xy ->
       onClick(latLng, xy)
-      styleCompositionRootNode!!
-        .children
-        .mapNotNull { node -> (node as? LayerNode<*>)?.onClick?.let { node.layer.id to it } }
-        .forEach { (layerId, handle) ->
-          val features = map!!.queryRenderedFeatures(xy, setOf(layerId))
+      styleCompositionRootNode
+        ?.children
+        ?.mapNotNull { node -> (node as? LayerNode<*>)?.onClick?.let { node.layer.id to it } }
+        ?.forEach { (layerId, handle) ->
+          val features = rememberedMap!!.queryRenderedFeatures(xy, setOf(layerId))
           if (features.isNotEmpty()) handle(features)
         }
     },
     onLongClick = { latLng, xy ->
       onLongClick(latLng, xy)
-      styleCompositionRootNode!!
-        .children
-        .mapNotNull { node -> (node as? LayerNode<*>)?.onLongClick?.let { node.layer.id to it } }
-        .forEach { (layerId, handle) ->
-          val features = map!!.queryRenderedFeatures(xy, setOf(layerId))
+      styleCompositionRootNode
+        ?.children
+        ?.mapNotNull { node -> (node as? LayerNode<*>)?.onLongClick?.let { node.layer.id to it } }
+        ?.forEach { (layerId, handle) ->
+          val features = rememberedMap!!.queryRenderedFeatures(xy, setOf(layerId))
           if (features.isNotEmpty()) handle(features)
         }
     },
-    onRelease = {
-      style = null
-      map = null
+    onReset = {
+      rememberedStyle = null
+      rememberedMap = null
     },
   )
 }

@@ -16,7 +16,7 @@ internal expect fun PlatformMapView(
   updateMap: (map: PlatformMap) -> Unit,
   onMapLoaded: (map: PlatformMap) -> Unit,
   onStyleLoaded: (style: Style) -> Unit,
-  onRelease: () -> Unit,
+  onReset: () -> Unit,
   onCameraMove: () -> Unit,
   onClick: (latLng: Position, xy: XY) -> Unit,
   onLongClick: (latLng: Position, xy: XY) -> Unit,

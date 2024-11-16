@@ -45,7 +45,7 @@ internal actual fun PlatformMapView(
   updateMap: (map: PlatformMap) -> Unit,
   onMapLoaded: (map: PlatformMap) -> Unit,
   onStyleLoaded: (style: Style) -> Unit,
-  onRelease: () -> Unit,
+  onReset: () -> Unit,
   onCameraMove: () -> Unit,
   onClick: (latLng: Position, xy: XY) -> Unit,
   onLongClick: (latLng: Position, xy: XY) -> Unit,
@@ -71,7 +71,7 @@ internal actual fun PlatformMapView(
   var lastStyleUrl by remember { mutableStateOf<String?>(null) }
 
   val currentOnStyleLoaded by rememberUpdatedState(onStyleLoaded)
-  val currentOnRelease by rememberUpdatedState(onRelease)
+  val currentOnReset by rememberUpdatedState(onReset)
   val currentOnCameraMove by rememberUpdatedState(onCameraMove)
   val currentOnClick by rememberUpdatedState(onClick)
   val currentOnLongClick by rememberUpdatedState(onLongClick)
@@ -131,9 +131,9 @@ internal actual fun PlatformMapView(
         lastStyleUrl = styleUrl
       }
     },
-    onRelease = {
+    onReset = {
       platformMap = null
-      currentOnRelease()
+      currentOnReset()
     },
   )
 }
