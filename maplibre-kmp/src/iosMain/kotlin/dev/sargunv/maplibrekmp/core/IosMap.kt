@@ -46,7 +46,7 @@ internal class IosMap(
   internal var size: CValue<CGSize>,
   internal var layoutDir: LayoutDirection,
   internal var insetPadding: PaddingValues,
-  internal var onStyleChanged: (IosMap, IosStyle) -> Unit,
+  internal var onStyleChanged: (IosMap, IosStyle?) -> Unit,
   internal var onCameraMove: (IosMap) -> Unit,
   internal var onClick: (IosMap, Position, XY) -> Unit,
   internal var onLongClick: (IosMap, Position, XY) -> Unit,
@@ -62,6 +62,7 @@ internal class IosMap(
     set(value) {
       if (field == value) return
       println("Setting style URL to $value")
+      onStyleChanged(this, null)
       mapView.setStyleURL(NSURL(string = value))
       field = value
     }

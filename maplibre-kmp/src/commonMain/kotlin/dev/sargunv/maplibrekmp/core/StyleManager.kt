@@ -5,7 +5,7 @@ import dev.sargunv.maplibrekmp.core.layer.PlatformLayer
 import dev.sargunv.maplibrekmp.core.layer.UserLayer
 import dev.sargunv.maplibrekmp.core.source.UserSource
 
-internal class StyleManager(val style: Style) {
+internal class StyleManager(var style: Style) {
   private val baseLayers = style.getLayers().associateBy { it.id }
 
   // we queue up additions, but instantly execute removals

@@ -43,7 +43,9 @@ internal fun rememberStyleCompositionState(
     try {
       awaitCancellation()
     } finally {
+      println("cancelled!")
       ret.value = null
+      rootNode.styleManager.style = Style.Null
       composition.dispose()
     }
   }

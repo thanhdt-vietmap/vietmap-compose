@@ -13,7 +13,7 @@ internal expect fun PlatformMapView(
   styleUrl: String,
   update: (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
-  onStyleChanged: (map: MaplibreMap, style: Style) -> Unit,
+  onStyleChanged: (map: MaplibreMap, style: Style?) -> Unit,
   onCameraMove: (map: MaplibreMap) -> Unit,
   onClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
   onLongClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,

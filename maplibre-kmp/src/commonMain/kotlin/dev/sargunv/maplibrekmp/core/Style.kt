@@ -22,4 +22,24 @@ internal interface Style {
   fun addLayerAt(index: Int, layer: Layer)
 
   fun removeLayer(layer: Layer)
+
+  object Null : Style {
+    override fun addSource(source: Source) {}
+
+    override fun removeSource(source: Source) {}
+
+    override fun getLayer(id: String): PlatformLayer? = null
+
+    override fun getLayers(): List<PlatformLayer> = emptyList()
+
+    override fun addLayer(layer: Layer) {}
+
+    override fun addLayerAbove(id: String, layer: Layer) {}
+
+    override fun addLayerBelow(id: String, layer: Layer) {}
+
+    override fun addLayerAt(index: Int, layer: Layer) {}
+
+    override fun removeLayer(layer: Layer) {}
+  }
 }
