@@ -3,7 +3,7 @@ package dev.sargunv.maplibrekmp.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import dev.sargunv.maplibrekmp.core.PlatformMap
+import dev.sargunv.maplibrekmp.core.MaplibreMap
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import kotlinx.coroutines.channels.Channel
 import kotlin.time.Duration
@@ -15,7 +15,7 @@ public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition())
 }
 
 public class CameraState internal constructor(firstPosition: CameraPosition) {
-  internal var map: PlatformMap? = null
+  internal var map: MaplibreMap? = null
     set(map) {
       if (map != null) {
         map.cameraPosition = position
@@ -24,7 +24,7 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
       field = map
     }
 
-  private val mapAttachSignal = Channel<PlatformMap>()
+  private val mapAttachSignal = Channel<MaplibreMap>()
 
   internal val positionState = mutableStateOf(firstPosition)
 

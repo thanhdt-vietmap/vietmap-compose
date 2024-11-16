@@ -5,47 +5,42 @@ import dev.sargunv.maplibrekmp.core.layer.PlatformLayer
 import dev.sargunv.maplibrekmp.core.source.Source
 import org.maplibre.android.maps.Style as MLNStyle
 
-internal actual class Style private actual constructor() {
+internal class AndroidStyle(style: MLNStyle) : Style {
+  private var impl: MLNStyle = style
 
-  private lateinit var impl: MLNStyle
-
-  internal constructor(style: MLNStyle) : this() {
-    impl = style
-  }
-
-  actual fun addSource(source: Source) {
+  override fun addSource(source: Source) {
     impl.addSource(source.impl)
   }
 
-  actual fun removeSource(source: Source) {
+  override fun removeSource(source: Source) {
     impl.removeSource(source.impl)
   }
 
-  actual fun getLayer(id: String): PlatformLayer? {
+  override fun getLayer(id: String): PlatformLayer? {
     return impl.getLayer(id)?.let { PlatformLayer(it) }
   }
 
-  actual fun getLayers(): List<PlatformLayer> {
+  override fun getLayers(): List<PlatformLayer> {
     return impl.layers.map { PlatformLayer(it) }
   }
 
-  actual fun addLayer(layer: Layer) {
+  override fun addLayer(layer: Layer) {
     impl.addLayer(layer.impl)
   }
 
-  actual fun addLayerAbove(id: String, layer: Layer) {
+  override fun addLayerAbove(id: String, layer: Layer) {
     impl.addLayerAbove(layer.impl, id)
   }
 
-  actual fun addLayerBelow(id: String, layer: Layer) {
+  override fun addLayerBelow(id: String, layer: Layer) {
     impl.addLayerBelow(layer.impl, id)
   }
 
-  actual fun addLayerAt(index: Int, layer: Layer) {
+  override fun addLayerAt(index: Int, layer: Layer) {
     impl.addLayerAt(layer.impl, index)
   }
 
-  actual fun removeLayer(layer: Layer) {
+  override fun removeLayer(layer: Layer) {
     impl.removeLayer(layer.impl)
   }
 }

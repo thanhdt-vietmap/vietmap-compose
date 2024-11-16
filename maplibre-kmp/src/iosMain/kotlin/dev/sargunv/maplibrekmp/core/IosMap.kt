@@ -11,13 +11,17 @@ import cocoapods.MapLibre.MLNMapDebugTileBoundariesMask
 import cocoapods.MapLibre.MLNMapDebugTileInfoMask
 import cocoapods.MapLibre.MLNMapDebugTimestampsMask
 import cocoapods.MapLibre.MLNMapView
+import cocoapods.MapLibre.MLNMapViewDelegateProtocol
+import cocoapods.MapLibre.MLNStyle
 import cocoapods.MapLibre.MLNZoomLevelForAltitude
 import cocoapods.MapLibre.allowsTilting
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGSize
@@ -29,62 +33,80 @@ import platform.UIKit.UIGestureRecognizerStateBegan
 import platform.UIKit.UIGestureRecognizerStateEnded
 import platform.UIKit.UILongPressGestureRecognizer
 import platform.UIKit.UITapGestureRecognizer
+import platform.darwin.NSObject
+import platform.darwin.sel_registerName
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
-internal actual class PlatformMap private actual constructor() {
-  private lateinit var mapView: MLNMapView
-  internal lateinit var size: CValue<CGSize>
-  internal lateinit var layoutDir: LayoutDirection
-  internal lateinit var insetPadding: PaddingValues
+internal class IosMap(
+  private var mapView: MLNMapView,
+  internal var size: CValue<CGSize>,
+  internal var layoutDir: LayoutDirection,
+  internal var insetPadding: PaddingValues,
+  onMapLoaded: (IosMap) -> Unit,
+) : MaplibreMap {
 
-  internal var onStyleChanged: (PlatformMap, Style) -> Unit = { _, _ -> }
-  internal var onCameraMove: (PlatformMap) -> Unit = { _ -> }
-  internal var onClick: (PlatformMap, Position, XY) -> Unit = { _, _, _ -> }
-  internal var onLongClick: (PlatformMap, Position, XY) -> Unit = { _, _, _ -> }
+  internal var onStyleChanged: (IosMap, IosStyle) -> Unit = { _, _ -> }
+  internal var onCameraMove: (IosMap) -> Unit = { _ -> }
+  internal var onClick: (IosMap, Position, XY) -> Unit = { _, _, _ -> }
+  internal var onLongClick: (IosMap, Position, XY) -> Unit = { _, _, _ -> }
 
   private lateinit var lastUiPadding: PaddingValues
 
   // hold strong references to things that the sdk keeps weak references to
   private val gestures = mutableListOf<Gesture<*>>()
-  private lateinit var delegate: MapViewDelegate
+  private var delegate: Delegate
 
-  internal constructor(
-    mapView: MLNMapView,
-    size: CValue<CGSize>,
-    layoutDir: LayoutDirection,
-    insetPadding: PaddingValues,
-    onMapLoaded: (PlatformMap) -> Unit,
-  ) : this() {
-    this.mapView = mapView
-    this.size = size
-    this.layoutDir = layoutDir
-    this.insetPadding = insetPadding
-
+  init {
     mapView.automaticallyAdjustsContentInset = false
 
     addGestures(
       Gesture(UITapGestureRecognizer()) {
         if (state != UIGestureRecognizerStateEnded) return@Gesture
-        val point = locationInView(this@PlatformMap.mapView).toXY()
-        onClick(this@PlatformMap, positionFromScreenLocation(point), point)
+        val point = locationInView(this@IosMap.mapView).toXY()
+        onClick(this@IosMap, positionFromScreenLocation(point), point)
       },
       Gesture(UILongPressGestureRecognizer()) {
         if (state != UIGestureRecognizerStateBegan) return@Gesture
-        val point = locationInView(this@PlatformMap.mapView).toXY()
-        onLongClick(this@PlatformMap, positionFromScreenLocation(point), point)
+        val point = locationInView(this@IosMap.mapView).toXY()
+        onLongClick(this@IosMap, positionFromScreenLocation(point), point)
       },
     )
 
-    delegate =
-      MapViewDelegate(
-        onStyleLoaded = { mlnStyle -> onStyleChanged(this, Style(mlnStyle)) },
-        onCameraMove = { onCameraMove(this) },
-        onMapLoaded = { onMapLoaded(this) },
-      )
+    delegate = Delegate(this, onMapLoaded)
     mapView.delegate = delegate
+  }
+
+  private class Delegate(private val map: IosMap, private val onMapLoaded: (IosMap) -> Unit) :
+    NSObject(), MLNMapViewDelegateProtocol {
+
+    override fun mapViewDidFinishLoadingMap(mapView: MLNMapView) = onMapLoaded(map)
+
+    override fun mapView(mapView: MLNMapView, didFinishLoadingStyle: MLNStyle) {
+      map.onStyleChanged(map, IosStyle(didFinishLoadingStyle))
+    }
+
+    override fun mapViewRegionIsChanging(mapView: MLNMapView) {
+      map.onCameraMove(map)
+    }
+  }
+
+  @OptIn(BetaInteropApi::class)
+  internal class Gesture<T : UIGestureRecognizer>(
+    val recognizer: T,
+    val isCooperative: Boolean = true,
+    private val action: T.() -> Unit,
+  ) : NSObject() {
+    init {
+      recognizer.addTarget(target = this, action = sel_registerName(::handleGesture.name + ":"))
+    }
+
+    @ObjCAction
+    fun handleGesture(sender: UIGestureRecognizer) {
+      @Suppress("UNCHECKED_CAST") action(sender as T)
+    }
   }
 
   private inline fun <reified T : UIGestureRecognizer> addGestures(vararg gestures: Gesture<T>) {
@@ -99,14 +121,14 @@ internal actual class PlatformMap private actual constructor() {
     }
   }
 
-  actual var styleUrl: String? = null
+  override var styleUrl: String? = null
     set(value) {
       if (field == value) return
       mapView.setStyleURL(value?.let { NSURL(string = it) })
       field = value
     }
 
-  actual var isDebugEnabled: Boolean
+  override var isDebugEnabled: Boolean
     get() = mapView.debugMask != 0uL
     set(value) {
       mapView.debugMask =
@@ -118,7 +140,7 @@ internal actual class PlatformMap private actual constructor() {
         else 0uL
     }
 
-  actual var uiSettings
+  override var uiSettings
     get() =
       UiSettings(
         padding = lastUiPadding,
@@ -190,7 +212,7 @@ internal actual class PlatformMap private actual constructor() {
     }
   }
 
-  actual var cameraPosition: CameraPosition
+  override var cameraPosition: CameraPosition
     get() =
       mapView.camera.toCameraPosition(
         paddingValues =
@@ -221,7 +243,7 @@ internal actual class PlatformMap private actual constructor() {
       right = calculateRightPadding(layoutDir).value.toDouble(),
     )
 
-  actual suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
+  override suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
     suspendCoroutine { cont ->
       mapView.flyToCamera(
         finalPosition.toMLNMapCamera(),
@@ -231,13 +253,13 @@ internal actual class PlatformMap private actual constructor() {
       )
     }
 
-  actual fun positionFromScreenLocation(xy: XY): Position =
+  override fun positionFromScreenLocation(xy: XY): Position =
     mapView.convertPoint(point = xy.toCGPoint(), toCoordinateFromView = null).toPosition()
 
-  actual fun screenLocationFromPosition(position: Position): XY =
+  override fun screenLocationFromPosition(position: Position): XY =
     mapView.convertCoordinate(position.toCLLocationCoordinate2D(), toPointToView = null).toXY()
 
-  actual fun queryRenderedFeatures(xy: XY, layerIds: Set<String>): List<Feature> =
+  override fun queryRenderedFeatures(xy: XY, layerIds: Set<String>): List<Feature> =
     mapView.visibleFeaturesAtPoint(CGPointMake(xy.x.toDouble(), xy.y.toDouble()), layerIds).map {
       (it as MLNFeatureProtocol).toFeature()
     }

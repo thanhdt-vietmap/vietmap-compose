@@ -6,7 +6,7 @@ import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import kotlin.time.Duration
 
-internal expect class PlatformMap private constructor() {
+internal interface MaplibreMap {
   var styleUrl: String?
   var isDebugEnabled: Boolean
   var uiSettings: UiSettings

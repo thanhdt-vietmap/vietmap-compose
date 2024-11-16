@@ -4,7 +4,7 @@ import dev.sargunv.maplibrekmp.core.layer.Layer
 import dev.sargunv.maplibrekmp.core.layer.PlatformLayer
 import dev.sargunv.maplibrekmp.core.source.Source
 
-internal expect class Style private constructor() {
+internal interface Style {
   fun addSource(source: Source)
 
   fun removeSource(source: Source)

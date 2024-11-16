@@ -16,7 +16,8 @@ import androidx.compose.ui.viewinterop.UIKitInteropInteractionMode
 import androidx.compose.ui.viewinterop.UIKitInteropProperties
 import androidx.compose.ui.viewinterop.UIKitView
 import cocoapods.MapLibre.MLNMapView
-import dev.sargunv.maplibrekmp.core.PlatformMap
+import dev.sargunv.maplibrekmp.core.IosMap
+import dev.sargunv.maplibrekmp.core.MaplibreMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.core.toCGSize
@@ -26,19 +27,19 @@ import io.github.dellisd.spatialk.geojson.Position
 internal actual fun PlatformMapView(
   modifier: Modifier,
   styleUrl: String,
-  update: (map: PlatformMap) -> Unit,
+  update: (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
-  onStyleChanged: (map: PlatformMap, style: Style) -> Unit,
-  onCameraMove: (map: PlatformMap) -> Unit,
-  onClick: (map: PlatformMap, latLng: Position, xy: XY) -> Unit,
-  onLongClick: (map: PlatformMap, latLng: Position, xy: XY) -> Unit,
+  onStyleChanged: (map: MaplibreMap, style: Style) -> Unit,
+  onCameraMove: (map: MaplibreMap) -> Unit,
+  onClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
+  onLongClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
 ) {
   MeasuredBox(modifier = modifier.fillMaxSize()) { measuredSize ->
     val layoutDir = LocalLayoutDirection.current
     val insetPadding = WindowInsets.safeDrawing.asPaddingValues()
 
     val currentOnReset by rememberUpdatedState(onReset)
-    var currentMap by remember { mutableStateOf<PlatformMap?>(null) }
+    var currentMap by remember { mutableStateOf<IosMap?>(null) }
 
     UIKitView(
       modifier = modifier.fillMaxSize(),
@@ -46,7 +47,7 @@ internal actual fun PlatformMapView(
         UIKitInteropProperties(interactionMode = UIKitInteropInteractionMode.NonCooperative),
       factory = {
         MLNMapView().also { mapView ->
-          PlatformMap(
+          IosMap(
             mapView = mapView,
             size = measuredSize.toCGSize(),
             layoutDir = layoutDir,

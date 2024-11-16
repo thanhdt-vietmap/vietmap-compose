@@ -10,7 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.viewinterop.AndroidView
-import dev.sargunv.maplibrekmp.core.PlatformMap
+import dev.sargunv.maplibrekmp.core.MaplibreMap
+import dev.sargunv.maplibrekmp.core.AndroidMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Position
@@ -21,17 +22,17 @@ import org.maplibre.android.maps.MapView
 internal actual fun PlatformMapView(
   modifier: Modifier,
   styleUrl: String,
-  update: (map: PlatformMap) -> Unit,
+  update: (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
-  onStyleChanged: (map: PlatformMap, style: Style) -> Unit,
-  onCameraMove: (map: PlatformMap) -> Unit,
-  onClick: (map: PlatformMap, latLng: Position, xy: XY) -> Unit,
-  onLongClick: (map: PlatformMap, latLng: Position, xy: XY) -> Unit,
+  onStyleChanged: (map: MaplibreMap, style: Style) -> Unit,
+  onCameraMove: (map: MaplibreMap) -> Unit,
+  onClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
+  onLongClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
 ) {
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
   val currentOnReset by rememberUpdatedState(onReset)
-  var currentMap by remember { mutableStateOf<PlatformMap?>(null) }
+  var currentMap by remember { mutableStateOf<AndroidMap?>(null) }
 
   MapViewLifecycleEffect(currentMap)
 
@@ -40,7 +41,7 @@ internal actual fun PlatformMapView(
     factory = { context ->
       MapLibre.getInstance(context)
       MapView(context).apply {
-        getMapAsync { map -> currentMap = PlatformMap(this, map, layoutDir, density) }
+        getMapAsync { map -> currentMap = AndroidMap(this, map, layoutDir, density) }
       }
     },
     update = { _ ->

@@ -21,6 +21,7 @@ import platform.CoreLocation.CLLocationCoordinate2D
 import platform.CoreLocation.CLLocationCoordinate2DMake
 import platform.Foundation.NSData
 import platform.Foundation.dataWithBytes
+import kotlin.collections.Map
 
 internal fun ByteArray.toNSData(): NSData {
   return usePinned { NSData.dataWithBytes(it.addressOf(0), it.get().size.toULong()) }

@@ -71,7 +71,10 @@ fun App() {
         val insetsPadding = safeDrawingInsets.asPaddingValues()
 
         val cameraState =
-          rememberCameraState(CameraPosition(target = Position(-98.5795, 39.8283), zoom = 4.0))
+          rememberCameraState(CameraPosition(target = Position(
+            longitude = -98.5795,
+            latitude = 39.8283
+          ), zoom = 4.0))
 
         MaplibreMap(
           styleUrl = "https://tiles.openfreemap.org/styles/liberty",
