@@ -12,12 +12,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -43,7 +39,6 @@ fun App() {
   KoinContext {
     MaterialTheme(colorScheme = getColorScheme()) {
       val safeDrawingInsets = WindowInsets.safeDrawing
-      var text by remember { mutableStateOf("Hello, world!") }
 
       BottomSheetScaffold(
         sheetPeekHeight = max(128.dp, getSheetHeight() / 4),
@@ -59,12 +54,15 @@ fun App() {
                   WindowInsets(top = safeDrawingInsets.getTop(LocalDensity.current))
                 )
                 .verticalScroll(rememberScrollState())
-          ) {
-            Text(text = text)
-          }
+          ) {}
         },
       ) { sheetPadding ->
         val insetsPadding = safeDrawingInsets.asPaddingValues()
+
+        val mapPadding =
+          remember(sheetPadding, insetsPadding) {
+            max(insetsPadding, sheetPadding + PaddingValues(8.dp))
+          }
 
         val cameraState =
           rememberCameraState(
@@ -72,6 +70,7 @@ fun App() {
               // Chicago Union Station
               target = Position(latitude = 41.8785576, longitude = -87.6338853),
               zoom = 8.0,
+              padding = mapPadding,
             )
           )
 
@@ -80,13 +79,7 @@ fun App() {
         MaplibreMap(
           styleUrl =
             "https://api.protomaps.com/styles/v2/$style.json?key=${BuildKonfig.PROTOMAPS_KEY}",
-          uiSettings =
-            uiSettings(
-              padding =
-                remember(sheetPadding, insetsPadding) {
-                  max(insetsPadding, sheetPadding + PaddingValues(8.dp))
-                }
-            ),
+          uiSettings = uiSettings(padding = mapPadding),
           cameraState = cameraState,
         ) {
           val routeSource =

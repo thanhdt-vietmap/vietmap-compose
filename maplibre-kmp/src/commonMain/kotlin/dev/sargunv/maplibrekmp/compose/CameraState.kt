@@ -17,7 +17,7 @@ public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition())
 public class CameraState internal constructor(firstPosition: CameraPosition) {
   internal var map: MaplibreMap? = null
     set(map) {
-      if (map != null) {
+      if (map != null && map !== field) {
         map.cameraPosition = position
         mapAttachSignal.trySend(map)
       }

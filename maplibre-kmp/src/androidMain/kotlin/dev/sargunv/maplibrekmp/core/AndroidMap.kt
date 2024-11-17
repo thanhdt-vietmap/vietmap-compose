@@ -10,14 +10,14 @@ import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import org.maplibre.android.camera.CameraUpdateFactory
+import org.maplibre.android.maps.MapLibreMap
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
-import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.maps.MapLibreMap as MLNMap
-import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.Style as MlnStyle
 
 internal class AndroidMap(
@@ -123,18 +123,20 @@ internal class AndroidMap(
     )
 
   private fun CameraPosition.toMLNCameraPosition(): MLNCameraPosition =
-    MLNCameraPosition.Builder()
-      .target(target.toLatLng())
-      .zoom(zoom)
-      .tilt(tilt)
-      .bearing(bearing)
-      .padding(
-        left = padding.calculateLeftPadding(layoutDir).value.toDouble(),
-        top = padding.calculateTopPadding().value.toDouble(),
-        right = padding.calculateRightPadding(layoutDir).value.toDouble(),
-        bottom = padding.calculateBottomPadding().value.toDouble(),
-      )
-      .build()
+    with(density) {
+      MLNCameraPosition.Builder()
+        .target(target.toLatLng())
+        .zoom(zoom)
+        .tilt(tilt)
+        .bearing(bearing)
+        .padding(
+          left = padding.calculateLeftPadding(layoutDir).toPx().toDouble(),
+          top = padding.calculateTopPadding().toPx().toDouble(),
+          right = padding.calculateRightPadding(layoutDir).toPx().toDouble(),
+          bottom = padding.calculateBottomPadding().toPx().toDouble(),
+        )
+        .build()
+    }
 
   override var cameraPosition: CameraPosition
     get() = map.cameraPosition.toCameraPosition()
