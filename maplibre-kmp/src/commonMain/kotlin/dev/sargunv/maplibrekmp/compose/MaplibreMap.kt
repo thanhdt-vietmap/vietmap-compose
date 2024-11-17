@@ -68,7 +68,7 @@ public fun MaplibreMap(
   var rememberedStyle by remember { mutableStateOf<Style?>(null) }
   val styleCompositionState by rememberStyleCompositionState(rememberedStyle, content)
 
-  PlatformMapView(
+  ComposableMapView(
     modifier = modifier,
     styleUrl = styleUrl,
     update = { map ->

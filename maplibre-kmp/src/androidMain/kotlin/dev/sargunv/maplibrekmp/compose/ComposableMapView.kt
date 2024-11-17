@@ -19,7 +19,7 @@ import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
 
 @Composable
-internal actual fun PlatformMapView(
+internal actual fun ComposableMapView(
   modifier: Modifier,
   styleUrl: String,
   update: (map: MaplibreMap) -> Unit,

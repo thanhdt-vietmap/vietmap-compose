@@ -26,7 +26,7 @@ import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSURL
 
 @Composable
-internal actual fun PlatformMapView(
+internal actual fun ComposableMapView(
   modifier: Modifier,
   styleUrl: String,
   update: (map: MaplibreMap) -> Unit,

@@ -8,7 +8,7 @@ import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Position
 
 @Composable
-internal expect fun PlatformMapView(
+internal expect fun ComposableMapView(
   modifier: Modifier,
   styleUrl: String,
   update: (map: MaplibreMap) -> Unit,
