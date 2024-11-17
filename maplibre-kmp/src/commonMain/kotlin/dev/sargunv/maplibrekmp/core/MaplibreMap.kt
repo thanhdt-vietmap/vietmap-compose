@@ -19,4 +19,14 @@ internal interface MaplibreMap {
   fun screenLocationFromPosition(position: Position): XY
 
   fun queryRenderedFeatures(xy: XY, layerIds: Set<String>): List<Feature>
+
+  interface Callbacks {
+    fun onStyleChanged(map: MaplibreMap, style: Style?)
+
+    fun onCameraMove(map: MaplibreMap)
+
+    fun onClick(map: MaplibreMap, latLng: Position, xy: XY)
+
+    fun onLongClick(map: MaplibreMap, latLng: Position, xy: XY)
+  }
 }

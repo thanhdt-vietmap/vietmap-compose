@@ -46,10 +46,7 @@ internal class IosMap(
   internal var size: CValue<CGSize>,
   internal var layoutDir: LayoutDirection,
   internal var insetPadding: PaddingValues,
-  internal var onStyleChanged: (IosMap, IosStyle?) -> Unit,
-  internal var onCameraMove: (IosMap) -> Unit,
-  internal var onClick: (IosMap, Position, XY) -> Unit,
-  internal var onLongClick: (IosMap, Position, XY) -> Unit,
+  internal var callbacks: MaplibreMap.Callbacks,
 ) : MaplibreMap {
 
   private lateinit var lastUiPadding: PaddingValues
@@ -61,8 +58,8 @@ internal class IosMap(
   override var styleUrl: String = ""
     set(value) {
       if (field == value) return
-      println("Setting style URL to $value")
-      onStyleChanged(this, null)
+      println("Setting style URL")
+      callbacks.onStyleChanged(this, null)
       mapView.setStyleURL(NSURL(string = value))
       field = value
     }
@@ -74,12 +71,12 @@ internal class IosMap(
       Gesture(UITapGestureRecognizer()) {
         if (state != UIGestureRecognizerStateEnded) return@Gesture
         val point = locationInView(this@IosMap.mapView).toXY()
-        onClick(this@IosMap, positionFromScreenLocation(point), point)
+        callbacks.onClick(this@IosMap, positionFromScreenLocation(point), point)
       },
       Gesture(UILongPressGestureRecognizer()) {
         if (state != UIGestureRecognizerStateBegan) return@Gesture
         val point = locationInView(this@IosMap.mapView).toXY()
-        onLongClick(this@IosMap, positionFromScreenLocation(point), point)
+        callbacks.onLongClick(this@IosMap, positionFromScreenLocation(point), point)
       },
     )
 
@@ -103,11 +100,11 @@ internal class IosMap(
 
     override fun mapView(mapView: MLNMapView, didFinishLoadingStyle: MLNStyle) {
       println("Style finished loading")
-      map.onStyleChanged(map, IosStyle(didFinishLoadingStyle))
+      map.callbacks.onStyleChanged(map, IosStyle(didFinishLoadingStyle))
     }
 
     override fun mapViewRegionIsChanging(mapView: MLNMapView) {
-      map.onCameraMove(map)
+      map.callbacks.onCameraMove(map)
     }
   }
 

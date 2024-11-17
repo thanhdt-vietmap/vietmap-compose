@@ -15,12 +15,78 @@ import androidx.compose.ui.Modifier
 import dev.sargunv.maplibrekmp.compose.engine.LayerNode
 import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
 import dev.sargunv.maplibrekmp.compose.engine.StyleNode
+import dev.sargunv.maplibrekmp.core.MaplibreMap
 import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.StyleManager
 import dev.sargunv.maplibrekmp.core.UiSettings
+import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.ExpressionScope
+import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.coroutines.awaitCancellation
+
+@Composable
+public fun MaplibreMap(
+  modifier: Modifier = Modifier,
+  styleUrl: String = "https://demotiles.maplibre.org/style.json",
+  uiSettings: UiSettings = uiSettings(),
+  cameraState: CameraState = rememberCameraState(),
+  isDebugEnabled: Boolean = false,
+  content: @Composable ExpressionScope.() -> Unit = {},
+) {
+  var rememberedStyle by remember { mutableStateOf<Style?>(null) }
+  val styleComposition by rememberStyleCompositionState(rememberedStyle, content)
+
+  val callbacks =
+    remember(cameraState, styleComposition) {
+      object : MaplibreMap.Callbacks {
+        override fun onStyleChanged(map: MaplibreMap, style: Style?) {
+          rememberedStyle = style
+        }
+
+        override fun onCameraMove(map: MaplibreMap) {
+          cameraState.positionState.value = map.cameraPosition
+        }
+
+        override fun onClick(map: MaplibreMap, latLng: Position, xy: XY) {
+          styleComposition
+            ?.children
+            ?.mapNotNull { node -> (node as? LayerNode<*>)?.onClick?.let { node.layer.id to it } }
+            ?.forEach { (layerId, handle) ->
+              val features = map.queryRenderedFeatures(xy, setOf(layerId))
+              if (features.isNotEmpty()) handle(features)
+            }
+        }
+
+        override fun onLongClick(map: MaplibreMap, latLng: Position, xy: XY) {
+          styleComposition
+            ?.children
+            ?.mapNotNull { node ->
+              (node as? LayerNode<*>)?.onLongClick?.let { node.layer.id to it }
+            }
+            ?.forEach { (layerId, handle) ->
+              val features = map.queryRenderedFeatures(xy, setOf(layerId))
+              if (features.isNotEmpty()) handle(features)
+            }
+        }
+      }
+    }
+
+  ComposableMapView(
+    modifier = modifier,
+    styleUrl = styleUrl,
+    update = { map ->
+      cameraState.map = map
+      map.isDebugEnabled = isDebugEnabled
+      map.uiSettings = uiSettings
+    },
+    onReset = {
+      cameraState.map = null
+      rememberedStyle = null
+    },
+    callbacks = callbacks,
+  )
+}
 
 @Composable
 internal fun rememberStyleCompositionState(
@@ -36,7 +102,7 @@ internal fun rememberStyleCompositionState(
 
     composition.setContent {
       CompositionLocalProvider(LocalStyleManager provides rootNode.styleManager) {
-        content(Expression.Companion)
+        content(Expression)
       }
     }
 
@@ -55,50 +121,3 @@ internal fun rememberStyleCompositionState(
 
 internal val LocalStyleManager =
   staticCompositionLocalOf<StyleManager> { throw IllegalStateException() }
-
-@Composable
-public fun MaplibreMap(
-  modifier: Modifier = Modifier,
-  styleUrl: String = "https://demotiles.maplibre.org/style.json",
-  uiSettings: UiSettings = uiSettings(),
-  cameraState: CameraState = rememberCameraState(),
-  isDebugEnabled: Boolean = false,
-  content: @Composable ExpressionScope.() -> Unit = {},
-) {
-  var rememberedStyle by remember { mutableStateOf<Style?>(null) }
-  val styleCompositionState by rememberStyleCompositionState(rememberedStyle, content)
-
-  ComposableMapView(
-    modifier = modifier,
-    styleUrl = styleUrl,
-    update = { map ->
-      cameraState.map = map
-      map.isDebugEnabled = isDebugEnabled
-      map.uiSettings = uiSettings
-    },
-    onReset = {
-      cameraState.map = null
-      rememberedStyle = null
-    },
-    onStyleChanged = { _, style -> rememberedStyle = style },
-    onCameraMove = { map -> cameraState.positionState.value = map.cameraPosition },
-    onClick = { map, _, xy ->
-      styleCompositionState
-        ?.children
-        ?.mapNotNull { node -> (node as? LayerNode<*>)?.onClick?.let { node.layer.id to it } }
-        ?.forEach { (layerId, handle) ->
-          val features = map.queryRenderedFeatures(xy, setOf(layerId))
-          if (features.isNotEmpty()) handle(features)
-        }
-    },
-    onLongClick = { map, _, xy ->
-      styleCompositionState
-        ?.children
-        ?.mapNotNull { node -> (node as? LayerNode<*>)?.onLongClick?.let { node.layer.id to it } }
-        ?.forEach { (layerId, handle) ->
-          val features = map.queryRenderedFeatures(xy, setOf(layerId))
-          if (features.isNotEmpty()) handle(features)
-        }
-    },
-  )
-}

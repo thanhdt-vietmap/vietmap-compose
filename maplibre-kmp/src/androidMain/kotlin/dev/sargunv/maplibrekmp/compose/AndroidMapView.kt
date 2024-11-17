@@ -12,9 +12,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.sargunv.maplibrekmp.core.AndroidMap
 import dev.sargunv.maplibrekmp.core.MaplibreMap
-import dev.sargunv.maplibrekmp.core.Style
-import dev.sargunv.maplibrekmp.core.data.XY
-import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
 
@@ -24,10 +21,24 @@ internal actual fun ComposableMapView(
   styleUrl: String,
   update: (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
-  onStyleChanged: (map: MaplibreMap, style: Style?) -> Unit,
-  onCameraMove: (map: MaplibreMap) -> Unit,
-  onClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
-  onLongClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
+  callbacks: MaplibreMap.Callbacks,
+) {
+  AndroidMapView(
+    modifier = modifier,
+    styleUrl = styleUrl,
+    update = update,
+    onReset = onReset,
+    callbacks = callbacks,
+  )
+}
+
+@Composable
+internal fun AndroidMapView(
+  modifier: Modifier,
+  styleUrl: String,
+  update: (map: MaplibreMap) -> Unit,
+  onReset: () -> Unit,
+  callbacks: MaplibreMap.Callbacks,
 ) {
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
@@ -50,10 +61,7 @@ internal actual fun ComposableMapView(
               map = map,
               layoutDir = layoutDir,
               density = density,
-              onStyleChanged = onStyleChanged,
-              onCameraMove = onCameraMove,
-              onClick = onClick,
-              onLongClick = onLongClick,
+              callbacks = callbacks,
               styleUrl = styleUrl,
             )
         }
@@ -63,10 +71,7 @@ internal actual fun ComposableMapView(
       val map = currentMap ?: return@AndroidView
       map.layoutDir = layoutDir
       map.density = density
-      map.onStyleChanged = onStyleChanged
-      map.onCameraMove = onCameraMove
-      map.onClick = onClick
-      map.onLongClick = onLongClick
+      map.callbacks = callbacks
       map.styleUrl = styleUrl
       update(map)
     },

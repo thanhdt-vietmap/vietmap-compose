@@ -18,9 +18,6 @@ import androidx.compose.ui.viewinterop.UIKitView
 import cocoapods.MapLibre.MLNMapView
 import dev.sargunv.maplibrekmp.core.IosMap
 import dev.sargunv.maplibrekmp.core.MaplibreMap
-import dev.sargunv.maplibrekmp.core.Style
-import dev.sargunv.maplibrekmp.core.data.XY
-import io.github.dellisd.spatialk.geojson.Position
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSURL
@@ -31,10 +28,24 @@ internal actual fun ComposableMapView(
   styleUrl: String,
   update: (map: MaplibreMap) -> Unit,
   onReset: () -> Unit,
-  onStyleChanged: (map: MaplibreMap, style: Style?) -> Unit,
-  onCameraMove: (map: MaplibreMap) -> Unit,
-  onClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
-  onLongClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
+  callbacks: MaplibreMap.Callbacks,
+) {
+  IosMapView(
+    modifier = modifier,
+    styleUrl = styleUrl,
+    update = update,
+    onReset = onReset,
+    callbacks = callbacks,
+  )
+}
+
+@Composable
+internal fun IosMapView(
+  modifier: Modifier,
+  styleUrl: String,
+  update: (map: MaplibreMap) -> Unit,
+  onReset: () -> Unit,
+  callbacks: MaplibreMap.Callbacks,
 ) {
   MeasuredBox(modifier = modifier.fillMaxSize()) { x, y, width, height ->
     val layoutDir = LocalLayoutDirection.current
@@ -65,10 +76,7 @@ internal actual fun ComposableMapView(
                 size = CGSizeMake(width.value.toDouble(), height.value.toDouble()),
                 layoutDir = layoutDir,
                 insetPadding = insetPadding,
-                onStyleChanged = onStyleChanged,
-                onCameraMove = onCameraMove,
-                onClick = onClick,
-                onLongClick = onLongClick,
+                callbacks = callbacks,
               )
           }
       },
@@ -77,10 +85,7 @@ internal actual fun ComposableMapView(
         map.size = CGSizeMake(width.value.toDouble(), height.value.toDouble())
         map.layoutDir = layoutDir
         map.insetPadding = insetPadding
-        map.onStyleChanged = onStyleChanged
-        map.onCameraMove = onCameraMove
-        map.onClick = onClick
-        map.onLongClick = onLongClick
+        map.callbacks = callbacks
         map.styleUrl = styleUrl
         update(map)
       },

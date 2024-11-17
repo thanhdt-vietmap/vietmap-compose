@@ -10,24 +10,21 @@ import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
-import org.maplibre.android.camera.CameraUpdateFactory
-import org.maplibre.android.maps.MapLibreMap
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
+import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.maps.MapLibreMap as MLNMap
+import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.Style as MlnStyle
 
 internal class AndroidMap(
   private val map: MapLibreMap,
   internal var layoutDir: LayoutDirection,
   internal var density: Density,
-  internal var onStyleChanged: (map: MaplibreMap, style: Style?) -> Unit,
-  internal var onCameraMove: (map: MaplibreMap) -> Unit,
-  internal var onClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
-  internal var onLongClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
+  internal var callbacks: MaplibreMap.Callbacks,
   styleUrl: String,
 ) : MaplibreMap {
 
@@ -36,23 +33,31 @@ internal class AndroidMap(
   override var styleUrl: String = ""
     set(value) {
       if (field == value) return
+      println("Setting style URL")
+      callbacks.onStyleChanged(this, null)
       val builder = MlnStyle.Builder().fromUri(value.correctedAndroidUri().toString())
-      map.setStyle(builder) { onStyleChanged(this, AndroidStyle(it)) }
+      map.setStyle(builder) {
+        println("Style finished loading")
+        callbacks.onStyleChanged(this, AndroidStyle(it))
+      }
       field = value
     }
 
   init {
-    map.addOnCameraMoveListener { onCameraMove(this) }
+    map.addOnCameraMoveListener { callbacks.onCameraMove(this) }
+
     map.addOnMapClickListener { coords ->
       val pos = coords.toPosition()
-      onClick(this, pos, screenLocationFromPosition(pos))
+      callbacks.onClick(this, pos, screenLocationFromPosition(pos))
       true
     }
+
     map.addOnMapLongClickListener { coords ->
       val pos = coords.toPosition()
-      onClick(this, pos, screenLocationFromPosition(pos))
+      callbacks.onClick(this, pos, screenLocationFromPosition(pos))
       true
     }
+
     this.styleUrl = styleUrl
   }
 
