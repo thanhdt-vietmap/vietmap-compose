@@ -74,7 +74,11 @@ fun App() {
 
         val cameraState =
           rememberCameraState(
-            CameraPosition(target = Position(longitude = -98.5795, latitude = 39.8283), zoom = 4.0)
+            CameraPosition(
+              // Chicago Union Station
+              target = Position(latitude = 41.8785576, longitude = -87.6338853),
+              zoom = 8.0,
+            )
           )
 
         val style = if (isSystemInDarkTheme()) "dark" else "light"

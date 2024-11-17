@@ -11,7 +11,7 @@ import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.camera.CameraUpdateFactory
-import org.maplibre.android.maps.MapView
+import org.maplibre.android.maps.MapLibreMap
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
@@ -21,17 +21,25 @@ import org.maplibre.android.maps.MapLibreMap as MLNMap
 import org.maplibre.android.maps.Style as MlnStyle
 
 internal class AndroidMap(
-  internal val mapView: MapView,
-  private val map: MLNMap,
+  private val map: MapLibreMap,
   internal var layoutDir: LayoutDirection,
   internal var density: Density,
+  internal var onStyleChanged: (map: MaplibreMap, style: Style?) -> Unit,
+  internal var onCameraMove: (map: MaplibreMap) -> Unit,
+  internal var onClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
+  internal var onLongClick: (map: MaplibreMap, latLng: Position, xy: XY) -> Unit,
+  styleUrl: String,
 ) : MaplibreMap {
-  internal var onStyleChanged: (AndroidMap, AndroidStyle) -> Unit = { _, _ -> }
-  internal var onCameraMove: (AndroidMap) -> Unit = { _ -> }
-  internal var onClick: (AndroidMap, Position, XY) -> Unit = { _, _, _ -> }
-  internal var onLongClick: (AndroidMap, Position, XY) -> Unit = { _, _, _ -> }
 
   private lateinit var lastUiPadding: PaddingValues
+
+  override var styleUrl: String = ""
+    set(value) {
+      if (field == value) return
+      val builder = MlnStyle.Builder().fromUri(value.correctedAndroidUri().toString())
+      map.setStyle(builder) { onStyleChanged(this, AndroidStyle(it)) }
+      field = value
+    }
 
   init {
     map.addOnCameraMoveListener { onCameraMove(this) }
@@ -45,15 +53,8 @@ internal class AndroidMap(
       onClick(this, pos, screenLocationFromPosition(pos))
       true
     }
+    this.styleUrl = styleUrl
   }
-
-  override var styleUrl: String = ""
-    set(value) {
-      if (field == value) return
-      val builder = MlnStyle.Builder().fromUri(value.correctedAndroidUri().toString())
-      map.setStyle(builder) { onStyleChanged(this, AndroidStyle(it)) }
-      field = value
-    }
 
   override var isDebugEnabled
     get() = map.isDebugActive

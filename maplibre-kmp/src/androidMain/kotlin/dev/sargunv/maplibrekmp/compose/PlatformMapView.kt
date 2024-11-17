@@ -32,16 +32,31 @@ internal actual fun PlatformMapView(
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
   val currentOnReset by rememberUpdatedState(onReset)
+
+  var currentMapView by remember { mutableStateOf<MapView?>(null) }
   var currentMap by remember { mutableStateOf<AndroidMap?>(null) }
 
-  MapViewLifecycleEffect(currentMap)
+  MapViewLifecycleEffect(currentMapView)
 
   AndroidView(
     modifier = modifier,
     factory = { context ->
       MapLibre.getInstance(context)
-      MapView(context).apply {
-        getMapAsync { map -> currentMap = AndroidMap(this, map, layoutDir, density) }
+      MapView(context).also { mapView ->
+        currentMapView = mapView
+        mapView.getMapAsync { map ->
+          currentMap =
+            AndroidMap(
+              map = map,
+              layoutDir = layoutDir,
+              density = density,
+              onStyleChanged = onStyleChanged,
+              onCameraMove = onCameraMove,
+              onClick = onClick,
+              onLongClick = onLongClick,
+              styleUrl = styleUrl,
+            )
+        }
       }
     },
     update = { _ ->
@@ -58,6 +73,7 @@ internal actual fun PlatformMapView(
     onReset = {
       currentOnReset()
       currentMap = null
+      currentMapView = null
     },
   )
 }
