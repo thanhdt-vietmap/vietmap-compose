@@ -12,17 +12,13 @@ import org.maplibre.android.style.layers.LineLayer as MLNLineLayer
 
 @PublishedApi
 internal actual class LineLayer actual constructor(id: String, source: Source, anchor: Anchor) :
-  UserLayer(source, anchor) {
+  UserFeatureLayer(source, anchor) {
 
   override val impl = MLNLineLayer(id, source.id)
 
-  actual var sourceLayer: String
-    get() = impl.sourceLayer
-    set(value) {
-      impl.sourceLayer = value
-    }
+  override var sourceLayer: String by impl::sourceLayer
 
-  actual fun setFilter(filter: Expression<Boolean>) {
+  override fun setFilter(filter: Expression<Boolean>) {
     impl.setFilter(filter.convert() ?: MLNExpression.literal(true))
   }
 

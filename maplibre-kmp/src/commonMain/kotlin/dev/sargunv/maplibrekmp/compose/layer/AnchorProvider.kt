@@ -6,7 +6,7 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import dev.sargunv.maplibrekmp.core.layer.Anchor
 
-public sealed interface Anchor {
+public sealed interface AnchorProvider {
   public companion object {
     @Composable
     public fun Top(block: @Composable () -> Unit) {
@@ -31,6 +31,11 @@ public sealed interface Anchor {
     @Composable
     public fun Replace(layerId: String, block: @Composable () -> Unit) {
       CompositionLocalProvider(LocalAnchor provides Anchor.Replace(layerId)) { block() }
+    }
+
+    @Composable
+    internal fun Of(anchor: Anchor, block: @Composable () -> Unit) {
+      CompositionLocalProvider(LocalAnchor provides anchor) { block() }
     }
   }
 }

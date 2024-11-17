@@ -1,12 +1,10 @@
 package dev.sargunv.maplibrekmp.core.layer
 
-import dev.sargunv.maplibrekmp.core.source.Source
 import org.maplibre.android.style.layers.Property
 import org.maplibre.android.style.layers.PropertyFactory
 
 @PublishedApi
-internal actual sealed class UserLayer
-actual constructor(actual val source: Source, actual val anchor: Anchor) : Layer() {
+internal actual sealed class UserLayer actual constructor(actual val anchor: Anchor) : Layer() {
 
   actual var minZoom: Float
     get() = impl.minZoom

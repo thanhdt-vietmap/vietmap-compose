@@ -11,17 +11,17 @@ import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
 @PublishedApi
 internal actual class LineLayer actual constructor(id: String, source: Source, anchor: Anchor) :
-  UserLayer(source, anchor) {
+  UserFeatureLayer(source, anchor) {
 
   override val impl = MLNLineStyleLayer(id, source.impl)
 
-  actual var sourceLayer: String
+  override var sourceLayer: String
     get() = impl.sourceLayerIdentifier!!
     set(value) {
       impl.sourceLayerIdentifier = value
     }
 
-  actual fun setFilter(filter: Expression<Boolean>) {
+  override fun setFilter(filter: Expression<Boolean>) {
     impl.predicate = filter.toPredicate()
   }
 
@@ -82,7 +82,7 @@ internal actual class LineLayer actual constructor(id: String, source: Source, a
   }
 
   actual fun setLinePattern(linePattern: Expression<TResolvedImage>) {
-    // TODO: figure out how to unset a line pattern in iOS
+    // TODO: figure out how to unset a pattern in iOS
     if (linePattern.value != null) {
       impl.linePattern = linePattern.toNSExpression()
     }

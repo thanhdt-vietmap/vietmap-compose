@@ -5,22 +5,18 @@ import dev.sargunv.maplibrekmp.core.layer.ExpressionAdapter.convert
 import dev.sargunv.maplibrekmp.core.source.Source
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Point
+import org.maplibre.android.style.layers.PropertyFactory
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 import org.maplibre.android.style.layers.CircleLayer as MLNCircleLayer
-import org.maplibre.android.style.layers.PropertyFactory
 
 @PublishedApi
 internal actual class CircleLayer actual constructor(id: String, source: Source, anchor: Anchor) :
-  UserLayer(source, anchor) {
+  UserFeatureLayer(source, anchor) {
   override val impl = MLNCircleLayer(id, source.id)
 
-  actual var sourceLayer: String
-    get() = impl.sourceLayer
-    set(value) {
-      impl.sourceLayer = value
-    }
+  override var sourceLayer: String by impl::sourceLayer
 
-  actual fun setFilter(filter: Expression<Boolean>) {
+  override fun setFilter(filter: Expression<Boolean>) {
     impl.setFilter(filter.convert() ?: MLNExpression.literal(true))
   }
 

@@ -10,17 +10,17 @@ import dev.sargunv.maplibrekmp.expression.Point
 
 @PublishedApi
 internal actual class CircleLayer actual constructor(id: String, source: Source, anchor: Anchor) :
-  UserLayer(source, anchor) {
+  UserFeatureLayer(source, anchor) {
 
   override val impl = MLNCircleStyleLayer(id, source.impl)
 
-  actual var sourceLayer: String
+  override var sourceLayer: String
     get() = impl.sourceLayerIdentifier!!
     set(value) {
       impl.sourceLayerIdentifier = value
     }
 
-  actual fun setFilter(filter: Expression<Boolean>) {
+  override fun setFilter(filter: Expression<Boolean>) {
     impl.predicate = filter.toPredicate()
   }
 

@@ -19,16 +19,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
-import dev.sargunv.maplibrekmp.compose.layer.Anchor
-import dev.sargunv.maplibrekmp.compose.layer.CircleLayer
-import dev.sargunv.maplibrekmp.compose.layer.CirclePaint
-import dev.sargunv.maplibrekmp.compose.layer.LineLayer
-import dev.sargunv.maplibrekmp.compose.layer.LinePaint
 import dev.sargunv.maplibrekmp.compose.rememberCameraState
 import dev.sargunv.maplibrekmp.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrekmp.compose.uiSettings
@@ -106,62 +100,6 @@ fun App() {
               id = "amtrak-stations",
               shape = Shape.Url(Res.getUri("files/geojson/amtrak/stations.geojson")),
             )
-
-          //          Anchor.Below("boundary_3") {
-          LineLayer(
-            id = "routes-outline",
-            source = routeSource,
-            paint =
-              LinePaint(
-                color = const(Color.White),
-                width = interpolate(exponential(const(2)), zoom(), 0 to const(2), 10 to const(4)),
-              ),
-          )
-          LineLayer(
-            id = "routes-fill",
-            source = routeSource,
-            paint =
-              LinePaint(
-                color = const(Color.Magenta),
-                width = interpolate(exponential(const(2)), zoom(), 0 to const(1), 10 to const(2)),
-              ),
-          )
-          //          }
-
-          Anchor.Top {
-            CircleLayer(
-              id = "stations-bus",
-              source = stationSource,
-              filter = const("BUS") eq get<String>(const("StnType"), properties<String>()),
-              minZoom = 3f,
-              paint =
-                CirclePaint(
-                  color = const(Color.White),
-                  strokeColor = const(Color.Magenta),
-                  radius =
-                    interpolate(exponential(const(2)), zoom(), 0 to const(2), 10 to const(4)),
-                  strokeWidth =
-                    interpolate(exponential(const(2)), zoom(), 0 to const(1), 10 to const(2)),
-                ),
-              onClick = { features -> text = features.toString() },
-            )
-            CircleLayer(
-              id = "stations-train",
-              source = stationSource,
-              filter = const("TRAIN") eq get<String>(const("StnType"), properties<String>()),
-              minZoom = 2f,
-              paint =
-                CirclePaint(
-                  color = const(Color.White),
-                  strokeColor = const(Color.Magenta),
-                  radius =
-                    interpolate(exponential(const(2)), zoom(), 0 to const(4), 10 to const(8)),
-                  strokeWidth =
-                    interpolate(exponential(const(2)), zoom(), 0 to const(2), 10 to const(4)),
-                ),
-              onClick = { features -> text = features.toString() },
-            )
-          }
         }
       }
     }
