@@ -77,7 +77,7 @@ fun App() {
             CameraPosition(target = Position(longitude = -98.5795, latitude = 39.8283), zoom = 4.0)
           )
 
-        val style = if (isSystemInDarkTheme()) "dark" else "white"
+        val style = if (isSystemInDarkTheme()) "dark" else "light"
 
         MaplibreMap(
           styleUrl =
