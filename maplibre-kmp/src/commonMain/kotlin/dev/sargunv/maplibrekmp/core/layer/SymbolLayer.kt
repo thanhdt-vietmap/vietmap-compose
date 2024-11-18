@@ -6,6 +6,7 @@ import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Point
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
+@PublishedApi
 internal expect class SymbolLayer(id: String, source: Source) : FeatureLayer {
   fun setSymbolPlacement(placement: Expression<String>)
 
