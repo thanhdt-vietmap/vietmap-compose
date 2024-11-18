@@ -29,7 +29,7 @@ public inline fun BackgroundLayer(
 ) {
   composeKey(id) {
     LayerNode(
-      factory = { anchor -> BackgroundLayer(id = id, anchor = anchor) },
+      factory = { BackgroundLayer(id = id) },
       update = {
         set(minZoom) { layer.minZoom = it }
         set(maxZoom) { layer.maxZoom = it }

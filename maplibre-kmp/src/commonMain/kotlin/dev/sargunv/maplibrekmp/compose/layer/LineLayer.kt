@@ -52,7 +52,7 @@ public inline fun LineLayer(
 ) {
   composeKey(id) {
     LayerNode(
-      factory = { anchor -> LineLayer(id = id, source = source, anchor = anchor) },
+      factory = { LineLayer(id = id, source = source) },
       update = {
         set(sourceLayer) { layer.sourceLayer = it }
         set(minZoom) { layer.minZoom = it }

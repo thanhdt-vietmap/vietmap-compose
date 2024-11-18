@@ -17,7 +17,7 @@ import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
 import dev.sargunv.maplibrekmp.compose.engine.StyleNode
 import dev.sargunv.maplibrekmp.core.MaplibreMap
 import dev.sargunv.maplibrekmp.core.Style
-import dev.sargunv.maplibrekmp.core.StyleManager
+import dev.sargunv.maplibrekmp.compose.engine.StyleManager
 import dev.sargunv.maplibrekmp.core.UiSettings
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.expression.Expression

@@ -6,7 +6,7 @@ import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Point
 
 @PublishedApi
-internal expect class CircleLayer(id: String, source: Source, anchor: Anchor) : UserFeatureLayer {
+internal expect class CircleLayer(id: String, source: Source) : UserFeatureLayer {
   fun setCircleSortKey(circleSortKey: Expression<Number>)
 
   fun setCircleRadius(circleRadius: Expression<Number>)

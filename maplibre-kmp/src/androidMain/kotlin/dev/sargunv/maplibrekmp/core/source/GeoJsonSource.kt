@@ -9,7 +9,7 @@ import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
 
 @PublishedApi
 internal actual class GeoJsonSource
-actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : UserSource() {
+actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : Source() {
 
   override val impl: MLNGeoJsonSource
 

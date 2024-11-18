@@ -45,7 +45,7 @@ public inline fun CircleLayer(
 ) {
   composeKey(id) {
     LayerNode(
-      factory = { anchor -> CircleLayer(id = id, source = source, anchor = anchor) },
+      factory = { CircleLayer(id = id, source = source) },
       update = {
         set(sourceLayer) { layer.sourceLayer = it }
         set(minZoom) { layer.minZoom = it }

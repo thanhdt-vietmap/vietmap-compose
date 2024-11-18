@@ -7,8 +7,7 @@ import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
 @PublishedApi
-internal actual class BackgroundLayer actual constructor(id: String, anchor: Anchor) :
-  UserLayer(anchor) {
+internal actual class BackgroundLayer actual constructor(id: String) : UserLayer() {
   override val impl = MLNBackgroundStyleLayer(id)
 
   actual fun setBackgroundColor(backgroundColor: Expression<Color>) {

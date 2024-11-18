@@ -1,7 +1,7 @@
 package dev.sargunv.maplibrekmp.core
 
 import dev.sargunv.maplibrekmp.core.layer.Layer
-import dev.sargunv.maplibrekmp.core.layer.PlatformLayer
+import dev.sargunv.maplibrekmp.core.layer.UnspecifiedLayer
 import dev.sargunv.maplibrekmp.core.source.Source
 import org.maplibre.android.maps.Style as MLNStyle
 
@@ -16,12 +16,12 @@ internal class AndroidStyle(style: MLNStyle) : Style {
     impl.removeSource(source.impl)
   }
 
-  override fun getLayer(id: String): PlatformLayer? {
-    return impl.getLayer(id)?.let { PlatformLayer(it) }
+  override fun getLayer(id: String): UnspecifiedLayer? {
+    return impl.getLayer(id)?.let { UnspecifiedLayer(it) }
   }
 
-  override fun getLayers(): List<PlatformLayer> {
-    return impl.layers.map { PlatformLayer(it) }
+  override fun getLayers(): List<UnspecifiedLayer> {
+    return impl.layers.map { UnspecifiedLayer(it) }
   }
 
   override fun addLayer(layer: Layer) {

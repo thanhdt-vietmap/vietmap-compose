@@ -42,7 +42,7 @@ public inline fun FillLayer(
 ) {
   composeKey(id) {
     LayerNode(
-      factory = { anchor -> FillLayer(id = id, source = source, anchor = anchor) },
+      factory = { FillLayer(id = id, source = source) },
       update = {
         set(sourceLayer) { layer.sourceLayer = it }
         set(minZoom) { layer.minZoom = it }

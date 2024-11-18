@@ -3,7 +3,7 @@ package dev.sargunv.maplibrekmp.core
 import cocoapods.MapLibre.MLNStyle
 import cocoapods.MapLibre.MLNStyleLayer
 import dev.sargunv.maplibrekmp.core.layer.Layer
-import dev.sargunv.maplibrekmp.core.layer.PlatformLayer
+import dev.sargunv.maplibrekmp.core.layer.UnspecifiedLayer
 import dev.sargunv.maplibrekmp.core.source.Source
 
 internal class IosStyle(style: MLNStyle) : Style {
@@ -17,12 +17,12 @@ internal class IosStyle(style: MLNStyle) : Style {
     impl.removeSource(source.impl)
   }
 
-  override fun getLayer(id: String): PlatformLayer? {
-    return impl.layerWithIdentifier(id)?.let { PlatformLayer(it) }
+  override fun getLayer(id: String): UnspecifiedLayer? {
+    return impl.layerWithIdentifier(id)?.let { UnspecifiedLayer(it) }
   }
 
-  override fun getLayers(): List<PlatformLayer> {
-    return impl.layers.map { PlatformLayer(it as MLNStyleLayer) }
+  override fun getLayers(): List<UnspecifiedLayer> {
+    return impl.layers.map { UnspecifiedLayer(it as MLNStyleLayer) }
   }
 
   override fun addLayer(layer: Layer) {

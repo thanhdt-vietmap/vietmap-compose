@@ -8,8 +8,7 @@ import org.maplibre.android.style.layers.PropertyFactory
 import org.maplibre.android.style.layers.BackgroundLayer as MLNBackgroundLayer
 
 @PublishedApi
-internal actual class BackgroundLayer actual constructor(id: String, anchor: Anchor) :
-  UserLayer(anchor) {
+internal actual class BackgroundLayer actual constructor(id: String) : UserLayer() {
 
   override val impl: MLNBackgroundLayer = MLNBackgroundLayer(id)
 

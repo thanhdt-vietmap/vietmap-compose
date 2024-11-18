@@ -1,7 +1,6 @@
 package dev.sargunv.maplibrekmp.compose.engine
 
 import dev.sargunv.maplibrekmp.core.Style
-import dev.sargunv.maplibrekmp.core.StyleManager
 
 internal class StyleNode(style: Style) : MapNode() {
 
@@ -11,17 +10,17 @@ internal class StyleNode(style: Style) : MapNode() {
 
   override fun onChildRemoved(oldIndex: Int, node: MapNode) {
     node as LayerNode<*>
-    styleManager.removeLayer(node.layer, oldIndex)
+    styleManager.removeLayer(node, oldIndex)
   }
 
   override fun onChildInserted(index: Int, node: MapNode) {
     node as LayerNode<*>
-    styleManager.addLayer(node.layer, index)
+    styleManager.addLayer(node, index)
   }
 
   override fun onChildMoved(oldIndex: Int, index: Int, node: MapNode) {
     node as LayerNode<*>
-    styleManager.moveLayer(node.layer, oldIndex, index)
+    styleManager.moveLayer(node, oldIndex, index)
   }
 
   override fun onEndChanges() {

@@ -1,6 +1,5 @@
 package dev.sargunv.traintracker.ui
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -19,13 +18,14 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
+import dev.sargunv.maplibrekmp.compose.layer.AnchorProvider
+import dev.sargunv.maplibrekmp.compose.layer.LineLayer
 import dev.sargunv.maplibrekmp.compose.rememberCameraState
 import dev.sargunv.maplibrekmp.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrekmp.compose.uiSettings
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.core.source.GeoJsonOptions
 import dev.sargunv.maplibrekmp.core.source.Shape
-import dev.sargunv.traintracker.generated.BuildKonfig
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.getColorScheme
 import dev.sargunv.traintracker.getSheetHeight
@@ -74,11 +74,8 @@ fun App() {
             )
           )
 
-        val style = if (isSystemInDarkTheme()) "dark" else "light"
-
         MaplibreMap(
-          styleUrl =
-            "https://api.protomaps.com/styles/v2/$style.json?key=${BuildKonfig.PROTOMAPS_KEY}",
+          styleUrl = "https://tiles.openfreemap.org/styles/liberty",
           uiSettings = uiSettings(padding = mapPadding),
           cameraState = cameraState,
         ) {
@@ -93,6 +90,10 @@ fun App() {
               id = "amtrak-stations",
               shape = Shape.Url(Res.getUri("files/geojson/amtrak/stations.geojson")),
             )
+
+          AnchorProvider.Below("boundary_3") {
+            LineLayer(id = "amtrak-routes", source = routeSource)
+          }
         }
       }
     }

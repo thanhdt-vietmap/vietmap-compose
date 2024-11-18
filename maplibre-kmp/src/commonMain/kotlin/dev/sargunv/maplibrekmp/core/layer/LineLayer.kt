@@ -7,7 +7,7 @@ import dev.sargunv.maplibrekmp.expression.Point
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
 @PublishedApi
-internal expect class LineLayer(id: String, source: Source, anchor: Anchor) : UserFeatureLayer {
+internal expect class LineLayer(id: String, source: Source) : UserFeatureLayer {
   fun setLineCap(lineCap: Expression<String>)
 
   fun setLineJoin(lineJoin: Expression<String>)

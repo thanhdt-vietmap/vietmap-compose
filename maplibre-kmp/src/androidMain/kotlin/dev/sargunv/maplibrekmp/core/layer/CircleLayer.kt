@@ -5,13 +5,13 @@ import dev.sargunv.maplibrekmp.core.layer.ExpressionAdapter.convert
 import dev.sargunv.maplibrekmp.core.source.Source
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Point
-import org.maplibre.android.style.layers.PropertyFactory
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 import org.maplibre.android.style.layers.CircleLayer as MLNCircleLayer
+import org.maplibre.android.style.layers.PropertyFactory
 
 @PublishedApi
-internal actual class CircleLayer actual constructor(id: String, source: Source, anchor: Anchor) :
-  UserFeatureLayer(source, anchor) {
+internal actual class CircleLayer actual constructor(id: String, source: Source) :
+  UserFeatureLayer(source) {
   override val impl = MLNCircleLayer(id, source.id)
 
   override var sourceLayer: String by impl::sourceLayer

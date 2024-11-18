@@ -19,7 +19,7 @@ import platform.Foundation.NSURL
 
 @PublishedApi
 internal actual class GeoJsonSource
-actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : UserSource() {
+actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : Source() {
   override val impl: MLNShapeSource
 
   init {
