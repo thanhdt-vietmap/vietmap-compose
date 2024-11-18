@@ -3,10 +3,15 @@ package dev.sargunv.maplibrekmp.core
 import dev.sargunv.maplibrekmp.core.layer.Layer
 import dev.sargunv.maplibrekmp.core.layer.UnspecifiedLayer
 import dev.sargunv.maplibrekmp.core.source.Source
+import dev.sargunv.maplibrekmp.core.source.UnspecifiedSource
 import org.maplibre.android.maps.Style as MLNStyle
 
 internal class AndroidStyle(style: MLNStyle) : Style {
   private var impl: MLNStyle = style
+
+  override fun getSources(): List<Source> {
+    return impl.sources.map { UnspecifiedSource(it) }
+  }
 
   override fun addSource(source: Source) {
     impl.addSource(source.impl)

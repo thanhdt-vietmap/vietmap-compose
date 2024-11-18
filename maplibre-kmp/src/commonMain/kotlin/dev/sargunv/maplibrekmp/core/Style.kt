@@ -5,6 +5,8 @@ import dev.sargunv.maplibrekmp.core.layer.UnspecifiedLayer
 import dev.sargunv.maplibrekmp.core.source.Source
 
 internal interface Style {
+  fun getSources(): List<Source>
+
   fun addSource(source: Source)
 
   fun removeSource(source: Source)
@@ -24,6 +26,8 @@ internal interface Style {
   fun removeLayer(layer: Layer)
 
   object Null : Style {
+    override fun getSources(): List<Source> = emptyList()
+
     override fun addSource(source: Source) {}
 
     override fun removeSource(source: Source) {}

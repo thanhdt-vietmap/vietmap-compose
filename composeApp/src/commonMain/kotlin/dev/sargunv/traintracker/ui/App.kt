@@ -19,14 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
 import dev.sargunv.maplibrekmp.compose.layer.Anchor
-import dev.sargunv.maplibrekmp.compose.layer.LineLayer
+import dev.sargunv.maplibrekmp.compose.layer.CircleLayer
 import dev.sargunv.maplibrekmp.compose.rememberCameraState
-import dev.sargunv.maplibrekmp.compose.source.rememberGeoJsonSource
+import dev.sargunv.maplibrekmp.compose.source.rememberBaseSource
 import dev.sargunv.maplibrekmp.compose.uiSettings
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
-import dev.sargunv.maplibrekmp.core.data.GeoJsonOptions
-import dev.sargunv.maplibrekmp.core.data.ShapeOptions
-import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.getColorScheme
 import dev.sargunv.traintracker.getSheetHeight
 import dev.sargunv.traintracker.max
@@ -79,19 +76,20 @@ fun App() {
           uiSettings = uiSettings(padding = mapPadding),
           cameraState = cameraState,
         ) {
-          val routeSource =
-            rememberGeoJsonSource(
-              id = "amtrak-routes",
-              shape = ShapeOptions.Url(Res.getUri("files/geojson/amtrak/routes.geojson")),
-              options = GeoJsonOptions(tolerance = 0.001f),
-            )
-          val stationSource =
-            rememberGeoJsonSource(
-              id = "amtrak-stations",
-              shape = ShapeOptions.Url(Res.getUri("files/geojson/amtrak/stations.geojson")),
-            )
+          val tiles = rememberBaseSource("openmaptiles")
 
-          Anchor.Below("boundary_3") { LineLayer(id = "amtrak-routes", source = routeSource) }
+          Anchor.Replace("label_country_1") {
+            CircleLayer(
+              id = "label_country_1_modified",
+              source = tiles,
+              sourceLayer = "place",
+              filter =
+                all(
+                  get<String>(const("class")) eq const("country"),
+                  get<Number>(const("rank")) eq const(1),
+                ),
+            )
+          }
         }
       }
     }

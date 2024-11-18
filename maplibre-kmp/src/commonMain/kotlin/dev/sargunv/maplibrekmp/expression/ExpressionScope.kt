@@ -379,7 +379,7 @@ public interface ExpressionScope {
    */
   @JvmName("matchStrings")
   public fun <T> match(
-    input: Expression<*>,
+    input: Expression<String>,
     fallback: Expression<T>,
     vararg branches: MatchBranch<String, T>,
   ): Expression<T> =
@@ -406,7 +406,7 @@ public interface ExpressionScope {
    */
   @JvmName("matchNumbers")
   public fun <T> match(
-    input: Expression<*>,
+    input: Expression<Number>,
     fallback: Expression<T>,
     vararg branches: MatchBranch<Number, T>,
   ): Expression<T> =
@@ -420,7 +420,6 @@ public interface ExpressionScope {
       fallback,
     )
 
-  @Suppress("unused")
   public data class MatchBranch<Label, Output>
   internal constructor(internal val label: Expression<*>, internal val output: Expression<Output>)
 
