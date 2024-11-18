@@ -4,19 +4,21 @@ import dev.sargunv.maplibrekmp.core.source.Source
 import dev.sargunv.maplibrekmp.expression.Expression
 
 internal expect class RasterLayer(id: String, source: Source) : Layer {
-  fun setRasterOpacity(expression: Expression<Number>)
+  val source: Source
 
-  fun setRasterHueRotate(expression: Expression<Number>)
+  fun setRasterOpacity(opacity: Expression<Number>)
 
-  fun setRasterBrightnessMin(expression: Expression<Number>)
+  fun setRasterHueRotate(hueRotate: Expression<Number>)
 
-  fun setRasterBrightnessMax(expression: Expression<Number>)
+  fun setRasterBrightnessMin(brightnessMin: Expression<Number>)
 
-  fun setRasterSaturation(expression: Expression<Number>)
+  fun setRasterBrightnessMax(brightnessMax: Expression<Number>)
 
-  fun setRasterContrast(expression: Expression<Number>)
+  fun setRasterSaturation(saturation: Expression<Number>)
 
-  fun setRasterResampling(expression: Expression<String>)
+  fun setRasterContrast(contrast: Expression<Number>)
 
-  fun setRasterFadeDuration(expression: Expression<Number>)
+  fun setRasterResampling(resampling: Expression<String>)
+
+  fun setRasterFadeDuration(fadeDuration: Expression<Number>)
 }

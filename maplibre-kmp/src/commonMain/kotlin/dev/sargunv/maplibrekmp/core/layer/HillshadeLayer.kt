@@ -6,15 +6,17 @@ import dev.sargunv.maplibrekmp.expression.Expression
 
 @PublishedApi
 internal expect class HillshadeLayer(id: String, source: Source) : Layer {
-  fun setHillshadeIlluminationDirection(expression: Expression<Number>)
+  val source: Source
 
-  fun setHillshadeIlluminationAnchor(expression: Expression<String>)
+  fun setHillshadeIlluminationDirection(direction: Expression<Number>)
 
-  fun setHillshadeExaggeration(expression: Expression<Number>)
+  fun setHillshadeIlluminationAnchor(anchor: Expression<String>)
 
-  fun setHillshadeShadowColor(expression: Expression<Color>)
+  fun setHillshadeExaggeration(exaggeration: Expression<Number>)
 
-  fun setHillshadeHighlightColor(expression: Expression<Color>)
+  fun setHillshadeShadowColor(shadowColor: Expression<Color>)
 
-  fun setHillshadeAccentColor(expression: Expression<Color>)
+  fun setHillshadeHighlightColor(highlightColor: Expression<Color>)
+
+  fun setHillshadeAccentColor(accentColor: Expression<Color>)
 }

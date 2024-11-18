@@ -6,120 +6,116 @@ import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Point
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
-internal expect class SymbolLayer(id: String, source: Source) : Layer {
-  fun setSymbolPlacement(expression: Expression<String>)
+internal expect class SymbolLayer(id: String, source: Source) : FeatureLayer {
+  fun setSymbolPlacement(placement: Expression<String>)
 
-  fun setSymbolSpacing(expression: Expression<Number>)
+  fun setSymbolSpacing(spacing: Expression<Number>)
 
-  fun setSymbolAvoidEdges(expression: Expression<Boolean>)
+  fun setSymbolAvoidEdges(avoidEdges: Expression<Boolean>)
 
-  fun setSymbolSortKey(expression: Expression<Number>)
+  fun setSymbolSortKey(sortKey: Expression<Number>)
 
-  fun setSymbolZOrder(expression: Expression<String>)
+  fun setSymbolZOrder(zOrder: Expression<String>)
 
-  fun setIconAllowOverlap(expression: Expression<Boolean>)
+  fun setIconAllowOverlap(allowOverlap: Expression<Boolean>)
 
-  fun setIconOverlap(expression: Expression<String>)
+  fun setIconIgnorePlacement(ignorePlacement: Expression<Boolean>)
 
-  fun setIconIgnorePlacement(expression: Expression<Boolean>)
+  fun setIconOptional(optional: Expression<Boolean>)
 
-  fun setIconOptional(expression: Expression<Boolean>)
+  fun setIconRotationAlignment(rotationAlignment: Expression<String>)
 
-  fun setIconRotationAlignment(expression: Expression<String>)
+  fun setIconSize(size: Expression<Number>)
 
-  fun setIconSize(expression: Expression<Number>)
+  fun setIconTextFit(textFit: Expression<String>)
 
-  fun setIconTextFit(expression: Expression<String>)
+  fun setIconTextFitPadding(textFitPadding: Expression<Point>)
 
-  fun setIconTextFitPadding(expression: Expression<Point>)
+  fun setIconImage(image: Expression<TResolvedImage>)
 
-  fun setIconImage(expression: Expression<TResolvedImage>)
+  fun setIconRotate(rotate: Expression<Number>)
 
-  fun setIconRotate(expression: Expression<Number>)
+  fun setIconPadding(padding: Expression<Number>)
 
-  fun setIconPadding(expression: Expression<Number>)
+  fun setIconKeepUpright(keepUpright: Expression<Boolean>)
 
-  fun setIconKeepUpright(expression: Expression<Boolean>)
+  fun setIconOffset(offset: Expression<Point>)
 
-  fun setIconOffset(expression: Expression<Point>)
+  fun setIconAnchor(anchor: Expression<String>)
 
-  fun setIconAnchor(expression: Expression<String>)
+  fun setIconPitchAlignment(pitchAlignment: Expression<String>)
 
-  fun setIconPitchAlignment(expression: Expression<String>)
+  fun setIconOpacity(opacity: Expression<Number>)
 
-  fun setIconOpacity(expression: Expression<Number>)
+  fun setIconColor(color: Expression<Color>)
 
-  fun setIconColor(expression: Expression<Color>)
+  fun setIconHaloColor(haloColor: Expression<Color>)
 
-  fun setIconHaloColor(expression: Expression<Color>)
+  fun setIconHaloWidth(haloWidth: Expression<Number>)
 
-  fun setIconHaloWidth(expression: Expression<Number>)
+  fun setIconHaloBlur(haloBlur: Expression<Number>)
 
-  fun setIconHaloBlur(expression: Expression<Number>)
+  fun setIconTranslate(translate: Expression<Point>)
 
-  fun setIconTranslate(expression: Expression<Point>)
+  fun setIconTranslateAnchor(translateAnchor: Expression<String>)
 
-  fun setIconTranslateAnchor(expression: Expression<String>)
+  fun setTextPitchAlignment(pitchAlignment: Expression<String>)
 
-  fun setTextPitchAlignment(expression: Expression<String>)
+  fun setTextRotationAlignment(rotationAlignment: Expression<String>)
 
-  fun setTextRotationAlignment(expression: Expression<String>)
+  fun setTextField(field: Expression<String>)
 
-  fun setTextField(expression: Expression<String>)
+  fun setTextFont(font: Expression<List<String>>)
 
-  fun setTextFont(expression: Expression<List<String>>)
+  fun setTextSize(size: Expression<Number>)
 
-  fun setTextSize(expression: Expression<Number>)
+  fun setTextMaxWidth(maxWidth: Expression<Number>)
 
-  fun setTextMaxWidth(expression: Expression<Number>)
+  fun setTextLineHeight(lineHeight: Expression<Number>)
 
-  fun setTextLineHeight(expression: Expression<Number>)
+  fun setTextLetterSpacing(letterSpacing: Expression<Number>)
 
-  fun setTextLetterSpacing(expression: Expression<Number>)
+  fun setTextJustify(justify: Expression<String>)
 
-  fun setTextJustify(expression: Expression<String>)
+  fun setTextRadialOffset(radialOffset: Expression<Number>)
 
-  fun setTextRadialOffset(expression: Expression<Number>)
+  fun setTextVariableAnchor(variableAnchor: Expression<List<String>>)
 
-  fun setTextVariableAnchor(expression: Expression<List<String>>)
+  fun setTextVariableAnchorOffset(variableAnchorOffset: Expression<List<*>>)
 
-  fun setTextVariableAnchorOffset(expression: Expression<List<*>>)
+  fun setTextAnchor(anchor: Expression<String>)
 
-  fun setTextAnchor(expression: Expression<String>)
+  fun setTextMaxAngle(maxAngle: Expression<Number>)
 
-  fun setTextMaxAngle(expression: Expression<Number>)
+  fun setTextWritingMode(writingMode: Expression<List<String>>)
 
-  fun setTextWritingMode(expression: Expression<List<String>>)
+  fun setTextRotate(rotate: Expression<Number>)
 
-  fun setTextRotate(expression: Expression<Number>)
+  fun setTextPadding(padding: Expression<Number>)
 
-  fun setTextPadding(expression: Expression<Number>)
+  fun setTextKeepUpright(keepUpright: Expression<Boolean>)
 
-  fun setTextKeepUpright(expression: Expression<Boolean>)
+  fun setTextTransform(transform: Expression<String>)
 
-  fun setTextTransform(expression: Expression<String>)
+  fun setTextOffset(offset: Expression<Point>)
 
-  fun setTextOffset(expression: Expression<Point>)
+  fun setTextAllowOverlap(allowOverlap: Expression<Boolean>)
 
-  fun setTextAllowOverlap(expression: Expression<Boolean>)
+  fun setTextIgnorePlacement(ignorePlacement: Expression<Boolean>)
 
-  fun setTextOverlap(expression: Expression<String>)
+  fun setTextOptional(optional: Expression<Boolean>)
 
-  fun setTextIgnorePlacement(expression: Expression<Boolean>)
+  fun setTextOpacity(opacity: Expression<Number>)
 
-  fun setTextOptional(expression: Expression<Boolean>)
+  fun setTextColor(color: Expression<Color>)
 
-  fun setTextOpacity(expression: Expression<Number>)
+  fun setTextHaloColor(haloColor: Expression<Color>)
 
-  fun setTextColor(expression: Expression<Color>)
+  fun setTextHaloWidth(haloWidth: Expression<Number>)
 
-  fun setTextHaloColor(expression: Expression<Color>)
+  fun setTextHaloBlur(haloBlur: Expression<Number>)
 
-  fun setTextHaloWidth(expression: Expression<Number>)
+  fun setTextTranslate(translate: Expression<Point>)
 
-  fun setTextHaloBlur(expression: Expression<Number>)
-
-  fun setTextTranslate(expression: Expression<Point>)
-
-  fun setTextTranslateAnchor(expression: Expression<String>)
+  fun setTextTranslateAnchor(translateAnchor: Expression<String>)
 }
