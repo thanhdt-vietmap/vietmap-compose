@@ -2,16 +2,16 @@ package dev.sargunv.maplibrekmp.core.layer
 
 import androidx.compose.ui.graphics.Color
 import cocoapods.MapLibre.MLNFillStyleLayer
-import dev.sargunv.maplibrekmp.core.layer.ExpressionAdapter.toNSExpression
-import dev.sargunv.maplibrekmp.core.layer.ExpressionAdapter.toPredicate
 import dev.sargunv.maplibrekmp.core.source.Source
+import dev.sargunv.maplibrekmp.core.util.toNSExpression
+import dev.sargunv.maplibrekmp.core.util.toPredicate
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Point
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
 @PublishedApi
 internal actual class FillLayer actual constructor(id: String, source: Source) :
-  UserFeatureLayer(source) {
+  FeatureLayer(source) {
 
   override val impl = MLNFillStyleLayer(id, source.impl)
 

@@ -1,7 +1,7 @@
 package dev.sargunv.maplibrekmp.compose.engine
 
 import dev.sargunv.maplibrekmp.core.Style
-import dev.sargunv.maplibrekmp.core.layer.Anchor
+import dev.sargunv.maplibrekmp.compose.layer.Anchor
 import dev.sargunv.maplibrekmp.core.layer.UnspecifiedLayer
 import dev.sargunv.maplibrekmp.core.source.Source
 

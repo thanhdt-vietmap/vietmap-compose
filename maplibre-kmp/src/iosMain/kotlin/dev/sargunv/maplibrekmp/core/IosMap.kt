@@ -17,6 +17,11 @@ import cocoapods.MapLibre.MLNZoomLevelForAltitude
 import cocoapods.MapLibre.allowsTilting
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.core.data.XY
+import dev.sargunv.maplibrekmp.core.util.toCGPoint
+import dev.sargunv.maplibrekmp.core.util.toCLLocationCoordinate2D
+import dev.sargunv.maplibrekmp.core.util.toFeature
+import dev.sargunv.maplibrekmp.core.util.toPosition
+import dev.sargunv.maplibrekmp.core.util.toXY
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.cinterop.BetaInteropApi

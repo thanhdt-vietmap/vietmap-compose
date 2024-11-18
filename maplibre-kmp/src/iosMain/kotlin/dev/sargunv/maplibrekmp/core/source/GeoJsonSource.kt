@@ -9,8 +9,8 @@ import cocoapods.MapLibre.MLNShapeSourceOptionLineDistanceMetrics
 import cocoapods.MapLibre.MLNShapeSourceOptionMaximumZoomLevel
 import cocoapods.MapLibre.MLNShapeSourceOptionMaximumZoomLevelForClustering
 import cocoapods.MapLibre.MLNShapeSourceOptionSimplificationTolerance
-import dev.sargunv.maplibrekmp.core.layer.ExpressionAdapter.toNSExpression
-import dev.sargunv.maplibrekmp.core.toMLNShape
+import dev.sargunv.maplibrekmp.core.util.toMLNShape
+import dev.sargunv.maplibrekmp.core.util.toNSExpression
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
 import io.github.dellisd.spatialk.geojson.GeoJson

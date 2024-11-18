@@ -7,7 +7,7 @@ import dev.sargunv.maplibrekmp.expression.Point
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
 @PublishedApi
-internal expect class FillLayer(id: String, source: Source) : UserFeatureLayer {
+internal expect class FillLayer(id: String, source: Source) : FeatureLayer {
   fun setFillSortKey(fillSortKey: Expression<Number>)
 
   fun setFillAntialias(fillAntialias: Expression<Boolean>)

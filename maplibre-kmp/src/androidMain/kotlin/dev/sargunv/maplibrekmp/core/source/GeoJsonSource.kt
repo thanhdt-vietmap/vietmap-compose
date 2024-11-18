@@ -1,7 +1,7 @@
 package dev.sargunv.maplibrekmp.core.source
 
-import dev.sargunv.maplibrekmp.core.correctedAndroidUri
-import dev.sargunv.maplibrekmp.core.layer.ExpressionAdapter.convert
+import dev.sargunv.maplibrekmp.core.util.correctedAndroidUri
+import dev.sargunv.maplibrekmp.core.util.toMLNExpression
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
 import io.github.dellisd.spatialk.geojson.GeoJson
 import org.maplibre.android.style.sources.GeoJsonOptions as MLNGeoJsonOptions
@@ -24,7 +24,11 @@ actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : Source()
         withClusterMaxZoom(options.clusterMaxZoom)
         withClusterRadius(options.clusterRadius)
         options.clusterProperties.forEach { (key, value) ->
-          withClusterProperty(key, const(value.operator).convert()!!, value.mapper.convert()!!)
+          withClusterProperty(
+            key,
+            const(value.operator).toMLNExpression()!!,
+            value.mapper.toMLNExpression()!!
+          )
         }
       }
     impl =

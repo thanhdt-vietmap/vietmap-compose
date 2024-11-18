@@ -4,7 +4,7 @@ import dev.sargunv.maplibrekmp.core.source.Source
 import dev.sargunv.maplibrekmp.expression.Expression
 
 @PublishedApi
-internal expect sealed class UserFeatureLayer(source: Source) : UserLayer {
+internal expect sealed class FeatureLayer(source: Source) : Layer {
   val source: Source
   abstract var sourceLayer: String
 

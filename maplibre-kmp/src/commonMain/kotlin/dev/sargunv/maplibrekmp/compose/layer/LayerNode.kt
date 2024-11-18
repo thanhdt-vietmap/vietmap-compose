@@ -6,12 +6,12 @@ import androidx.compose.runtime.Updater
 import androidx.compose.runtime.key
 import dev.sargunv.maplibrekmp.compose.engine.LayerNode
 import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
-import dev.sargunv.maplibrekmp.core.layer.UserLayer
+import dev.sargunv.maplibrekmp.core.layer.Layer
 import io.github.dellisd.spatialk.geojson.Feature
 
 @PublishedApi
 @Composable
-internal fun <T : UserLayer> LayerNode(
+internal fun <T : Layer> LayerNode(
   factory: () -> T,
   update: Updater<LayerNode<T>>.() -> Unit,
   onClick: ((features: List<Feature>) -> Unit)?,

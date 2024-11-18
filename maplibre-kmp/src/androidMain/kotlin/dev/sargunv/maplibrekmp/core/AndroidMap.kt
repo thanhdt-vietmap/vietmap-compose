@@ -8,6 +8,11 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.core.data.XY
+import dev.sargunv.maplibrekmp.core.util.correctedAndroidUri
+import dev.sargunv.maplibrekmp.core.util.toLatLng
+import dev.sargunv.maplibrekmp.core.util.toPointF
+import dev.sargunv.maplibrekmp.core.util.toPosition
+import dev.sargunv.maplibrekmp.core.util.toXY
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.camera.CameraUpdateFactory

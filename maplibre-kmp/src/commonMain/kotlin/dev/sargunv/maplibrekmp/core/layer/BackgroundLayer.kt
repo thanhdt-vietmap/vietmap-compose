@@ -5,7 +5,7 @@ import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
 @PublishedApi
-internal expect class BackgroundLayer(id: String) : UserLayer {
+internal expect class BackgroundLayer(id: String) : Layer {
   fun setBackgroundColor(backgroundColor: Expression<Color>)
 
   fun setBackgroundPattern(backgroundPattern: Expression<TResolvedImage>)

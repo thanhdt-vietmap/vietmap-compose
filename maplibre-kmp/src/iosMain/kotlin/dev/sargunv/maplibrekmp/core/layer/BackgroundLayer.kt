@@ -2,12 +2,12 @@ package dev.sargunv.maplibrekmp.core.layer
 
 import androidx.compose.ui.graphics.Color
 import cocoapods.MapLibre.MLNBackgroundStyleLayer
-import dev.sargunv.maplibrekmp.core.layer.ExpressionAdapter.toNSExpression
+import dev.sargunv.maplibrekmp.core.util.toNSExpression
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
 @PublishedApi
-internal actual class BackgroundLayer actual constructor(id: String) : UserLayer() {
+internal actual class BackgroundLayer actual constructor(id: String) : Layer() {
   override val impl = MLNBackgroundStyleLayer(id)
 
   actual fun setBackgroundColor(backgroundColor: Expression<Color>) {
