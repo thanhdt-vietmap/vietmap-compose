@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrekmp.core
 
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
+import dev.sargunv.maplibrekmp.core.data.UiSettings
 import dev.sargunv.maplibrekmp.core.data.XY
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position

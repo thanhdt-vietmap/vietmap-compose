@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrekmp.core
+package dev.sargunv.maplibrekmp.core.data
 
 import androidx.compose.foundation.layout.PaddingValues
 

@@ -1,5 +1,7 @@
 package dev.sargunv.maplibrekmp.core.source
 
+import dev.sargunv.maplibrekmp.core.data.GeoJsonOptions
+import dev.sargunv.maplibrekmp.core.data.ShapeOptions
 import dev.sargunv.maplibrekmp.core.util.correctedAndroidUri
 import dev.sargunv.maplibrekmp.core.util.toMLNExpression
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.const
@@ -9,7 +11,7 @@ import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
 
 @PublishedApi
 internal actual class GeoJsonSource
-actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : Source() {
+actual constructor(id: String, shape: ShapeOptions, options: GeoJsonOptions) : Source() {
 
   override val impl: MLNGeoJsonSource
 
@@ -33,9 +35,9 @@ actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : Source()
       }
     impl =
       when (shape) {
-        is Shape.Url ->
+        is ShapeOptions.Url ->
           MLNGeoJsonSource(id = id, uri = shape.url.correctedAndroidUri(), options = optionMap)
-        is Shape.GeoJson ->
+        is ShapeOptions.GeoJson ->
           MLNGeoJsonSource(id = id, geoJson = shape.geoJson.json(), options = optionMap)
       }
   }

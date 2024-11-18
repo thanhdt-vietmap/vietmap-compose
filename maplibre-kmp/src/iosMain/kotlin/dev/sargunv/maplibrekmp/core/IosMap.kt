@@ -16,6 +16,7 @@ import cocoapods.MapLibre.MLNStyle
 import cocoapods.MapLibre.MLNZoomLevelForAltitude
 import cocoapods.MapLibre.allowsTilting
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
+import dev.sargunv.maplibrekmp.core.data.UiSettings
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.core.util.toCGPoint
 import dev.sargunv.maplibrekmp.core.util.toCLLocationCoordinate2D

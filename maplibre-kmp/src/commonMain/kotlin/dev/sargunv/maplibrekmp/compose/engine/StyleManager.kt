@@ -1,7 +1,7 @@
 package dev.sargunv.maplibrekmp.compose.engine
 
-import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.compose.layer.Anchor
+import dev.sargunv.maplibrekmp.core.Style
 import dev.sargunv.maplibrekmp.core.layer.UnspecifiedLayer
 import dev.sargunv.maplibrekmp.core.source.Source
 
@@ -123,5 +123,13 @@ internal class StyleManager(var style: Style) {
     if (anchor is Anchor.Replace)
       replacementCounters[anchor] = replacementCounters.getValue(anchor) + 1
     added = true
+  }
+
+  private fun Anchor.validate(baseLayers: Map<String, UnspecifiedLayer>) {
+    when (this) {
+      is Anchor.WithLayerId ->
+        require(baseLayers.containsKey(layerId)) { "Layer ID '$layerId' not found in base style" }
+      else -> Unit
+    }
   }
 }

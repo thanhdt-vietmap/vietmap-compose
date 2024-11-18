@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrekmp.core.source
+package dev.sargunv.maplibrekmp.core.data
 
 import androidx.compose.runtime.Immutable
 

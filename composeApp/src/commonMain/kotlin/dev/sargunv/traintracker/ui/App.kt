@@ -18,14 +18,14 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
-import dev.sargunv.maplibrekmp.compose.layer.AnchorProvider
+import dev.sargunv.maplibrekmp.compose.layer.Anchor
 import dev.sargunv.maplibrekmp.compose.layer.LineLayer
 import dev.sargunv.maplibrekmp.compose.rememberCameraState
 import dev.sargunv.maplibrekmp.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrekmp.compose.uiSettings
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
-import dev.sargunv.maplibrekmp.core.source.GeoJsonOptions
-import dev.sargunv.maplibrekmp.core.source.Shape
+import dev.sargunv.maplibrekmp.core.data.GeoJsonOptions
+import dev.sargunv.maplibrekmp.core.data.ShapeOptions
 import dev.sargunv.traintracker.generated.Res
 import dev.sargunv.traintracker.getColorScheme
 import dev.sargunv.traintracker.getSheetHeight
@@ -82,18 +82,16 @@ fun App() {
           val routeSource =
             rememberGeoJsonSource(
               id = "amtrak-routes",
-              shape = Shape.Url(Res.getUri("files/geojson/amtrak/routes.geojson")),
+              shape = ShapeOptions.Url(Res.getUri("files/geojson/amtrak/routes.geojson")),
               options = GeoJsonOptions(tolerance = 0.001f),
             )
           val stationSource =
             rememberGeoJsonSource(
               id = "amtrak-stations",
-              shape = Shape.Url(Res.getUri("files/geojson/amtrak/stations.geojson")),
+              shape = ShapeOptions.Url(Res.getUri("files/geojson/amtrak/stations.geojson")),
             )
 
-          AnchorProvider.Below("boundary_3") {
-            LineLayer(id = "amtrak-routes", source = routeSource)
-          }
+          Anchor.Below("boundary_3") { LineLayer(id = "amtrak-routes", source = routeSource) }
         }
       }
     }

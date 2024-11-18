@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
-import dev.sargunv.maplibrekmp.core.UiSettings
+import dev.sargunv.maplibrekmp.core.data.UiSettings
 
 @Composable
 public fun uiSettings(

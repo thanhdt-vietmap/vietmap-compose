@@ -9,6 +9,8 @@ import cocoapods.MapLibre.MLNShapeSourceOptionLineDistanceMetrics
 import cocoapods.MapLibre.MLNShapeSourceOptionMaximumZoomLevel
 import cocoapods.MapLibre.MLNShapeSourceOptionMaximumZoomLevelForClustering
 import cocoapods.MapLibre.MLNShapeSourceOptionSimplificationTolerance
+import dev.sargunv.maplibrekmp.core.data.GeoJsonOptions
+import dev.sargunv.maplibrekmp.core.data.ShapeOptions
 import dev.sargunv.maplibrekmp.core.util.toMLNShape
 import dev.sargunv.maplibrekmp.core.util.toNSExpression
 import dev.sargunv.maplibrekmp.expression.Expression
@@ -19,7 +21,7 @@ import platform.Foundation.NSURL
 
 @PublishedApi
 internal actual class GeoJsonSource
-actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : Source() {
+actual constructor(id: String, shape: ShapeOptions, options: GeoJsonOptions) : Source() {
   override val impl: MLNShapeSource
 
   init {
@@ -41,9 +43,9 @@ actual constructor(id: String, shape: Shape, options: GeoJsonOptions) : Source()
       }
     impl =
       when (shape) {
-        is Shape.Url ->
+        is ShapeOptions.Url ->
           MLNShapeSource(identifier = id, URL = NSURL(string = shape.url), options = optionMap)
-        is Shape.GeoJson ->
+        is ShapeOptions.GeoJson ->
           MLNShapeSource(identifier = id, shape = shape.geoJson.toMLNShape(), options = optionMap)
       }
   }

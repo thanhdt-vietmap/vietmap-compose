@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
+import dev.sargunv.maplibrekmp.core.data.UiSettings
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.core.util.correctedAndroidUri
 import dev.sargunv.maplibrekmp.core.util.toLatLng
