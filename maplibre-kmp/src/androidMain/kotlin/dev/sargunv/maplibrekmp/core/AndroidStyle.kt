@@ -1,16 +1,16 @@
 package dev.sargunv.maplibrekmp.core
 
 import dev.sargunv.maplibrekmp.core.layer.Layer
-import dev.sargunv.maplibrekmp.core.layer.UnspecifiedLayer
+import dev.sargunv.maplibrekmp.core.layer.UnknownLayer
 import dev.sargunv.maplibrekmp.core.source.Source
-import dev.sargunv.maplibrekmp.core.source.UnspecifiedSource
+import dev.sargunv.maplibrekmp.core.source.UnknownSource
 import org.maplibre.android.maps.Style as MLNStyle
 
 internal class AndroidStyle(style: MLNStyle) : Style {
   private var impl: MLNStyle = style
 
   override fun getSources(): List<Source> {
-    return impl.sources.map { UnspecifiedSource(it) }
+    return impl.sources.map { UnknownSource(it) }
   }
 
   override fun addSource(source: Source) {
@@ -21,12 +21,12 @@ internal class AndroidStyle(style: MLNStyle) : Style {
     impl.removeSource(source.impl)
   }
 
-  override fun getLayer(id: String): UnspecifiedLayer? {
-    return impl.getLayer(id)?.let { UnspecifiedLayer(it) }
+  override fun getLayer(id: String): Layer? {
+    return impl.getLayer(id)?.let { UnknownLayer(it) }
   }
 
-  override fun getLayers(): List<UnspecifiedLayer> {
-    return impl.layers.map { UnspecifiedLayer(it) }
+  override fun getLayers(): List<Layer> {
+    return impl.layers.map { UnknownLayer(it) }
   }
 
   override fun addLayer(layer: Layer) {

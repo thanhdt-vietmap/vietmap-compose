@@ -1,27 +1,36 @@
 package dev.sargunv.maplibrekmp.compose.source
 
 import androidx.compose.runtime.Composable
-import dev.sargunv.maplibrekmp.core.data.GeoJsonOptions
-import dev.sargunv.maplibrekmp.core.data.ShapeOptions
+import androidx.compose.runtime.key
+import dev.sargunv.maplibrekmp.core.source.GeoJsonOptions
 import dev.sargunv.maplibrekmp.core.source.GeoJsonSource
 import dev.sargunv.maplibrekmp.core.source.Source
-import androidx.compose.runtime.key as composeKey
+import io.github.dellisd.spatialk.geojson.GeoJson
 
 @Composable
 @Suppress("NOTHING_TO_INLINE")
 public inline fun rememberGeoJsonSource(
   id: String,
-  shape: ShapeOptions,
+  dataUrl: String,
   options: GeoJsonOptions = GeoJsonOptions(),
 ): Source =
-  composeKey(id) {
+  key(id, options) {
     rememberUserSource(
-      factory = { GeoJsonSource(id = id, shape = shape, options = options) },
-      update = {
-        when (shape) {
-          is ShapeOptions.Url -> setShapeUrl(shape.url)
-          is ShapeOptions.GeoJson -> setShape(shape.geoJson)
-        }
-      },
+      factory = { GeoJsonSource(id = id, dataUrl = dataUrl, options = options) },
+      update = { setDataUrl(dataUrl) },
+    )
+  }
+
+@Composable
+@Suppress("NOTHING_TO_INLINE")
+public inline fun rememberGeoJsonSource(
+  id: String,
+  data: GeoJson,
+  options: GeoJsonOptions = GeoJsonOptions(),
+): Source =
+  key(id, options) {
+    rememberUserSource(
+      factory = { GeoJsonSource(id = id, data = data, options = options) },
+      update = { setData(data) },
     )
   }

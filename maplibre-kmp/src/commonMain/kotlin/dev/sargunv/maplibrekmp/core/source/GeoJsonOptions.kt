@@ -1,6 +1,7 @@
-package dev.sargunv.maplibrekmp.core.data
+package dev.sargunv.maplibrekmp.core.source
 
 import androidx.compose.runtime.Immutable
+import dev.sargunv.maplibrekmp.expression.Expression
 
 @Immutable
 public data class GeoJsonOptions(
@@ -12,4 +13,6 @@ public data class GeoJsonOptions(
   val clusterMaxZoom: Int = maxZoom - 1,
   val clusterProperties: Map<String, ClusterProperty> = emptyMap(),
   val lineMetrics: Boolean = false,
-)
+) {
+  public data class ClusterProperty(val operator: String, val mapper: Expression<*>)
+}

@@ -18,8 +18,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
-import dev.sargunv.maplibrekmp.compose.layer.Anchor
-import dev.sargunv.maplibrekmp.compose.layer.CircleLayer
 import dev.sargunv.maplibrekmp.compose.rememberCameraState
 import dev.sargunv.maplibrekmp.compose.source.rememberBaseSource
 import dev.sargunv.maplibrekmp.compose.uiSettings
@@ -77,19 +75,6 @@ fun App() {
           cameraState = cameraState,
         ) {
           val tiles = rememberBaseSource("openmaptiles")
-
-          Anchor.Replace("label_country_1") {
-            CircleLayer(
-              id = "label_country_1_modified",
-              source = tiles,
-              sourceLayer = "place",
-              filter =
-                all(
-                  get<String>(const("class")) eq const("country"),
-                  get<Number>(const("rank")) eq const(1),
-                ),
-            )
-          }
         }
       }
     }

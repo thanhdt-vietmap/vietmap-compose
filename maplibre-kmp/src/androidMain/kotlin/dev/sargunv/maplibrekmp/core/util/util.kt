@@ -11,8 +11,10 @@ import com.google.gson.JsonPrimitive
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.Point
+import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Position
 import org.maplibre.android.geometry.LatLng
+import org.maplibre.android.geometry.LatLngBounds
 import java.net.URI
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 
@@ -32,6 +34,17 @@ internal fun PointF.toXY(): XY = XY(x = x, y = y)
 internal fun LatLng.toPosition(): Position = Position(longitude = longitude, latitude = latitude)
 
 internal fun Position.toLatLng(): LatLng = LatLng(latitude = latitude, longitude = longitude)
+
+internal fun LatLngBounds.toBoundingBox(): BoundingBox =
+  BoundingBox(northeast = northEast.toPosition(), southwest = southWest.toPosition())
+
+internal fun BoundingBox.toLatLngBounds(): LatLngBounds =
+  LatLngBounds.from(
+    latNorth = northeast.latitude,
+    lonEast = northeast.longitude,
+    latSouth = southwest.latitude,
+    lonWest = southwest.longitude,
+  )
 
 internal fun Expression<*>.toMLNExpression(): MLNExpression? =
   when (value) {

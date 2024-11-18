@@ -2,7 +2,7 @@ package dev.sargunv.maplibrekmp.compose.engine
 
 import dev.sargunv.maplibrekmp.compose.layer.Anchor
 import dev.sargunv.maplibrekmp.core.Style
-import dev.sargunv.maplibrekmp.core.layer.UnspecifiedLayer
+import dev.sargunv.maplibrekmp.core.layer.Layer
 import dev.sargunv.maplibrekmp.core.source.Source
 
 internal class StyleManager(var style: Style) {
@@ -15,7 +15,7 @@ internal class StyleManager(var style: Style) {
   private val userLayers = mutableListOf<LayerNode<*>>()
 
   // special handling for Replace anchors
-  private val replacedLayers = mutableMapOf<Anchor.Replace, UnspecifiedLayer>()
+  private val replacedLayers = mutableMapOf<Anchor.Replace, Layer>()
   private val replacementCounters = mutableMapOf<Anchor.Replace, Int>()
 
   internal fun getBaseSource(id: String): Source {
@@ -37,7 +37,7 @@ internal class StyleManager(var style: Style) {
     require(node.layer.id !in baseLayers) {
       "Layer ID '${node.layer.id}' already exists in base style"
     }
-    node.anchor.validate(baseLayers)
+    node.anchor.validate()
     println("Queuing layer ${node.layer.id} for addition at anchor ${node.anchor}, index $index")
     userLayers.add(index, node)
   }
@@ -151,7 +151,7 @@ internal class StyleManager(var style: Style) {
     added = true
   }
 
-  private fun Anchor.validate(baseLayers: Map<String, UnspecifiedLayer>) {
+  private fun Anchor.validate() {
     when (this) {
       is Anchor.WithLayerId ->
         require(baseLayers.containsKey(layerId)) { "Layer ID '$layerId' not found in base style" }

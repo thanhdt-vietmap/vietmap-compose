@@ -1,12 +1,14 @@
 package dev.sargunv.maplibrekmp.core.source
 
-import dev.sargunv.maplibrekmp.core.data.GeoJsonOptions
-import dev.sargunv.maplibrekmp.core.data.ShapeOptions
 import io.github.dellisd.spatialk.geojson.GeoJson
 
 @PublishedApi
-internal expect class GeoJsonSource(id: String, shape: ShapeOptions, options: GeoJsonOptions) : Source {
-  fun setShapeUrl(url: String)
+internal expect class GeoJsonSource : Source {
+  constructor(id: String, dataUrl: String, options: GeoJsonOptions)
 
-  fun setShape(geoJson: GeoJson)
+  constructor(id: String, data: GeoJson, options: GeoJsonOptions)
+
+  fun setDataUrl(url: String)
+
+  fun setData(geoJson: GeoJson)
 }
