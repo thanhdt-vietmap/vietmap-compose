@@ -8,35 +8,35 @@ import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
 @PublishedApi
 internal expect class LineLayer(id: String, source: Source) : FeatureLayer {
-  fun setLineCap(lineCap: Expression<String>)
+  fun setLineCap(cap: Expression<String>)
 
-  fun setLineJoin(lineJoin: Expression<String>)
+  fun setLineJoin(join: Expression<String>)
 
-  fun setLineMiterLimit(lineMiterLimit: Expression<Number>)
+  fun setLineMiterLimit(miterLimit: Expression<Number>)
 
-  fun setLineRoundLimit(lineRoundLimit: Expression<Number>)
+  fun setLineRoundLimit(roundLimit: Expression<Number>)
 
-  fun setLineSortKey(lineSortKey: Expression<Number>)
+  fun setLineSortKey(sortKey: Expression<Number>)
 
-  fun setLineOpacity(lineOpacity: Expression<Number>)
+  fun setLineOpacity(opacity: Expression<Number>)
 
-  fun setLineColor(lineColor: Expression<Color>)
+  fun setLineColor(color: Expression<Color>)
 
-  fun setLineTranslate(lineTranslate: Expression<Point>)
+  fun setLineTranslate(translate: Expression<Point>)
 
-  fun setLineTranslateAnchor(lineTranslateAnchor: Expression<String>)
+  fun setLineTranslateAnchor(translateAnchor: Expression<String>)
 
-  fun setLineWidth(lineWidth: Expression<Number>)
+  fun setLineWidth(width: Expression<Number>)
 
-  fun setLineGapWidth(lineGapWidth: Expression<Number>)
+  fun setLineGapWidth(gapWidth: Expression<Number>)
 
-  fun setLineOffset(lineOffset: Expression<Number>)
+  fun setLineOffset(offset: Expression<Number>)
 
-  fun setLineBlur(lineBlur: Expression<Number>)
+  fun setLineBlur(blur: Expression<Number>)
 
-  fun setLineDasharray(lineDasharray: Expression<List<Number>>)
+  fun setLineDasharray(dasharray: Expression<List<Number>>)
 
-  fun setLinePattern(linePattern: Expression<TResolvedImage>)
+  fun setLinePattern(pattern: Expression<TResolvedImage>)
 
-  fun setLineGradient(lineGradient: Expression<Color>)
+  fun setLineGradient(gradient: Expression<Color>)
 }

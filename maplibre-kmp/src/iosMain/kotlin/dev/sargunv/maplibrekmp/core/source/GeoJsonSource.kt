@@ -17,11 +17,10 @@ import io.github.dellisd.spatialk.geojson.GeoJson
 import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
 
-@PublishedApi
-internal actual class GeoJsonSource : Source {
+public actual class GeoJsonSource : Source {
   override val impl: MLNShapeSource
 
-  actual constructor(id: String, dataUrl: String, options: GeoJsonOptions) {
+  public actual constructor(id: String, dataUrl: String, options: GeoJsonOptions) {
     impl =
       MLNShapeSource(
         identifier = id,
@@ -30,7 +29,7 @@ internal actual class GeoJsonSource : Source {
       )
   }
 
-  actual constructor(id: String, data: GeoJson, options: GeoJsonOptions) {
+  public actual constructor(id: String, data: GeoJson, options: GeoJsonOptions) {
     impl =
       MLNShapeSource(identifier = id, shape = data.toMLNShape(), options = buildOptionMap(options))
   }
@@ -52,11 +51,11 @@ internal actual class GeoJsonSource : Source {
       )
     }
 
-  actual fun setDataUrl(url: String) {
+  public actual fun setDataUrl(url: String) {
     impl.setURL(NSURL(string = url))
   }
 
-  actual fun setData(geoJson: GeoJson) {
+  public actual fun setData(geoJson: GeoJson) {
     impl.setShape(geoJson.toMLNShape())
   }
 }

@@ -8,19 +8,19 @@ import dev.sargunv.maplibrekmp.expression.TResolvedImage
 
 @PublishedApi
 internal expect class FillLayer(id: String, source: Source) : FeatureLayer {
-  fun setFillSortKey(fillSortKey: Expression<Number>)
+  fun setFillSortKey(sortKey: Expression<Number>)
 
-  fun setFillAntialias(fillAntialias: Expression<Boolean>)
+  fun setFillAntialias(antialias: Expression<Boolean>)
 
-  fun setFillOpacity(fillOpacity: Expression<Number>)
+  fun setFillOpacity(opacity: Expression<Number>)
 
-  fun setFillColor(fillColor: Expression<Color>)
+  fun setFillColor(color: Expression<Color>)
 
-  fun setFillOutlineColor(fillOutlineColor: Expression<Color>)
+  fun setFillOutlineColor(outlineColor: Expression<Color>)
 
-  fun setFillTranslate(fillTranslate: Expression<Point>)
+  fun setFillTranslate(translate: Expression<Point>)
 
-  fun setFillTranslateAnchor(fillTranslateAnchor: Expression<String>)
+  fun setFillTranslateAnchor(translateAnchor: Expression<String>)
 
-  fun setFillPattern(fillPattern: Expression<TResolvedImage>)
+  fun setFillPattern(pattern: Expression<TResolvedImage>)
 }

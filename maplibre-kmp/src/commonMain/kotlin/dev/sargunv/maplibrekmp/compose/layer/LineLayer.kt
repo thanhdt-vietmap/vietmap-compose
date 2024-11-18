@@ -13,28 +13,6 @@ import dev.sargunv.maplibrekmp.expression.TResolvedImage
 import io.github.dellisd.spatialk.geojson.Feature
 import androidx.compose.runtime.key as composeKey
 
-public data class LineLayout(
-  val cap: Expression<String> = const("butt"),
-  val join: Expression<String> = const("miter"),
-  val miterLimit: Expression<Number> = const(2),
-  val roundLimit: Expression<Number> = const(1.05),
-  val sortKey: Expression<Number> = nil(),
-)
-
-public data class LinePaint(
-  val opacity: Expression<Number> = const(1),
-  val color: Expression<Color> = const(Color.Black),
-  val translate: Expression<Point> = point(0, 0),
-  val translateAnchor: Expression<String> = const("map"),
-  val width: Expression<Number> = const(1),
-  val gapWidth: Expression<Number> = const(0),
-  val offset: Expression<Number> = const(0),
-  val blur: Expression<Number> = const(0),
-  val dasharray: Expression<List<Number>> = nil(),
-  val pattern: Expression<TResolvedImage> = nil(),
-  val gradient: Expression<Color> = nil(),
-)
-
 @Composable
 @Suppress("NOTHING_TO_INLINE")
 public inline fun LineLayer(
@@ -45,8 +23,22 @@ public inline fun LineLayer(
   maxZoom: Float = 24.0f,
   filter: Expression<Boolean> = nil(),
   visible: Boolean = true,
-  layout: LineLayout = LineLayout(),
-  paint: LinePaint = LinePaint(),
+  cap: Expression<String> = const("butt"),
+  join: Expression<String> = const("miter"),
+  miterLimit: Expression<Number> = const(2),
+  roundLimit: Expression<Number> = const(1.05),
+  sortKey: Expression<Number> = nil(),
+  opacity: Expression<Number> = const(1),
+  color: Expression<Color> = const(Color.Black),
+  translate: Expression<Point> = point(0, 0),
+  translateAnchor: Expression<String> = const("map"),
+  width: Expression<Number> = const(1),
+  gapWidth: Expression<Number> = const(0),
+  offset: Expression<Number> = const(0),
+  blur: Expression<Number> = const(0),
+  dasharray: Expression<List<Number>> = nil(),
+  pattern: Expression<TResolvedImage> = nil(),
+  gradient: Expression<Color> = nil(),
   noinline onClick: ((features: List<Feature>) -> Unit)? = null,
   noinline onLongClick: ((features: List<Feature>) -> Unit)? = null,
 ) {
@@ -59,22 +51,22 @@ public inline fun LineLayer(
         set(maxZoom) { layer.maxZoom = it }
         set(filter) { layer.setFilter(it) }
         set(visible) { layer.visible = it }
-        set(layout.cap) { layer.setLineCap(it) }
-        set(layout.join) { layer.setLineJoin(it) }
-        set(layout.miterLimit) { layer.setLineMiterLimit(it) }
-        set(layout.roundLimit) { layer.setLineRoundLimit(it) }
-        set(layout.sortKey) { layer.setLineSortKey(it) }
-        set(paint.opacity) { layer.setLineOpacity(it) }
-        set(paint.color) { layer.setLineColor(it) }
-        set(paint.translate) { layer.setLineTranslate(it) }
-        set(paint.translateAnchor) { layer.setLineTranslateAnchor(it) }
-        set(paint.width) { layer.setLineWidth(it) }
-        set(paint.gapWidth) { layer.setLineGapWidth(it) }
-        set(paint.offset) { layer.setLineOffset(it) }
-        set(paint.blur) { layer.setLineBlur(it) }
-        set(paint.dasharray) { layer.setLineDasharray(it) }
-        set(paint.pattern) { layer.setLinePattern(it) }
-        set(paint.gradient) { layer.setLineGradient(it) }
+        set(cap) { layer.setLineCap(it) }
+        set(join) { layer.setLineJoin(it) }
+        set(miterLimit) { layer.setLineMiterLimit(it) }
+        set(roundLimit) { layer.setLineRoundLimit(it) }
+        set(sortKey) { layer.setLineSortKey(it) }
+        set(opacity) { layer.setLineOpacity(it) }
+        set(color) { layer.setLineColor(it) }
+        set(translate) { layer.setLineTranslate(it) }
+        set(translateAnchor) { layer.setLineTranslateAnchor(it) }
+        set(width) { layer.setLineWidth(it) }
+        set(gapWidth) { layer.setLineGapWidth(it) }
+        set(offset) { layer.setLineOffset(it) }
+        set(blur) { layer.setLineBlur(it) }
+        set(dasharray) { layer.setLineDasharray(it) }
+        set(pattern) { layer.setLinePattern(it) }
+        set(gradient) { layer.setLineGradient(it) }
       },
       onClick = onClick,
       onLongClick = onLongClick,

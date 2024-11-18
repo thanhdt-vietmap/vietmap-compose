@@ -20,51 +20,51 @@ internal actual class CircleLayer actual constructor(id: String, source: Source)
     impl.setFilter(filter.toMLNExpression() ?: MLNExpression.literal(true))
   }
 
-  actual fun setCircleSortKey(circleSortKey: Expression<Number>) {
-    impl.setProperties(PropertyFactory.circleSortKey(circleSortKey.toMLNExpression()))
+  actual fun setCircleSortKey(sortKey: Expression<Number>) {
+    impl.setProperties(PropertyFactory.circleSortKey(sortKey.toMLNExpression()))
   }
 
-  actual fun setCircleRadius(circleRadius: Expression<Number>) {
-    impl.setProperties(PropertyFactory.circleRadius(circleRadius.toMLNExpression()))
+  actual fun setCircleRadius(radius: Expression<Number>) {
+    impl.setProperties(PropertyFactory.circleRadius(radius.toMLNExpression()))
   }
 
-  actual fun setCircleColor(circleColor: Expression<Color>) {
-    impl.setProperties(PropertyFactory.circleColor(circleColor.toMLNExpression()))
+  actual fun setCircleColor(color: Expression<Color>) {
+    impl.setProperties(PropertyFactory.circleColor(color.toMLNExpression()))
   }
 
-  actual fun setCircleBlur(circleBlur: Expression<Number>) {
-    impl.setProperties(PropertyFactory.circleBlur(circleBlur.toMLNExpression()))
+  actual fun setCircleBlur(blur: Expression<Number>) {
+    impl.setProperties(PropertyFactory.circleBlur(blur.toMLNExpression()))
   }
 
-  actual fun setCircleOpacity(circleOpacity: Expression<Number>) {
-    impl.setProperties(PropertyFactory.circleOpacity(circleOpacity.toMLNExpression()))
+  actual fun setCircleOpacity(opacity: Expression<Number>) {
+    impl.setProperties(PropertyFactory.circleOpacity(opacity.toMLNExpression()))
   }
 
-  actual fun setCircleTranslate(circleTranslate: Expression<Point>) {
-    impl.setProperties(PropertyFactory.circleTranslate(circleTranslate.toMLNExpression()))
+  actual fun setCircleTranslate(translate: Expression<Point>) {
+    impl.setProperties(PropertyFactory.circleTranslate(translate.toMLNExpression()))
   }
 
-  actual fun setCircleTranslateAnchor(circleTranslateAnchor: Expression<String>) {
-    impl.setProperties(PropertyFactory.circleTranslateAnchor(circleTranslateAnchor.toMLNExpression()))
+  actual fun setCircleTranslateAnchor(translateAnchor: Expression<String>) {
+    impl.setProperties(PropertyFactory.circleTranslateAnchor(translateAnchor.toMLNExpression()))
   }
 
-  actual fun setCirclePitchScale(circlePitchScale: Expression<String>) {
-    impl.setProperties(PropertyFactory.circlePitchScale(circlePitchScale.toMLNExpression()))
+  actual fun setCirclePitchScale(pitchScale: Expression<String>) {
+    impl.setProperties(PropertyFactory.circlePitchScale(pitchScale.toMLNExpression()))
   }
 
-  actual fun setCirclePitchAlignment(circlePitchAlignment: Expression<String>) {
-    impl.setProperties(PropertyFactory.circlePitchAlignment(circlePitchAlignment.toMLNExpression()))
+  actual fun setCirclePitchAlignment(pitchAlignment: Expression<String>) {
+    impl.setProperties(PropertyFactory.circlePitchAlignment(pitchAlignment.toMLNExpression()))
   }
 
-  actual fun setCircleStrokeWidth(circleStrokeWidth: Expression<Number>) {
-    impl.setProperties(PropertyFactory.circleStrokeWidth(circleStrokeWidth.toMLNExpression()))
+  actual fun setCircleStrokeWidth(strokeWidth: Expression<Number>) {
+    impl.setProperties(PropertyFactory.circleStrokeWidth(strokeWidth.toMLNExpression()))
   }
 
-  actual fun setCircleStrokeColor(circleStrokeColor: Expression<Color>) {
-    impl.setProperties(PropertyFactory.circleStrokeColor(circleStrokeColor.toMLNExpression()))
+  actual fun setCircleStrokeColor(strokeColor: Expression<Color>) {
+    impl.setProperties(PropertyFactory.circleStrokeColor(strokeColor.toMLNExpression()))
   }
 
-  actual fun setCircleStrokeOpacity(circleStrokeOpacity: Expression<Number>) {
-    impl.setProperties(PropertyFactory.circleStrokeOpacity(circleStrokeOpacity.toMLNExpression()))
+  actual fun setCircleStrokeOpacity(strokeOpacity: Expression<Number>) {
+    impl.setProperties(PropertyFactory.circleStrokeOpacity(strokeOpacity.toMLNExpression()))
   }
 }

@@ -25,70 +25,70 @@ internal actual class LineLayer actual constructor(id: String, source: Source) :
     impl.predicate = filter.toPredicate()
   }
 
-  actual fun setLineCap(lineCap: Expression<String>) {
-    impl.lineCap = lineCap.toNSExpression()
+  actual fun setLineCap(cap: Expression<String>) {
+    impl.lineCap = cap.toNSExpression()
   }
 
-  actual fun setLineJoin(lineJoin: Expression<String>) {
-    impl.lineJoin = lineJoin.toNSExpression()
+  actual fun setLineJoin(join: Expression<String>) {
+    impl.lineJoin = join.toNSExpression()
   }
 
-  actual fun setLineMiterLimit(lineMiterLimit: Expression<Number>) {
-    impl.lineMiterLimit = lineMiterLimit.toNSExpression()
+  actual fun setLineMiterLimit(miterLimit: Expression<Number>) {
+    impl.lineMiterLimit = miterLimit.toNSExpression()
   }
 
-  actual fun setLineRoundLimit(lineRoundLimit: Expression<Number>) {
-    impl.lineRoundLimit = lineRoundLimit.toNSExpression()
+  actual fun setLineRoundLimit(roundLimit: Expression<Number>) {
+    impl.lineRoundLimit = roundLimit.toNSExpression()
   }
 
-  actual fun setLineSortKey(lineSortKey: Expression<Number>) {
-    impl.lineSortKey = lineSortKey.toNSExpression()
+  actual fun setLineSortKey(sortKey: Expression<Number>) {
+    impl.lineSortKey = sortKey.toNSExpression()
   }
 
-  actual fun setLineOpacity(lineOpacity: Expression<Number>) {
-    impl.lineOpacity = lineOpacity.toNSExpression()
+  actual fun setLineOpacity(opacity: Expression<Number>) {
+    impl.lineOpacity = opacity.toNSExpression()
   }
 
-  actual fun setLineColor(lineColor: Expression<Color>) {
-    impl.lineColor = lineColor.toNSExpression()
+  actual fun setLineColor(color: Expression<Color>) {
+    impl.lineColor = color.toNSExpression()
   }
 
-  actual fun setLineTranslate(lineTranslate: Expression<Point>) {
-    impl.lineTranslation = lineTranslate.toNSExpression()
+  actual fun setLineTranslate(translate: Expression<Point>) {
+    impl.lineTranslation = translate.toNSExpression()
   }
 
-  actual fun setLineTranslateAnchor(lineTranslateAnchor: Expression<String>) {
-    impl.lineTranslationAnchor = lineTranslateAnchor.toNSExpression()
+  actual fun setLineTranslateAnchor(translateAnchor: Expression<String>) {
+    impl.lineTranslationAnchor = translateAnchor.toNSExpression()
   }
 
-  actual fun setLineWidth(lineWidth: Expression<Number>) {
-    impl.lineWidth = lineWidth.toNSExpression()
+  actual fun setLineWidth(width: Expression<Number>) {
+    impl.lineWidth = width.toNSExpression()
   }
 
-  actual fun setLineGapWidth(lineGapWidth: Expression<Number>) {
-    impl.lineGapWidth = lineGapWidth.toNSExpression()
+  actual fun setLineGapWidth(gapWidth: Expression<Number>) {
+    impl.lineGapWidth = gapWidth.toNSExpression()
   }
 
-  actual fun setLineOffset(lineOffset: Expression<Number>) {
-    impl.lineOffset = lineOffset.toNSExpression()
+  actual fun setLineOffset(offset: Expression<Number>) {
+    impl.lineOffset = offset.toNSExpression()
   }
 
-  actual fun setLineBlur(lineBlur: Expression<Number>) {
-    impl.lineBlur = lineBlur.toNSExpression()
+  actual fun setLineBlur(blur: Expression<Number>) {
+    impl.lineBlur = blur.toNSExpression()
   }
 
-  actual fun setLineDasharray(lineDasharray: Expression<List<Number>>) {
-    impl.lineDashPattern = lineDasharray.toNSExpression()
+  actual fun setLineDasharray(dasharray: Expression<List<Number>>) {
+    impl.lineDashPattern = dasharray.toNSExpression()
   }
 
-  actual fun setLinePattern(linePattern: Expression<TResolvedImage>) {
+  actual fun setLinePattern(pattern: Expression<TResolvedImage>) {
     // TODO: figure out how to unset a pattern in iOS
-    if (linePattern.value != null) {
-      impl.linePattern = linePattern.toNSExpression()
+    if (pattern.value != null) {
+      impl.linePattern = pattern.toNSExpression()
     }
   }
 
-  actual fun setLineGradient(lineGradient: Expression<Color>) {
-    impl.lineGradient = lineGradient.toNSExpression()
+  actual fun setLineGradient(gradient: Expression<Color>) {
+    impl.lineGradient = gradient.toNSExpression()
   }
 }

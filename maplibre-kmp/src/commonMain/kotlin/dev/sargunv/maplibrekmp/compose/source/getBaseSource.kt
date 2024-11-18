@@ -6,7 +6,7 @@ import dev.sargunv.maplibrekmp.compose.LocalStyleManager
 import dev.sargunv.maplibrekmp.core.source.Source
 
 @Composable
-public fun rememberBaseSource(id: String): Source {
+public fun getBaseSource(id: String): Source {
   val styleManager = LocalStyleManager.current
   return remember(styleManager, id) { styleManager.getBaseSource(id) }
 }

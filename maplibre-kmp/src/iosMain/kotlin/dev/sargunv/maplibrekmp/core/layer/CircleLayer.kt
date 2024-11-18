@@ -24,51 +24,51 @@ internal actual class CircleLayer actual constructor(id: String, source: Source)
     impl.predicate = filter.toPredicate()
   }
 
-  actual fun setCircleSortKey(circleSortKey: Expression<Number>) {
-    impl.circleSortKey = circleSortKey.toNSExpression()
+  actual fun setCircleSortKey(sortKey: Expression<Number>) {
+    impl.circleSortKey = sortKey.toNSExpression()
   }
 
-  actual fun setCircleRadius(circleRadius: Expression<Number>) {
-    impl.circleRadius = circleRadius.toNSExpression()
+  actual fun setCircleRadius(radius: Expression<Number>) {
+    impl.circleRadius = radius.toNSExpression()
   }
 
-  actual fun setCircleColor(circleColor: Expression<Color>) {
-    impl.circleColor = circleColor.toNSExpression()
+  actual fun setCircleColor(color: Expression<Color>) {
+    impl.circleColor = color.toNSExpression()
   }
 
-  actual fun setCircleBlur(circleBlur: Expression<Number>) {
-    impl.circleBlur = circleBlur.toNSExpression()
+  actual fun setCircleBlur(blur: Expression<Number>) {
+    impl.circleBlur = blur.toNSExpression()
   }
 
-  actual fun setCircleOpacity(circleOpacity: Expression<Number>) {
-    impl.circleOpacity = circleOpacity.toNSExpression()
+  actual fun setCircleOpacity(opacity: Expression<Number>) {
+    impl.circleOpacity = opacity.toNSExpression()
   }
 
-  actual fun setCircleTranslate(circleTranslate: Expression<Point>) {
-    impl.circleTranslation = circleTranslate.toNSExpression()
+  actual fun setCircleTranslate(translate: Expression<Point>) {
+    impl.circleTranslation = translate.toNSExpression()
   }
 
-  actual fun setCircleTranslateAnchor(circleTranslateAnchor: Expression<String>) {
-    impl.circleTranslationAnchor = circleTranslateAnchor.toNSExpression()
+  actual fun setCircleTranslateAnchor(translateAnchor: Expression<String>) {
+    impl.circleTranslationAnchor = translateAnchor.toNSExpression()
   }
 
-  actual fun setCirclePitchScale(circlePitchScale: Expression<String>) {
-    impl.circleScaleAlignment = circlePitchScale.toNSExpression()
+  actual fun setCirclePitchScale(pitchScale: Expression<String>) {
+    impl.circleScaleAlignment = pitchScale.toNSExpression()
   }
 
-  actual fun setCirclePitchAlignment(circlePitchAlignment: Expression<String>) {
-    impl.circlePitchAlignment = circlePitchAlignment.toNSExpression()
+  actual fun setCirclePitchAlignment(pitchAlignment: Expression<String>) {
+    impl.circlePitchAlignment = pitchAlignment.toNSExpression()
   }
 
-  actual fun setCircleStrokeWidth(circleStrokeWidth: Expression<Number>) {
-    impl.circleStrokeWidth = circleStrokeWidth.toNSExpression()
+  actual fun setCircleStrokeWidth(strokeWidth: Expression<Number>) {
+    impl.circleStrokeWidth = strokeWidth.toNSExpression()
   }
 
-  actual fun setCircleStrokeColor(circleStrokeColor: Expression<Color>) {
-    impl.circleStrokeColor = circleStrokeColor.toNSExpression()
+  actual fun setCircleStrokeColor(strokeColor: Expression<Color>) {
+    impl.circleStrokeColor = strokeColor.toNSExpression()
   }
 
-  actual fun setCircleStrokeOpacity(circleStrokeOpacity: Expression<Number>) {
-    impl.circleStrokeOpacity = circleStrokeOpacity.toNSExpression()
+  actual fun setCircleStrokeOpacity(strokeOpacity: Expression<Number>) {
+    impl.circleStrokeOpacity = strokeOpacity.toNSExpression()
   }
 }

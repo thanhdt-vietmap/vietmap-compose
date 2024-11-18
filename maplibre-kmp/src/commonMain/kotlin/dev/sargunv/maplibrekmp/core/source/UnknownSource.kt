@@ -1,3 +1,3 @@
 package dev.sargunv.maplibrekmp.core.source
 
-@PublishedApi internal expect class UnknownSource : Source
+public expect class UnknownSource : Source

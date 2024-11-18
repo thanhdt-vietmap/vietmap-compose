@@ -7,27 +7,27 @@ import dev.sargunv.maplibrekmp.expression.Point
 
 @PublishedApi
 internal expect class CircleLayer(id: String, source: Source) : FeatureLayer {
-  fun setCircleSortKey(circleSortKey: Expression<Number>)
+  fun setCircleSortKey(sortKey: Expression<Number>)
 
-  fun setCircleRadius(circleRadius: Expression<Number>)
+  fun setCircleRadius(radius: Expression<Number>)
 
-  fun setCircleColor(circleColor: Expression<Color>)
+  fun setCircleColor(color: Expression<Color>)
 
-  fun setCircleBlur(circleBlur: Expression<Number>)
+  fun setCircleBlur(blur: Expression<Number>)
 
-  fun setCircleOpacity(circleOpacity: Expression<Number>)
+  fun setCircleOpacity(opacity: Expression<Number>)
 
-  fun setCircleTranslate(circleTranslate: Expression<Point>)
+  fun setCircleTranslate(translate: Expression<Point>)
 
-  fun setCircleTranslateAnchor(circleTranslateAnchor: Expression<String>)
+  fun setCircleTranslateAnchor(translateAnchor: Expression<String>)
 
-  fun setCirclePitchScale(circlePitchScale: Expression<String>)
+  fun setCirclePitchScale(pitchScale: Expression<String>)
 
-  fun setCirclePitchAlignment(circlePitchAlignment: Expression<String>)
+  fun setCirclePitchAlignment(pitchAlignment: Expression<String>)
 
-  fun setCircleStrokeWidth(circleStrokeWidth: Expression<Number>)
+  fun setCircleStrokeWidth(strokeWidth: Expression<Number>)
 
-  fun setCircleStrokeColor(circleStrokeColor: Expression<Color>)
+  fun setCircleStrokeColor(strokeColor: Expression<Color>)
 
-  fun setCircleStrokeOpacity(circleStrokeOpacity: Expression<Number>)
+  fun setCircleStrokeOpacity(strokeOpacity: Expression<Number>)
 }

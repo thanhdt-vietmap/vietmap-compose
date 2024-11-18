@@ -25,38 +25,38 @@ internal actual class FillLayer actual constructor(id: String, source: Source) :
     impl.predicate = filter.toPredicate()
   }
 
-  actual fun setFillSortKey(fillSortKey: Expression<Number>) {
-    impl.fillSortKey = fillSortKey.toNSExpression()
+  actual fun setFillSortKey(sortKey: Expression<Number>) {
+    impl.fillSortKey = sortKey.toNSExpression()
   }
 
-  actual fun setFillAntialias(fillAntialias: Expression<Boolean>) {
-    impl.fillAntialiased = fillAntialias.toNSExpression()
+  actual fun setFillAntialias(antialias: Expression<Boolean>) {
+    impl.fillAntialiased = antialias.toNSExpression()
   }
 
-  actual fun setFillOpacity(fillOpacity: Expression<Number>) {
-    impl.fillOpacity = fillOpacity.toNSExpression()
+  actual fun setFillOpacity(opacity: Expression<Number>) {
+    impl.fillOpacity = opacity.toNSExpression()
   }
 
-  actual fun setFillColor(fillColor: Expression<Color>) {
-    impl.fillColor = fillColor.toNSExpression()
+  actual fun setFillColor(color: Expression<Color>) {
+    impl.fillColor = color.toNSExpression()
   }
 
-  actual fun setFillOutlineColor(fillOutlineColor: Expression<Color>) {
-    impl.fillOutlineColor = fillOutlineColor.toNSExpression()
+  actual fun setFillOutlineColor(outlineColor: Expression<Color>) {
+    impl.fillOutlineColor = outlineColor.toNSExpression()
   }
 
-  actual fun setFillTranslate(fillTranslate: Expression<Point>) {
-    impl.fillTranslation = fillTranslate.toNSExpression()
+  actual fun setFillTranslate(translate: Expression<Point>) {
+    impl.fillTranslation = translate.toNSExpression()
   }
 
-  actual fun setFillTranslateAnchor(fillTranslateAnchor: Expression<String>) {
-    impl.fillTranslationAnchor = fillTranslateAnchor.toNSExpression()
+  actual fun setFillTranslateAnchor(translateAnchor: Expression<String>) {
+    impl.fillTranslationAnchor = translateAnchor.toNSExpression()
   }
 
-  actual fun setFillPattern(fillPattern: Expression<TResolvedImage>) {
+  actual fun setFillPattern(pattern: Expression<TResolvedImage>) {
     // TODO: figure out how to unset a pattern in iOS
-    if (fillPattern.value != null) {
-      impl.fillPattern = fillPattern.toNSExpression()
+    if (pattern.value != null) {
+      impl.fillPattern = pattern.toNSExpression()
     }
   }
 }

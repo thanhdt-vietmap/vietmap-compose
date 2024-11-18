@@ -21,35 +21,35 @@ internal actual class FillLayer actual constructor(id: String, source: Source) :
     impl.setFilter(filter.toMLNExpression() ?: MLNExpression.literal(true))
   }
 
-  actual fun setFillSortKey(fillSortKey: Expression<Number>) {
-    impl.setProperties(PropertyFactory.fillSortKey(fillSortKey.toMLNExpression()))
+  actual fun setFillSortKey(sortKey: Expression<Number>) {
+    impl.setProperties(PropertyFactory.fillSortKey(sortKey.toMLNExpression()))
   }
 
-  actual fun setFillAntialias(fillAntialias: Expression<Boolean>) {
-    impl.setProperties(PropertyFactory.fillAntialias(fillAntialias.toMLNExpression()))
+  actual fun setFillAntialias(antialias: Expression<Boolean>) {
+    impl.setProperties(PropertyFactory.fillAntialias(antialias.toMLNExpression()))
   }
 
-  actual fun setFillOpacity(fillOpacity: Expression<Number>) {
-    impl.setProperties(PropertyFactory.fillOpacity(fillOpacity.toMLNExpression()))
+  actual fun setFillOpacity(opacity: Expression<Number>) {
+    impl.setProperties(PropertyFactory.fillOpacity(opacity.toMLNExpression()))
   }
 
-  actual fun setFillColor(fillColor: Expression<Color>) {
-    impl.setProperties(PropertyFactory.fillColor(fillColor.toMLNExpression()))
+  actual fun setFillColor(color: Expression<Color>) {
+    impl.setProperties(PropertyFactory.fillColor(color.toMLNExpression()))
   }
 
-  actual fun setFillOutlineColor(fillOutlineColor: Expression<Color>) {
-    impl.setProperties(PropertyFactory.fillOutlineColor(fillOutlineColor.toMLNExpression()))
+  actual fun setFillOutlineColor(outlineColor: Expression<Color>) {
+    impl.setProperties(PropertyFactory.fillOutlineColor(outlineColor.toMLNExpression()))
   }
 
-  actual fun setFillTranslate(fillTranslate: Expression<Point>) {
-    impl.setProperties(PropertyFactory.fillTranslate(fillTranslate.toMLNExpression()))
+  actual fun setFillTranslate(translate: Expression<Point>) {
+    impl.setProperties(PropertyFactory.fillTranslate(translate.toMLNExpression()))
   }
 
-  actual fun setFillTranslateAnchor(fillTranslateAnchor: Expression<String>) {
-    impl.setProperties(PropertyFactory.fillTranslateAnchor(fillTranslateAnchor.toMLNExpression()))
+  actual fun setFillTranslateAnchor(translateAnchor: Expression<String>) {
+    impl.setProperties(PropertyFactory.fillTranslateAnchor(translateAnchor.toMLNExpression()))
   }
 
-  actual fun setFillPattern(fillPattern: Expression<TResolvedImage>) {
-    impl.setProperties(PropertyFactory.fillPattern(fillPattern.toMLNExpression()))
+  actual fun setFillPattern(pattern: Expression<TResolvedImage>) {
+    impl.setProperties(PropertyFactory.fillPattern(pattern.toMLNExpression()))
   }
 }

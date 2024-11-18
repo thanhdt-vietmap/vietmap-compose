@@ -10,18 +10,18 @@ import dev.sargunv.maplibrekmp.expression.TResolvedImage
 internal actual class BackgroundLayer actual constructor(id: String) : Layer() {
   override val impl = MLNBackgroundStyleLayer(id)
 
-  actual fun setBackgroundColor(backgroundColor: Expression<Color>) {
-    impl.backgroundColor = backgroundColor.toNSExpression()
+  actual fun setBackgroundColor(color: Expression<Color>) {
+    impl.backgroundColor = color.toNSExpression()
   }
 
-  actual fun setBackgroundPattern(backgroundPattern: Expression<TResolvedImage>) {
+  actual fun setBackgroundPattern(pattern: Expression<TResolvedImage>) {
     // TODO: figure out how to unset a pattern in iOS
-    if (backgroundPattern.value != null) {
-      impl.backgroundPattern = backgroundPattern.toNSExpression()
+    if (pattern.value != null) {
+      impl.backgroundPattern = pattern.toNSExpression()
     }
   }
 
-  actual fun setBackgroundOpacity(backgroundOpacity: Expression<Number>) {
-    impl.backgroundOpacity = backgroundOpacity.toNSExpression()
+  actual fun setBackgroundOpacity(opacity: Expression<Number>) {
+    impl.backgroundOpacity = opacity.toNSExpression()
   }
 }

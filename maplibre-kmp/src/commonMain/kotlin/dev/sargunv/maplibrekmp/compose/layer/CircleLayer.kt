@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrekmp.compose.layer
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key as composeKey
 import androidx.compose.ui.graphics.Color
 import dev.sargunv.maplibrekmp.core.layer.CircleLayer
 import dev.sargunv.maplibrekmp.core.source.Source
@@ -10,23 +11,6 @@ import dev.sargunv.maplibrekmp.expression.Expression.Companion.nil
 import dev.sargunv.maplibrekmp.expression.Expression.Companion.point
 import dev.sargunv.maplibrekmp.expression.Point
 import io.github.dellisd.spatialk.geojson.Feature
-import androidx.compose.runtime.key as composeKey
-
-public data class CircleLayout(val sortKey: Expression<Number> = nil())
-
-public data class CirclePaint(
-  val radius: Expression<Number> = const(5),
-  val color: Expression<Color> = const(Color.Black),
-  val blur: Expression<Number> = const(0),
-  val opacity: Expression<Number> = const(1),
-  val translate: Expression<Point> = point(0, 0),
-  val translateAnchor: Expression<String> = const("map"),
-  val pitchScale: Expression<String> = const("map"),
-  val pitchAlignment: Expression<String> = const("viewport"),
-  val strokeWidth: Expression<Number> = const(0),
-  val strokeColor: Expression<Color> = const(Color.Black),
-  val strokeOpacity: Expression<Number> = const(1),
-)
 
 @Composable
 @Suppress("NOTHING_TO_INLINE")
@@ -38,8 +22,18 @@ public inline fun CircleLayer(
   maxZoom: Float = 24.0f,
   filter: Expression<Boolean> = nil(),
   visible: Boolean = true,
-  layout: CircleLayout = CircleLayout(),
-  paint: CirclePaint = CirclePaint(),
+  sortKey: Expression<Number> = nil(),
+  radius: Expression<Number> = const(5),
+  color: Expression<Color> = const(Color.Black),
+  blur: Expression<Number> = const(0),
+  opacity: Expression<Number> = const(1),
+  translate: Expression<Point> = point(0, 0),
+  translateAnchor: Expression<String> = const("map"),
+  pitchScale: Expression<String> = const("map"),
+  pitchAlignment: Expression<String> = const("viewport"),
+  strokeWidth: Expression<Number> = const(0),
+  strokeColor: Expression<Color> = const(Color.Black),
+  strokeOpacity: Expression<Number> = const(1),
   noinline onClick: ((features: List<Feature>) -> Unit)? = null,
   noinline onLongClick: ((features: List<Feature>) -> Unit)? = null,
 ) {
@@ -52,18 +46,18 @@ public inline fun CircleLayer(
         set(maxZoom) { layer.maxZoom = it }
         set(filter) { layer.setFilter(it) }
         set(visible) { layer.visible = it }
-        set(layout.sortKey) { layer.setCircleSortKey(it) }
-        set(paint.radius) { layer.setCircleRadius(it) }
-        set(paint.color) { layer.setCircleColor(it) }
-        set(paint.blur) { layer.setCircleBlur(it) }
-        set(paint.opacity) { layer.setCircleOpacity(it) }
-        set(paint.translate) { layer.setCircleTranslate(it) }
-        set(paint.translateAnchor) { layer.setCircleTranslateAnchor(it) }
-        set(paint.pitchScale) { layer.setCirclePitchScale(it) }
-        set(paint.pitchAlignment) { layer.setCirclePitchAlignment(it) }
-        set(paint.strokeWidth) { layer.setCircleStrokeWidth(it) }
-        set(paint.strokeColor) { layer.setCircleStrokeColor(it) }
-        set(paint.strokeOpacity) { layer.setCircleStrokeOpacity(it) }
+        set(sortKey) { layer.setCircleSortKey(it) }
+        set(radius) { layer.setCircleRadius(it) }
+        set(color) { layer.setCircleColor(it) }
+        set(blur) { layer.setCircleBlur(it) }
+        set(opacity) { layer.setCircleOpacity(it) }
+        set(translate) { layer.setCircleTranslate(it) }
+        set(translateAnchor) { layer.setCircleTranslateAnchor(it) }
+        set(pitchScale) { layer.setCirclePitchScale(it) }
+        set(pitchAlignment) { layer.setCirclePitchAlignment(it) }
+        set(strokeWidth) { layer.setCircleStrokeWidth(it) }
+        set(strokeColor) { layer.setCircleStrokeColor(it) }
+        set(strokeOpacity) { layer.setCircleStrokeOpacity(it) }
       },
       onClick = onClick,
       onLongClick = onLongClick,

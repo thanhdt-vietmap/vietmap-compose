@@ -12,15 +12,15 @@ internal actual class BackgroundLayer actual constructor(id: String) : Layer() {
 
   override val impl: MLNBackgroundLayer = MLNBackgroundLayer(id)
 
-  actual fun setBackgroundColor(backgroundColor: Expression<Color>) {
-    impl.setProperties(PropertyFactory.backgroundColor(backgroundColor.toMLNExpression()))
+  actual fun setBackgroundColor(color: Expression<Color>) {
+    impl.setProperties(PropertyFactory.backgroundColor(color.toMLNExpression()))
   }
 
-  actual fun setBackgroundPattern(backgroundPattern: Expression<TResolvedImage>) {
-    impl.setProperties(PropertyFactory.backgroundPattern(backgroundPattern.toMLNExpression()))
+  actual fun setBackgroundPattern(pattern: Expression<TResolvedImage>) {
+    impl.setProperties(PropertyFactory.backgroundPattern(pattern.toMLNExpression()))
   }
 
-  actual fun setBackgroundOpacity(backgroundOpacity: Expression<Number>) {
-    impl.setProperties(PropertyFactory.backgroundOpacity(backgroundOpacity.toMLNExpression()))
+  actual fun setBackgroundOpacity(opacity: Expression<Number>) {
+    impl.setProperties(PropertyFactory.backgroundOpacity(opacity.toMLNExpression()))
   }
 }
