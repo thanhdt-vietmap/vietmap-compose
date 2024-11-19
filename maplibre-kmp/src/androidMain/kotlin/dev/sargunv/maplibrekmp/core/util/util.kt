@@ -1,8 +1,12 @@
 package dev.sargunv.maplibrekmp.core.util
 
 import android.graphics.PointF
+import android.view.Gravity
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonNull
@@ -14,9 +18,9 @@ import dev.sargunv.maplibrekmp.expression.Insets
 import dev.sargunv.maplibrekmp.expression.Point
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Position
+import java.net.URI
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.geometry.LatLngBounds
-import java.net.URI
 import org.maplibre.android.style.expressions.Expression as MLNExpression
 
 internal fun String.correctedAndroidUri(): URI {
@@ -92,3 +96,22 @@ private fun normalizeJsonLike(value: Any?): JsonElement =
       )
     else -> throw IllegalArgumentException("Unsupported type: ${value::class}")
   }
+
+internal fun Alignment.toGravity(layoutDir: LayoutDirection): Int {
+  val (x, y) = align(IntSize(1, 1), IntSize(3, 3), layoutDir)
+  val h =
+    when (x) {
+      0 -> Gravity.LEFT
+      1 -> Gravity.CENTER_HORIZONTAL
+      2 -> Gravity.RIGHT
+      else -> error("Invalid alignment")
+    }
+  val v =
+    when (y) {
+      0 -> Gravity.TOP
+      1 -> Gravity.CENTER_VERTICAL
+      2 -> Gravity.BOTTOM
+      else -> error("Invalid alignment")
+    }
+  return h or v
+}

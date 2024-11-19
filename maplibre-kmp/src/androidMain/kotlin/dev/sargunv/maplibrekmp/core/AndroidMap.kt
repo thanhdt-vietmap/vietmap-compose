@@ -1,15 +1,16 @@
 package dev.sargunv.maplibrekmp.core
 
 import android.graphics.PointF
-import android.view.Gravity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
-import dev.sargunv.maplibrekmp.core.data.UiSettings
+import dev.sargunv.maplibrekmp.core.data.GestureSettings
+import dev.sargunv.maplibrekmp.core.data.OrnamentSettings
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.core.util.correctedAndroidUri
+import dev.sargunv.maplibrekmp.core.util.toGravity
 import dev.sargunv.maplibrekmp.core.util.toLatLng
 import dev.sargunv.maplibrekmp.core.util.toPointF
 import dev.sargunv.maplibrekmp.core.util.toPosition
@@ -33,8 +34,6 @@ internal class AndroidMap(
   internal var callbacks: MaplibreMap.Callbacks,
   styleUrl: String,
 ) : MaplibreMap {
-
-  private lateinit var lastUiPadding: PaddingValues
 
   override var styleUrl: String = ""
     set(value) {
@@ -73,43 +72,33 @@ internal class AndroidMap(
       map.isDebugActive = value
     }
 
-  override var uiSettings
-    get() =
-      UiSettings(
-        padding = lastUiPadding,
-        isLogoEnabled = map.uiSettings.isLogoEnabled,
-        isAttributionEnabled = map.uiSettings.isAttributionEnabled,
-        isCompassEnabled = map.uiSettings.isCompassEnabled,
-        isRotateGesturesEnabled = map.uiSettings.isRotateGesturesEnabled,
-        isScrollGesturesEnabled = map.uiSettings.isScrollGesturesEnabled,
-        isTiltGesturesEnabled = map.uiSettings.isTiltGesturesEnabled,
-        isZoomGesturesEnabled = map.uiSettings.isZoomGesturesEnabled,
-      )
-    set(value) {
-      // TODO make this configurable
-      map.uiSettings.attributionGravity = Gravity.BOTTOM or Gravity.END
+  override fun setGestureSettings(value: GestureSettings) {
+    map.uiSettings.isRotateGesturesEnabled = value.isRotateGesturesEnabled
+    map.uiSettings.isScrollGesturesEnabled = value.isScrollGesturesEnabled
+    map.uiSettings.isTiltGesturesEnabled = value.isTiltGesturesEnabled
+    map.uiSettings.isZoomGesturesEnabled = value.isZoomGesturesEnabled
+  }
 
-      if (!::lastUiPadding.isInitialized || value.padding != lastUiPadding) {
-        lastUiPadding = value.padding
-        with(density) {
-          val left = value.padding.calculateLeftPadding(layoutDir).roundToPx()
-          val top = value.padding.calculateTopPadding().roundToPx()
-          val right = value.padding.calculateRightPadding(layoutDir).roundToPx()
-          val bottom = value.padding.calculateBottomPadding().roundToPx()
+  override fun setOrnamentSettings(value: OrnamentSettings) {
+    map.uiSettings.isLogoEnabled = value.isLogoEnabled
+    map.uiSettings.logoGravity = value.logoAlignment.toGravity(layoutDir)
 
-          map.uiSettings.setAttributionMargins(left, top, right, bottom)
-          map.uiSettings.setLogoMargins(left, top, right, bottom)
-          map.uiSettings.setCompassMargins(left, top, right, bottom)
-        }
-      }
-      map.uiSettings.isLogoEnabled = value.isLogoEnabled
-      map.uiSettings.isAttributionEnabled = value.isAttributionEnabled
-      map.uiSettings.isCompassEnabled = value.isCompassEnabled
-      map.uiSettings.isRotateGesturesEnabled = value.isRotateGesturesEnabled
-      map.uiSettings.isScrollGesturesEnabled = value.isScrollGesturesEnabled
-      map.uiSettings.isTiltGesturesEnabled = value.isTiltGesturesEnabled
-      map.uiSettings.isZoomGesturesEnabled = value.isZoomGesturesEnabled
+    map.uiSettings.isAttributionEnabled = value.isAttributionEnabled
+    map.uiSettings.attributionGravity = value.attributionAlignment.toGravity(layoutDir)
+
+    map.uiSettings.isCompassEnabled = value.isCompassEnabled
+    map.uiSettings.compassGravity = value.compassAlignment.toGravity(layoutDir)
+
+    with(density) {
+      val left = value.padding.calculateLeftPadding(layoutDir).roundToPx()
+      val top = value.padding.calculateTopPadding().roundToPx()
+      val right = value.padding.calculateRightPadding(layoutDir).roundToPx()
+      val bottom = value.padding.calculateBottomPadding().roundToPx()
+      map.uiSettings.setAttributionMargins(left, top, right, bottom)
+      map.uiSettings.setLogoMargins(left, top, right, bottom)
+      map.uiSettings.setCompassMargins(left, top, right, bottom)
     }
+  }
 
   private fun MLNCameraPosition.toCameraPosition(): CameraPosition =
     CameraPosition(

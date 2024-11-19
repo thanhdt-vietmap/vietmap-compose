@@ -1,5 +1,6 @@
 package dev.sargunv.traintracker.ui
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -15,18 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
-import dev.sargunv.maplibrekmp.compose.layer.Anchor
-import dev.sargunv.maplibrekmp.compose.layer.SymbolLayer
 import dev.sargunv.maplibrekmp.compose.rememberCameraState
-import dev.sargunv.maplibrekmp.compose.source.getBaseSource
-import dev.sargunv.maplibrekmp.compose.uiSettings
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
-import dev.sargunv.maplibrekmp.expression.ExpressionScope
+import dev.sargunv.maplibrekmp.core.data.OrnamentSettings
+import dev.sargunv.traintracker.generated.BuildKonfig
 import dev.sargunv.traintracker.getColorScheme
 import dev.sargunv.traintracker.getSheetHeight
 import dev.sargunv.traintracker.max
@@ -75,42 +72,14 @@ fun App() {
             max(insetsPadding, sheetPadding + PaddingValues(8.dp))
           }
 
-        MaplibreMap(
-          styleUrl = "https://tiles.openfreemap.org/styles/liberty",
-          uiSettings = uiSettings(padding = mapPadding),
-          cameraState = cameraState,
-        ) {
-          val tiles = getBaseSource("openmaptiles")
+        val style = if (isSystemInDarkTheme()) "dark" else "light"
 
-          Anchor.Replace("label_country_1") {
-            SymbolLayer(
-              id = "label_country_1_modified",
-              source = tiles,
-              sourceLayer = "place",
-              maxZoom = 9f,
-              filter =
-                all(
-                  get<String>(const("class")) eq const("country"),
-                  get<String>(const("rank")) eq const(1),
-                ),
-              textField =
-                format(
-                  case(
-                    has(const("name:nonlatin")) then
-                      concat(get(const("name:latin")), const(" / "), get(const("name:nonlatin"))),
-                    fallback = coalesce(get(const("name_en")), get(const("name"))),
-                  ) to ExpressionScope.FormatStyle()
-                ),
-              textFont = literal(listOf(const("Noto Sans Bold"))),
-              textMaxWidth = const(6.25),
-              textSize = interpolate(linear(), zoom(), 1 to const(9), 4 to const(17)),
-              textColor = const(Color.Magenta),
-              textHaloBlur = const(1),
-              textHaloColor = const(Color.White),
-              textHaloWidth = const(1),
-            )
-          }
-        }
+        MaplibreMap(
+          styleUrl =
+            "https://api.protomaps.com/styles/v2/$style.json?key=${BuildKonfig.PROTOMAPS_KEY}",
+          ornamentSettings = OrnamentSettings(padding = mapPadding),
+          cameraState = cameraState,
+        )
       }
     }
   }

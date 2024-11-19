@@ -12,15 +12,22 @@ import cocoapods.MapLibre.MLNMapDebugTileInfoMask
 import cocoapods.MapLibre.MLNMapDebugTimestampsMask
 import cocoapods.MapLibre.MLNMapView
 import cocoapods.MapLibre.MLNMapViewDelegateProtocol
+import cocoapods.MapLibre.MLNOrnamentPosition
+import cocoapods.MapLibre.MLNOrnamentPositionBottomLeft
+import cocoapods.MapLibre.MLNOrnamentPositionBottomRight
+import cocoapods.MapLibre.MLNOrnamentPositionTopLeft
+import cocoapods.MapLibre.MLNOrnamentPositionTopRight
 import cocoapods.MapLibre.MLNStyle
 import cocoapods.MapLibre.MLNZoomLevelForAltitude
 import cocoapods.MapLibre.allowsTilting
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
-import dev.sargunv.maplibrekmp.core.data.UiSettings
+import dev.sargunv.maplibrekmp.core.data.GestureSettings
+import dev.sargunv.maplibrekmp.core.data.OrnamentSettings
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.core.util.toCGPoint
 import dev.sargunv.maplibrekmp.core.util.toCLLocationCoordinate2D
 import dev.sargunv.maplibrekmp.core.util.toFeature
+import dev.sargunv.maplibrekmp.core.util.toMLNOrnamentPosition
 import dev.sargunv.maplibrekmp.core.util.toPosition
 import dev.sargunv.maplibrekmp.core.util.toXY
 import io.github.dellisd.spatialk.geojson.Feature
@@ -29,6 +36,7 @@ import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGSize
 import platform.Foundation.NSError
@@ -54,8 +62,6 @@ internal class IosMap(
   internal var insetPadding: PaddingValues,
   internal var callbacks: MaplibreMap.Callbacks,
 ) : MaplibreMap {
-
-  private lateinit var lastUiPadding: PaddingValues
 
   // hold strong references to things that the sdk keeps weak references to
   private val gestures = mutableListOf<Gesture<*>>()
@@ -154,46 +160,69 @@ internal class IosMap(
         else 0uL
     }
 
-  override var uiSettings
-    get() =
-      UiSettings(
-        padding = lastUiPadding,
-        isLogoEnabled = !mapView.logoView.hidden,
-        isAttributionEnabled = !mapView.attributionButton.hidden,
-        isCompassEnabled = !mapView.compassView.hidden,
-        isRotateGesturesEnabled = mapView.rotateEnabled,
-        isScrollGesturesEnabled = mapView.scrollEnabled,
-        isTiltGesturesEnabled = mapView.allowsTilting,
-        isZoomGesturesEnabled = mapView.zoomEnabled,
-      )
-    set(value) {
-      if (!::lastUiPadding.isInitialized || value.padding != lastUiPadding) {
-        lastUiPadding = value.padding
-        val topSafeInset = insetPadding.calculateTopPadding().value
-        val leftSafeInset = insetPadding.calculateLeftPadding(layoutDir).value
-        val rightSafeInset = insetPadding.calculateRightPadding(layoutDir).value
-        val bottomSafeInset = insetPadding.calculateBottomPadding().value
+  override fun setGestureSettings(value: GestureSettings) {
+    mapView.rotateEnabled = value.isRotateGesturesEnabled
+    mapView.scrollEnabled = value.isScrollGesturesEnabled
+    mapView.allowsTilting = value.isTiltGesturesEnabled
+    mapView.zoomEnabled = value.isZoomGesturesEnabled
+  }
 
-        val topUiPadding = value.padding.calculateTopPadding().value - topSafeInset // TODO gravity
-        val leftUiPadding = value.padding.calculateLeftPadding(layoutDir).value - leftSafeInset
-        val rightUiPadding = value.padding.calculateRightPadding(layoutDir).value - rightSafeInset
-        val bottomUiPadding = value.padding.calculateBottomPadding().value - bottomSafeInset
-
-        mapView.setLogoViewMargins(
-          CGPointMake(leftUiPadding.toDouble(), bottomUiPadding.toDouble())
+  private fun calculateMargins(
+    ornamentPosition: MLNOrnamentPosition,
+    uiPadding: PaddingValues,
+  ): CValue<CGPoint> {
+    return when (ornamentPosition) {
+      MLNOrnamentPositionTopLeft ->
+        CGPointMake(
+          (uiPadding.calculateLeftPadding(layoutDir).value -
+              insetPadding.calculateLeftPadding(layoutDir).value)
+            .toDouble(),
+          (uiPadding.calculateTopPadding().value - insetPadding.calculateTopPadding().value)
+            .toDouble(),
         )
-        mapView.setAttributionButtonMargins(
-          CGPointMake(rightUiPadding.toDouble(), bottomUiPadding.toDouble())
+      MLNOrnamentPositionTopRight ->
+        CGPointMake(
+          (uiPadding.calculateRightPadding(layoutDir).value -
+              insetPadding.calculateRightPadding(layoutDir).value)
+            .toDouble(),
+          (uiPadding.calculateTopPadding().value - insetPadding.calculateTopPadding().value)
+            .toDouble(),
         )
-      }
-      mapView.logoView.hidden = !value.isLogoEnabled
-      mapView.attributionButton.hidden = !value.isAttributionEnabled
-      mapView.compassView.hidden = !value.isCompassEnabled
-      mapView.rotateEnabled = value.isRotateGesturesEnabled
-      mapView.scrollEnabled = value.isScrollGesturesEnabled
-      mapView.allowsTilting = value.isTiltGesturesEnabled
-      mapView.zoomEnabled = value.isZoomGesturesEnabled
+      MLNOrnamentPositionBottomLeft ->
+        CGPointMake(
+          (uiPadding.calculateLeftPadding(layoutDir).value -
+              insetPadding.calculateLeftPadding(layoutDir).value)
+            .toDouble(),
+          (uiPadding.calculateBottomPadding().value - insetPadding.calculateBottomPadding().value)
+            .toDouble(),
+        )
+      MLNOrnamentPositionBottomRight ->
+        CGPointMake(
+          (uiPadding.calculateRightPadding(layoutDir).value -
+              insetPadding.calculateRightPadding(layoutDir).value)
+            .toDouble(),
+          (uiPadding.calculateBottomPadding().value - insetPadding.calculateBottomPadding().value)
+            .toDouble(),
+        )
+      else -> error("Invalid ornament position")
     }
+  }
+
+  override fun setOrnamentSettings(value: OrnamentSettings) {
+    mapView.logoView.hidden = !value.isLogoEnabled
+    mapView.logoViewPosition = value.logoAlignment.toMLNOrnamentPosition(layoutDir)
+    mapView.setLogoViewMargins(calculateMargins(mapView.logoViewPosition, value.padding))
+
+    mapView.attributionButton.hidden = !value.isAttributionEnabled
+    mapView.attributionButtonPosition = value.attributionAlignment.toMLNOrnamentPosition(layoutDir)
+    mapView.setAttributionButtonMargins(
+      calculateMargins(mapView.attributionButtonPosition, value.padding)
+    )
+
+    mapView.compassView.hidden = !value.isCompassEnabled
+    mapView.compassViewPosition = value.compassAlignment.toMLNOrnamentPosition(layoutDir)
+    mapView.setCompassViewMargins(calculateMargins(mapView.compassViewPosition, value.padding))
+  }
 
   private fun MLNMapCamera.toCameraPosition(paddingValues: PaddingValues) =
     CameraPosition(

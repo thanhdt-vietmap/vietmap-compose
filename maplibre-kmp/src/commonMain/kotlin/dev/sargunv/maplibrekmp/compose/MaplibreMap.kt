@@ -14,11 +14,12 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import dev.sargunv.maplibrekmp.compose.engine.LayerNode
 import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
+import dev.sargunv.maplibrekmp.compose.engine.StyleManager
 import dev.sargunv.maplibrekmp.compose.engine.StyleNode
 import dev.sargunv.maplibrekmp.core.MaplibreMap
 import dev.sargunv.maplibrekmp.core.Style
-import dev.sargunv.maplibrekmp.compose.engine.StyleManager
-import dev.sargunv.maplibrekmp.core.data.UiSettings
+import dev.sargunv.maplibrekmp.core.data.GestureSettings
+import dev.sargunv.maplibrekmp.core.data.OrnamentSettings
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.expression.Expression
 import dev.sargunv.maplibrekmp.expression.ExpressionScope
@@ -29,7 +30,8 @@ import kotlinx.coroutines.awaitCancellation
 public fun MaplibreMap(
   modifier: Modifier = Modifier,
   styleUrl: String = "https://demotiles.maplibre.org/style.json",
-  uiSettings: UiSettings = uiSettings(),
+  gestureSettings: GestureSettings = GestureSettings(),
+  ornamentSettings: OrnamentSettings = OrnamentSettings(),
   cameraState: CameraState = rememberCameraState(),
   isDebugEnabled: Boolean = false,
   content: @Composable ExpressionScope.() -> Unit = {},
@@ -78,7 +80,8 @@ public fun MaplibreMap(
     update = { map ->
       cameraState.map = map
       map.isDebugEnabled = isDebugEnabled
-      map.uiSettings = uiSettings
+      map.setGestureSettings(gestureSettings)
+      map.setOrnamentSettings(ornamentSettings)
     },
     onReset = {
       cameraState.map = null
