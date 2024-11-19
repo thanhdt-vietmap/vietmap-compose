@@ -8,6 +8,7 @@ import cocoapods.MapLibre.expressionWithMLNJSONObject
 import cocoapods.MapLibre.predicateWithMLNJSONObject
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.expression.Expression
+import dev.sargunv.maplibrekmp.expression.Insets
 import dev.sargunv.maplibrekmp.expression.Point
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.GeoJson
@@ -34,7 +35,9 @@ import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.NSValue
 import platform.Foundation.dataWithBytes
 import platform.UIKit.UIColor
+import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.valueWithCGVector
+import platform.UIKit.valueWithUIEdgeInsets
 
 internal fun ByteArray.toNSData(): NSData {
   return usePinned { NSData.dataWithBytes(it.addressOf(0), it.get().size.toULong()) }
@@ -78,7 +81,6 @@ internal fun GeoJson.toMLNShape(): MLNShape {
   )!!
 }
 
-
 internal fun Expression<*>.toNSExpression(): NSExpression =
   when (value) {
     null -> NSExpression.expressionForConstantValue(null)
@@ -103,6 +105,15 @@ private fun normalizeJsonLike(value: Any?): Any? =
         green = value.green.toDouble(),
         blue = value.blue.toDouble(),
         alpha = value.alpha.toDouble(),
+      )
+    is Insets ->
+      NSValue.valueWithUIEdgeInsets(
+        UIEdgeInsetsMake(
+          top = value.top.toDouble(),
+          left = value.left.toDouble(),
+          bottom = value.bottom.toDouble(),
+          right = value.right.toDouble(),
+        )
       )
     else -> throw IllegalArgumentException("Unsupported type: ${value::class}")
   }

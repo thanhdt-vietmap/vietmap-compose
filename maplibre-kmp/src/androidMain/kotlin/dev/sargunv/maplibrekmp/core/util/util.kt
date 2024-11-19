@@ -10,6 +10,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import dev.sargunv.maplibrekmp.core.data.XY
 import dev.sargunv.maplibrekmp.expression.Expression
+import dev.sargunv.maplibrekmp.expression.Insets
 import dev.sargunv.maplibrekmp.expression.Point
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Position
@@ -68,6 +69,18 @@ private fun normalizeJsonLike(value: Any?): JsonElement =
           JsonArray().apply {
             add(value.x)
             add(value.y)
+          }
+        )
+      }
+    is Insets ->
+      JsonArray().apply {
+        add("literal")
+        add(
+          JsonArray().apply {
+            add(value.top)
+            add(value.right)
+            add(value.bottom)
+            add(value.left)
           }
         )
       }

@@ -21,11 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import dev.sargunv.maplibrekmp.compose.MaplibreMap
 import dev.sargunv.maplibrekmp.compose.layer.Anchor
-import dev.sargunv.maplibrekmp.compose.layer.FillExtrusionLayer
+import dev.sargunv.maplibrekmp.compose.layer.SymbolLayer
 import dev.sargunv.maplibrekmp.compose.rememberCameraState
 import dev.sargunv.maplibrekmp.compose.source.getBaseSource
 import dev.sargunv.maplibrekmp.compose.uiSettings
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
+import dev.sargunv.maplibrekmp.expression.ExpressionScope
 import dev.sargunv.traintracker.getColorScheme
 import dev.sargunv.traintracker.getSheetHeight
 import dev.sargunv.traintracker.max
@@ -81,28 +82,32 @@ fun App() {
         ) {
           val tiles = getBaseSource("openmaptiles")
 
-          Anchor.Replace("building-3d") {
-            FillExtrusionLayer(
-              id = "test",
+          Anchor.Replace("label_country_1") {
+            SymbolLayer(
+              id = "label_country_1_modified",
               source = tiles,
-              sourceLayer = "building",
-              minZoom = 14f,
-              base =
-                interpolate(
-                  type = linear(),
-                  input = zoom(),
-                  14f to const(0f),
-                  16f to get(const("render_min_height")),
+              sourceLayer = "place",
+              maxZoom = 9f,
+              filter =
+                all(
+                  get<String>(const("class")) eq const("country"),
+                  get<String>(const("rank")) eq const(1),
                 ),
-              height =
-                interpolate(
-                  type = linear(),
-                  input = zoom(),
-                  14f to const(0f),
-                  16f to get(const("render_height")),
+              textField =
+                format(
+                  case(
+                    has(const("name:nonlatin")) then
+                      concat(get(const("name:latin")), const(" / "), get(const("name:nonlatin"))),
+                    fallback = coalesce(get(const("name_en")), get(const("name"))),
+                  ) to ExpressionScope.FormatStyle()
                 ),
-              color = const(Color.Magenta),
-              opacity = const(0.8),
+              textFont = literal(listOf(const("Noto Sans Bold"))),
+              textMaxWidth = const(6.25),
+              textSize = interpolate(linear(), zoom(), 1 to const(9), 4 to const(17)),
+              textColor = const(Color.Magenta),
+              textHaloBlur = const(1),
+              textHaloColor = const(Color.White),
+              textHaloWidth = const(1),
             )
           }
         }
