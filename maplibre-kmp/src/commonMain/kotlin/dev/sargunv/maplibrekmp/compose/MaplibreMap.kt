@@ -12,6 +12,7 @@ import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrekmp.compose.engine.LayerNode
 import dev.sargunv.maplibrekmp.compose.engine.MapNodeApplier
 import dev.sargunv.maplibrekmp.compose.engine.StyleManager
@@ -34,10 +35,11 @@ public fun MaplibreMap(
   ornamentSettings: OrnamentSettings = OrnamentSettings(),
   cameraState: CameraState = rememberCameraState(),
   isDebugEnabled: Boolean = false,
+  debugLogger: Logger? = remember { Logger.withTag("maplibre-compose") },
   content: @Composable ExpressionScope.() -> Unit = {},
 ) {
   var rememberedStyle by remember { mutableStateOf<Style?>(null) }
-  val styleComposition by rememberStyleCompositionState(rememberedStyle, content)
+  val styleComposition by rememberStyleCompositionState(rememberedStyle, debugLogger, content)
 
   val callbacks =
     remember(cameraState, styleComposition) {
@@ -87,6 +89,7 @@ public fun MaplibreMap(
       cameraState.map = null
       rememberedStyle = null
     },
+    logger = debugLogger,
     callbacks = callbacks,
   )
 }
@@ -94,13 +97,17 @@ public fun MaplibreMap(
 @Composable
 internal fun rememberStyleCompositionState(
   maybeStyle: Style?,
+  logger: Logger?,
   content: @Composable ExpressionScope.() -> Unit,
 ): State<StyleNode?> {
   val ret = remember { mutableStateOf<StyleNode?>(null) }
   val compositionContext = rememberCompositionContext()
 
   LaunchedEffect(maybeStyle, compositionContext) {
-    val rootNode = StyleNode(maybeStyle ?: return@LaunchedEffect).also { ret.value = it }
+    val rootNode =
+      StyleNode(maybeStyle?.let { StyleManager(it, logger) } ?: return@LaunchedEffect).also {
+        ret.value = it
+      }
     val composition = Composition(MapNodeApplier(rootNode), compositionContext)
 
     composition.setContent {
@@ -112,7 +119,6 @@ internal fun rememberStyleCompositionState(
     try {
       awaitCancellation()
     } finally {
-      println("cancelled!")
       ret.value = null
       rootNode.styleManager.style = Style.Null
       composition.dispose()

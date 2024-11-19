@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrekmp.core.camera.CameraPosition
 import dev.sargunv.maplibrekmp.core.data.GestureSettings
 import dev.sargunv.maplibrekmp.core.data.OrnamentSettings
@@ -32,17 +33,18 @@ internal class AndroidMap(
   internal var layoutDir: LayoutDirection,
   internal var density: Density,
   internal var callbacks: MaplibreMap.Callbacks,
+  internal var logger: Logger?,
   styleUrl: String,
 ) : MaplibreMap {
 
   override var styleUrl: String = ""
     set(value) {
       if (field == value) return
-      println("Setting style URL")
+      logger?.i { "Setting style URL" }
       callbacks.onStyleChanged(this, null)
       val builder = MlnStyle.Builder().fromUri(value.correctedAndroidUri().toString())
       map.setStyle(builder) {
-        println("Style finished loading")
+        logger?.i { "Style finished loading" }
         callbacks.onStyleChanged(this, AndroidStyle(it))
       }
       field = value

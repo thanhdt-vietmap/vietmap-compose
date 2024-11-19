@@ -3,6 +3,7 @@ package dev.sargunv.maplibrekmp.core
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import cocoapods.MapLibre.MLNAltitudeForZoomLevel
 import cocoapods.MapLibre.MLNFeatureProtocol
 import cocoapods.MapLibre.MLNMapCamera
@@ -61,6 +62,7 @@ internal class IosMap(
   internal var layoutDir: LayoutDirection,
   internal var insetPadding: PaddingValues,
   internal var callbacks: MaplibreMap.Callbacks,
+  internal var logger: Logger?,
 ) : MaplibreMap {
 
   // hold strong references to things that the sdk keeps weak references to
@@ -70,7 +72,7 @@ internal class IosMap(
   override var styleUrl: String = ""
     set(value) {
       if (field == value) return
-      println("Setting style URL")
+      logger?.i { "Setting style URL" }
       callbacks.onStyleChanged(this, null)
       mapView.setStyleURL(NSURL(string = value))
       field = value
@@ -99,19 +101,19 @@ internal class IosMap(
   private class Delegate(private val map: IosMap) : NSObject(), MLNMapViewDelegateProtocol {
 
     override fun mapViewWillStartLoadingMap(mapView: MLNMapView) {
-      println("Map will start loading")
+      map.logger?.i { "Map will start loading" }
     }
 
     override fun mapViewDidFailLoadingMap(mapView: MLNMapView, withError: NSError) {
-      println("Map failed to load: $withError")
+      map.logger?.e { "Map failed to load: $withError" }
     }
 
     override fun mapViewDidFinishLoadingMap(mapView: MLNMapView) {
-      println("Map finished loading")
+      map.logger?.i { "Map finished loading" }
     }
 
     override fun mapView(mapView: MLNMapView, didFinishLoadingStyle: MLNStyle) {
-      println("Style finished loading")
+      map.logger?.i { "Style finished loading" }
       map.callbacks.onStyleChanged(map, IosStyle(didFinishLoadingStyle))
     }
 
