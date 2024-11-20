@@ -22,6 +22,8 @@ internal expect class SymbolLayer(id: String, source: Source) : FeatureLayer {
 
   fun setIconAllowOverlap(allowOverlap: Expression<Boolean>)
 
+  fun setIconOverlap(overlap: Expression<String>)
+
   fun setIconIgnorePlacement(ignorePlacement: Expression<Boolean>)
 
   fun setIconOptional(optional: Expression<Boolean>)
@@ -103,6 +105,8 @@ internal expect class SymbolLayer(id: String, source: Source) : FeatureLayer {
   fun setTextOffset(offset: Expression<Point>)
 
   fun setTextAllowOverlap(allowOverlap: Expression<Boolean>)
+
+  fun setTextOverlap(overlap: Expression<String>)
 
   fun setTextIgnorePlacement(ignorePlacement: Expression<Boolean>)
 
