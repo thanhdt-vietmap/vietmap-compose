@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-rootProject.name = "train-tracker-app"
+rootProject.name = "maplibre-compose-root"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -31,4 +31,4 @@ dependencyResolutionManagement {
   }
 }
 
-include(":kotlin-csv", ":multiplatform-zip", "maplibre-kmp", ":composeApp", ":")
+include(":maplibre-compose", ":demo-app", ":")

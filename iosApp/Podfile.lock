@@ -1,27 +1,23 @@
 PODS:
-  - composeApp (0.1.0):
+  - demo_app (0.1.0):
     - MapLibre (= 6.8.1)
-    - zipzap (= 8.1.1)
   - MapLibre (6.8.1)
-  - zipzap (8.1.1)
 
 DEPENDENCIES:
-  - composeApp (from `../composeApp`)
+  - demo_app (from `../demo-app`)
 
 SPEC REPOS:
   trunk:
     - MapLibre
-    - zipzap
 
 EXTERNAL SOURCES:
-  composeApp:
-    :path: "../composeApp"
+  demo_app:
+    :path: "../demo-app"
 
 SPEC CHECKSUMS:
-  composeApp: 271c98c61a0a77450834d7cfd1d65a45e6938582
+  demo_app: f8c899284a2d84aaaf80718322a27c5976c42687
   MapLibre: 46c5f2254df2ea03bcd097778bb19c92207d8c2a
-  zipzap: 940162d9c9c60472c2eab341385e4214da0fdf1c
 
-PODFILE CHECKSUM: 1d55fdfa0ef6c2c8bd6da85a2bc30b1fce4f975e
+PODFILE CHECKSUM: faffe0b5720ea7a96818a908bd93100321d4e51f
 
 COCOAPODS: 1.15.2

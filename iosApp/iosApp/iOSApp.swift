@@ -1,10 +1,10 @@
+import DemoApp
 import SwiftUI
 import UIKit
-import composeApp
 
 struct MainView: UIViewControllerRepresentable {
   func makeUIViewController(context: Context) -> UIViewController {
-    AppKt.MainViewController()
+    MainViewControllerKt.MainViewController()
   }
 
   func updateUIViewController(
@@ -14,10 +14,6 @@ struct MainView: UIViewControllerRepresentable {
 
 @main
 struct iOSApp: App {
-  init() {
-    AppKt.doInitKoin()
-  }
-
   var body: some Scene {
     WindowGroup {
       MainView()

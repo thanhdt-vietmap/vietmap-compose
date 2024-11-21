@@ -1,0 +1,65 @@
+package dev.sargunv.maplibrecompose.compose
+
+import dev.sargunv.maplibrecompose.core.Style
+import dev.sargunv.maplibrecompose.core.layer.Layer
+import dev.sargunv.maplibrecompose.core.source.Source
+
+internal class FakeStyle(sources: List<Source>, layers: List<Layer>) : Style {
+  private val sourceMap = sources.associateBy { it.id }.toMutableMap()
+  private val layerList = layers.toMutableList()
+  private val layerMap = layers.associateBy { it.id }.toMutableMap()
+
+  override fun getSources(): List<Source> = sourceMap.values.toList()
+
+  override fun addSource(source: Source) {
+    if (source.id in sourceMap) error("Source ID '${source.id}' already exists in base style")
+    sourceMap[source.id] = source
+  }
+
+  override fun removeSource(source: Source) {
+    if (source.id !in sourceMap) error("Source ID '${source.id}' not found in base style")
+    sourceMap.remove(source.id)
+  }
+
+  override fun getLayer(id: String): Layer? {
+    return layerMap[id]
+  }
+
+  override fun getLayers(): List<Layer> {
+    return layerList.toList()
+  }
+
+  override fun addLayer(layer: Layer) {
+    if (layer.id in layerMap) error("Layer ID '${layer.id}' already exists in base style")
+    layerList.add(layer)
+    layerMap[layer.id] = layer
+  }
+
+  override fun addLayerAbove(id: String, layer: Layer) {
+    if (layer.id in layerMap) error("Layer ID '${layer.id}' already exists in base style")
+    val index = layerList.indexOfFirst { it.id == id }
+    if (index == -1) error("Layer ID '$id' not found in base style")
+    layerList.add(index + 1, layer)
+    layerMap[layer.id] = layer
+  }
+
+  override fun addLayerBelow(id: String, layer: Layer) {
+    if (layer.id in layerMap) error("Layer ID '${layer.id}' already exists in base style")
+    val index = layerList.indexOfFirst { it.id == id }
+    if (index == -1) error("Layer ID '$id' not found in base style")
+    layerList.add(index, layer)
+    layerMap[layer.id] = layer
+  }
+
+  override fun addLayerAt(index: Int, layer: Layer) {
+    if (layer.id in layerMap) error("Layer ID '${layer.id}' already exists in base style")
+    layerList.add(index, layer)
+    layerMap[layer.id] = layer
+  }
+
+  override fun removeLayer(layer: Layer) {
+    if (layer.id !in layerMap) error("Layer ID '${layer.id}' not found in base style")
+    if (!layerList.remove(layer)) error("Layer '${layer}' not found in base style")
+    layerMap.remove(layer.id)
+  }
+}

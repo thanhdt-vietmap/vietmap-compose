@@ -1,7 +1,7 @@
 target 'iosApp' do
   use_frameworks!
   platform :ios, '15.3'
-  pod 'composeApp', :path => '../composeApp'
+  pod 'demo_app', :path => '../demo-app'
 end
 
 post_install do |installer|
