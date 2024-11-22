@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.viewinterop.UIKitInteropInteractionMode
@@ -42,6 +43,7 @@ internal actual fun ComposableMapView(
   )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun IosMapView(
   modifier: Modifier,

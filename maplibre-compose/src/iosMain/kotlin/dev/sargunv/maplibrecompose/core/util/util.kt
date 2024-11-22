@@ -22,10 +22,7 @@ import dev.sargunv.maplibrecompose.core.expression.Point
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.GeoJson
 import io.github.dellisd.spatialk.geojson.Position
-import kotlinx.cinterop.CValue
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.useContents
-import kotlinx.cinterop.usePinned
+import kotlinx.cinterop.*
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
@@ -115,6 +112,7 @@ private fun normalizeJsonLike(value: Any?): Any? =
         blue = value.blue.toDouble(),
         alpha = value.alpha.toDouble(),
       )
+
     is Insets ->
       NSValue.valueWithUIEdgeInsets(
         UIEdgeInsetsMake(
@@ -124,6 +122,7 @@ private fun normalizeJsonLike(value: Any?): Any? =
           right = value.right.toDouble(),
         )
       )
+
     else -> throw IllegalArgumentException("Unsupported type: ${value::class}")
   }
 

@@ -37,6 +37,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
@@ -130,6 +131,7 @@ internal class IosMap(
       recognizer.addTarget(target = this, action = sel_registerName(::handleGesture.name + ":"))
     }
 
+    @OptIn(BetaInteropApi::class)
     @ObjCAction
     fun handleGesture(sender: UIGestureRecognizer) {
       @Suppress("UNCHECKED_CAST") action(sender as T)
@@ -180,6 +182,7 @@ internal class IosMap(
           (uiPadding.calculateTopPadding().value - insetPadding.calculateTopPadding().value)
             .toDouble(),
         )
+
       MLNOrnamentPositionTopRight ->
         CGPointMake(
           (uiPadding.calculateRightPadding(layoutDir).value -
@@ -188,6 +191,7 @@ internal class IosMap(
           (uiPadding.calculateTopPadding().value - insetPadding.calculateTopPadding().value)
             .toDouble(),
         )
+
       MLNOrnamentPositionBottomLeft ->
         CGPointMake(
           (uiPadding.calculateLeftPadding(layoutDir).value -
@@ -196,6 +200,7 @@ internal class IosMap(
           (uiPadding.calculateBottomPadding().value - insetPadding.calculateBottomPadding().value)
             .toDouble(),
         )
+
       MLNOrnamentPositionBottomRight ->
         CGPointMake(
           (uiPadding.calculateRightPadding(layoutDir).value -
@@ -204,6 +209,7 @@ internal class IosMap(
           (uiPadding.calculateBottomPadding().value - insetPadding.calculateBottomPadding().value)
             .toDouble(),
         )
+
       else -> error("Invalid ornament position")
     }
   }

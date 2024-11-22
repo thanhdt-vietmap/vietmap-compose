@@ -62,10 +62,6 @@ kotlin {
           add("-Xconsistent-data-class-copy-visibility")
         }
       }
-      languageSettings {
-        optIn("androidx.compose.material3.ExperimentalMaterial3Api")
-        optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
-      }
     }
 
     commonMain.dependencies {

@@ -56,11 +56,7 @@ kotlin {
           add("-Xconsistent-data-class-copy-visibility")
         }
       }
-      languageSettings {
-        optIn("androidx.compose.ui.ExperimentalComposeUiApi")
-        optIn("kotlinx.cinterop.ExperimentalForeignApi")
-        optIn("kotlinx.cinterop.BetaInteropApi")
-      }
+      languageSettings { optIn("kotlinx.cinterop.ExperimentalForeignApi") }
     }
 
     commonMain.dependencies {

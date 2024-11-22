@@ -1,0 +1,44 @@
+{
+  "configurations": [
+    {
+      "name": "iOS-App",
+      "type": "xcode-app",
+      "workingDir": "$PROJECT_DIR$",
+      "buildTarget": {
+        "project": "iosApp",
+        "target": "iosApp"
+      },
+      "configuration": "Debug"
+    },
+    {
+      "name": "Android-App",
+      "type": "android-app",
+      "workingDir": "$PROJECT_DIR$",
+      "module": "root.demo-app.main"
+    },
+    {
+      "name": "Reformat",
+      "type": "gradle",
+      "workingDir": "$PROJECT_DIR$",
+      "tasks": [
+        "spotlessApply"
+      ],
+    },
+    {
+      "name": "iOS-Test",
+      "type": "gradle",
+      "workingDir": "$PROJECT_DIR$",
+      "tasks": [
+        "iosSimulatorArm64Test"
+      ],
+    },
+    {
+      "name": "Android-Test",
+      "type": "gradle",
+      "workingDir": "$PROJECT_DIR$",
+      "tasks": [
+        "connectedDebugAndroidTest"
+      ],
+    }
+  ]
+}

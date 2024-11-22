@@ -18,6 +18,21 @@ subprojects {
 spotless {
   format("swift") {
     target("iosApp/iosApp/**/*.swift")
-    nativeCmd("swiftFormat","/usr/bin/env", listOf("swift", "format"))
+    nativeCmd("swiftFormat", "/usr/bin/env", listOf("swift", "format"))
+  }
+}
+
+tasks.register("installGitHooks") {
+  doLast {
+    copy {
+      from("${rootProject.projectDir}/scripts/pre-commit")
+      into("${rootProject.projectDir}/.git/hooks")
+    }
+  }
+}
+
+tasks.named("clean") {
+  doLast {
+    delete("${rootProject.projectDir}/.git/hooks/pre-commit")
   }
 }
