@@ -15,9 +15,9 @@ internal actual class FillExtrusionLayer actual constructor(id: String, source: 
   FeatureLayer(source) {
   override val impl = MLNFillExtrusionLayer(id, source.id)
 
-  override var sourceLayer: String by impl::sourceLayer
+  actual override var sourceLayer: String by impl::sourceLayer
 
-  override fun setFilter(filter: Expression<Boolean>) {
+  actual override fun setFilter(filter: Expression<Boolean>) {
     impl.setFilter(filter.toMLNExpression() ?: MLNExpression.literal(true))
   }
 

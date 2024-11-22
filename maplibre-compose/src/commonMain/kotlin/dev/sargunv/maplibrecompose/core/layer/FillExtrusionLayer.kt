@@ -8,6 +8,10 @@ import dev.sargunv.maplibrecompose.core.source.Source
 
 @PublishedApi
 internal expect class FillExtrusionLayer(id: String, source: Source) : FeatureLayer {
+  override var sourceLayer: String
+
+  override fun setFilter(filter: Expression<Boolean>)
+
   fun setFillExtrusionOpacity(opacity: Expression<Number>)
 
   fun setFillExtrusionColor(color: Expression<Color>)

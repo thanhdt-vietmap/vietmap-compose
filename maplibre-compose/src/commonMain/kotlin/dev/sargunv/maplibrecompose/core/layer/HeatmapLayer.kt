@@ -6,6 +6,10 @@ import dev.sargunv.maplibrecompose.core.source.Source
 
 @PublishedApi
 internal expect class HeatmapLayer(id: String, source: Source) : FeatureLayer {
+  override var sourceLayer: String
+
+  override fun setFilter(filter: Expression<Boolean>)
+
   fun setHeatmapRadius(radius: Expression<Number>)
 
   fun setHeatmapWeight(weight: Expression<Number>)

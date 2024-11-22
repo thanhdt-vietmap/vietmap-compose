@@ -18,6 +18,6 @@ subprojects {
 spotless {
   format("swift") {
     target("iosApp/iosApp/**/*.swift")
-    nativeCmd("swiftFormat","/usr/bin/env", listOf("swift-format"))
+    nativeCmd("swiftFormat","/usr/bin/env", listOf("swift", "format"))
   }
 }

@@ -17,13 +17,13 @@ internal actual class SymbolLayer actual constructor(id: String, source: Source)
 
   override val impl = MLNSymbolStyleLayer(id, source.impl)
 
-  override var sourceLayer: String
+  actual override var sourceLayer: String
     get() = impl.sourceLayerIdentifier!!
     set(value) {
       impl.sourceLayerIdentifier = value
     }
 
-  override fun setFilter(filter: Expression<Boolean>) {
+  actual override fun setFilter(filter: Expression<Boolean>) {
     impl.predicate = filter.toPredicate()
   }
 

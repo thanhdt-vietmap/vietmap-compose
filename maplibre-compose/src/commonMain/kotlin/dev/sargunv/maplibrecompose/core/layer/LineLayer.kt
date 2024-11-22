@@ -8,6 +8,10 @@ import dev.sargunv.maplibrecompose.core.source.Source
 
 @PublishedApi
 internal expect class LineLayer(id: String, source: Source) : FeatureLayer {
+  override var sourceLayer: String
+
+  override fun setFilter(filter: Expression<Boolean>)
+
   fun setLineCap(cap: Expression<String>)
 
   fun setLineJoin(join: Expression<String>)

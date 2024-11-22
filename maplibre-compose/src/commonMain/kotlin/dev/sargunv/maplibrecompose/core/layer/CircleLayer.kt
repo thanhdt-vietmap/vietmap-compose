@@ -7,6 +7,10 @@ import dev.sargunv.maplibrecompose.core.source.Source
 
 @PublishedApi
 internal expect class CircleLayer(id: String, source: Source) : FeatureLayer {
+  override var sourceLayer: String
+
+  override fun setFilter(filter: Expression<Boolean>)
+
   fun setCircleSortKey(sortKey: Expression<Number>)
 
   fun setCircleRadius(radius: Expression<Number>)

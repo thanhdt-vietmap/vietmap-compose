@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-rootProject.name = "maplibre-compose-root"
+rootProject.name = "root"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 

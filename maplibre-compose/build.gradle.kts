@@ -99,3 +99,5 @@ spotless {
     ktfmt().googleStyle()
   }
 }
+
+// tasks.get("test").dependsOn("connectedAndroidTest", "iosSimulatorArm64Test")
