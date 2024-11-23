@@ -30,6 +30,9 @@ internal class StyleManager(var style: Style, private var logger: Logger?) {
   }
 
   internal fun removeSource(source: Source) {
+    require(source.id !in baseSources) {
+      "Source ID '${source.id}' is part of the base style and can't be removed here"
+    }
     logger?.i { "Removing source ${source.id}" }
     style.removeSource(source)
   }
@@ -143,9 +146,6 @@ internal class StyleManager(var style: Style, private var logger: Logger?) {
     }
 
     logger?.i { "After applying changes: ${style.getLayers().map { it.id }}" }
-
-    // TODO remove this check when I'm confident in the implementation and/or write tests
-    require(userLayers.all { node -> node.added }) { "Not all layers were added; this is a bug" }
   }
 
   private fun LayerNode<*>.markAdded() {
@@ -158,6 +158,7 @@ internal class StyleManager(var style: Style, private var logger: Logger?) {
     when (this) {
       is Anchor.WithLayerId ->
         require(baseLayers.containsKey(layerId)) { "Layer ID '$layerId' not found in base style" }
+
       else -> Unit
     }
   }

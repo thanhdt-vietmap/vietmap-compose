@@ -11,6 +11,10 @@ import dev.sargunv.maplibrecompose.core.source.UnknownSource
 internal class IosStyle(style: MLNStyle) : Style {
   private var impl: MLNStyle = style
 
+  override fun getSource(id: String): Source? {
+    return impl.sourceWithIdentifier(id)?.let { UnknownSource(it) }
+  }
+
   override fun getSources(): List<Source> {
     return impl.sources.map { UnknownSource(it as MLNSource) }
   }

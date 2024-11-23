@@ -9,6 +9,10 @@ import org.maplibre.android.maps.Style as MLNStyle
 internal class AndroidStyle(style: MLNStyle) : Style {
   private var impl: MLNStyle = style
 
+  override fun getSource(id: String): Source? {
+    return impl.getSource(id)?.let { UnknownSource(it) }
+  }
+
   override fun getSources(): List<Source> {
     return impl.sources.map { UnknownSource(it) }
   }

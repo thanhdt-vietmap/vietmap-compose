@@ -4,6 +4,8 @@ import dev.sargunv.maplibrecompose.core.layer.Layer
 import dev.sargunv.maplibrecompose.core.source.Source
 
 internal interface Style {
+  fun getSource(id: String): Source?
+
   fun getSources(): List<Source>
 
   fun addSource(source: Source)
@@ -25,6 +27,8 @@ internal interface Style {
   fun removeLayer(layer: Layer)
 
   object Null : Style {
+    override fun getSource(id: String): Source? = null
+
     override fun getSources(): List<Source> = emptyList()
 
     override fun addSource(source: Source) {}

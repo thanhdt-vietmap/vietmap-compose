@@ -14,7 +14,7 @@ plugins {
   alias(libs.plugins.spotless)
 }
 
-version = "0.1.0"
+version = "0.1.0-SNAPSHOT"
 
 android {
   namespace = "dev.sargunv.maplibrecompose"
@@ -29,6 +29,8 @@ android {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
   }
+
+  @Suppress("UnstableApiUsage") testOptions { animationsDisabled = true }
 }
 
 kotlin {
