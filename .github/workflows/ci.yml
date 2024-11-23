@@ -14,38 +14,44 @@ env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
 
 jobs:
-  gradle:
-    name: ${{ matrix.name }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: Spotless
-            os: ubuntu-latest
-            task: spotlessCheck
-          - name: Lint Android
-            os: ubuntu-latest
-            task: lint
-          - name: Test Android
-            os: ubuntu-latest
-            task: connectedDebugAndroidTest
-            use-android-emulator: true
-          - name: Test iOS
-            os: macos-latest
-            task: iosSimulatorArm64Test
-    runs-on: ${{ matrix.os }}
+  format:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          java-version: '23'
-          distribution: 'temurin'
-          cache: gradle
-      - if: ${{ matrix.use-android-emulator }}
-        name: Run with AVD ./gradlew '${{ matrix.task }}'
+      - uses: ./.github/actions/setup
+      - run: ./gradlew spotlessCheck
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: ./gradlew lint
+
+  test-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Run with AVD ./gradlew '${{ matrix.task }}'
         uses: ./.github/actions/run-with-avd
         with:
           api-level: 35
-          script: ./gradlew '${{ matrix.task }}'
-      - if: ${{ !matrix.use-android-emulator }}
-        run: ./gradlew '${{ matrix.task }}'
+          script: ./gradlew connectedDebugAndroidTest
+
+  test-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: ./gradlew iosSimulatorArm64Test
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: ./gradlew dokkaHtmlMultiModule
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/dokka/htmlMultiModule

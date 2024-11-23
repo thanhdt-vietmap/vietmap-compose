@@ -8,6 +8,7 @@ plugins {
   alias(libs.plugins.kotlin.multiplatform) apply false
   alias(libs.plugins.kotlin.cocoapods) apply false
   alias(libs.plugins.spotless)
+  alias(libs.plugins.dokka)
 }
 
 subprojects {

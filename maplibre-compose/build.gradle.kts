@@ -12,6 +12,7 @@ plugins {
   alias(libs.plugins.jetbrains.compose)
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.spotless)
+  alias(libs.plugins.dokka)
 }
 
 version = "0.1.0-SNAPSHOT"
