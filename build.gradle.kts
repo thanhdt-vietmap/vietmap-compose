@@ -9,6 +9,7 @@ plugins {
   alias(libs.plugins.kotlin.cocoapods) apply false
   alias(libs.plugins.spotless)
   alias(libs.plugins.dokka)
+  alias(libs.plugins.maven.publish) apply false
 }
 
 subprojects {
@@ -17,6 +18,7 @@ subprojects {
 }
 
 spotless {
+  kotlinGradle { ktfmt().googleStyle() }
   format("swift") {
     target("iosApp/iosApp/**/*.swift")
     nativeCmd("swiftFormat", "/usr/bin/env", listOf("swift", "format"))
@@ -32,8 +34,4 @@ tasks.register("installGitHooks") {
   }
 }
 
-tasks.named("clean") {
-  doLast {
-    delete("${rootProject.projectDir}/.git/hooks/pre-commit")
-  }
-}
+tasks.named("clean") { doLast { delete("${rootProject.projectDir}/.git/hooks/pre-commit") } }

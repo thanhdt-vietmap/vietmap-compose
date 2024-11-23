@@ -72,7 +72,7 @@ kotlin {
       implementation(compose.material3)
       implementation(compose.runtime)
       implementation(compose.ui)
-      implementation(project(":maplibre-compose"))
+      implementation(project(":lib:maplibre-compose"))
     }
 
     androidMain.dependencies { implementation(libs.androidx.activity.compose) }

@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-rootProject.name = "root"
+rootProject.name = "maplibre-compose"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -31,4 +31,4 @@ dependencyResolutionManagement {
   }
 }
 
-include(":maplibre-compose", ":demo-app", ":")
+include(":lib:maplibre-compose", ":lib", ":demo-app", ":")
