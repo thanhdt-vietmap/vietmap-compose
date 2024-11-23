@@ -3,9 +3,11 @@
 This project is a [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/) library
 for [MapLibre](https://maplibre.org/). You can use it to embed an interactive vector map in your Compose app.
 
-Android and iOS are supported via [MapLibre Native](https://github.com/maplibre/maplibre-native).
+Android and iOS support is backed by [MapLibre Native](https://github.com/maplibre/maplibre-native).
 
 Desktop and Web are not yet supported.
+
+TODO add animated screenshots here
 
 ## Usage
 
@@ -15,7 +17,7 @@ In your Gradle version catalog, add:
 
 ```toml
 [libraries]
-// ...
+# ...
 maplibre-compose = { module = "dev.sargunv.maplibre:maplibre-compose", version = "0.1.0" }
 ```
 
@@ -102,9 +104,3 @@ The following may be explored in the future:
 * Decouple composable style management from map rendering, for use in style generation scripts
 
 Contributions are welcome for any of the above!
-
-# Contributing
-
-TODO steps to get set up to develop
-
-TODO architecture notes
