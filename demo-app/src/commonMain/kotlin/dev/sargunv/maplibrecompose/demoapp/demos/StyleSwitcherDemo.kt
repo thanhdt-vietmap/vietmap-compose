@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 
 @Composable
-fun StyleSwitcherDemo() {
+fun StyleSwitcherDemo() = Column {
   val styles = remember {
     listOf(
       "Liberty" to "https://tiles.openfreemap.org/styles/liberty",
@@ -26,17 +26,14 @@ fun StyleSwitcherDemo() {
   }
 
   var selectedIndex by remember { mutableStateOf(0) }
-
-  Column {
-    MaplibreMap(modifier = Modifier.weight(1f), styleUrl = styles[selectedIndex].second)
-    SecondaryScrollableTabRow(selectedTabIndex = selectedIndex) {
-      styles.forEachIndexed { index, pair ->
-        Tab(
-          selected = selectedIndex == index,
-          onClick = { selectedIndex = index },
-          text = { Text(text = pair.first, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-        )
-      }
+  MaplibreMap(modifier = Modifier.weight(1f), styleUrl = styles[selectedIndex].second)
+  SecondaryScrollableTabRow(selectedTabIndex = selectedIndex) {
+    styles.forEachIndexed { index, pair ->
+      Tab(
+        selected = selectedIndex == index,
+        onClick = { selectedIndex = index },
+        text = { Text(text = pair.first, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+      )
     }
   }
 }

@@ -13,6 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dev.sargunv.maplibrecompose.demoapp.demos.CameraStateDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.EdgeToEdgeDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.StyleSwitcherDemo
 import kotlinx.serialization.Serializable
@@ -54,7 +55,7 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
       }
       composable<CameraStateRoute> {
         SimpleDemoScaffold("Camera state", navigateUp = navController::navigateUp) {
-          Text("Camera state")
+          CameraStateDemo()
         }
       }
       composable<CameraFollowRoute> {

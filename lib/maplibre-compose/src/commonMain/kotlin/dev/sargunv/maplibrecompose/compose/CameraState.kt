@@ -1,6 +1,7 @@
 package dev.sargunv.maplibrecompose.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import dev.sargunv.maplibrecompose.core.MaplibreMap
@@ -14,6 +15,7 @@ public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition())
   return remember { CameraState(firstPosition) }
 }
 
+@Stable
 public class CameraState internal constructor(firstPosition: CameraPosition) {
   internal var map: MaplibreMap? = null
     set(map) {
