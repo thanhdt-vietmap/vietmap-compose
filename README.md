@@ -18,7 +18,7 @@ In your Gradle version catalog, add:
 ```toml
 [libraries]
 # ...
-maplibre-compose = { module = "dev.sargunv:maplibre-compose", version = "(TODO)" }
+maplibre-compose = { module = "dev.sargunv.maplibre-compose:maplibre-compose", version = "(TODO)" }
 ```
 
 In your Gradle build script, add:

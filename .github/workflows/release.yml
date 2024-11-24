@@ -4,8 +4,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  maven:
+  publish-maven:
     runs-on: macos-latest
+    environment:
+      name: maven
+      url: https://central.sonatype.com/artifact/dev.sargunv/maplibre-compose
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -33,8 +36,8 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ steps.import-gpg.outputs.key_id }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSPHRASE }}
 
-  pages:
-    needs: [maven]
+  publish-pages:
+    needs: [publish-maven]
     runs-on: macos-latest
     permissions:
       pages: write

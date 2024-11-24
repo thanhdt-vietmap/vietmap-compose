@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  format:
+  check-format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +43,7 @@ jobs:
       - uses: ./.github/actions/setup
       - run: ./gradlew iosSimulatorArm64Test
 
-  artifact-docs:
+  build-docs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -53,7 +53,7 @@ jobs:
         with:
           path: build/dokka/htmlMultiModule
 
-  artifact-android-demo-app:
+  build-android-app:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -73,8 +73,17 @@ jobs:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: macos-latest
     permissions:
-      actions: write
+      packages: write
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: ./gradlew publishAllPublicationsToGitHubPackagesRepository
+        env:
+          ORG_GRADLE_PROJECT_githubToken: ${{ secrets.GITHUB_TOKEN }}
+          ORG_GRADLE_PROJECT_githubUser: ${{ github.actor }}
+
+  all-good:
+    needs: [check-format, lint-android, test-android, test-ios, build-docs, build-android-app]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "All checks passed!"

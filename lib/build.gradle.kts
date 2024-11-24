@@ -4,7 +4,7 @@ plugins { id("maven-publish") }
 
 subprojects {
   apply(plugin = "maven-publish")
-  group = "dev.sargunv"
+  group = "dev.sargunv.maplibre-compose"
 
   publishing {
     repositories {
@@ -12,8 +12,8 @@ subprojects {
         name = "GitHubPackages"
         setUrl("https://maven.pkg.github.com/sargunv/maplibre-compose")
         credentials {
-          username = project.properties["GITHUB_USERNAME"]?.toString()
-          password = project.properties["GITHUB_TOKEN"]?.toString()
+          username = project.properties["githubUser"]?.toString()
+          password = project.properties["githubToken"]?.toString()
         }
       }
     }
