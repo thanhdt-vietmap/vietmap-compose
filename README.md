@@ -1,9 +1,11 @@
 # MapLibre for Compose
 
 This project is a [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/) library
-for [MapLibre](https://maplibre.org/). You can use it to embed an interactive vector map in your Compose app.
+for [MapLibre](https://maplibre.org/). You can use it to embed an interactive vector map in your
+Compose app.
 
-Android and iOS support is backed by [MapLibre Native](https://github.com/maplibre/maplibre-native).
+Android and iOS support is implemented
+with [MapLibre Native](https://github.com/maplibre/maplibre-native).
 
 Desktop and Web are not yet supported.
 
@@ -11,7 +13,8 @@ TODO add animated screenshots here
 
 ## Usage
 
-This library is published via Maven Central (TODO), and snapshot builds are additionally available on GitHub Packages.
+This library is published via Maven Central (TODO), and snapshot builds are additionally available
+on GitHub Packages.
 
 In your Gradle version catalog, add:
 
@@ -30,8 +33,10 @@ commonMain.dependencies {
 }
 ```
 
-For iOS, you'll additionally need to add the MapLibre framework to your build. The easiest way to do this in Kotlin
-Multiplatform is with the [CocoaPods Gradle plugin](https://kotlinlang.org/docs/native-cocoapods.html):
+For iOS, you'll additionally need to add the MapLibre framework to your build. The easiest way to do
+this in Kotlin
+Multiplatform is with
+the [CocoaPods Gradle plugin](https://kotlinlang.org/docs/native-cocoapods.html):
 
 ```kotlin
 cocoapods {
@@ -49,12 +54,15 @@ fun MyMapScreen() {
 }
 ```
 
-For full usage information, see the [demo app](./demo-app) and [docs](https://sargunv.github.io/maplibre-compose/).
+For full usage information, see the [demo app](./demo-app)
+and [docs](https://sargunv.github.io/maplibre-compose/).
 
 ## Status
 
-Many common use cases are already supported, but the full breadth of the MapLibre SDKs is not yet covered. What is
-already supported may have bugs. API stability is not yet guaranteed; as we're still exploring how best to express an
+Many common use cases are already supported, but the full breadth of the MapLibre SDKs is not yet
+covered. What is
+already supported may have bugs. API stability is not yet guaranteed; as we're still exploring how
+best to express an
 interactive map API in Compose.
 
 The following is currently supported:
@@ -71,7 +79,8 @@ The following is currently supported:
 * Dynamically reload the style (say, to switch themes)
 * Add custom layers to the map with a declarative Composable API, including:
   * Injecting layers in between base style layers (say, to render underneath labels)
-  * Defining GeoJSON sources via URL or [Spatial K](https://dellisd.github.io/spatial-k/geojson/) geometry
+  * Defining GeoJSON sources via URL or [Spatial K](https://dellisd.github.io/spatial-k/geojson/)
+    geometry
   * Defining raster and vector sources via URL
   * Defining background, circle, fill, extrusion, heatmap, hillshade, line, raster, and
     symbol [layers](https://maplibre.org/maplibre-style-spec/layers/)

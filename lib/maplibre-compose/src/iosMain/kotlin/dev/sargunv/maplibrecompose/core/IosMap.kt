@@ -162,6 +162,10 @@ internal class IosMap(
         else 0uL
     }
 
+  override fun setMaximumFps(maximumFps: Int) {
+    mapView.preferredFramesPerSecond = maximumFps.toLong()
+  }
+
   override fun setGestureSettings(value: GestureSettings) {
     mapView.rotateEnabled = value.isRotateGesturesEnabled
     mapView.scrollEnabled = value.isScrollGesturesEnabled

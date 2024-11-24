@@ -4,12 +4,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 import dev.sargunv.maplibrecompose.core.data.OrnamentSettings
-import dev.sargunv.maplibrecompose.demoapp.DEFAULT_MAP_STYLE
+import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 
 @Composable
 fun EdgeToEdgeDemo(innerPadding: PaddingValues) {
-  MaplibreMap(
-    styleUrl = DEFAULT_MAP_STYLE,
-    ornamentSettings = OrnamentSettings(padding = innerPadding),
-  )
+  MaplibreMap(styleUrl = DEFAULT_STYLE, ornamentSettings = OrnamentSettings(padding = innerPadding))
 }

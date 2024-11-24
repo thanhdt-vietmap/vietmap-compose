@@ -62,6 +62,7 @@ internal fun AndroidMapView(
         mapView.getMapAsync { map ->
           currentMap =
             AndroidMap(
+              mapView = mapView,
               map = map,
               layoutDir = layoutDir,
               density = density,

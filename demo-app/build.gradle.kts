@@ -100,6 +100,7 @@ kotlin {
 compose.resources { packageOfResClass = "dev.sargunv.maplibrecompose.demoapp.generated" }
 
 spotless {
+  kotlinGradle { ktfmt().googleStyle() }
   kotlin {
     target("src/**/*.kt")
     ktfmt().googleStyle()

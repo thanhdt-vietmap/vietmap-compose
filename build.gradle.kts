@@ -12,16 +12,15 @@ plugins {
   alias(libs.plugins.maven.publish) apply false
 }
 
-subprojects {
-  apply(plugin = "com.diffplug.spotless")
-  spotless { kotlinGradle { ktfmt().googleStyle() } }
-}
-
 spotless {
   kotlinGradle { ktfmt().googleStyle() }
   format("swift") {
     target("iosApp/iosApp/**/*.swift")
     nativeCmd("swiftFormat", "/usr/bin/env", listOf("swift", "format"))
+  }
+  flexmark {
+    target("**/*.md")
+    flexmark()
   }
 }
 

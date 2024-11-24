@@ -13,6 +13,8 @@ internal interface MaplibreMap {
   var isDebugEnabled: Boolean
   var cameraPosition: CameraPosition
 
+  fun setMaximumFps(maximumFps: Int)
+
   fun setOrnamentSettings(value: OrnamentSettings)
 
   fun setGestureSettings(value: GestureSettings)

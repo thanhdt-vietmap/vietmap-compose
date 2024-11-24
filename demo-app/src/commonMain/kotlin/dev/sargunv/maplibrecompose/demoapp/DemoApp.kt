@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,7 +24,7 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
   MaterialTheme {
     NavHost(navController = navController, startDestination = StartRoute) {
       composable<EdgeToEdgeRoute> {
-        DemoScaffold("Edge-to-edge", alpha = 0.7f, navigateUp = navController::navigateUp) {
+        DemoScaffold("Edge-to-edge", alpha = 0.5f, navigateUp = navController::navigateUp) {
           innerPadding ->
           EdgeToEdgeDemo(innerPadding)
         }
@@ -66,42 +67,63 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
       composable<StartRoute> {
         SimpleDemoScaffold("MapLibre Compose Demos", navigateUp = null) {
           Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            ListItem(
-              modifier = Modifier.clickable { navController.navigate(EdgeToEdgeRoute) },
-              headlineContent = { Text("Edge-to-edge") },
+            DemoListItem(
+              title = "Edge-to-edge",
+              description =
+                "Fill the entire screen with a map, and add padding to ornaments to place them correctly.",
+              onClick = { navController.navigate(EdgeToEdgeRoute) },
             )
-            ListItem(
-              modifier = Modifier.clickable { navController.navigate(StyleSwitcherRoute) },
-              headlineContent = { Text("Style switcher") },
+            DemoListItem(
+              title = "Style switcher",
+              description = "Switch between different map styles at runtime.",
+              onClick = { navController.navigate(StyleSwitcherRoute) },
             )
-            ListItem(
-              modifier = Modifier.clickable { navController.navigate(BasicLayersRoute) },
-              headlineContent = { Text("Basic layers") },
+            DemoListItem(
+              title = "Basic layers",
+              description = "Add additional layers to the map and configure them with expressions.",
+              onClick = { navController.navigate(BasicLayersRoute) },
             )
-            ListItem(
-              modifier = Modifier.clickable { navController.navigate(LayerAnchorsRoute) },
-              headlineContent = { Text("Layer anchors") },
+            DemoListItem(
+              title = "Layer anchors",
+              description = "Configure how layers are inserted into the base style.",
+              onClick = { navController.navigate(LayerAnchorsRoute) },
             )
-            ListItem(
-              modifier = Modifier.clickable { navController.navigate(AnimatedPropertiesRoute) },
-              headlineContent = { Text("Animated properties") },
+            DemoListItem(
+              title = "Animated properties",
+              description = "Change layer properties at runtime.",
+              onClick = { navController.navigate(AnimatedPropertiesRoute) },
             )
-            ListItem(
-              modifier = Modifier.clickable { navController.navigate(InteractionRoute) },
-              headlineContent = { Text("Interaction") },
+            DemoListItem(
+              title = "Interaction",
+              description = "Detect taps on the map and the features under them.",
+              onClick = { navController.navigate(InteractionRoute) },
             )
-            ListItem(
-              modifier = Modifier.clickable { navController.navigate(CameraStateRoute) },
-              headlineContent = { Text("Camera state") },
+            DemoListItem(
+              title = "Camera state",
+              description = "Read camera position as state.",
+              onClick = { navController.navigate(CameraStateRoute) },
             )
-            ListItem(
-              modifier = Modifier.clickable { navController.navigate(CameraFollowRoute) },
-              headlineContent = { Text("Camera follow") },
+            DemoListItem(
+              title = "Camera follow",
+              description = "Make the camera follow a point on the map.",
+              onClick = { navController.navigate(CameraFollowRoute) },
             )
           }
         }
       }
     }
+  }
+}
+
+@Composable
+fun DemoListItem(title: String, description: String, onClick: () -> Unit) {
+  Column {
+    ListItem(
+      modifier = Modifier.clickable(onClick = onClick),
+      headlineContent = { Text(title) },
+      supportingContent = { Text(description) },
+    )
+    HorizontalDivider()
   }
 }
 

@@ -14,7 +14,10 @@ plugins {
   alias(libs.plugins.spotless)
   alias(libs.plugins.dokka)
   alias(libs.plugins.maven.publish)
+  id("maven-publish")
 }
+
+group = "dev.sargunv.maplibre-compose"
 
 version = "0.1.0-SNAPSHOT"
 
@@ -95,9 +98,23 @@ kotlin {
 }
 
 spotless {
+  kotlinGradle { ktfmt().googleStyle() }
   kotlin {
     target("src/**/*.kt")
     ktfmt().googleStyle()
+  }
+}
+
+publishing {
+  repositories {
+    maven {
+      name = "GitHubPackages"
+      setUrl("https://maven.pkg.github.com/sargunv/maplibre-compose")
+      credentials {
+        username = project.properties["githubUser"]?.toString()
+        password = project.properties["githubToken"]?.toString()
+      }
+    }
   }
 }
 

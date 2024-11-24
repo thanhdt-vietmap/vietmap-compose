@@ -16,17 +16,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastRoundToInt
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 import dev.sargunv.maplibrecompose.compose.rememberCameraState
-import dev.sargunv.maplibrecompose.demoapp.DEFAULT_MAP_STYLE
+import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 import kotlin.math.pow
 
 @Composable
 fun CameraStateDemo() = Column {
   val cameraState = rememberCameraState()
-  MaplibreMap(
-    modifier = Modifier.weight(1f),
-    styleUrl = DEFAULT_MAP_STYLE,
-    cameraState = cameraState,
-  )
+  MaplibreMap(modifier = Modifier.weight(1f), styleUrl = DEFAULT_STYLE, cameraState = cameraState)
   Row(modifier = Modifier.safeDrawingPadding().wrapContentSize(Alignment.Center)) {
     val pos = cameraState.position
     Cell("Latitude", pos.target.latitude.format(3), Modifier.weight(1.4f))

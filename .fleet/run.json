@@ -22,7 +22,7 @@
       "workingDir": "$PROJECT_DIR$",
       "tasks": [
         "spotlessApply"
-      ],
+      ]
     },
     {
       "name": "iOS-Test",
@@ -30,7 +30,7 @@
       "workingDir": "$PROJECT_DIR$",
       "tasks": [
         "iosSimulatorArm64Test"
-      ],
+      ]
     },
     {
       "name": "Android-Test",
@@ -38,7 +38,7 @@
       "workingDir": "$PROJECT_DIR$",
       "tasks": [
         "connectedDebugAndroidTest"
-      ],
+      ]
     }
   ]
 }

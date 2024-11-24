@@ -27,9 +27,11 @@ import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.maps.MapLibreMap as MLNMap
 import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.Style as MlnStyle
 
 internal class AndroidMap(
+  private val mapView: MapView,
   private val map: MapLibreMap,
   internal var layoutDir: LayoutDirection,
   internal var density: Density,
@@ -74,6 +76,8 @@ internal class AndroidMap(
     set(value) {
       map.isDebugActive = value
     }
+
+  override fun setMaximumFps(maximumFps: Int) = mapView.setMaximumFps(maximumFps)
 
   override fun setGestureSettings(value: GestureSettings) {
     map.uiSettings.isRotateGesturesEnabled = value.isRotateGesturesEnabled
