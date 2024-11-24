@@ -77,8 +77,6 @@ internal class StyleManager(var style: Style, private var logger: Logger?) {
   }
 
   internal fun applyChanges() {
-    logger?.i { "Before applying changes: ${style.getLayers().map { it.id }}" }
-
     sourcesToAdd
       .onEach {
         logger?.i { "Adding source ${it.id}" }
@@ -144,8 +142,6 @@ internal class StyleManager(var style: Style, private var logger: Logger?) {
         node.markAdded()
       }
     }
-
-    logger?.i { "After applying changes: ${style.getLayers().map { it.id }}" }
   }
 
   private fun LayerNode<*>.markAdded() {
