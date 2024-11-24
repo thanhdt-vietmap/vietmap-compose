@@ -8,9 +8,10 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 plugins {
   alias(libs.plugins.kotlin.multiplatform)
   alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.jetbrains.compose)
-  alias(libs.plugins.compose.compiler)
   alias(libs.plugins.kotlin.cocoapods)
+  alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.spotless)
 }
 
@@ -64,6 +65,7 @@ kotlin {
           add("-Xconsistent-data-class-copy-visibility")
         }
       }
+      languageSettings { optIn("androidx.compose.material3.ExperimentalMaterial3Api") }
     }
 
     commonMain.dependencies {
@@ -72,6 +74,7 @@ kotlin {
       implementation(compose.material3)
       implementation(compose.runtime)
       implementation(compose.ui)
+      implementation(libs.navigation.compose)
       implementation(project(":lib:maplibre-compose"))
     }
 

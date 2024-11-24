@@ -4,6 +4,7 @@ import android.graphics.PointF
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrecompose.core.camera.CameraPosition
@@ -92,10 +93,12 @@ internal class AndroidMap(
     map.uiSettings.compassGravity = value.compassAlignment.toGravity(layoutDir)
 
     with(density) {
-      val left = value.padding.calculateLeftPadding(layoutDir).roundToPx()
-      val top = value.padding.calculateTopPadding().roundToPx()
-      val right = value.padding.calculateRightPadding(layoutDir).roundToPx()
-      val bottom = value.padding.calculateBottomPadding().roundToPx()
+      val left =
+        (value.padding.calculateLeftPadding(layoutDir).coerceAtLeast(0.dp) + 8.dp).roundToPx()
+      val top = (value.padding.calculateTopPadding().coerceAtLeast(0.dp) + 8.dp).roundToPx()
+      val right =
+        (value.padding.calculateRightPadding(layoutDir).coerceAtLeast(0.dp) + 8.dp).roundToPx()
+      val bottom = (value.padding.calculateBottomPadding().coerceAtLeast(0.dp) + 8.dp).roundToPx()
       map.uiSettings.setAttributionMargins(left, top, right, bottom)
       map.uiSettings.setLogoMargins(left, top, right, bottom)
       map.uiSettings.setCompassMargins(left, top, right, bottom)

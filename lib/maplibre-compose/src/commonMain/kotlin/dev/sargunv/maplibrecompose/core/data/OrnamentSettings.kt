@@ -5,7 +5,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 
 public data class OrnamentSettings(
-  val padding: PaddingValues = PaddingValues(8.dp),
+  val padding: PaddingValues = PaddingValues(0.dp),
   val isLogoEnabled: Boolean = true,
   val logoAlignment: Alignment = Alignment.BottomStart,
   val isAttributionEnabled: Boolean = true,

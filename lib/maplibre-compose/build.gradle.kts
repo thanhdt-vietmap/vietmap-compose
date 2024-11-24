@@ -10,7 +10,7 @@ plugins {
   alias(libs.plugins.kotlin.cocoapods)
   alias(libs.plugins.android.library)
   alias(libs.plugins.jetbrains.compose)
-  alias(libs.plugins.compose.compiler)
+  alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.spotless)
   alias(libs.plugins.dokka)
   alias(libs.plugins.maven.publish)

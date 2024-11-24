@@ -178,36 +178,44 @@ internal class IosMap(
         CGPointMake(
           (uiPadding.calculateLeftPadding(layoutDir).value -
               insetPadding.calculateLeftPadding(layoutDir).value)
-            .toDouble(),
+            .toDouble()
+            .coerceAtLeast(0.0) + 8.0,
           (uiPadding.calculateTopPadding().value - insetPadding.calculateTopPadding().value)
-            .toDouble(),
+            .toDouble()
+            .coerceAtLeast(0.0) + 8.0,
         )
 
       MLNOrnamentPositionTopRight ->
         CGPointMake(
           (uiPadding.calculateRightPadding(layoutDir).value -
               insetPadding.calculateRightPadding(layoutDir).value)
-            .toDouble(),
+            .toDouble()
+            .coerceAtLeast(0.0) + 8.0,
           (uiPadding.calculateTopPadding().value - insetPadding.calculateTopPadding().value)
-            .toDouble(),
+            .toDouble()
+            .coerceAtLeast(0.0) + 8.0,
         )
 
       MLNOrnamentPositionBottomLeft ->
         CGPointMake(
           (uiPadding.calculateLeftPadding(layoutDir).value -
               insetPadding.calculateLeftPadding(layoutDir).value)
-            .toDouble(),
+            .toDouble()
+            .coerceAtLeast(0.0) + 8.0,
           (uiPadding.calculateBottomPadding().value - insetPadding.calculateBottomPadding().value)
-            .toDouble(),
+            .toDouble()
+            .coerceAtLeast(0.0) + 8.0,
         )
 
       MLNOrnamentPositionBottomRight ->
         CGPointMake(
           (uiPadding.calculateRightPadding(layoutDir).value -
               insetPadding.calculateRightPadding(layoutDir).value)
-            .toDouble(),
+            .toDouble()
+            .coerceAtLeast(0.0) + 8.0,
           (uiPadding.calculateBottomPadding().value - insetPadding.calculateBottomPadding().value)
-            .toDouble(),
+            .toDouble()
+            .coerceAtLeast(0.0) + 8.0,
         )
 
       else -> error("Invalid ornament position")
