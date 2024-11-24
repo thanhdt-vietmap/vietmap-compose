@@ -22,7 +22,9 @@ import kotlin.math.pow
 @Composable
 fun CameraStateDemo() = Column {
   val cameraState = rememberCameraState()
+
   MaplibreMap(modifier = Modifier.weight(1f), styleUrl = DEFAULT_STYLE, cameraState = cameraState)
+
   Row(modifier = Modifier.safeDrawingPadding().wrapContentSize(Alignment.Center)) {
     val pos = cameraState.position
     Cell("Latitude", pos.target.latitude.format(3), Modifier.weight(1.4f))

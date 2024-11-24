@@ -25,7 +25,7 @@ public fun MaplibreMap(
   ornamentSettings: OrnamentSettings = OrnamentSettings(),
   cameraState: CameraState = rememberCameraState(),
   isDebugEnabled: Boolean = false,
-  preferredFps: Int = 120,
+  maximumFps: Int = 120,
   debugLogger: Logger? = remember { Logger.withTag("maplibre-compose") },
   content: @Composable ExpressionScope.() -> Unit = {},
 ) {
@@ -75,7 +75,7 @@ public fun MaplibreMap(
       map.isDebugEnabled = isDebugEnabled
       map.setGestureSettings(gestureSettings)
       map.setOrnamentSettings(ornamentSettings)
-      map.setMaximumFps(preferredFps)
+      map.setMaximumFps(maximumFps)
     },
     onReset = {
       cameraState.map = null

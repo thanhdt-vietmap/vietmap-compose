@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.sargunv.maplibrecompose.demoapp.demos.CameraStateDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.EdgeToEdgeDemo
+import dev.sargunv.maplibrecompose.demoapp.demos.FrameRateDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.StyleSwitcherDemo
 import kotlinx.serialization.Serializable
 
@@ -64,6 +65,9 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
           Text("Camera follow")
         }
       }
+      composable<FrameRateRoute> {
+        SimpleDemoScaffold("Frame rate", navigateUp = navController::navigateUp) { FrameRateDemo() }
+      }
       composable<StartRoute> {
         SimpleDemoScaffold("MapLibre Compose Demos", navigateUp = null) {
           Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -108,6 +112,11 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
               description = "Make the camera follow a point on the map.",
               onClick = { navController.navigate(CameraFollowRoute) },
             )
+            DemoListItem(
+              title = "Frame rate",
+              description = "Change the frame rate of the map.",
+              onClick = { navController.navigate(FrameRateRoute) },
+            )
           }
         }
       }
@@ -144,3 +153,5 @@ fun DemoListItem(title: String, description: String, onClick: () -> Unit) {
 @Serializable object CameraStateRoute
 
 @Serializable object CameraFollowRoute
+
+@Serializable object FrameRateRoute

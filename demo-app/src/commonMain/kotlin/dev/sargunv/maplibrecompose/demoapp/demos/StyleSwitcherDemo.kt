@@ -18,7 +18,9 @@ import dev.sargunv.maplibrecompose.demoapp.getAllStyleUrls
 fun StyleSwitcherDemo() = Column {
   val styles = remember { getAllStyleUrls() }
   var selectedIndex by remember { mutableStateOf(0) }
+
   MaplibreMap(modifier = Modifier.weight(1f), styleUrl = styles[selectedIndex].second)
+
   SecondaryScrollableTabRow(selectedTabIndex = selectedIndex) {
     styles.forEachIndexed { index, pair ->
       Tab(
