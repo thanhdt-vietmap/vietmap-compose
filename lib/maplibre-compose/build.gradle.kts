@@ -1,6 +1,5 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalComposeLibrary::class)
 
-import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -42,7 +41,7 @@ kotlin {
   androidTarget {
     compilerOptions { jvmTarget.set(JvmTarget.JVM_11) }
     instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-    publishLibraryVariants("release")
+    publishLibraryVariants("release", "debug")
   }
   iosArm64()
   iosSimulatorArm64()
@@ -103,18 +102,9 @@ spotless {
 }
 
 mavenPublishing {
-  coordinates(
-    groupId = "${project.group}",
-    artifactId = project.name,
-    version = "${project.version}",
-  )
-
   pom {
     name = "MapLibre Compose"
     description = "Add interactive vector tile maps to your Compose app"
     url = "https://github.com/sargunv/maplibre-compose"
   }
-
-  publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, true)
-  signAllPublications()
 }

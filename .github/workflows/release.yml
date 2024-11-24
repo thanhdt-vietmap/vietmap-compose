@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  maven:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: crazy-max/ghaction-import-gpg@v6
+        id: import-gpg
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Transform GPG key
+        id: transform-gpg-key
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          key="$(
+            echo "$GPG_PASSPHRASE" \
+              | gpg --passphrase-fd 0 --export-secret-keys --armor '${{ steps.import-gpg.outputs.key_id }}' \
+              | grep -v '\-\-' | grep -v '^=.' | tr -d '\n'
+          )"
+          echo "name=$key" >> $GITHUB_OUTPUT
+      - run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ steps.transform-gpg-key.outputs.key }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ steps.import-gpg.outputs.key_id }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSPHRASE }}
+
+  pages:
+    needs: [maven]
+    runs-on: macos-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-pages.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: ./gradlew dokkaHtmlMultiModule
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/dokka/htmlMultiModule
+      - uses: actions/deploy-pages@v4
+        id: deploy-pages

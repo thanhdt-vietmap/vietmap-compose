@@ -43,7 +43,7 @@ jobs:
       - uses: ./.github/actions/setup
       - run: ./gradlew iosSimulatorArm64Test
 
-  docs:
+  artifact-docs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,3 +52,29 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build/dokka/htmlMultiModule
+
+  artifact-android-demo-app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: ./gradlew packageReleaseUniversalApk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-app-debug
+          path: demo-app/build/outputs/apk/debug/demo-app-debug.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-app-release-unsigned
+          path: demo-app/build/outputs/apk/release/demo-app-release-unsigned.apk
+
+  publish-snapshot:
+    needs: [test-android, test-ios]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: macos-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: ./gradlew publishAllPublicationsToGitHubPackagesRepository

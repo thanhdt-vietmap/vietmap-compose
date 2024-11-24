@@ -11,14 +11,14 @@ TODO add animated screenshots here
 
 ## Usage
 
-This library is published via (TODO).
+This library is published via Maven Central (TODO), and snapshot builds are additionally available on GitHub Packages.
 
 In your Gradle version catalog, add:
 
 ```toml
 [libraries]
 # ...
-maplibre-compose = { module = "dev.sargunv:maplibre-compose", version = "0.1.0" }
+maplibre-compose = { module = "dev.sargunv:maplibre-compose", version = "(TODO)" }
 ```
 
 In your Gradle build script, add:
@@ -49,7 +49,7 @@ fun MyMapScreen() {
 }
 ```
 
-For full usage information, see the [demo app](./demo-app) and docs (TODO).
+For full usage information, see the [demo app](./demo-app) and [docs](https://sargunv.github.io/maplibre-compose/).
 
 ## Status
 
