@@ -58,13 +58,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: ./gradlew packageReleaseUniversalApk
+      - run: ./gradlew packageDebug packageRelease
       - uses: actions/upload-artifact@v4
         with:
+          if-no-files-found: error
           name: demo-app-debug
           path: demo-app/build/outputs/apk/debug/demo-app-debug.apk
       - uses: actions/upload-artifact@v4
         with:
+          if-no-files-found: error
           name: demo-app-release-unsigned
           path: demo-app/build/outputs/apk/release/demo-app-release-unsigned.apk
 
