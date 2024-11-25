@@ -25,7 +25,7 @@ public fun MaplibreMap(
   ornamentSettings: OrnamentSettings = OrnamentSettings(),
   cameraState: CameraState = rememberCameraState(),
   isDebugEnabled: Boolean = false,
-  maximumFps: Int = 120,
+  maximumFps: Int = 120, // TODO detect device native frame rate
   debugLogger: Logger? = remember { Logger.withTag("maplibre-compose") },
   content: @Composable ExpressionScope.() -> Unit = {},
 ) {
