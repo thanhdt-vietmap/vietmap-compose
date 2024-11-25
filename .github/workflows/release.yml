@@ -27,7 +27,7 @@ jobs:
               | gpg --pinentry-mode loopback --passphrase-fd 0 --export-secret-keys --armor '${{ steps.import-gpg.outputs.keyid }}' \
               | grep -v '\-\-' | grep -v '^=.' | tr -d '\n'
           )"
-          echo "name=$key" >> $GITHUB_OUTPUT
+          echo "key=$key" >> $GITHUB_OUTPUT
       - run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
