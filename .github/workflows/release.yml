@@ -8,32 +8,15 @@ jobs:
     runs-on: macos-latest
     environment:
       name: maven-central
-      url: https://central.sonatype.com/artifact/dev.sargunv/maplibre-compose
+      url: https://central.sonatype.com/artifact/dev.sargunv.maplibre-compose/maplibre-compose
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - uses: crazy-max/ghaction-import-gpg@v6
-        id: import-gpg
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-      - name: Transform GPG key
-        id: transform-gpg-key
-        env:
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: |
-          key="$(
-            echo "$GPG_PASSPHRASE" \
-              | gpg --pinentry-mode loopback --passphrase-fd 0 --export-secret-keys --armor '${{ steps.import-gpg.outputs.keyid }}' \
-              | grep -v '\-\-' | grep -v '^=.' | tr -d '\n'
-          )"
-          echo "key=$key" >> $GITHUB_OUTPUT
       - run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ steps.transform-gpg-key.outputs.key }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ steps.import-gpg.outputs.key_id }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSPHRASE }}
 
   publish-pages:

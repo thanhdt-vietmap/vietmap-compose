@@ -16,7 +16,9 @@ Desktop and Web are not yet supported.
 
 ## Usage
 
-This library is published via Maven Central (TODO), and snapshot builds are additionally available
+This library is published
+via [Maven Central](https://central.sonatype.com/artifact/dev.sargunv.maplibre-compose/maplibre-compose), and snapshot
+builds are additionally available
 on GitHub Packages.
 
 In your Gradle version catalog, add:
@@ -24,7 +26,7 @@ In your Gradle version catalog, add:
 ```toml
 [libraries]
 # ...
-maplibre-compose = { module = "dev.sargunv.maplibre-compose:maplibre-compose", version = "(TODO)" }
+maplibre-compose = { module = "dev.sargunv.maplibre-compose:maplibre-compose", version = "0.1.0" }
 ```
 
 In your Gradle build script, add:
