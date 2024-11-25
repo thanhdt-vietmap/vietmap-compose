@@ -15,12 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import dev.sargunv.maplibrecompose.demoapp.demos.CameraFollowDemo
-import dev.sargunv.maplibrecompose.demoapp.demos.CameraStateDemo
-import dev.sargunv.maplibrecompose.demoapp.demos.ClusteredPointsDemo
-import dev.sargunv.maplibrecompose.demoapp.demos.EdgeToEdgeDemo
-import dev.sargunv.maplibrecompose.demoapp.demos.FrameRateDemo
-import dev.sargunv.maplibrecompose.demoapp.demos.StyleSwitcherDemo
+import dev.sargunv.maplibrecompose.demoapp.demos.*
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -47,14 +42,14 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
           StyleSwitcherDemo()
         }
       }
-      composable<BasicLayersRoute> {
+      composable<ClusteredPointsRoute> {
         SimpleDemoScaffold("Clustering and interaction", navigateUp = navController::navigateUp) {
           ClusteredPointsDemo()
         }
       }
-      composable<AnimatedPropertiesRoute> {
+      composable<AnimatedLayerRoute> {
         SimpleDemoScaffold("Animated layer", navigateUp = navController::navigateUp) {
-          Text("Animated layer")
+          AnimatedLayerDemo()
         }
       }
       composable<CameraStateRoute> {
@@ -87,12 +82,12 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
             DemoListItem(
               title = "Clustering and interaction",
               description = "Add points to the map and configure clustering with expressions.",
-              onClick = { navController.navigate(BasicLayersRoute) },
+              onClick = { navController.navigate(ClusteredPointsRoute) },
             )
             DemoListItem(
               title = "Animated layer",
               description = "Change layer properties at runtime.",
-              onClick = { navController.navigate(AnimatedPropertiesRoute) },
+              onClick = { navController.navigate(AnimatedLayerRoute) },
             )
             DemoListItem(
               title = "Camera state",
@@ -134,9 +129,9 @@ fun DemoListItem(title: String, description: String, onClick: () -> Unit) {
 
 @Serializable object StyleSwitcherRoute
 
-@Serializable object BasicLayersRoute
+@Serializable object ClusteredPointsRoute
 
-@Serializable object AnimatedPropertiesRoute
+@Serializable object AnimatedLayerRoute
 
 @Serializable object CameraStateRoute
 

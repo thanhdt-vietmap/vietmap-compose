@@ -27,7 +27,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-private const val GBFS_FILE = "files/data/gbfs_lime_seattle.json"
+private const val GBFS_FILE = "files/data/lime_seattle.gbfs.json"
 
 private val SEATTLE = Position(latitude = 47.607, longitude = -122.342)
 
