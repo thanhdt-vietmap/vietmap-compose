@@ -9,7 +9,10 @@ with [MapLibre Native](https://github.com/maplibre/maplibre-native).
 
 Desktop and Web are not yet supported.
 
-TODO add animated screenshots here
+<p float="left">
+  <img src="https://github.com/user-attachments/assets/671fc56d-b1a8-4843-82ea-4813c9712ea3" height=400/>
+  <img src="https://github.com/user-attachments/assets/ae4a43e4-66bc-4a69-824f-957874912abd" height=400/>
+</p>
 
 ## Usage
 
