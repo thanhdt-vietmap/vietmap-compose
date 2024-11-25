@@ -24,13 +24,19 @@ val DEFAULT_STYLE = REMOTE_STYLE_URLS[0].second
 fun getAllStyleUrls() =
   REMOTE_STYLE_URLS + LOCAL_STYLE_PATHS.map { it.first to Res.getUri(it.second) }
 
-/** Caution: this converter results in a loss of precision. */
-object PositionVectorConverter : TwoWayConverter<Position, AnimationVector2D> {
+/** Caution: this converter results in a loss of precision far from the origin. */
+class PositionVectorConverter(private val origin: Position) :
+  TwoWayConverter<Position, AnimationVector2D> {
   override val convertFromVector: (AnimationVector2D) -> Position = { vector ->
-    Position(longitude = vector.v1.toDouble(), latitude = vector.v2.toDouble())
+    Position(
+      longitude = vector.v1.toDouble() + origin.longitude,
+      latitude = vector.v2.toDouble() + origin.latitude,
+    )
   }
 
   override val convertToVector: (Position) -> AnimationVector2D = { pos ->
-    AnimationVector2D(pos.longitude.toFloat(), pos.latitude.toFloat())
+    val dLon = pos.longitude - origin.longitude
+    val dLat = pos.latitude - origin.latitude
+    AnimationVector2D(dLon.toFloat(), dLat.toFloat())
   }
 }

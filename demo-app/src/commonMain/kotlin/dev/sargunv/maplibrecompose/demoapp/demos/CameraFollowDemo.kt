@@ -35,6 +35,8 @@ import io.github.dellisd.spatialk.geojson.Position
 
 val START_POINT = Position(longitude = -122.4194, latitude = 37.7749)
 val END_POINT = Position(longitude = -122.3954, latitude = 37.7939)
+const val MIN_ZOOM = 9
+const val MAX_ZOOM = 20
 
 @Composable
 fun CameraFollowDemo() = Column {
@@ -44,7 +46,7 @@ fun CameraFollowDemo() = Column {
     infiniteTransition.animateValue(
       START_POINT,
       END_POINT,
-      typeConverter = PositionVectorConverter,
+      typeConverter = PositionVectorConverter(origin = START_POINT),
       animationSpec =
         infiniteRepeatable(
           animation = tween(durationMillis = 30_000),
@@ -52,8 +54,8 @@ fun CameraFollowDemo() = Column {
         ),
     )
 
-  var desiredZoom by remember { mutableStateOf(14f) }
-  val animatedZoom by animateFloatAsState(desiredZoom)
+  var desiredZoom by remember { mutableStateOf((MIN_ZOOM + MAX_ZOOM) / 2) }
+  val animatedZoom by animateFloatAsState(desiredZoom.toFloat())
 
   val cameraState =
     rememberCameraState(
@@ -92,7 +94,17 @@ fun CameraFollowDemo() = Column {
     modifier = Modifier.padding(16.dp).fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceEvenly,
   ) {
-    Button(onClick = { desiredZoom = (desiredZoom - 1).coerceAtLeast(0f) }) { Text("Zoom out") }
-    Button(onClick = { desiredZoom = (desiredZoom + 1).coerceAtMost(20f) }) { Text("Zoom in") }
+    Button(
+      enabled = desiredZoom > MIN_ZOOM,
+      onClick = { desiredZoom = (desiredZoom - 1).coerceAtLeast(MIN_ZOOM) },
+    ) {
+      Text("Zoom out")
+    }
+    Button(
+      enabled = desiredZoom < MAX_ZOOM,
+      onClick = { desiredZoom = (desiredZoom + 1).coerceAtMost(MAX_ZOOM) },
+    ) {
+      Text("Zoom in")
+    }
   }
 }
