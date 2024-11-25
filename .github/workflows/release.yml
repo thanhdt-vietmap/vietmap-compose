@@ -24,7 +24,7 @@ jobs:
         run: |
           key="$(
             echo "$GPG_PASSPHRASE" \
-              | gpg --passphrase-fd 0 --export-secret-keys --armor '${{ steps.import-gpg.outputs.key_id }}' \
+              | gpg --passphrase-fd 0 --export-secret-keys --armor '${{ steps.import-gpg.outputs.keyid }}' \
               | grep -v '\-\-' | grep -v '^=.' | tr -d '\n'
           )"
           echo "name=$key" >> $GITHUB_OUTPUT
