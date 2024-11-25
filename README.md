@@ -1,3 +1,7 @@
+![Maven Central Version](https://img.shields.io/maven-central/v/dev.sargunv.maplibre-compose/maplibre-compose)
+![Github Actions](https://github.com/sargunv/maplibre-compose/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/github/license/sargunv/maplibre-compose)
+
 # MapLibre for Compose
 
 This project is a [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/) library
