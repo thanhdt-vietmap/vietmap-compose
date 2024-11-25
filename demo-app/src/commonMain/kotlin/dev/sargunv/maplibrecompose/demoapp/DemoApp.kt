@@ -1,5 +1,6 @@
 package dev.sargunv.maplibrecompose.demoapp
 
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
@@ -25,7 +26,16 @@ import kotlinx.serialization.Serializable
 @Composable
 fun DemoApp(navController: NavHostController = rememberNavController()) {
   MaterialTheme {
-    NavHost(navController = navController, startDestination = StartRoute) {
+    NavHost(
+      navController = navController,
+      startDestination = StartRoute,
+      enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start) },
+      exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start) },
+      popEnterTransition = {
+        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End)
+      },
+      popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End) },
+    ) {
       composable<EdgeToEdgeRoute> {
         DemoScaffold("Edge-to-edge", alpha = 0.5f, navigateUp = navController::navigateUp) {
           innerPadding ->
@@ -38,18 +48,13 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
         }
       }
       composable<BasicLayersRoute> {
-        SimpleDemoScaffold("Clustered points", navigateUp = navController::navigateUp) {
+        SimpleDemoScaffold("Clustering and interaction", navigateUp = navController::navigateUp) {
           ClusteredPointsDemo()
         }
       }
       composable<AnimatedPropertiesRoute> {
-        SimpleDemoScaffold("Animated properties", navigateUp = navController::navigateUp) {
-          Text("Animated properties")
-        }
-      }
-      composable<InteractionRoute> {
-        SimpleDemoScaffold("Interaction", navigateUp = navController::navigateUp) {
-          Text("Interaction")
+        SimpleDemoScaffold("Animated layer", navigateUp = navController::navigateUp) {
+          Text("Animated layer")
         }
       }
       composable<CameraStateRoute> {
@@ -80,19 +85,14 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
               onClick = { navController.navigate(StyleSwitcherRoute) },
             )
             DemoListItem(
-              title = "Clustered points",
+              title = "Clustering and interaction",
               description = "Add points to the map and configure clustering with expressions.",
               onClick = { navController.navigate(BasicLayersRoute) },
             )
             DemoListItem(
-              title = "Animated properties",
+              title = "Animated layer",
               description = "Change layer properties at runtime.",
               onClick = { navController.navigate(AnimatedPropertiesRoute) },
-            )
-            DemoListItem(
-              title = "Interaction",
-              description = "Detect taps on the map and the features under them.",
-              onClick = { navController.navigate(InteractionRoute) },
             )
             DemoListItem(
               title = "Camera state",
@@ -137,8 +137,6 @@ fun DemoListItem(title: String, description: String, onClick: () -> Unit) {
 @Serializable object BasicLayersRoute
 
 @Serializable object AnimatedPropertiesRoute
-
-@Serializable object InteractionRoute
 
 @Serializable object CameraStateRoute
 

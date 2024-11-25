@@ -2,12 +2,7 @@ package dev.sargunv.maplibrecompose.demoapp.demos
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
@@ -23,6 +18,7 @@ import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.FeatureCollection
 import io.github.dellisd.spatialk.geojson.Point
 import io.github.dellisd.spatialk.geojson.Position
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.double
@@ -39,11 +35,11 @@ private val LIME_GREEN = Color(50, 205, 5)
 
 @Composable
 fun ClusteredPointsDemo() = Column {
-  MaplibreMap(
-    modifier = Modifier.weight(1f),
-    styleUrl = DEFAULT_STYLE,
-    cameraState = rememberCameraState(firstPosition = CameraPosition(target = SEATTLE, zoom = 10.0)),
-  ) {
+  val cameraState =
+    rememberCameraState(firstPosition = CameraPosition(target = SEATTLE, zoom = 10.0))
+  val coroutineScope = rememberCoroutineScope()
+
+  MaplibreMap(modifier = Modifier.weight(1f), styleUrl = DEFAULT_STYLE, cameraState = cameraState) {
     val gbfsData by rememberGbfsFeatureState(GBFS_FILE)
 
     val bikeSource =
@@ -69,6 +65,18 @@ fun ClusteredPointsDemo() = Column {
           1000 to const(50),
           5000 to const(60),
         ),
+      onClick = { features ->
+        features.firstOrNull()?.geometry?.let {
+          coroutineScope.launch {
+            cameraState.animateTo(
+              cameraState.position.copy(
+                target = (it as Point).coordinates,
+                zoom = cameraState.position.zoom + 1,
+              )
+            )
+          }
+        }
+      },
     )
 
     SymbolLayer(
