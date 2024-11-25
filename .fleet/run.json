@@ -14,7 +14,7 @@
       "name": "Android-App",
       "type": "android-app",
       "workingDir": "$PROJECT_DIR$",
-      "module": "root.demo-app.main"
+      "module": "maplibre-compose.demo-app.main"
     },
     {
       "name": "Reformat",

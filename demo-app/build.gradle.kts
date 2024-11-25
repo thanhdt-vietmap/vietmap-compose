@@ -75,10 +75,18 @@ kotlin {
       implementation(compose.runtime)
       implementation(compose.ui)
       implementation(libs.navigation.compose)
+      implementation(libs.ktor.client.core)
+      implementation(libs.ktor.client.content.negotiation)
+      implementation(libs.ktor.serialization.kotlinx.json)
       implementation(project(":lib:maplibre-compose"))
     }
 
-    androidMain.dependencies { implementation(libs.androidx.activity.compose) }
+    androidMain.dependencies {
+      implementation(libs.androidx.activity.compose)
+      implementation(libs.ktor.client.okhttp)
+    }
+
+    iosMain.dependencies { implementation(libs.ktor.client.darwin) }
 
     commonTest.dependencies {
       implementation(kotlin("test"))

@@ -16,12 +16,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastRoundToInt
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 import dev.sargunv.maplibrecompose.compose.rememberCameraState
+import dev.sargunv.maplibrecompose.core.camera.CameraPosition
 import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
+import io.github.dellisd.spatialk.geojson.Position
 import kotlin.math.pow
+
+private val CHICAGO = Position(latitude = 41.878, longitude = -87.626)
 
 @Composable
 fun CameraStateDemo() = Column {
-  val cameraState = rememberCameraState()
+  val cameraState =
+    rememberCameraState(firstPosition = CameraPosition(target = CHICAGO, zoom = 12.0))
 
   MaplibreMap(modifier = Modifier.weight(1f), styleUrl = DEFAULT_STYLE, cameraState = cameraState)
 

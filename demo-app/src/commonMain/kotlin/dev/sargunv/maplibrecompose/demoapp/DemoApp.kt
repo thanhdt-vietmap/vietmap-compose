@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.sargunv.maplibrecompose.demoapp.demos.CameraFollowDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.CameraStateDemo
+import dev.sargunv.maplibrecompose.demoapp.demos.ClusteredPointsDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.EdgeToEdgeDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.FrameRateDemo
 import dev.sargunv.maplibrecompose.demoapp.demos.StyleSwitcherDemo
@@ -37,13 +38,8 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
         }
       }
       composable<BasicLayersRoute> {
-        SimpleDemoScaffold("Basic layers", navigateUp = navController::navigateUp) {
-          Text("Basic layers")
-        }
-      }
-      composable<LayerAnchorsRoute> {
-        SimpleDemoScaffold("Layer anchors", navigateUp = navController::navigateUp) {
-          Text("Layer anchors")
+        SimpleDemoScaffold("Clustered points", navigateUp = navController::navigateUp) {
+          ClusteredPointsDemo()
         }
       }
       composable<AnimatedPropertiesRoute> {
@@ -84,14 +80,9 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
               onClick = { navController.navigate(StyleSwitcherRoute) },
             )
             DemoListItem(
-              title = "Basic layers",
-              description = "Add additional layers to the map and configure them with expressions.",
+              title = "Clustered points",
+              description = "Add points to the map and configure clustering with expressions.",
               onClick = { navController.navigate(BasicLayersRoute) },
-            )
-            DemoListItem(
-              title = "Layer anchors",
-              description = "Configure how layers are inserted into the base style.",
-              onClick = { navController.navigate(LayerAnchorsRoute) },
             )
             DemoListItem(
               title = "Animated properties",
@@ -144,8 +135,6 @@ fun DemoListItem(title: String, description: String, onClick: () -> Unit) {
 @Serializable object StyleSwitcherRoute
 
 @Serializable object BasicLayersRoute
-
-@Serializable object LayerAnchorsRoute
 
 @Serializable object AnimatedPropertiesRoute
 

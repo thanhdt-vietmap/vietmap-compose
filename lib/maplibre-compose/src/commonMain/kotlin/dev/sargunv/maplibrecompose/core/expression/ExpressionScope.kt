@@ -148,13 +148,8 @@ public interface ExpressionScope {
       },
     )
 
-  /**
-   * Helper function to pass a plain string to expressions that otherwise accept mixed-format text.
-   * Does not change the expression at all.
-   */
-  @Suppress("UNCHECKED_CAST")
-  public fun unformatted(value: Expression<String>): Expression<TFormatted> =
-    value as Expression<TFormatted>
+  public fun format(value: Expression<String>): Expression<TFormatted> =
+    callFn("format", value, buildOptions {})
 
   public data class FormatStyle(
     val textFont: Expression<String>? = null,
@@ -549,13 +544,15 @@ public interface ExpressionScope {
 
   // ramps, scales, curves
 
-  public fun step(
+  public fun <Output> step(
     input: Expression<Number>,
-    vararg stops: Pair<Number, Expression<Number>>,
-  ): Expression<Number> =
+    fallback: Expression<Output>,
+    vararg stops: Pair<Number, Expression<Output>>,
+  ): Expression<Output> =
     callFn(
       "step",
       input,
+      fallback,
       *stops
         .sortedBy { it.first.toDouble() }
         .foldToArgs {

@@ -33,10 +33,10 @@ import dev.sargunv.maplibrecompose.demoapp.PositionVectorConverter
 import io.github.dellisd.spatialk.geojson.Point
 import io.github.dellisd.spatialk.geojson.Position
 
-val START_POINT = Position(longitude = -122.4194, latitude = 37.7749)
-val END_POINT = Position(longitude = -122.3954, latitude = 37.7939)
-const val MIN_ZOOM = 9
-const val MAX_ZOOM = 20
+private val START_POINT = Position(longitude = -122.4194, latitude = 37.7749)
+private val END_POINT = Position(longitude = -122.3954, latitude = 37.7939)
+private const val MIN_ZOOM = 9
+private const val MAX_ZOOM = 15
 
 @Composable
 fun CameraFollowDemo() = Column {
