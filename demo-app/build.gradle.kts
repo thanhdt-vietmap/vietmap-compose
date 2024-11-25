@@ -15,7 +15,7 @@ plugins {
   alias(libs.plugins.spotless)
 }
 
-version = "0.1.0"
+version = project.properties["LIBRARY_VERSION"]!!.toString()
 
 android {
   namespace = "dev.sargunv.maplibrecompose.demoapp"
@@ -26,7 +26,7 @@ android {
     minSdk = libs.versions.android.minSdk.get().toInt()
     targetSdk = libs.versions.android.targetSdk.get().toInt()
     versionCode = 1
-    versionName = "0.1.0"
+    versionName = project.properties["LIBRARY_VERSION"]!!.toString()
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
   packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }

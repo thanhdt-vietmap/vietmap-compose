@@ -17,7 +17,7 @@ Desktop and Web are not yet supported.
 ## Usage
 
 This library is published
-via [Maven Central](https://central.sonatype.com/artifact/dev.sargunv.maplibre-compose/maplibre-compose), and snapshot
+via [Maven Central](https://central.sonatype.com/namespace/dev.sargunv.maplibre-compose), and snapshot
 builds are additionally available
 on GitHub Packages.
 

@@ -19,7 +19,7 @@ plugins {
 
 group = "dev.sargunv.maplibre-compose"
 
-version = "0.1.0"
+version = project.properties["LIBRARY_VERSION"]!!.toString()
 
 android {
   namespace = "dev.sargunv.maplibrecompose"

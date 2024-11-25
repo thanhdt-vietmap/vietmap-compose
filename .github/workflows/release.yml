@@ -8,7 +8,7 @@ jobs:
     runs-on: macos-latest
     environment:
       name: maven-central
-      url: https://central.sonatype.com/artifact/dev.sargunv.maplibre-compose/maplibre-compose
+      url: https://central.sonatype.com/namespace/dev.sargunv.maplibre-compose
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
