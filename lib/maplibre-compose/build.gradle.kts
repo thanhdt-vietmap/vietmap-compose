@@ -26,6 +26,27 @@ jgitver {
   nonQualifierBranches("main")
 }
 
+dokka {
+  dokkaSourceSets {
+    configureEach {
+      includes.from("MODULE.md")
+      sourceLink {
+        remoteUrl("https://github.com/sargunv/maplibre-compose/tree/main/")
+        localDirectory.set(rootDir)
+      }
+      externalDocumentationLinks {
+        create("spatial-k") { url("https://dellisd.github.io/spatial-k/api/") }
+        create("maplibre-native") {
+          url("https://maplibre.org/maplibre-native/android/api/")
+          packageListUrl(
+            "https://maplibre.org/maplibre-native/android/api/-map-libre%20-native%20-android/package-list"
+          )
+        }
+      }
+    }
+  }
+}
+
 android {
   namespace = "dev.sargunv.maplibrecompose"
   compileSdk = libs.versions.android.compileSdk.get().toInt()
