@@ -18,6 +18,7 @@ jobs:
       - uses: "actions/checkout@v4"
         with:
           ref: "${{ github.event.inputs.head_ref }}"
+          token: "${{ secrets.ELEVATED_GITHUB_TOKEN }}"
       - uses: "./.github/actions/setup"
       - run: "./gradlew spotlessApply"
       - uses: "stefanzweifel/git-auto-commit-action@v4"
@@ -27,4 +28,3 @@ jobs:
           branch: "${{ github.event.inputs.head_ref }}"
           skip_fetch: true
           skip_checkout: true
-          token: "${{ secrets.ELEVATED_GITHUB_TOKEN }}"
