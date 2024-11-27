@@ -1,14 +1,14 @@
 ---
-name: "Format on command"
+name: "Label Actions"
 
 on:
   pull_request:
     types: [labeled]
 
 jobs:
-  format:
+  pr-format:
     runs-on: "ubuntu-latest"
-    if: "github.event.label.name == 'format-action'"
+    if: "github.event.label.name == 'action-pr-format'"
     permissions:
       contents: write
       pull-requests: write
@@ -21,3 +21,6 @@ jobs:
       - uses: "stefanzweifel/git-auto-commit-action@v4"
         with:
           commit_message: "Apply formatting"
+      - uses: "actions-ecosystem/action-remove-labels@v1"
+        with:
+          labels: "action-pr-format"
