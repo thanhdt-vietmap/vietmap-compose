@@ -22,8 +22,8 @@ Desktop and Web are not yet supported.
 
 This library is published
 via [Maven Central](https://central.sonatype.com/namespace/dev.sargunv.maplibre-compose), and snapshot
-builds are additionally available
-on GitHub Packages.
+builds of `main` are additionally available
+on [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry).
 
 In your Gradle version catalog, add:
 
