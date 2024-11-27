@@ -1,0 +1,23 @@
+---
+name: "Format on command"
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  format:
+    runs-on: "ubuntu-latest"
+    if: "github.event.label.name == 'format-action'"
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: "actions/checkout@v4"
+        with:
+          ref: "${{ github.head_ref }}"
+      - uses: "./.github/actions/setup"
+      - run: "./gradlew spotlessApply"
+      - uses: "stefanzweifel/git-auto-commit-action@v4"
+        with:
+          commit_message: "Apply formatting"
