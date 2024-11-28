@@ -2,6 +2,15 @@
 
 ## Development
 
+Create a `local.properties` in the root of the project with paths to inform Gradle where to find the Android SDK and
+CocoaPods:
+
+```properties
+# Replace the paths with the actual paths on your machine
+sdk.dir=/Users/sargunv/Library/Android/sdk
+kotlin.apple.cocoapods.bin=/opt/homebrew/bin/pod
+```
+
 Follow [Jetbrains's instructions](https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-setup.html#get-help)
 for setting up an environment for KMP development.
 
@@ -13,10 +22,11 @@ If you're not using Fleet, use Android Studio to launch the demo app on Android,
 iOS, and Gradle to
 run the tests:
 
-* Android emulator tests: `./gradlew connectedDebugAndroidTest`
-* iOS simulator tests: `./gradlew iosSimulatorArm64Test`
+- Android emulator tests: `./gradlew connectedDebugAndroidTest`
+- iOS simulator tests: `./gradlew iosSimulatorArm64Test`
 
 A Git pre-commit hook is available to ensure that the code is formatted before every commit. Run
 `./gradlew installGitHooks` to install it. It will run `./gradlew spotlessApply` before every
 commit. To run the formatter, you'll need to have `swift` installed (for `swift format`) and `npm`
-installed (for `prettier`).
+installed (for `prettier`). Or run just `./gradlew spotlessKotlinApply spotlessKotlinGradleApply` to
+skip those dependencies.

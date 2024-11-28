@@ -31,7 +31,7 @@ dokka {
     configureEach {
       includes.from("MODULE.md")
       sourceLink {
-        remoteUrl("https://github.com/sargunv/maplibre-compose/tree/main/")
+        remoteUrl("https://github.com/sargunv/maplibre-compose/tree/${project.ext["base_tag"]}/")
         localDirectory.set(rootDir)
       }
       externalDocumentationLinks {
