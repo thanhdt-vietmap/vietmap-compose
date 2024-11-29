@@ -3,19 +3,12 @@ package dev.sargunv.maplibrecompose.core.util
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
-import cocoapods.MapLibre.MLNFeatureProtocol
-import cocoapods.MapLibre.MLNOrnamentPosition
-import cocoapods.MapLibre.MLNOrnamentPositionBottomLeft
-import cocoapods.MapLibre.MLNOrnamentPositionBottomRight
-import cocoapods.MapLibre.MLNOrnamentPositionTopLeft
-import cocoapods.MapLibre.MLNOrnamentPositionTopRight
-import cocoapods.MapLibre.MLNShape
-import cocoapods.MapLibre.expressionWithMLNJSONObject
-import cocoapods.MapLibre.predicateWithMLNJSONObject
+import cocoapods.MapLibre.*
 import dev.sargunv.maplibrecompose.core.expression.Expression
 import dev.sargunv.maplibrecompose.core.expression.Insets
 import dev.sargunv.maplibrecompose.core.expression.Point
 import dev.sargunv.maplibrecompose.core.layer.LayerPropertyEnum
+import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.GeoJson
 import io.github.dellisd.spatialk.geojson.Position
@@ -32,7 +25,6 @@ import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectMake
-import platform.CoreGraphics.CGSizeMake
 import platform.CoreGraphics.CGVectorMake
 import platform.CoreLocation.CLLocationCoordinate2D
 import platform.CoreLocation.CLLocationCoordinate2DMake
@@ -89,15 +81,17 @@ internal fun DpRect.toCGRect(): CValue<CGRect> =
     height = (bottom - top).value.toDouble(),
   )
 
-internal fun CValue<CLLocationCoordinate2D>.toPosition(): Position = useContents {
+internal fun CValue<CLLocationCoordinate2D>.toPosition(): Position = useContents { toPosition() }
+
+internal fun CLLocationCoordinate2D.toPosition(): Position =
   Position(longitude = longitude, latitude = latitude)
-}
 
 internal fun Position.toCLLocationCoordinate2D(): CValue<CLLocationCoordinate2D> =
   CLLocationCoordinate2DMake(latitude = latitude, longitude = longitude)
 
-internal fun DpSize.toCGSize() =
-  CGSizeMake(width = width.value.toDouble(), height = height.value.toDouble())
+internal fun CValue<MLNCoordinateBounds>.toBoundingBox(): BoundingBox = useContents {
+  BoundingBox(northeast = ne.toPosition(), southwest = sw.toPosition())
+}
 
 internal fun GeoJson.toMLNShape(): MLNShape {
   return MLNShape.shapeWithData(

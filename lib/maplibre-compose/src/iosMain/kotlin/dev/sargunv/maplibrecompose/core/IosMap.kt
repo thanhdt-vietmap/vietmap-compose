@@ -24,6 +24,7 @@ import dev.sargunv.maplibrecompose.core.camera.CameraPosition
 import dev.sargunv.maplibrecompose.core.data.GestureSettings
 import dev.sargunv.maplibrecompose.core.data.OrnamentSettings
 import dev.sargunv.maplibrecompose.core.expression.Expression
+import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toCGPoint
 import dev.sargunv.maplibrecompose.core.util.toCGRect
 import dev.sargunv.maplibrecompose.core.util.toCLLocationCoordinate2D
@@ -32,6 +33,7 @@ import dev.sargunv.maplibrecompose.core.util.toFeature
 import dev.sargunv.maplibrecompose.core.util.toMLNOrnamentPosition
 import dev.sargunv.maplibrecompose.core.util.toNSPredicate
 import dev.sargunv.maplibrecompose.core.util.toPosition
+import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import kotlin.coroutines.resume
@@ -163,6 +165,9 @@ internal class IosMap(
             MLNMapDebugCollisionBoxesMask
         else 0uL
     }
+
+  override val visibleBoundingBox: BoundingBox
+    get() = mapView.visibleCoordinateBounds.toBoundingBox()
 
   override fun setMaximumFps(maximumFps: Int) {
     mapView.preferredFramesPerSecond = maximumFps.toLong()
@@ -374,5 +379,9 @@ internal class IosMap(
         predicate = predicate.toNSPredicate(),
       )
       .map { (it as MLNFeatureProtocol).toFeature() }
+  }
+
+  init {
+    mapView.visibleCoordinateBounds.useContents { this.ne }
   }
 }
