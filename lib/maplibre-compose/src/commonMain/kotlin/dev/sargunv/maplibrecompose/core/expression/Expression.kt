@@ -9,15 +9,35 @@ import dev.sargunv.maplibrecompose.core.layer.LayerPropertyEnum
 @Immutable
 public data class Expression<out T> private constructor(internal val value: Any?) {
   public companion object : ExpressionScope {
+    // instantiate some commonly used values so we're not allocating them over and over
+    private val constSmallInts = Array<Expression<Number>>(256) { Expression(it) }
+    private val constBlack: Expression<Color> = Expression(Color.Black)
+    private val constWhite: Expression<Color> = Expression(Color.White)
+    private val constTransparent: Expression<Color> = Expression(Color.Transparent)
+    private val constFalse: Expression<Boolean> = Expression(false)
+    private val constTrue: Expression<Boolean> = Expression(true)
+    private val constNull: Expression<Nothing?> = Expression(null)
+
+    // TODO for values not covered by the above, try an LRU cache
+
     internal fun ofString(string: String): Expression<String> = Expression(string)
 
-    internal fun ofNumber(number: Number): Expression<Number> = Expression(number)
+    internal fun ofNumber(number: Int): Expression<Number> =
+      if (number < constSmallInts.size) constSmallInts[number] else Expression(number)
 
-    internal fun ofBoolean(bool: Boolean): Expression<Boolean> = Expression(bool)
+    internal fun ofNumber(number: Float): Expression<Number> = Expression(number)
 
-    internal val ofNull: Expression<Nothing?> = Expression(null)
+    internal fun ofColor(color: Color): Expression<Color> =
+      when (color) {
+        Color.Transparent -> constTransparent
+        Color.Black -> constBlack
+        Color.White -> constWhite
+        else -> Expression(color)
+      }
 
-    internal fun ofColor(color: Color): Expression<Color> = Expression(color)
+    internal fun ofBoolean(bool: Boolean): Expression<Boolean> = if (bool) constTrue else constFalse
+
+    internal fun ofNull(): Expression<Nothing?> = constNull
 
     internal fun ofPoint(point: Point): Expression<Point> = Expression(point)
 
