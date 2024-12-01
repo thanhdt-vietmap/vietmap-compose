@@ -458,8 +458,7 @@ public interface ExpressionScope {
   @JvmName("stringsThen")
   public infix fun <Output> List<String>.then(
     output: Expression<Output>
-  ): MatchBranch<String, Output> =
-    MatchBranch(Expression.ofList(this.map { const(it.toFloat()) }), output)
+  ): MatchBranch<String, Output> = MatchBranch(Expression.ofList(this.map { const(it) }), output)
 
   @JvmName("numbersThen")
   public infix fun <Output> List<Number>.then(

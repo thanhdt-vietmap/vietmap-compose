@@ -1,7 +1,8 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import dev.sargunv.maplibrecompose.core.expression.Expression
 import dev.sargunv.maplibrecompose.core.expression.LineCap
 import dev.sargunv.maplibrecompose.core.expression.LineJoin
@@ -53,7 +54,7 @@ internal actual class LineLayer actual constructor(id: String, source: Source) :
     impl.setProperties(PropertyFactory.lineColor(color.toMLNExpression()))
   }
 
-  actual fun setLineTranslate(translate: Expression<Offset>) {
+  actual fun setLineTranslate(translate: Expression<DpOffset>) {
     impl.setProperties(PropertyFactory.lineTranslate(translate.toMLNExpression()))
   }
 
@@ -61,19 +62,19 @@ internal actual class LineLayer actual constructor(id: String, source: Source) :
     impl.setProperties(PropertyFactory.lineTranslateAnchor(translateAnchor.toMLNExpression()))
   }
 
-  actual fun setLineWidth(width: Expression<Number>) {
+  actual fun setLineWidth(width: Expression<Dp>) {
     impl.setProperties(PropertyFactory.lineWidth(width.toMLNExpression()))
   }
 
-  actual fun setLineGapWidth(gapWidth: Expression<Number>) {
+  actual fun setLineGapWidth(gapWidth: Expression<Dp>) {
     impl.setProperties(PropertyFactory.lineGapWidth(gapWidth.toMLNExpression()))
   }
 
-  actual fun setLineOffset(offset: Expression<Number>) {
+  actual fun setLineOffset(offset: Expression<Dp>) {
     impl.setProperties(PropertyFactory.lineOffset(offset.toMLNExpression()))
   }
 
-  actual fun setLineBlur(blur: Expression<Number>) {
+  actual fun setLineBlur(blur: Expression<Dp>) {
     impl.setProperties(PropertyFactory.lineBlur(blur.toMLNExpression()))
   }
 

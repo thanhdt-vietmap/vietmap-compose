@@ -1,7 +1,8 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import dev.sargunv.maplibrecompose.core.expression.CirclePitchAlignment
 import dev.sargunv.maplibrecompose.core.expression.CirclePitchScale
 import dev.sargunv.maplibrecompose.core.expression.Expression
@@ -27,7 +28,7 @@ internal actual class CircleLayer actual constructor(id: String, source: Source)
     impl.setProperties(PropertyFactory.circleSortKey(sortKey.toMLNExpression()))
   }
 
-  actual fun setCircleRadius(radius: Expression<Number>) {
+  actual fun setCircleRadius(radius: Expression<Dp>) {
     impl.setProperties(PropertyFactory.circleRadius(radius.toMLNExpression()))
   }
 
@@ -43,7 +44,7 @@ internal actual class CircleLayer actual constructor(id: String, source: Source)
     impl.setProperties(PropertyFactory.circleOpacity(opacity.toMLNExpression()))
   }
 
-  actual fun setCircleTranslate(translate: Expression<Offset>) {
+  actual fun setCircleTranslate(translate: Expression<DpOffset>) {
     impl.setProperties(PropertyFactory.circleTranslate(translate.toMLNExpression()))
   }
 
@@ -59,7 +60,7 @@ internal actual class CircleLayer actual constructor(id: String, source: Source)
     impl.setProperties(PropertyFactory.circlePitchAlignment(pitchAlignment.toMLNExpression()))
   }
 
-  actual fun setCircleStrokeWidth(strokeWidth: Expression<Number>) {
+  actual fun setCircleStrokeWidth(strokeWidth: Expression<Dp>) {
     impl.setProperties(PropertyFactory.circleStrokeWidth(strokeWidth.toMLNExpression()))
   }
 
