@@ -16,6 +16,8 @@ internal interface MaplibreMap {
 
   val visibleBoundingBox: BoundingBox
 
+  val visibleRegion: VisibleRegion
+
   fun setMaximumFps(maximumFps: Int)
 
   fun setOrnamentSettings(value: OrnamentSettings)
@@ -28,24 +30,16 @@ internal interface MaplibreMap {
 
   fun screenLocationFromPosition(position: Position): DpOffset
 
-  fun queryRenderedFeatures(offset: DpOffset): List<Feature>
-
-  fun queryRenderedFeatures(offset: DpOffset, layerIds: Set<String>): List<Feature>
-
   fun queryRenderedFeatures(
     offset: DpOffset,
-    layerIds: Set<String>,
-    predicate: Expression<Boolean>,
+    layerIds: Set<String>? = null,
+    predicate: Expression<Boolean>? = null,
   ): List<Feature>
-
-  fun queryRenderedFeatures(rect: DpRect): List<Feature>
-
-  fun queryRenderedFeatures(rect: DpRect, layerIds: Set<String>): List<Feature>
 
   fun queryRenderedFeatures(
     rect: DpRect,
-    layerIds: Set<String>,
-    predicate: Expression<Boolean>,
+    layerIds: Set<String>? = null,
+    predicate: Expression<Boolean>? = null,
   ): List<Feature>
 
   interface Callbacks {

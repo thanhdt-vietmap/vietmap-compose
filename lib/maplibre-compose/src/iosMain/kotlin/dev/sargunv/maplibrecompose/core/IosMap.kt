@@ -256,6 +256,17 @@ internal class IosMap(
   override val visibleBoundingBox: BoundingBox
     get() = mapView.visibleCoordinateBounds.toBoundingBox()
 
+  override val visibleRegion: VisibleRegion
+    get() =
+      size.useContents {
+        VisibleRegion(
+          farLeft = positionFromScreenLocation(DpOffset(x = 0.dp, y = 0.dp)),
+          farRight = positionFromScreenLocation(DpOffset(x = width.dp, y = 0.dp)),
+          nearLeft = positionFromScreenLocation(DpOffset(x = 0.dp, y = height.dp)),
+          nearRight = positionFromScreenLocation(DpOffset(x = width.dp, y = height.dp)),
+        )
+      }
+
   override fun setMaximumFps(maximumFps: Int) {
     mapView.preferredFramesPerSecond = maximumFps.toLong()
   }
@@ -418,55 +429,29 @@ internal class IosMap(
       .convertCoordinate(position.toCLLocationCoordinate2D(), toPointToView = null)
       .toDpOffset()
 
-  override fun queryRenderedFeatures(offset: DpOffset): List<Feature> {
-    return mapView.visibleFeaturesAtPoint(point = offset.toCGPoint()).map {
-      (it as MLNFeatureProtocol).toFeature()
-    }
-  }
-
-  override fun queryRenderedFeatures(offset: DpOffset, layerIds: Set<String>): List<Feature> {
-    return mapView
-      .visibleFeaturesAtPoint(point = offset.toCGPoint(), inStyleLayersWithIdentifiers = layerIds)
-      .map { (it as MLNFeatureProtocol).toFeature() }
-  }
-
   override fun queryRenderedFeatures(
     offset: DpOffset,
-    layerIds: Set<String>,
-    predicate: Expression<Boolean>,
-  ): List<Feature> {
-    return mapView
+    layerIds: Set<String>?,
+    predicate: Expression<Boolean>?,
+  ): List<Feature> =
+    mapView
       .visibleFeaturesAtPoint(
         point = offset.toCGPoint(),
         inStyleLayersWithIdentifiers = layerIds,
-        predicate = predicate.toNSPredicate(),
+        predicate = predicate?.toNSPredicate(),
       )
       .map { (it as MLNFeatureProtocol).toFeature() }
-  }
-
-  override fun queryRenderedFeatures(rect: DpRect): List<Feature> {
-    return mapView.visibleFeaturesInRect(rect = rect.toCGRect()).map {
-      (it as MLNFeatureProtocol).toFeature()
-    }
-  }
-
-  override fun queryRenderedFeatures(rect: DpRect, layerIds: Set<String>): List<Feature> {
-    return mapView
-      .visibleFeaturesInRect(rect = rect.toCGRect(), inStyleLayersWithIdentifiers = layerIds)
-      .map { (it as MLNFeatureProtocol).toFeature() }
-  }
 
   override fun queryRenderedFeatures(
     rect: DpRect,
-    layerIds: Set<String>,
-    predicate: Expression<Boolean>,
-  ): List<Feature> {
-    return mapView
+    layerIds: Set<String>?,
+    predicate: Expression<Boolean>?,
+  ): List<Feature> =
+    mapView
       .visibleFeaturesInRect(
         rect = rect.toCGRect(),
         inStyleLayersWithIdentifiers = layerIds,
-        predicate = predicate.toNSPredicate(),
+        predicate = predicate?.toNSPredicate(),
       )
       .map { (it as MLNFeatureProtocol).toFeature() }
-  }
 }

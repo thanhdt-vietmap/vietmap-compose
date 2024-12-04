@@ -1,5 +1,7 @@
 package dev.sargunv.maplibrecompose.core
 
+import android.graphics.PointF
+import android.graphics.RectF
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpOffset
@@ -27,6 +29,7 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
+import org.maplibre.android.geometry.VisibleRegion as MLNVisibleRegion
 import org.maplibre.android.gestures.MoveGestureDetector
 import org.maplibre.android.gestures.RotateGestureDetector
 import org.maplibre.android.gestures.ShoveGestureDetector
@@ -39,6 +42,8 @@ import org.maplibre.android.maps.MapLibreMap.OnMoveListener
 import org.maplibre.android.maps.MapLibreMap.OnScaleListener
 import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.Style as MlnStyle
+import org.maplibre.android.style.expressions.Expression as MLNExpression
+import org.maplibre.geojson.Feature as MLNFeature
 
 internal class AndroidMap(
   private val mapView: MapView,
@@ -170,6 +175,9 @@ internal class AndroidMap(
   override val visibleBoundingBox: BoundingBox
     get() = map.projection.visibleRegion.latLngBounds.toBoundingBox()
 
+  override val visibleRegion: VisibleRegion
+    get() = map.projection.visibleRegion.toVisibleRegion()
+
   override fun setMaximumFps(maximumFps: Int) = mapView.setMaximumFps(maximumFps)
 
   override fun setGestureSettings(value: GestureSettings) {
@@ -265,51 +273,35 @@ internal class AndroidMap(
   override fun screenLocationFromPosition(position: Position): DpOffset =
     map.projection.toScreenLocation(position.toLatLng()).toOffset(density)
 
-  override fun queryRenderedFeatures(offset: DpOffset): List<Feature> {
-    return map.queryRenderedFeatures(offset.toPointF(density)).map { Feature.fromJson(it.toJson()) }
-  }
-
-  override fun queryRenderedFeatures(offset: DpOffset, layerIds: Set<String>): List<Feature> {
-    return map.queryRenderedFeatures(offset.toPointF(density), *layerIds.toTypedArray()).map {
-      Feature.fromJson(it.toJson())
-    }
-  }
-
   override fun queryRenderedFeatures(
     offset: DpOffset,
-    layerIds: Set<String>,
-    predicate: Expression<Boolean>,
+    layerIds: Set<String>?,
+    predicate: Expression<Boolean>?,
   ): List<Feature> {
-    return map
-      .queryRenderedFeatures(
-        offset.toPointF(density),
-        predicate.toMLNExpression(),
-        *layerIds.toTypedArray(),
-      )
+    // Kotlin hack to pass null to a java nullable varargs
+    val query: (PointF, MLNExpression?, Array<String>?) -> List<MLNFeature> =
+      map::queryRenderedFeatures
+    return query(offset.toPointF(density), predicate?.toMLNExpression(), layerIds?.toTypedArray())
       .map { Feature.fromJson(it.toJson()) }
-  }
-
-  override fun queryRenderedFeatures(rect: DpRect): List<Feature> {
-    return map.queryRenderedFeatures(rect.toRectF(density)).map { Feature.fromJson(it.toJson()) }
-  }
-
-  override fun queryRenderedFeatures(rect: DpRect, layerIds: Set<String>): List<Feature> {
-    return map.queryRenderedFeatures(rect.toRectF(density), *layerIds.toTypedArray()).map {
-      Feature.fromJson(it.toJson())
-    }
   }
 
   override fun queryRenderedFeatures(
     rect: DpRect,
-    layerIds: Set<String>,
-    predicate: Expression<Boolean>,
+    layerIds: Set<String>?,
+    predicate: Expression<Boolean>?,
   ): List<Feature> {
-    return map
-      .queryRenderedFeatures(
-        rect.toRectF(density),
-        predicate.toMLNExpression(),
-        *layerIds.toTypedArray(),
-      )
+    // Kotlin hack to pass null to a java nullable varargs
+    val query: (RectF, MLNExpression?, Array<String>?) -> List<MLNFeature> =
+      map::queryRenderedFeatures
+    return query(rect.toRectF(density), predicate?.toMLNExpression(), layerIds?.toTypedArray())
       .map { Feature.fromJson(it.toJson()) }
   }
 }
+
+private fun MLNVisibleRegion.toVisibleRegion() =
+  VisibleRegion(
+    farLeft = farLeft!!.toPosition(),
+    farRight = farRight!!.toPosition(),
+    nearLeft = nearLeft!!.toPosition(),
+    nearRight = nearRight!!.toPosition(),
+  )
