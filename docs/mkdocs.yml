@@ -65,7 +65,9 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.smartsymbols
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      base_path: ../
+      dedent_subsections: true
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true

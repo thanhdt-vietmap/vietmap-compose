@@ -73,10 +73,7 @@ cocoapods {
 In your Composable UI, add a map:
 
 ```kotlin title="App.kt"
-@Composable
-fun App() {
-  MaplibreMap()
-}
+-8<- "demo-app/src/commonMain/kotlin/dev/sargunv/maplibrecompose/demoapp/docs/GettingStarted.kt:app"
 ```
 
 When you run your app, you should see the default [demotiles] map. To learn how
