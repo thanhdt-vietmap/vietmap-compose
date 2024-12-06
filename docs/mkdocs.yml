@@ -9,6 +9,9 @@ edit_uri: "edit/main/docs/docs/"
 
 copyright: "Copyright &copy; 2024 Sargun Vohra"
 
+extra_css:
+  - stylesheets/extra.css
+
 theme:
   name: "material"
   icon:
@@ -16,6 +19,8 @@ theme:
   palette:
     - media: "(prefers-color-scheme)"
   features:
+    - content.code.copy
+    - content.code.annotate
     - navigation.instant
     - navigation.instant.prefetch
     - navigation.instant.progress
@@ -60,6 +65,7 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.smartsymbols
+  - pymdownx.snippets
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
@@ -68,5 +74,11 @@ markdown_extensions:
   - pymdownx.tilde
 
 nav:
-  - Home: index.md
+  - index.md
   - getting-started.md
+  - styling.md
+  - controls.md
+  - camera.md
+  - layers.md
+  - sources.md
+  - expressions.md
