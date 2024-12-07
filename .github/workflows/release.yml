@@ -16,6 +16,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: "./.github/actions/setup"
+      - run: "./gradlew version"
+      - run: "exit 1"
       - run: "./gradlew publishAndReleaseToMavenCentral --no-configuration-cache"
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: "${{ secrets.MAVEN_CENTRAL_USERNAME }}"
