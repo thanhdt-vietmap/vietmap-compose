@@ -6,28 +6,28 @@ on:
     tags: ["v*.*.*"]
 
 jobs:
-  publish-maven:
-    runs-on: "macos-latest"
-    environment:
-      name: "maven-central"
-      url: "https://central.sonatype.com/namespace/dev.sargunv.maplibre-compose"
-    steps:
-      - uses: "actions/checkout@v4"
-        with:
-          fetch-depth: 0
-      - run: "git fetch --tags --force" # https://github.com/actions/checkout/issues/290
-      - uses: "./.github/actions/setup"
-      - run: "./gradlew version"
-      - run: "./gradlew publishAndReleaseToMavenCentral --no-configuration-cache"
-        env:
-          ORG_GRADLE_PROJECT_mavenCentralUsername: "${{ secrets.MAVEN_CENTRAL_USERNAME }}"
-          ORG_GRADLE_PROJECT_mavenCentralPassword: "${{ secrets.MAVEN_CENTRAL_PASSWORD }}"
-          ORG_GRADLE_PROJECT_signingInMemoryKey: "${{ secrets.GPG_PRIVATE_KEY }}"
-          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: "${{ secrets.GPG_PASSPHRASE }}"
+  #  publish-maven:
+  #    runs-on: "macos-latest"
+  #    environment:
+  #      name: "maven-central"
+  #      url: "https://central.sonatype.com/namespace/dev.sargunv.maplibre-compose"
+  #    steps:
+  #      - uses: "actions/checkout@v4"
+  #        with:
+  #          fetch-depth: 0
+  #      - run: "git fetch --tags --force" # https://github.com/actions/checkout/issues/290
+  #      - uses: "./.github/actions/setup"
+  #      - run: "./gradlew version"
+  #      - run: "./gradlew publishAndReleaseToMavenCentral --no-configuration-cache"
+  #        env:
+  #          ORG_GRADLE_PROJECT_mavenCentralUsername: "${{ secrets.MAVEN_CENTRAL_USERNAME }}"
+  #          ORG_GRADLE_PROJECT_mavenCentralPassword: "${{ secrets.MAVEN_CENTRAL_PASSWORD }}"
+  #          ORG_GRADLE_PROJECT_signingInMemoryKey: "${{ secrets.GPG_PRIVATE_KEY }}"
+  #          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: "${{ secrets.GPG_PASSPHRASE }}"
 
   publish-pages:
-    needs:
-      - "publish-maven"
+    #    needs:
+    #      - "publish-maven"
     runs-on: "macos-latest"
     permissions:
       pages: "write"
