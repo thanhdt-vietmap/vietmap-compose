@@ -88,8 +88,9 @@ kotlin {
   }
 
   sourceSets {
-    filter { it.name.matches(Regex("ios.*Main")) }
-      .forEach { it.languageSettings { optIn("kotlinx.cinterop.ExperimentalForeignApi") } }
+    listOf(iosMain, iosArm64Main, iosSimulatorArm64Main, iosX64Main).forEach {
+      it { languageSettings { optIn("kotlinx.cinterop.ExperimentalForeignApi") } }
+    }
 
     commonMain.dependencies {
       api(compose.runtime)
