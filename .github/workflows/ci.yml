@@ -127,7 +127,7 @@ jobs:
       - uses: "actions/setup-java@v4"
         with:
           distribution: "temurin"
-          java-version: 21
+          java-version: 23
       - uses: "gradle/actions/dependency-submission@v4"
         with:
           build-scan-publish: true
@@ -147,3 +147,11 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - run: "echo 'All checks passed!'"
+
+  # https://github.com/orgs/community/discussions/8336
+  delete-cancelled-runs:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "MercuryTechnologies/delete-cancelled-runs@1.0.0"
+        with:
+          workflow-file: "ci.yml"
