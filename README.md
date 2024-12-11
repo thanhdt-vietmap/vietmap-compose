@@ -1,3 +1,4 @@
+[![Github Actions](https://github.com/sargunv/maplibre-compose/actions/workflows/ci.yml/badge.svg)](https://github.com/sargunv/maplibre-compose/actions/workflows/ci.yml?query=branch%3Amain)
 [![Maven Central Version](https://img.shields.io/maven-central/v/dev.sargunv.maplibre-compose/maplibre-compose)](https://central.sonatype.com/namespace/dev.sargunv.maplibre-compose)
 [![License](https://img.shields.io/github/license/sargunv/maplibre-compose)](https://github.com/sargunv/maplibre-compose/blob/main/LICENSE)
 [![Documentation](https://img.shields.io/badge/Documentation-blue?logo=MaterialForMkDocs&logoColor=white)](https://sargunv.github.io/maplibre-compose/)
