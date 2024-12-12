@@ -44,7 +44,9 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *   this, the layer will be hidden. A value in the range of `[0..24]`.
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
- *   levels. The `feature-state` expression is not supported in filter expressions.
+ *   levels. The
+ *   [featureState][dev.sargunv.maplibrecompose.core.expression.ExpressionScope.featureState]
+ *   expression is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param sortKey Sorts features within this layer in ascending order based on this value. Features
  *   with a higher sort key will appear above features with a lower sort key.
@@ -144,7 +146,8 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *
  *   Ignored if [iconImage] is not specified.
  *
- *   **Note**: This property is not supported on native platforms, yet.
+ *   **Note**: This property is not supported on native platforms, yet, see
+ *   [maplibre-native#251](https://github.com/maplibre/maplibre-native/issues/251)**
  *
  * @param iconIgnorePlacement If true, other symbols can be visible even if they collide with the
  *   icon.
@@ -322,7 +325,8 @@ import dev.sargunv.maplibrecompose.core.source.Source
  *
  *   Ignored if [textField] is not specified.
  *
- *   **Note**: This property is not supported on native platforms, yet.
+ *   **Note**: This property is not supported on native platforms, yet, see
+ *   [maplibre-native#251](https://github.com/maplibre/maplibre-native/issues/251)**
  *
  * @param textIgnorePlacement If true, other symbols can be visible even if they collide with the
  *   text.
