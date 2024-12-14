@@ -1,8 +1,10 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import androidx.compose.ui.graphics.Color
 import cocoapods.MapLibre.MLNHillshadeStyleLayer
+import dev.sargunv.maplibrecompose.core.expression.ColorValue
+import dev.sargunv.maplibrecompose.core.expression.EnumValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
+import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.expression.IlluminationAnchor
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toNSExpression
@@ -13,27 +15,27 @@ internal actual class HillshadeLayer actual constructor(id: String, actual val s
 
   override val impl = MLNHillshadeStyleLayer(id, source.impl)
 
-  actual fun setHillshadeIlluminationDirection(direction: Expression<Number>) {
+  actual fun setHillshadeIlluminationDirection(direction: Expression<FloatValue>) {
     impl.hillshadeIlluminationDirection = direction.toNSExpression()
   }
 
-  actual fun setHillshadeIlluminationAnchor(anchor: Expression<IlluminationAnchor>) {
+  actual fun setHillshadeIlluminationAnchor(anchor: Expression<EnumValue<IlluminationAnchor>>) {
     impl.hillshadeIlluminationAnchor = anchor.toNSExpression()
   }
 
-  actual fun setHillshadeExaggeration(exaggeration: Expression<Number>) {
+  actual fun setHillshadeExaggeration(exaggeration: Expression<FloatValue>) {
     impl.hillshadeExaggeration = exaggeration.toNSExpression()
   }
 
-  actual fun setHillshadeShadowColor(shadowColor: Expression<Color>) {
+  actual fun setHillshadeShadowColor(shadowColor: Expression<ColorValue>) {
     impl.hillshadeShadowColor = shadowColor.toNSExpression()
   }
 
-  actual fun setHillshadeHighlightColor(highlightColor: Expression<Color>) {
+  actual fun setHillshadeHighlightColor(highlightColor: Expression<ColorValue>) {
     impl.hillshadeHighlightColor = highlightColor.toNSExpression()
   }
 
-  actual fun setHillshadeAccentColor(accentColor: Expression<Color>) {
+  actual fun setHillshadeAccentColor(accentColor: Expression<ColorValue>) {
     impl.hillshadeAccentColor = accentColor.toNSExpression()
   }
 }

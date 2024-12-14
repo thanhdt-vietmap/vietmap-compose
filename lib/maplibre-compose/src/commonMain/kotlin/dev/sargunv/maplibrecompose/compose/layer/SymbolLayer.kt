@@ -1,26 +1,34 @@
 package dev.sargunv.maplibrecompose.compose.layer
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
+import dev.sargunv.maplibrecompose.core.expression.BooleanValue
+import dev.sargunv.maplibrecompose.core.expression.ColorValue
 import dev.sargunv.maplibrecompose.core.expression.Defaults
+import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
+import dev.sargunv.maplibrecompose.core.expression.DpValue
+import dev.sargunv.maplibrecompose.core.expression.EnumValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.const
-import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.nil
+import dev.sargunv.maplibrecompose.core.expression.Expressions.const
+import dev.sargunv.maplibrecompose.core.expression.Expressions.nil
+import dev.sargunv.maplibrecompose.core.expression.FloatValue
+import dev.sargunv.maplibrecompose.core.expression.FormattedValue
 import dev.sargunv.maplibrecompose.core.expression.IconPitchAlignment
 import dev.sargunv.maplibrecompose.core.expression.IconRotationAlignment
 import dev.sargunv.maplibrecompose.core.expression.IconTextFit
+import dev.sargunv.maplibrecompose.core.expression.ImageValue
+import dev.sargunv.maplibrecompose.core.expression.ListValue
+import dev.sargunv.maplibrecompose.core.expression.OffsetValue
+import dev.sargunv.maplibrecompose.core.expression.PaddingValue
+import dev.sargunv.maplibrecompose.core.expression.StringValue
 import dev.sargunv.maplibrecompose.core.expression.SymbolAnchor
 import dev.sargunv.maplibrecompose.core.expression.SymbolPlacement
 import dev.sargunv.maplibrecompose.core.expression.SymbolZOrder
-import dev.sargunv.maplibrecompose.core.expression.TFormatted
-import dev.sargunv.maplibrecompose.core.expression.TResolvedImage
 import dev.sargunv.maplibrecompose.core.expression.TextJustify
 import dev.sargunv.maplibrecompose.core.expression.TextPitchAlignment
 import dev.sargunv.maplibrecompose.core.expression.TextRotationAlignment
@@ -358,92 +366,94 @@ public inline fun SymbolLayer(
   sourceLayer: String = "",
   minZoom: Float = 0.0f,
   maxZoom: Float = 24.0f,
-  filter: Expression<Boolean> = nil(),
+  filter: Expression<BooleanValue> = nil(),
   visible: Boolean = true,
-  sortKey: Expression<Number> = nil(),
-  placement: Expression<SymbolPlacement> = const(SymbolPlacement.Point),
-  spacing: Expression<Dp> = const(250.dp),
-  avoidEdges: Expression<Boolean> = const(false),
-  zOrder: Expression<SymbolZOrder> = const(SymbolZOrder.Auto),
+  sortKey: Expression<FloatValue> = nil(),
+  placement: Expression<EnumValue<SymbolPlacement>> = const(SymbolPlacement.Point),
+  spacing: Expression<DpValue> = const(250.dp),
+  avoidEdges: Expression<BooleanValue> = const(false),
+  zOrder: Expression<EnumValue<SymbolZOrder>> = const(SymbolZOrder.Auto),
 
   // icon image
-  iconImage: Expression<TResolvedImage> = nil(),
+  iconImage: Expression<ImageValue> = nil(),
 
   // icon colors
-  iconOpacity: Expression<Number> = const(1f),
-  iconColor: Expression<Color> = const(Color.Black),
-  iconHaloColor: Expression<Color> = const(Color.Transparent),
-  iconHaloWidth: Expression<Dp> = const(0.dp),
-  iconHaloBlur: Expression<Dp> = const(0.dp),
+  iconOpacity: Expression<FloatValue> = const(1f),
+  iconColor: Expression<ColorValue> = const(Color.Black),
+  iconHaloColor: Expression<ColorValue> = const(Color.Transparent),
+  iconHaloWidth: Expression<DpValue> = const(0.dp),
+  iconHaloBlur: Expression<DpValue> = const(0.dp),
 
   // icon layout
-  iconSize: Expression<Number> = const(1f),
-  iconRotationAlignment: Expression<IconRotationAlignment> = const(IconRotationAlignment.Auto),
-  iconPitchAlignment: Expression<IconPitchAlignment> = const(IconPitchAlignment.Auto),
-  iconTextFit: Expression<IconTextFit> = const(IconTextFit.None),
-  iconTextFitPadding: Expression<PaddingValues.Absolute> = const(ZeroPadding),
-  iconKeepUpright: Expression<Boolean> = const(false),
-  iconRotate: Expression<Number> = const(0f),
+  iconSize: Expression<FloatValue> = const(1f),
+  iconRotationAlignment: Expression<EnumValue<IconRotationAlignment>> =
+    const(IconRotationAlignment.Auto),
+  iconPitchAlignment: Expression<EnumValue<IconPitchAlignment>> = const(IconPitchAlignment.Auto),
+  iconTextFit: Expression<EnumValue<IconTextFit>> = const(IconTextFit.None),
+  iconTextFitPadding: Expression<PaddingValue> = const(ZeroPadding),
+  iconKeepUpright: Expression<BooleanValue> = const(false),
+  iconRotate: Expression<FloatValue> = const(0f),
 
   // icon anchoring
-  iconAnchor: Expression<SymbolAnchor> = const(SymbolAnchor.Center),
-  iconOffset: Expression<DpOffset> = const(DpOffset.Zero),
+  iconAnchor: Expression<EnumValue<SymbolAnchor>> = const(SymbolAnchor.Center),
+  iconOffset: Expression<DpOffsetValue> = const(DpOffset.Zero),
 
   // icon collision
-  iconPadding: Expression<Dp> = const(2.dp),
-  iconAllowOverlap: Expression<Boolean> = const(false),
-  iconOverlap: Expression<String> = nil(),
-  iconIgnorePlacement: Expression<Boolean> = const(false),
-  iconOptional: Expression<Boolean> = const(false),
+  iconPadding: Expression<DpValue> = const(2.dp),
+  iconAllowOverlap: Expression<BooleanValue> = const(false),
+  iconOverlap: Expression<StringValue> = nil(),
+  iconIgnorePlacement: Expression<BooleanValue> = const(false),
+  iconOptional: Expression<BooleanValue> = const(false),
 
   // icon translate
-  iconTranslate: Expression<DpOffset> = const(DpOffset.Zero),
-  iconTranslateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
+  iconTranslate: Expression<DpOffsetValue> = const(DpOffset.Zero),
+  iconTranslateAnchor: Expression<EnumValue<TranslateAnchor>> = const(TranslateAnchor.Map),
 
   // text content
-  textField: Expression<TFormatted> = nil(),
+  textField: Expression<FormattedValue> = nil(),
 
   // text glyph colors
-  textOpacity: Expression<Number> = const(1f),
-  textColor: Expression<Color> = const(Color.Black),
-  textHaloColor: Expression<Color> = const(Color.Transparent),
-  textHaloWidth: Expression<Dp> = const(0.dp),
-  textHaloBlur: Expression<Dp> = const(0.dp),
+  textOpacity: Expression<FloatValue> = const(1f),
+  textColor: Expression<ColorValue> = const(Color.Black),
+  textHaloColor: Expression<ColorValue> = const(Color.Transparent),
+  textHaloWidth: Expression<DpValue> = const(0.dp),
+  textHaloBlur: Expression<DpValue> = const(0.dp),
 
   // text glyph properties
-  textFont: Expression<List<String>> = Defaults.FontNames,
-  textSize: Expression<Dp> = const(16.dp),
-  textTransform: Expression<TextTransform> = const(TextTransform.None),
-  textLetterSpacing: Expression<Number> = const(0f),
-  textRotationAlignment: Expression<TextRotationAlignment> = const(TextRotationAlignment.Auto),
-  textPitchAlignment: Expression<TextPitchAlignment> = const(TextPitchAlignment.Auto),
-  textMaxAngle: Expression<Number> = const(45f),
+  textFont: Expression<ListValue<StringValue>> = Defaults.FontNames,
+  textSize: Expression<DpValue> = const(16.dp),
+  textTransform: Expression<EnumValue<TextTransform>> = const(TextTransform.None),
+  textLetterSpacing: Expression<FloatValue> = const(0f),
+  textRotationAlignment: Expression<EnumValue<TextRotationAlignment>> =
+    const(TextRotationAlignment.Auto),
+  textPitchAlignment: Expression<EnumValue<TextPitchAlignment>> = const(TextPitchAlignment.Auto),
+  textMaxAngle: Expression<FloatValue> = const(45f),
 
   // text paragraph layout
-  textMaxWidth: Expression<Number> = const(10f),
-  textLineHeight: Expression<Number> = const(1.2f),
-  textJustify: Expression<TextJustify> = const(TextJustify.Center),
-  textWritingMode: Expression<List<TextWritingMode>> = nil(),
-  textKeepUpright: Expression<Boolean> = const(true),
-  textRotate: Expression<Number> = const(0f),
+  textMaxWidth: Expression<FloatValue> = const(10f),
+  textLineHeight: Expression<FloatValue> = const(1.2f),
+  textJustify: Expression<EnumValue<TextJustify>> = const(TextJustify.Center),
+  textWritingMode: Expression<ListValue<EnumValue<TextWritingMode>>> = nil(),
+  textKeepUpright: Expression<BooleanValue> = const(true),
+  textRotate: Expression<FloatValue> = const(0f),
 
   // text anchoring
-  textAnchor: Expression<SymbolAnchor> = const(SymbolAnchor.Center),
-  textOffset: Expression<Offset> = const(Offset.Zero),
-  textVariableAnchor: Expression<List<SymbolAnchor>> = nil(),
-  textRadialOffset: Expression<Number> = const(0f),
-  textVariableAnchorOffset: Expression<List<Pair<SymbolAnchor, Offset>>> = nil(),
+  textAnchor: Expression<EnumValue<SymbolAnchor>> = const(SymbolAnchor.Center),
+  textOffset: Expression<OffsetValue> = const(Offset.Zero),
+  textVariableAnchor: Expression<ListValue<EnumValue<SymbolAnchor>>> = nil(),
+  textRadialOffset: Expression<FloatValue> = const(0f),
+  textVariableAnchorOffset: Expression<ListValue<*>> = nil(), // TODO proper type
 
   // text collision
-  textPadding: Expression<Dp> = const(2.dp),
-  textAllowOverlap: Expression<Boolean> = const(false),
-  textOverlap: Expression<String> = nil(),
-  textIgnorePlacement: Expression<Boolean> = const(false),
-  textOptional: Expression<Boolean> = const(false),
+  textPadding: Expression<DpValue> = const(2.dp),
+  textAllowOverlap: Expression<BooleanValue> = const(false),
+  textOverlap: Expression<StringValue> = nil(),
+  textIgnorePlacement: Expression<BooleanValue> = const(false),
+  textOptional: Expression<BooleanValue> = const(false),
 
   // text translate
-  textTranslate: Expression<DpOffset> = const(DpOffset.Zero),
-  textTranslateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
+  textTranslate: Expression<DpOffsetValue> = const(DpOffset.Zero),
+  textTranslateAnchor: Expression<EnumValue<TranslateAnchor>> = const(TranslateAnchor.Map),
   noinline onClick: FeaturesClickHandler? = null,
   noinline onLongClick: FeaturesClickHandler? = null,
 ) {

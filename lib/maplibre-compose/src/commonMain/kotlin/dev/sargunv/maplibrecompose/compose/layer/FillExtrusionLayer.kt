@@ -5,10 +5,15 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
+import dev.sargunv.maplibrecompose.core.expression.BooleanValue
+import dev.sargunv.maplibrecompose.core.expression.ColorValue
+import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
+import dev.sargunv.maplibrecompose.core.expression.EnumValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.const
-import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.nil
-import dev.sargunv.maplibrecompose.core.expression.TResolvedImage
+import dev.sargunv.maplibrecompose.core.expression.Expressions.const
+import dev.sargunv.maplibrecompose.core.expression.Expressions.nil
+import dev.sargunv.maplibrecompose.core.expression.FloatValue
+import dev.sargunv.maplibrecompose.core.expression.ImageValue
 import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.layer.FillExtrusionLayer
 import dev.sargunv.maplibrecompose.core.source.Source
@@ -63,16 +68,16 @@ public inline fun FillExtrusionLayer(
   sourceLayer: String = "",
   minZoom: Float = 0.0f,
   maxZoom: Float = 24.0f,
-  filter: Expression<Boolean> = nil(),
+  filter: Expression<BooleanValue> = nil(),
   visible: Boolean = true,
-  translate: Expression<DpOffset> = const(DpOffset.Zero),
-  translateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
-  opacity: Expression<Number> = const(1f),
-  color: Expression<Color> = const(Color.Black),
-  pattern: Expression<TResolvedImage> = nil(),
-  height: Expression<Number> = const(0f),
-  base: Expression<Number> = const(0f),
-  verticalGradient: Expression<Boolean> = const(true),
+  translate: Expression<DpOffsetValue> = const(DpOffset.Zero),
+  translateAnchor: Expression<EnumValue<TranslateAnchor>> = const(TranslateAnchor.Map),
+  opacity: Expression<FloatValue> = const(1f),
+  color: Expression<ColorValue> = const(Color.Black),
+  pattern: Expression<ImageValue> = nil(),
+  height: Expression<FloatValue> = const(0f),
+  base: Expression<FloatValue> = const(0f),
+  verticalGradient: Expression<BooleanValue> = const(true),
   noinline onClick: FeaturesClickHandler? = null,
   noinline onLongClick: FeaturesClickHandler? = null,
 ) {

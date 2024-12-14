@@ -2,15 +2,17 @@ package dev.sargunv.maplibrecompose.compose.layer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
+import dev.sargunv.maplibrecompose.core.expression.BooleanValue
+import dev.sargunv.maplibrecompose.core.expression.ColorValue
 import dev.sargunv.maplibrecompose.core.expression.Defaults
+import dev.sargunv.maplibrecompose.core.expression.DpValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.const
-import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.heatmapDensity
-import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.nil
+import dev.sargunv.maplibrecompose.core.expression.Expressions.const
+import dev.sargunv.maplibrecompose.core.expression.Expressions.heatmapDensity
+import dev.sargunv.maplibrecompose.core.expression.Expressions.nil
+import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.layer.HeatmapLayer
 import dev.sargunv.maplibrecompose.core.source.Source
 
@@ -51,13 +53,13 @@ public inline fun HeatmapLayer(
   sourceLayer: String = "",
   minZoom: Float = 0.0f,
   maxZoom: Float = 24.0f,
-  filter: Expression<Boolean> = nil(),
+  filter: Expression<BooleanValue> = nil(),
   visible: Boolean = true,
-  color: Expression<Color> = Defaults.HeatmapColors,
-  opacity: Expression<Number> = const(1f),
-  radius: Expression<Dp> = const(30.dp),
-  weight: Expression<Number> = const(1f),
-  intensity: Expression<Number> = const(1f),
+  color: Expression<ColorValue> = Defaults.HeatmapColors,
+  opacity: Expression<FloatValue> = const(1f),
+  radius: Expression<DpValue> = const(30.dp),
+  weight: Expression<FloatValue> = const(1f),
+  intensity: Expression<FloatValue> = const(1f),
   noinline onClick: FeaturesClickHandler? = null,
   noinline onLongClick: FeaturesClickHandler? = null,
 ) {

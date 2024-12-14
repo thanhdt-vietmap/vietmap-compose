@@ -1,7 +1,9 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import androidx.compose.ui.graphics.Color
+import dev.sargunv.maplibrecompose.core.expression.ColorValue
+import dev.sargunv.maplibrecompose.core.expression.EnumValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
+import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.expression.IlluminationAnchor
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
@@ -13,27 +15,27 @@ internal actual class HillshadeLayer actual constructor(id: String, actual val s
   Layer() {
   override val impl = MLNHillshadeLayer(id, source.id)
 
-  actual fun setHillshadeIlluminationDirection(direction: Expression<Number>) {
+  actual fun setHillshadeIlluminationDirection(direction: Expression<FloatValue>) {
     impl.setProperties(PropertyFactory.hillshadeIlluminationDirection(direction.toMLNExpression()))
   }
 
-  actual fun setHillshadeIlluminationAnchor(anchor: Expression<IlluminationAnchor>) {
+  actual fun setHillshadeIlluminationAnchor(anchor: Expression<EnumValue<IlluminationAnchor>>) {
     impl.setProperties(PropertyFactory.hillshadeIlluminationAnchor(anchor.toMLNExpression()))
   }
 
-  actual fun setHillshadeExaggeration(exaggeration: Expression<Number>) {
+  actual fun setHillshadeExaggeration(exaggeration: Expression<FloatValue>) {
     impl.setProperties(PropertyFactory.hillshadeExaggeration(exaggeration.toMLNExpression()))
   }
 
-  actual fun setHillshadeShadowColor(shadowColor: Expression<Color>) {
+  actual fun setHillshadeShadowColor(shadowColor: Expression<ColorValue>) {
     impl.setProperties(PropertyFactory.hillshadeShadowColor(shadowColor.toMLNExpression()))
   }
 
-  actual fun setHillshadeHighlightColor(highlightColor: Expression<Color>) {
+  actual fun setHillshadeHighlightColor(highlightColor: Expression<ColorValue>) {
     impl.setProperties(PropertyFactory.hillshadeHighlightColor(highlightColor.toMLNExpression()))
   }
 
-  actual fun setHillshadeAccentColor(accentColor: Expression<Color>) {
+  actual fun setHillshadeAccentColor(accentColor: Expression<ColorValue>) {
     impl.setProperties(PropertyFactory.hillshadeAccentColor(accentColor.toMLNExpression()))
   }
 }

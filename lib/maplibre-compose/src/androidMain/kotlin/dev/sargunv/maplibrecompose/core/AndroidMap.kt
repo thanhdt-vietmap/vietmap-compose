@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
+import dev.sargunv.maplibrecompose.core.expression.BooleanValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
 import dev.sargunv.maplibrecompose.core.util.correctedAndroidUri
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
@@ -276,7 +277,7 @@ internal class AndroidMap(
   override fun queryRenderedFeatures(
     offset: DpOffset,
     layerIds: Set<String>?,
-    predicate: Expression<Boolean>?,
+    predicate: Expression<BooleanValue>?,
   ): List<Feature> {
     // Kotlin hack to pass null to a java nullable varargs
     val query: (PointF, MLNExpression?, Array<String>?) -> List<MLNFeature> =
@@ -288,7 +289,7 @@ internal class AndroidMap(
   override fun queryRenderedFeatures(
     rect: DpRect,
     layerIds: Set<String>?,
-    predicate: Expression<Boolean>?,
+    predicate: Expression<BooleanValue>?,
   ): List<Feature> {
     // Kotlin hack to pass null to a java nullable varargs
     val query: (RectF, MLNExpression?, Array<String>?) -> List<MLNFeature> =

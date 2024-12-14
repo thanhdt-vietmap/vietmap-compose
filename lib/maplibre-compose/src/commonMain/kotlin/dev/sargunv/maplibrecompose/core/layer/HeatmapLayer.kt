@@ -1,23 +1,25 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
+import dev.sargunv.maplibrecompose.core.expression.BooleanValue
+import dev.sargunv.maplibrecompose.core.expression.ColorValue
+import dev.sargunv.maplibrecompose.core.expression.DpValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
+import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.source.Source
 
 @PublishedApi
 internal expect class HeatmapLayer(id: String, source: Source) : FeatureLayer {
   override var sourceLayer: String
 
-  override fun setFilter(filter: Expression<Boolean>)
+  override fun setFilter(filter: Expression<BooleanValue>)
 
-  fun setHeatmapRadius(radius: Expression<Dp>)
+  fun setHeatmapRadius(radius: Expression<DpValue>)
 
-  fun setHeatmapWeight(weight: Expression<Number>)
+  fun setHeatmapWeight(weight: Expression<FloatValue>)
 
-  fun setHeatmapIntensity(intensity: Expression<Number>)
+  fun setHeatmapIntensity(intensity: Expression<FloatValue>)
 
-  fun setHeatmapColor(color: Expression<Color>)
+  fun setHeatmapColor(color: Expression<ColorValue>)
 
-  fun setHeatmapOpacity(opacity: Expression<Number>)
+  fun setHeatmapOpacity(opacity: Expression<FloatValue>)
 }

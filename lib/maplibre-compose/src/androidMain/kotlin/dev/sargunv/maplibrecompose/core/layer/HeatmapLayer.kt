@@ -1,8 +1,10 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
+import dev.sargunv.maplibrecompose.core.expression.BooleanValue
+import dev.sargunv.maplibrecompose.core.expression.ColorValue
+import dev.sargunv.maplibrecompose.core.expression.DpValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
+import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
 import org.maplibre.android.style.expressions.Expression as MLNExpression
@@ -16,27 +18,27 @@ internal actual class HeatmapLayer actual constructor(id: String, source: Source
 
   actual override var sourceLayer: String by impl::sourceLayer
 
-  actual override fun setFilter(filter: Expression<Boolean>) {
+  actual override fun setFilter(filter: Expression<BooleanValue>) {
     impl.setFilter(filter.toMLNExpression() ?: MLNExpression.literal(true))
   }
 
-  actual fun setHeatmapRadius(radius: Expression<Dp>) {
+  actual fun setHeatmapRadius(radius: Expression<DpValue>) {
     impl.setProperties(PropertyFactory.heatmapRadius(radius.toMLNExpression()))
   }
 
-  actual fun setHeatmapWeight(weight: Expression<Number>) {
+  actual fun setHeatmapWeight(weight: Expression<FloatValue>) {
     impl.setProperties(PropertyFactory.heatmapWeight(weight.toMLNExpression()))
   }
 
-  actual fun setHeatmapIntensity(intensity: Expression<Number>) {
+  actual fun setHeatmapIntensity(intensity: Expression<FloatValue>) {
     impl.setProperties(PropertyFactory.heatmapIntensity(intensity.toMLNExpression()))
   }
 
-  actual fun setHeatmapColor(color: Expression<Color>) {
+  actual fun setHeatmapColor(color: Expression<ColorValue>) {
     impl.setProperties(PropertyFactory.heatmapColor(color.toMLNExpression()))
   }
 
-  actual fun setHeatmapOpacity(opacity: Expression<Number>) {
+  actual fun setHeatmapOpacity(opacity: Expression<FloatValue>) {
     impl.setProperties(PropertyFactory.heatmapOpacity(opacity.toMLNExpression()))
   }
 }

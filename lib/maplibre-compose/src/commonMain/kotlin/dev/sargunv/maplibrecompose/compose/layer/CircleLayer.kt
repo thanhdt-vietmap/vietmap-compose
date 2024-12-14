@@ -3,15 +3,20 @@ package dev.sargunv.maplibrecompose.compose.layer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
+import dev.sargunv.maplibrecompose.core.expression.BooleanValue
 import dev.sargunv.maplibrecompose.core.expression.CirclePitchAlignment
 import dev.sargunv.maplibrecompose.core.expression.CirclePitchScale
+import dev.sargunv.maplibrecompose.core.expression.ColorValue
+import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
+import dev.sargunv.maplibrecompose.core.expression.DpValue
+import dev.sargunv.maplibrecompose.core.expression.EnumValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.const
-import dev.sargunv.maplibrecompose.core.expression.Expression.Companion.nil
+import dev.sargunv.maplibrecompose.core.expression.Expressions.const
+import dev.sargunv.maplibrecompose.core.expression.Expressions.nil
+import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.layer.CircleLayer
 import dev.sargunv.maplibrecompose.core.source.Source
@@ -62,20 +67,21 @@ public inline fun CircleLayer(
   sourceLayer: String = "",
   minZoom: Float = 0.0f,
   maxZoom: Float = 24.0f,
-  filter: Expression<Boolean> = nil(),
+  filter: Expression<BooleanValue> = nil(),
   visible: Boolean = true,
-  sortKey: Expression<Number> = nil(),
-  translate: Expression<DpOffset> = const(DpOffset.Zero),
-  translateAnchor: Expression<TranslateAnchor> = const(TranslateAnchor.Map),
-  opacity: Expression<Number> = const(1f),
-  color: Expression<Color> = const(Color.Black),
-  blur: Expression<Number> = const(0f),
-  radius: Expression<Dp> = const(5.dp),
-  strokeOpacity: Expression<Number> = const(1f),
-  strokeColor: Expression<Color> = const(Color.Black),
-  strokeWidth: Expression<Dp> = const(0.dp),
-  pitchScale: Expression<CirclePitchScale> = const(CirclePitchScale.Map),
-  pitchAlignment: Expression<CirclePitchAlignment> = const(CirclePitchAlignment.Viewport),
+  sortKey: Expression<FloatValue> = nil(),
+  translate: Expression<DpOffsetValue> = const(DpOffset.Zero),
+  translateAnchor: Expression<EnumValue<TranslateAnchor>> = const(TranslateAnchor.Map),
+  opacity: Expression<FloatValue> = const(1f),
+  color: Expression<ColorValue> = const(Color.Black),
+  blur: Expression<FloatValue> = const(0f),
+  radius: Expression<DpValue> = const(5.dp),
+  strokeOpacity: Expression<FloatValue> = const(1f),
+  strokeColor: Expression<ColorValue> = const(Color.Black),
+  strokeWidth: Expression<DpValue> = const(0.dp),
+  pitchScale: Expression<EnumValue<CirclePitchScale>> = const(CirclePitchScale.Map),
+  pitchAlignment: Expression<EnumValue<CirclePitchAlignment>> =
+    const(CirclePitchAlignment.Viewport),
   noinline onClick: FeaturesClickHandler? = null,
   noinline onLongClick: FeaturesClickHandler? = null,
 ) {

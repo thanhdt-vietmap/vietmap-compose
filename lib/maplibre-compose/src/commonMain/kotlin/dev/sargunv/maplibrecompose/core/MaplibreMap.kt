@@ -2,6 +2,7 @@ package dev.sargunv.maplibrecompose.core
 
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
+import dev.sargunv.maplibrecompose.core.expression.BooleanValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
@@ -33,13 +34,13 @@ internal interface MaplibreMap {
   fun queryRenderedFeatures(
     offset: DpOffset,
     layerIds: Set<String>? = null,
-    predicate: Expression<Boolean>? = null,
+    predicate: Expression<BooleanValue>? = null,
   ): List<Feature>
 
   fun queryRenderedFeatures(
     rect: DpRect,
     layerIds: Set<String>? = null,
-    predicate: Expression<Boolean>? = null,
+    predicate: Expression<BooleanValue>? = null,
   ): List<Feature>
 
   interface Callbacks {

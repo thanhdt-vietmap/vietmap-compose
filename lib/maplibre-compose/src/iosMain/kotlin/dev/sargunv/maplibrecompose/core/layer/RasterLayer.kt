@@ -1,7 +1,10 @@
 package dev.sargunv.maplibrecompose.core.layer
 
 import cocoapods.MapLibre.MLNRasterStyleLayer
+import dev.sargunv.maplibrecompose.core.expression.DurationValue
+import dev.sargunv.maplibrecompose.core.expression.EnumValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
+import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.expression.RasterResampling
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.util.toNSExpression
@@ -12,35 +15,35 @@ internal actual class RasterLayer actual constructor(id: String, actual val sour
 
   override val impl = MLNRasterStyleLayer(id, source.impl)
 
-  actual fun setRasterOpacity(opacity: Expression<Number>) {
+  actual fun setRasterOpacity(opacity: Expression<FloatValue>) {
     impl.rasterOpacity = opacity.toNSExpression()
   }
 
-  actual fun setRasterHueRotate(hueRotate: Expression<Number>) {
+  actual fun setRasterHueRotate(hueRotate: Expression<FloatValue>) {
     impl.rasterHueRotation = hueRotate.toNSExpression()
   }
 
-  actual fun setRasterBrightnessMin(brightnessMin: Expression<Number>) {
+  actual fun setRasterBrightnessMin(brightnessMin: Expression<FloatValue>) {
     impl.minimumRasterBrightness = brightnessMin.toNSExpression()
   }
 
-  actual fun setRasterBrightnessMax(brightnessMax: Expression<Number>) {
+  actual fun setRasterBrightnessMax(brightnessMax: Expression<FloatValue>) {
     impl.maximumRasterBrightness = brightnessMax.toNSExpression()
   }
 
-  actual fun setRasterSaturation(saturation: Expression<Number>) {
+  actual fun setRasterSaturation(saturation: Expression<FloatValue>) {
     impl.rasterSaturation = saturation.toNSExpression()
   }
 
-  actual fun setRasterContrast(contrast: Expression<Number>) {
+  actual fun setRasterContrast(contrast: Expression<FloatValue>) {
     impl.rasterContrast = contrast.toNSExpression()
   }
 
-  actual fun setRasterResampling(resampling: Expression<RasterResampling>) {
+  actual fun setRasterResampling(resampling: Expression<EnumValue<RasterResampling>>) {
     impl.rasterResamplingMode = resampling.toNSExpression()
   }
 
-  actual fun setRasterFadeDuration(fadeDuration: Expression<Number>) {
+  actual fun setRasterFadeDuration(fadeDuration: Expression<DurationValue>) {
     impl.rasterFadeDuration = fadeDuration.toNSExpression()
   }
 }
