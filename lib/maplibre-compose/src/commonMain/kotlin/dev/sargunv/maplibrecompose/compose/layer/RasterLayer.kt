@@ -1,10 +1,11 @@
 package dev.sargunv.maplibrecompose.compose.layer
 
 import androidx.compose.runtime.Composable
+import dev.sargunv.maplibrecompose.compose.MaplibreComposable
 import dev.sargunv.maplibrecompose.core.expression.DurationValue
 import dev.sargunv.maplibrecompose.core.expression.EnumValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionScope.const
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
 import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.expression.RasterResampling
 import dev.sargunv.maplibrecompose.core.layer.RasterLayer
@@ -36,6 +37,7 @@ import kotlin.time.Duration.Companion.milliseconds
  *   started or its coordinates are updated. A value in range `[0..infinity)`.
  */
 @Composable
+@MaplibreComposable
 public fun RasterLayer(
   id: String,
   source: Source,

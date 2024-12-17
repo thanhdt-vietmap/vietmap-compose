@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
+import dev.sargunv.maplibrecompose.compose.MaplibreComposable
 import dev.sargunv.maplibrecompose.core.expression.BooleanValue
 import dev.sargunv.maplibrecompose.core.expression.CirclePitchAlignment
 import dev.sargunv.maplibrecompose.core.expression.CirclePitchScale
@@ -13,8 +14,8 @@ import dev.sargunv.maplibrecompose.core.expression.DpOffsetValue
 import dev.sargunv.maplibrecompose.core.expression.DpValue
 import dev.sargunv.maplibrecompose.core.expression.EnumValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionScope.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionScope.nil
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.nil
 import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.layer.CircleLayer
@@ -34,7 +35,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
  *   levels. The
- *   [featureState][dev.sargunv.maplibrecompose.core.expression.ExpressionScope.featureState]
+ *   [featureState][dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.featureState]
  *   expression is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param sortKey Sorts features within this layer in ascending order based on this value. Features
@@ -59,6 +60,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  * @param onLongClick Function to call when any feature in this layer has been long-clicked.
  */
 @Composable
+@MaplibreComposable
 public fun CircleLayer(
   id: String,
   source: Source,

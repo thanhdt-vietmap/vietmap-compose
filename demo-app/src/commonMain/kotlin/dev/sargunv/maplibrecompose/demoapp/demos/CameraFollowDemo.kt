@@ -32,7 +32,7 @@ import dev.sargunv.maplibrecompose.compose.rememberCameraState
 import dev.sargunv.maplibrecompose.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
-import dev.sargunv.maplibrecompose.core.expression.ExpressionScope.const
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 import dev.sargunv.maplibrecompose.demoapp.Demo
@@ -76,9 +76,10 @@ object CameraFollowDemo : Demo {
           modifier = Modifier.weight(1f),
           styleUri = DEFAULT_STYLE,
           cameraState = camera,
-        ) {
-          LocationPuck(locationSource = rememberGeoJsonSource("target", Point(animatedPosition)))
-        }
+          mapContent = {
+            LocationPuck(locationSource = rememberGeoJsonSource("target", Point(animatedPosition)))
+          },
+        )
 
         Text(
           text = "Move reason: ${camera.moveReason.name}",

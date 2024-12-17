@@ -2,10 +2,11 @@ package dev.sargunv.maplibrecompose.compose.layer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import dev.sargunv.maplibrecompose.compose.MaplibreComposable
 import dev.sargunv.maplibrecompose.core.expression.ColorValue
 import dev.sargunv.maplibrecompose.core.expression.EnumValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionScope.const
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
 import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.expression.IlluminationAnchor
 import dev.sargunv.maplibrecompose.core.layer.HillshadeLayer
@@ -36,6 +37,7 @@ import dev.sargunv.maplibrecompose.core.source.Source
  * @param exaggeration Intensity of the hillshade. A value in the range of `[0..1]`.
  */
 @Composable
+@MaplibreComposable
 public fun HillshadeLayer(
   id: String,
   source: Source,

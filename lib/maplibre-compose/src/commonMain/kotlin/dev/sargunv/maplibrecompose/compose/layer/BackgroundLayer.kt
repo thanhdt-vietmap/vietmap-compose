@@ -2,10 +2,11 @@ package dev.sargunv.maplibrecompose.compose.layer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import dev.sargunv.maplibrecompose.compose.MaplibreComposable
 import dev.sargunv.maplibrecompose.core.expression.ColorValue
 import dev.sargunv.maplibrecompose.core.expression.Expression
-import dev.sargunv.maplibrecompose.core.expression.ExpressionScope.const
-import dev.sargunv.maplibrecompose.core.expression.ExpressionScope.nil
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.nil
 import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.expression.ImageValue
 import dev.sargunv.maplibrecompose.core.layer.BackgroundLayer
@@ -29,6 +30,7 @@ import dev.sargunv.maplibrecompose.core.layer.BackgroundLayer
  *   be evaluated only at integer zoom levels.
  */
 @Composable
+@MaplibreComposable
 public fun BackgroundLayer(
   id: String,
   minZoom: Float = 0.0f,

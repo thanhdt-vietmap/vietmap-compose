@@ -19,6 +19,14 @@ import dev.sargunv.maplibrecompose.compose.layer.SymbolLayer
 import dev.sargunv.maplibrecompose.compose.rememberCameraState
 import dev.sargunv.maplibrecompose.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrecompose.core.CameraPosition
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.asNumber
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.asString
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.feature
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.format
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.literal
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.not
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.step
 import dev.sargunv.maplibrecompose.core.source.GeoJsonOptions
 import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 import dev.sargunv.maplibrecompose.demoapp.Demo
@@ -56,76 +64,81 @@ object ClusteredPointsDemo : Demo {
 
       val coroutineScope = rememberCoroutineScope()
 
-      MaplibreMap(modifier = Modifier, styleUri = DEFAULT_STYLE, cameraState = cameraState) {
-        val gbfsData by rememberGbfsFeatureState(GBFS_FILE)
+      MaplibreMap(
+        modifier = Modifier,
+        styleUri = DEFAULT_STYLE,
+        cameraState = cameraState,
+        mapContent = {
+          val gbfsData by rememberGbfsFeatureState(GBFS_FILE)
 
-        val bikeSource =
-          rememberGeoJsonSource(
-            "bikes",
-            gbfsData,
-            GeoJsonOptions(cluster = true, clusterRadius = 32, clusterMaxZoom = 16),
+          val bikeSource =
+            rememberGeoJsonSource(
+              "bikes",
+              gbfsData,
+              GeoJsonOptions(cluster = true, clusterRadius = 32, clusterMaxZoom = 16),
+            )
+
+          CircleLayer(
+            id = "clustered-bikes",
+            source = bikeSource,
+            filter = feature.has(const("point_count")),
+            color = const(LIME_GREEN),
+            opacity = const(0.5f),
+            radius =
+              step(
+                input = feature.get(const("point_count")).asNumber(),
+                fallback = const(15.dp),
+                25 to const(20.dp),
+                100 to const(30.dp),
+                500 to const(40.dp),
+                1000 to const(50.dp),
+                5000 to const(60.dp),
+              ),
+            onClick = { features ->
+              features.firstOrNull<Feature>()?.geometry?.let<Geometry, ClickResult> {
+                coroutineScope.launch {
+                  cameraState.animateTo(
+                    cameraState.position.copy(
+                      target = (it as Point).coordinates,
+                      zoom = (cameraState.position.zoom + 2).coerceAtMost(20.0),
+                    )
+                  )
+                }
+                ClickResult.Consume
+              } ?: ClickResult.Pass
+            },
           )
 
-        CircleLayer(
-          id = "clustered-bikes",
-          source = bikeSource,
-          filter = feature.has(const("point_count")),
-          color = const(LIME_GREEN),
-          opacity = const(0.5f),
-          radius =
-            step(
-              input = feature.get(const("point_count")).asNumber(),
-              fallback = const(15.dp),
-              25 to const(20.dp),
-              100 to const(30.dp),
-              500 to const(40.dp),
-              1000 to const(50.dp),
-              5000 to const(60.dp),
-            ),
-          onClick = { features ->
-            features.firstOrNull<Feature>()?.geometry?.let<Geometry, ClickResult> {
-              coroutineScope.launch {
-                cameraState.animateTo(
-                  cameraState.position.copy(
-                    target = (it as Point).coordinates,
-                    zoom = (cameraState.position.zoom + 2).coerceAtMost(20.0),
-                  )
-                )
-              }
-              ClickResult.Consume
-            } ?: ClickResult.Pass
-          },
-        )
+          SymbolLayer(
+            id = "clustered-bikes-count",
+            source = bikeSource,
+            filter = feature.has(const("point_count")),
+            textField = format(feature.get(const("point_count_abbreviated")).asString()),
+            textFont = literal(listOf(const("Noto Sans Regular"))),
+            textColor = const(MaterialTheme.colorScheme.onBackground),
+          )
 
-        SymbolLayer(
-          id = "clustered-bikes-count",
-          source = bikeSource,
-          filter = feature.has(const("point_count")),
-          textField = format(feature.get(const("point_count_abbreviated")).asString()),
-          textFont = literal(listOf(const("Noto Sans Regular"))),
-          textColor = const(MaterialTheme.colorScheme.onBackground),
-        )
+          CircleLayer(
+            id = "unclustered-bikes-shadow",
+            source = bikeSource,
+            filter = !feature.has(const("point_count")),
+            radius = const(13.dp),
+            color = const(Color.Black),
+            blur = const(1f),
+            translate = const(DpOffset(0.dp, 1.dp)),
+          )
 
-        CircleLayer(
-          id = "unclustered-bikes-shadow",
-          source = bikeSource,
-          filter = !feature.has(const("point_count")),
-          radius = const(13.dp),
-          color = const(Color.Black),
-          blur = const(1f),
-          translate = const(DpOffset(0.dp, 1.dp)),
-        )
-
-        CircleLayer(
-          id = "unclustered-bikes",
-          source = bikeSource,
-          filter = !feature.has(const("point_count")),
-          color = const(LIME_GREEN),
-          radius = const(7.dp),
-          strokeWidth = const(3.dp),
-          strokeColor = const(Color.White),
-        )
-      }
+          CircleLayer(
+            id = "unclustered-bikes",
+            source = bikeSource,
+            filter = !feature.has(const("point_count")),
+            color = const(LIME_GREEN),
+            radius = const(7.dp),
+            strokeWidth = const(3.dp),
+            strokeColor = const(Color.White),
+          )
+        },
+      )
     }
   }
 }
