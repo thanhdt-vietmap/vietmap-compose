@@ -1,10 +1,15 @@
 package dev.sargunv.maplibrecompose.core.expression
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import dev.sargunv.maplibrecompose.core.util.JsOnlyApi
 import kotlin.enums.enumEntries
 import kotlin.jvm.JvmInline
@@ -28,6 +33,27 @@ public object ExpressionsDsl {
 
   /** Creates a literal expression for a [Dp] value. */
   public fun const(dp: Dp): Expression<DpValue> = Expression.ofFloat(dp.value).cast()
+
+  /**
+   * Creates a literal expression for a specified [TextUnit] value. If [textUnit] is in `em`, it is
+   * considered relative to `16.sp`.
+   */
+  public fun const(textUnit: TextUnit, fontScale: Float): Expression<TextUnitValue> =
+    when (textUnit.type) {
+      TextUnitType.Sp -> const(textUnit.value * fontScale).cast()
+      TextUnitType.Em -> const(textUnit.value * fontScale * 16f).cast()
+      else -> error("Unsupported TextUnit type: ${textUnit.type}")
+    }
+
+  /**
+   * Creates a literal expression for a specified [TextUnit] value. If [textUnit] is in `em`, it is
+   * considered relative to `16.sp` (the default symbol layer text size).
+   */
+  @Composable
+  public fun const(
+    textUnit: TextUnit,
+    density: Density = LocalDensity.current,
+  ): Expression<TextUnitValue> = const(textUnit, density.fontScale)
 
   /**
    * Creates a literal expression for a [Duration] value.
@@ -1152,7 +1178,7 @@ public object ExpressionsDsl {
   // region Feature data
 
   /** Object to access feature-related data, see [feature] */
-  public object FeatureScope {
+  public object Feature {
     /**
      * Returns the value corresponding to the given [key] in the current feature's properties or
      * `null` if it is not present.
@@ -1213,7 +1239,7 @@ public object ExpressionsDsl {
   }
 
   /** Accesses to feature-related data */
-  public val feature: FeatureScope = FeatureScope
+  public val feature: Feature = Feature
 
   // endregion
 

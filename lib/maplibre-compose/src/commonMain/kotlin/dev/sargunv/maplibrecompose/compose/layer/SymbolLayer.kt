@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import dev.sargunv.maplibrecompose.compose.FeaturesClickHandler
 import dev.sargunv.maplibrecompose.compose.MaplibreComposable
 import dev.sargunv.maplibrecompose.core.expression.BooleanValue
@@ -33,6 +34,7 @@ import dev.sargunv.maplibrecompose.core.expression.TextJustify
 import dev.sargunv.maplibrecompose.core.expression.TextPitchAlignment
 import dev.sargunv.maplibrecompose.core.expression.TextRotationAlignment
 import dev.sargunv.maplibrecompose.core.expression.TextTransform
+import dev.sargunv.maplibrecompose.core.expression.TextUnitValue
 import dev.sargunv.maplibrecompose.core.expression.TextWritingMode
 import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.expression.ZeroPadding
@@ -54,7 +56,7 @@ import dev.sargunv.maplibrecompose.core.util.JsOnlyApi
  * @param filter An expression specifying conditions on source features. Only features that match
  *   the filter are displayed. Zoom expressions in filters are only evaluated at integer zoom
  *   levels. The
- *   [featureState][dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.featureState]
+ *   [featureState][dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.Feature.state]
  *   expression is not supported in filter expressions.
  * @param visible Whether the layer should be displayed.
  * @param sortKey Sorts features within this layer in ascending order based on this value. Features
@@ -423,7 +425,7 @@ public fun SymbolLayer(
 
   // text glyph properties
   textFont: Expression<ListValue<StringValue>> = Defaults.FontNames,
-  textSize: Expression<DpValue> = const(16.dp),
+  textSize: Expression<TextUnitValue> = const(1.em),
   textTransform: Expression<EnumValue<TextTransform>> = const(TextTransform.None),
   textLetterSpacing: Expression<FloatValue> = const(0f),
   textRotationAlignment: Expression<EnumValue<TextRotationAlignment>> =
