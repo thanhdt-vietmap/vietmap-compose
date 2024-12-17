@@ -30,6 +30,7 @@ public fun MaplibreMap(
   gestureSettings: GestureSettings = GestureSettings.AllEnabled,
   ornamentSettings: OrnamentSettings = OrnamentSettings.AllEnabled,
   cameraState: CameraState = rememberCameraState(),
+  styleState: StyleState = rememberStyleState(),
   onMapClick: MapClickHandler = { _, _ -> ClickResult.Pass },
   onMapLongClick: MapClickHandler = { _, _ -> ClickResult.Pass },
   onFpsChanged: (Double) -> Unit = {},
@@ -43,9 +44,10 @@ public fun MaplibreMap(
   val styleComposition by rememberStyleComposition(rememberedStyle, logger, content)
 
   val callbacks =
-    remember(cameraState, styleComposition) {
+    remember(cameraState, styleState, styleComposition) {
       object : MaplibreMap.Callbacks {
         override fun onStyleChanged(map: MaplibreMap, style: Style?) {
+          styleState.attach(style)
           rememberedStyle = style
         }
 
