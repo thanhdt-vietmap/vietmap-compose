@@ -15,6 +15,11 @@ enabled or disabled individually:
 
 ### Ornaments
 
+!!! info
+
+    We provide Material 3 alternatives to the default ornaments. See the [Material 3 extensions
+    section](./material3.md) for more information.
+
 Ornaments are built in UI elements that are displayed on the map, such as a
 compass or attribution button. They're implemented by the underlying MapLibre
 SDK, so may render differently on different platforms. You can control the
@@ -33,15 +38,6 @@ visibility and position of these ornaments:
 5. Displays a compass control when the map is rotated away from north.
 6. Displays a scale control showing the distance represented by the map's zoom
    level.
-
-### Material 3 Controls
-
-We also provide reimplementations of certain ornaments using Material 3. These
-are regular Compose UI components, so you can position them arbitrarily, style
-them, animate them, etc. To use them, disable the corresponding built-in
-ornament and add the Material control to the map's `overlay`:
-
-TODO add example
 
 ## Camera
 
