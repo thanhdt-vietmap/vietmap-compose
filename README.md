@@ -12,8 +12,8 @@ library for [MapLibre](https://maplibre.org/). You can use it to embed an
 interactive vector map in your Compose app.
 
 <p float="left">
-  <img src="https://github.com/user-attachments/assets/671fc56d-b1a8-4843-82ea-4813c9712ea3" width="200"/>
-  <img src="https://github.com/user-attachments/assets/ae4a43e4-66bc-4a69-824f-957874912abd" width="200"/>
+  <img src="https://github.com/user-attachments/assets/997cf8a4-2841-40c8-b5a1-ef98193b21b2" width="200"/>
+  <img src="https://github.com/user-attachments/assets/e450f689-e254-48b7-bd91-3d3042faa290" width="200"/>
 </p>
 
 ## Usage
