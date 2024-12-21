@@ -46,6 +46,7 @@ object StyleSwitcherDemo : Demo {
             MaplibreMap(
               styleUri = ALL_STYLES[selectedIndex].uri,
               cameraState = cameraState,
+              styleState = styleState,
               ornamentSettings = DemoOrnamentSettings(),
             )
             DemoMapControls(cameraState, styleState)
