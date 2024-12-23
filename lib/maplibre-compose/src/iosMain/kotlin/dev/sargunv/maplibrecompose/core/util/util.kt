@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asSkiaBitmap
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.IntOffset
@@ -36,6 +39,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import org.jetbrains.skia.Image
 import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGRect
@@ -51,6 +55,7 @@ import platform.Foundation.NSValue
 import platform.Foundation.dataWithBytes
 import platform.UIKit.UIColor
 import platform.UIKit.UIEdgeInsetsMake
+import platform.UIKit.UIImage
 import platform.UIKit.valueWithCGVector
 import platform.UIKit.valueWithUIEdgeInsets
 
@@ -168,4 +173,11 @@ internal fun Alignment.toMLNOrnamentPosition(layoutDir: LayoutDirection): MLNOrn
 internal fun MLNAttributionInfo.toHtmlString(): String {
   // TODO escape HTML in the title and URL?
   return if (URL == null) title.string else """<a href="$URL" target="_blank">${title.string}</a>"""
+}
+
+internal fun ImageBitmap.toUIImage(density: Density): UIImage {
+  return UIImage(
+    data = Image.makeFromBitmap(this.asSkiaBitmap()).encodeToData()!!.bytes.toNSData(),
+    scale = density.density.toDouble(),
+  )
 }
