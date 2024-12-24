@@ -15,6 +15,7 @@ import dev.sargunv.maplibrecompose.core.expression.IconRotationAlignment
 import dev.sargunv.maplibrecompose.core.expression.IconTextFit
 import dev.sargunv.maplibrecompose.core.expression.ImageValue
 import dev.sargunv.maplibrecompose.core.expression.ListValue
+import dev.sargunv.maplibrecompose.core.expression.ResolvedValue
 import dev.sargunv.maplibrecompose.core.expression.StringValue
 import dev.sargunv.maplibrecompose.core.expression.SymbolAnchor
 import dev.sargunv.maplibrecompose.core.expression.SymbolPlacement
@@ -60,7 +61,7 @@ internal expect class SymbolLayer(id: String, source: Source) : FeatureLayer {
 
   fun setIconTextFitPadding(textFitPadding: Expression<DpPaddingValue>)
 
-  fun setIconImage(image: Expression<ImageValue>)
+  fun setIconImage(image: Expression<ResolvedValue<ImageValue>>)
 
   fun setIconRotate(rotate: Expression<FloatValue>)
 
@@ -92,7 +93,7 @@ internal expect class SymbolLayer(id: String, source: Source) : FeatureLayer {
 
   fun setTextRotationAlignment(rotationAlignment: Expression<EnumValue<TextRotationAlignment>>)
 
-  fun setTextField(field: Expression<FormattedValue>)
+  fun setTextField(field: Expression<ResolvedValue<FormattedValue>>)
 
   fun setTextFont(font: Expression<ListValue<StringValue>>)
 

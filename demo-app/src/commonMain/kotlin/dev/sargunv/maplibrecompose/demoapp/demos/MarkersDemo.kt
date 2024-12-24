@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.em
 import dev.sargunv.maplibrecompose.compose.ClickResult
 import dev.sargunv.maplibrecompose.compose.MaplibreMap
 import dev.sargunv.maplibrecompose.compose.layer.SymbolLayer
@@ -24,8 +26,13 @@ import dev.sargunv.maplibrecompose.compose.rememberCameraState
 import dev.sargunv.maplibrecompose.compose.rememberStyleState
 import dev.sargunv.maplibrecompose.compose.source.rememberGeoJsonSource
 import dev.sargunv.maplibrecompose.core.CameraPosition
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.Feature.get
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.asString
 import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.const
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.format
 import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.image
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.offset
+import dev.sargunv.maplibrecompose.core.expression.ExpressionsDsl.span
 import dev.sargunv.maplibrecompose.demoapp.DEFAULT_STYLE
 import dev.sargunv.maplibrecompose.demoapp.Demo
 import dev.sargunv.maplibrecompose.demoapp.DemoMapControls
@@ -51,8 +58,8 @@ private fun Painter.rememberAsBitmap(): ImageBitmap {
 private val CHICAGO = Position(latitude = 41.878, longitude = -87.626)
 
 object MarkersDemo : Demo {
-  override val name = "Markers"
-  override val description = "Add and interact with markers"
+  override val name = "Markers, images, and formatting"
+  override val description = "Add images to the style and intermingle it with text."
 
   @Composable
   override fun Component(navigateUp: () -> Unit) {
@@ -60,7 +67,7 @@ object MarkersDemo : Demo {
       val marker = painterResource(Res.drawable.marker).rememberAsBitmap()
       val cameraState =
         rememberCameraState(firstPosition = CameraPosition(target = CHICAGO, zoom = 7.0))
-      val styleState = rememberStyleState(images = mapOf("demo-marker" to marker))
+      val styleState = rememberStyleState()
       var selectedFeature by remember { mutableStateOf<Feature?>(null) }
 
       Box(modifier = Modifier.fillMaxSize()) {
@@ -83,8 +90,16 @@ object MarkersDemo : Demo {
               selectedFeature = features.firstOrNull()
               ClickResult.Consume
             },
-            iconImage = image(const("demo-marker")),
-            iconAllowOverlap = const(true),
+            iconImage = image(marker),
+            textField =
+              format(
+                span(image(const("railway"))),
+                span(const(" ")),
+                span(get(const("STNCODE")).asString(), fontScale = const(1.2f)),
+              ),
+            textFont = const(listOf("Noto Sans Regular")),
+            textColor = const(MaterialTheme.colorScheme.onBackground),
+            textOffset = offset(0.em, 0.6.em),
           )
         }
         DemoMapControls(cameraState, styleState)

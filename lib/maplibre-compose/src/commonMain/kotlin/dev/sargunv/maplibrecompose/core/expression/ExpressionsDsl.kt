@@ -3,6 +3,7 @@ package dev.sargunv.maplibrecompose.core.expression
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.TextUnit
@@ -361,48 +362,54 @@ public object ExpressionsDsl {
   /**
    * Returns a formatted string for displaying mixed-format text in the `textField` property (see
    * [SymbolLayer][dev.sargunv.maplibrecompose.compose.layer.SymbolLayer]). The input may contain a
-   * string literal or expression, including an 'image' expression.
+   * string literal or expression, including an [image] expression.
    *
    * Example:
    * ```
    * format(
-   *   feature.get("name").asString().substring(const(0), const(1)).uppercase()
-   *     to FormatStyle(textScale = const(1.5)),
-   *   feature.get("name").asString().substring(const(1))
-   *     to FormatStyle(),
+   *   span(
+   *     feature.get("name").asString().substring(const(0), const(1)).uppercase(),
+   *     textScale = const(1.5f),
+   *   ),
+   *   span(feature.get("name").asString().substring(const(1)))
    * )
    * ```
    *
    * Capitalizes the first letter of the features' property "name" and formats it to be extra-large,
    * the rest of the name is written normally.
    */
-  public fun format(
-    vararg sections: Pair<Expression<StringValue>, FormatStyle>
-  ): Expression<FormattedValue> =
+  public fun format(vararg spans: FormatSpan): Expression<FormattedValue> =
     callFn(
         "format",
-        *sections.foldToArgs { (value, style) ->
-          add(value)
-          add(
-            buildOptions {
-              style.textFont?.let { put("text-font", it) }
-              style.textColor?.let { put("text-color", it) }
-              style.fontScale?.let { put("font-scale", it) }
-            }
-          )
+        *spans.foldToArgs { span ->
+          add(span.value)
+          add(span.options)
         },
       )
       .cast()
 
-  /** Use a string as a formatted value without any extra formatting */
-  public fun format(value: Expression<StringValue>): Expression<FormattedValue> =
-    callFn("format", value, buildOptions {}).cast()
+  public fun span(
+    value: Expression<FormattableValue>,
+    textFont: Expression<StringValue>? = null,
+    textColor: Expression<StringValue>? = null,
+    fontScale: Expression<FloatValue>? = null,
+  ): FormatSpan =
+    FormatSpan(value = value, textFont = textFont, textColor = textColor, fontScale = fontScale)
 
-  public data class FormatStyle(
-    val textFont: Expression<StringValue>? = null,
-    val textColor: Expression<StringValue>? = null,
-    val fontScale: Expression<FloatValue>? = null,
-  )
+  public data class FormatSpan
+  internal constructor(
+    val value: Expression<FormattableValue>,
+    val textFont: Expression<StringValue>?,
+    val textColor: Expression<StringValue>?,
+    val fontScale: Expression<FloatValue>?,
+  ) {
+    internal val options
+      get() = buildOptions {
+        textFont?.let { put("text-font", it) }
+        textColor?.let { put("text-color", it) }
+        fontScale?.let { put("font-scale", it) }
+      }
+  }
 
   /**
    * Returns an image type for use in `iconImage` (see
@@ -420,6 +427,21 @@ public object ExpressionsDsl {
    */
   public fun image(value: Expression<StringValue>): Expression<ImageValue> =
     callFn("image", value).cast()
+
+  /**
+   * Returns an image type for use in `iconImage` (see
+   * [SymbolLayer][dev.sargunv.maplibrecompose.compose.layer.SymbolLayer]), `pattern` entries (see
+   * [BackgroundLayer][dev.sargunv.maplibrecompose.compose.layer.BackgroundLayer],
+   * [FillLayer][dev.sargunv.maplibrecompose.compose.layer.FillLayer],
+   * [FillExtrusionLayer][dev.sargunv.maplibrecompose.compose.layer.FillExtrusionLayer],
+   * [LineLayer][dev.sargunv.maplibrecompose.compose.layer.LineLayer]) and as a section in the
+   * [format] expression.
+   *
+   * The [ImageBitmap] will be registered with the style when it's referenced by a layer, and
+   * unregistered from the style if it's no longer referenced by any layer. An ID referencing the
+   * bitmap will be generated automatically and inserted into the expression.
+   */
+  public fun image(value: ImageBitmap): Expression<ImageValue> = Expression.ofBitmap(value)
 
   /**
    * Converts this number into a string representation using the provided formatting rules.

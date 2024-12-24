@@ -11,6 +11,7 @@ import dev.sargunv.maplibrecompose.core.expression.FloatValue
 import dev.sargunv.maplibrecompose.core.expression.ImageValue
 import dev.sargunv.maplibrecompose.core.expression.LineCap
 import dev.sargunv.maplibrecompose.core.expression.LineJoin
+import dev.sargunv.maplibrecompose.core.expression.ResolvedValue
 import dev.sargunv.maplibrecompose.core.expression.TranslateAnchor
 import dev.sargunv.maplibrecompose.core.expression.VectorValue
 import dev.sargunv.maplibrecompose.core.source.Source
@@ -88,7 +89,7 @@ internal actual class LineLayer actual constructor(id: String, source: Source) :
     impl.lineDashPattern = dasharray.toNSExpression()
   }
 
-  actual fun setLinePattern(pattern: Expression<ImageValue>) {
+  actual fun setLinePattern(pattern: Expression<ResolvedValue<ImageValue>>) {
     // TODO: figure out how to unset a pattern in iOS
     if (pattern.value != null) {
       impl.linePattern = pattern.toNSExpression()
