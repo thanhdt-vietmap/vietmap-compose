@@ -38,7 +38,7 @@ Android and iOS support is implemented with [MapLibre Native][maplibre-native].
 | Snapshot the map as an image                      | :x:                | :x:                | :x:     | :x: |
 | Configure the offline cache                       | :x:                | :x:                | :x:     | :x: |
 | Configure layer transitions                       | :x:                | :x:                | :x:     | :x: |
-| Add images to the style                           | :x:                | :x:                | :x:     | :x: |
+| Add images to the style                           | :white_check_mark: | :white_check_mark: | :x:     | :x: |
 
 [compose]: https://www.jetbrains.com/compose-multiplatform/
 [maplibre]: https://maplibre.org/
