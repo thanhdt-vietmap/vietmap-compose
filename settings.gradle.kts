@@ -34,10 +34,12 @@ dependencyResolutionManagement {
 }
 
 include(
-  ":lib:maplibre-compose-expressions",
-  ":lib:maplibre-compose-material3",
-  ":lib:maplibre-compose",
-  ":lib",
-  ":demo-app",
   ":",
+  ":demo-app",
+  ":lib",
+  ":lib:maplibre-compose",
+  ":lib:maplibre-compose-material3",
+  ":lib:maplibre-compose-expressions",
+  ":lib:maplibre-compose-webview",
+  ":lib:kotlin-maplibre-js",
 )

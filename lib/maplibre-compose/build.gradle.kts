@@ -10,6 +10,7 @@ plugins {
   id("android-library-conventions")
   id(libs.plugins.kotlin.multiplatform.get().pluginId)
   id(libs.plugins.kotlin.cocoapods.get().pluginId)
+  id(libs.plugins.kotlin.composeCompiler.get().pluginId)
   id(libs.plugins.android.library.get().pluginId)
   id(libs.plugins.compose.get().pluginId)
   id(libs.plugins.mavenPublish.get().pluginId)
@@ -24,6 +25,25 @@ mavenPublishing {
     url = "https://github.com/sargunv/maplibre-compose"
   }
 }
+
+val desktopResources: Configuration by
+  configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+  }
+
+dependencies {
+  desktopResources(
+    project(path = ":lib:maplibre-compose-webview", configuration = "jsBrowserDistribution")
+  )
+}
+
+val copyDesktopResources by
+  tasks.registering(Copy::class) {
+    from(desktopResources)
+    eachFile { path = "files/${path}" }
+    into(project.layout.buildDirectory.dir(desktopResources.name))
+  }
 
 kotlin {
   androidTarget {
@@ -51,6 +71,7 @@ kotlin {
 
     commonMain.dependencies {
       implementation(compose.foundation)
+      implementation(compose.components.resources)
       api(libs.kermit)
       api(libs.spatialk.geojson)
       api(project(":lib:maplibre-compose-expressions"))
@@ -61,7 +82,12 @@ kotlin {
       implementation(libs.maplibre.android.scalebar)
     }
 
-    desktopMain.dependencies { implementation(libs.webview) }
+    desktopMain.apply {
+      dependencies {
+        implementation(compose.desktop.common)
+        implementation(libs.webview)
+      }
+    }
 
     commonTest.dependencies {
       implementation(kotlin("test"))
@@ -78,4 +104,16 @@ kotlin {
       implementation(libs.androidx.composeUi.testManifest)
     }
   }
+}
+
+compose.resources {
+  packageOfResClass = "dev.sargunv.maplibrecompose.generated"
+
+  customDirectory(
+    sourceSetName = "desktopMain",
+    directoryProvider =
+      //    layout.dir(copyDesktopResources.map {
+      // it.destinationDir.relativeTo(layout.projectDirectory.asFile) }),
+      layout.dir(copyDesktopResources.map { it.destinationDir }),
+  )
 }
