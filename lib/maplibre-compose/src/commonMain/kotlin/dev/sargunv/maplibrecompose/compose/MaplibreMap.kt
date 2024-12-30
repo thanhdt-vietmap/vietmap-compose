@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpOffset
@@ -15,10 +16,12 @@ import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.GestureSettings
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import dev.sargunv.maplibrecompose.core.OrnamentSettings
+import dev.sargunv.maplibrecompose.core.StandardMaplibreMap
 import dev.sargunv.maplibrecompose.core.Style
 import dev.sargunv.maplibrecompose.core.util.PlatformUtils
 import io.github.dellisd.spatialk.geojson.Position
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 /**
  * Displays a MapLibre based map.
@@ -42,6 +45,9 @@ import kotlin.math.roundToInt
  * @param isDebugEnabled Whether the map debug information is shown.
  * @param maximumFps The maximum frame rate at which the map view is rendered, but it can't exceed
  *   the ability of device hardware.
+ *
+ * Note: This parameter does not take effect on web and desktop.
+ *
  * @param logger kermit logger to use
  * @param content The map content additional to what is already part of the map as defined in the
  *   base map style linked in [styleUri].
@@ -106,10 +112,12 @@ public fun MaplibreMap(
     remember(cameraState, styleState, styleComposition) {
       object : MaplibreMap.Callbacks {
         override fun onStyleChanged(map: MaplibreMap, style: Style?) {
+          println("onStyleChanged!!")
+          map as StandardMaplibreMap
           styleState.attach(style)
           rememberedStyle = style
           cameraState.metersPerDpAtTargetState.value =
-            map.metersPerDpAtLatitude(map.cameraPosition.target.latitude)
+            map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
         }
 
         override fun onCameraMoveStarted(map: MaplibreMap, reason: CameraMoveReason) {
@@ -117,9 +125,10 @@ public fun MaplibreMap(
         }
 
         override fun onCameraMoved(map: MaplibreMap) {
-          cameraState.positionState.value = map.cameraPosition
+          map as StandardMaplibreMap
+          cameraState.positionState.value = map.getCameraPosition()
           cameraState.metersPerDpAtTargetState.value =
-            map.metersPerDpAtLatitude(map.cameraPosition.target.latitude)
+            map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
         }
 
         override fun onCameraMoveEnded(map: MaplibreMap) {}
@@ -133,6 +142,7 @@ public fun MaplibreMap(
         }
 
         override fun onClick(map: MaplibreMap, latLng: Position, offset: DpOffset) {
+          map as StandardMaplibreMap
           if (onMapClick(latLng, offset).consumed) return
           layerNodesInOrder().find { node ->
             val handle = node.onClick ?: return@find false
@@ -147,6 +157,7 @@ public fun MaplibreMap(
         }
 
         override fun onLongClick(map: MaplibreMap, latLng: Position, offset: DpOffset) {
+          map as StandardMaplibreMap
           if (onMapLongClick(latLng, offset).consumed) return
           layerNodesInOrder().find { node ->
             val handle = node.onLongClick ?: return@find false
@@ -159,23 +170,44 @@ public fun MaplibreMap(
             features.isNotEmpty() && handle(features).consumed
           }
         }
+
+        override fun onFrame(fps: Double) {
+          onFrame(fps)
+        }
       }
     }
+
+  val scope = rememberCoroutineScope()
 
   ComposableMapView(
     modifier = modifier.fillMaxSize(),
     styleUri = styleUri,
     update = { map ->
-      cameraState.map = map
-      map.onFpsChanged = onFrame
-      map.isDebugEnabled = isDebugEnabled
-      map.minZoom = zoomRange.start.toDouble()
-      map.maxZoom = zoomRange.endInclusive.toDouble()
-      map.minPitch = pitchRange.start.toDouble()
-      map.maxPitch = pitchRange.endInclusive.toDouble()
-      map.setGestureSettings(gestureSettings)
-      map.setOrnamentSettings(ornamentSettings)
-      map.setMaximumFps(maximumFps)
+      when (map) {
+        is StandardMaplibreMap -> {
+          cameraState.map = map
+          map.setDebugEnabled(isDebugEnabled)
+          map.setMinZoom(zoomRange.start.toDouble())
+          map.setMaxZoom(zoomRange.endInclusive.toDouble())
+          map.setMinPitch(pitchRange.start.toDouble())
+          map.setMaxPitch(pitchRange.endInclusive.toDouble())
+          map.setGestureSettings(gestureSettings)
+          map.setOrnamentSettings(ornamentSettings)
+          map.setMaximumFps(maximumFps)
+        }
+
+        else ->
+          scope.launch {
+            map.asyncSetDebugEnabled(isDebugEnabled)
+            map.asyncSetMinZoom(zoomRange.start.toDouble())
+            map.asyncSetMaxZoom(zoomRange.endInclusive.toDouble())
+            map.asyncSetMinPitch(pitchRange.start.toDouble())
+            map.asyncSetMaxPitch(pitchRange.endInclusive.toDouble())
+            map.asyncSetGestureSettings(gestureSettings)
+            map.asyncSetOrnamentSettings(ornamentSettings)
+            map.asyngSetMaximumFps(maximumFps)
+          }
+      }
     },
     onReset = {
       cameraState.map = null

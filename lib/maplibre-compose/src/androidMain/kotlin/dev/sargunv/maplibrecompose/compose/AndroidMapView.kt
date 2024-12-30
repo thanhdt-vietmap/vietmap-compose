@@ -80,8 +80,8 @@ internal fun AndroidMapView(
       map.layoutDir = layoutDir
       map.density = density
       map.callbacks = callbacks
-      map.styleUri = styleUri
       map.logger = logger
+      map.setStyleUri(styleUri)
       update(map)
     },
     onReset = {
