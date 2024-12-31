@@ -11,11 +11,12 @@ import kotlinx.browser.document
 public actual typealias HTMLElement = org.w3c.dom.HTMLElement
 
 @Composable
-internal actual fun rememberContainerNode(): HTMLElement =
+internal actual fun rememberContainerNode(zIndex: String): HTMLElement =
   rememberDomNode(parent = document.body!!) {
     document.createElement("div").unsafeCast<HTMLElement>().apply {
       style.position = "absolute"
       style.margin = "0px"
+      style.zIndex = zIndex
     }
   }
 
@@ -38,7 +39,7 @@ internal actual fun HTMLElement.matchLayout(
 internal actual fun <T : HTMLElement> rememberDomNode(parent: HTMLElement, factory: () -> T): T {
   return remember(key1 = parent, calculation = factory).also { child ->
     DisposableEffect(parent, child) {
-      parent.insertBefore(child, parent.firstChild)
+      parent.appendChild(child)
       onDispose { parent.removeChild(child) }
     }
   }
