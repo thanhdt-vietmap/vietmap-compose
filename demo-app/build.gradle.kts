@@ -47,6 +47,10 @@ kotlin {
   iosSimulatorArm64()
   iosX64()
   jvm("desktop")
+  js(IR) {
+    browser { commonWebpackConfig { outputFileName = "app.js" } }
+    binaries.executable()
+  }
 
   cocoapods {
     summary = "MapLibre Compose demo app"
@@ -86,6 +90,7 @@ kotlin {
 
     androidMain.dependencies {
       implementation(libs.androidx.activity.compose)
+      implementation(libs.kotlinx.coroutines.android)
       implementation(libs.ktor.client.okhttp)
     }
 
@@ -94,6 +99,12 @@ kotlin {
     desktopMain.dependencies {
       implementation(compose.desktop.currentOs)
       implementation(libs.kotlinx.coroutines.swing)
+      implementation(libs.ktor.client.okhttp)
+    }
+
+    jsMain.dependencies {
+      implementation(compose.html.core)
+      implementation(libs.ktor.client.js)
     }
 
     commonTest.dependencies {
