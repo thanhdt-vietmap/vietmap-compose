@@ -1,10 +1,12 @@
 package dev.sargunv.maplibrecompose.compose
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
+import androidx.compose.ui.unit.dp
 import dev.sargunv.maplibrecompose.core.CameraMoveReason
 import dev.sargunv.maplibrecompose.core.CameraPosition
 import dev.sargunv.maplibrecompose.core.MaplibreMap
@@ -73,6 +75,27 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
   ) {
     val map = map ?: mapAttachSignal.receive()
     map.animateCameraPosition(finalPosition, duration)
+  }
+
+  /**
+   * Animates the camera towards the specified [boundingBox] in the given [duration] time with the
+   * specified [bearing], [tilt], and [padding].
+   *
+   * @param boundingBox The bounds to animate the camera to.
+   * @param bearing The bearing to set during the animation. Defaults to 0.0.
+   * @param tilt The tilt to set during the animation. Defaults to 0.0.
+   * @param padding The padding to apply during the animation. Defaults to no padding.
+   * @param duration The duration of the animation. Defaults to 300 ms. Has no effect on JS.
+   */
+  public suspend fun animateTo(
+    boundingBox: BoundingBox,
+    bearing: Double = 0.0,
+    tilt: Double = 0.0,
+    padding: PaddingValues = PaddingValues(0.dp),
+    duration: Duration = 300.milliseconds,
+  ) {
+    val map = map ?: mapAttachSignal.receive()
+    map.animateCameraPosition(boundingBox, bearing, tilt, padding, duration)
   }
 
   private fun requireMap(): StandardMaplibreMap {

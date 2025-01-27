@@ -14,6 +14,7 @@ import dev.sargunv.maplibrecompose.core.util.correctedAndroidUri
 import dev.sargunv.maplibrecompose.core.util.toBoundingBox
 import dev.sargunv.maplibrecompose.core.util.toGravity
 import dev.sargunv.maplibrecompose.core.util.toLatLng
+import dev.sargunv.maplibrecompose.core.util.toLatLngBounds
 import dev.sargunv.maplibrecompose.core.util.toMLNExpression
 import dev.sargunv.maplibrecompose.core.util.toOffset
 import dev.sargunv.maplibrecompose.core.util.toPointF
@@ -24,6 +25,7 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
@@ -292,18 +294,45 @@ internal class AndroidMap(
     map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition.toMLNCameraPosition()))
   }
 
+  private class CancelableCoroutineCallback(private val cont: Continuation<Unit>) :
+    MLNMap.CancelableCallback {
+    override fun onCancel() = cont.resume(Unit)
+
+    override fun onFinish() = cont.resume(Unit)
+  }
+
   override suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration) =
     suspendCoroutine { cont ->
       map.animateCamera(
         CameraUpdateFactory.newCameraPosition(finalPosition.toMLNCameraPosition()),
         duration.toInt(DurationUnit.MILLISECONDS),
-        object : MLNMap.CancelableCallback {
-          override fun onFinish() = cont.resume(Unit)
-
-          override fun onCancel() = cont.resume(Unit)
-        },
+        CancelableCoroutineCallback(cont),
       )
     }
+
+  override suspend fun animateCameraPosition(
+    boundingBox: BoundingBox,
+    bearing: Double,
+    tilt: Double,
+    padding: PaddingValues,
+    duration: Duration,
+  ) = suspendCoroutine { cont ->
+    with(density) {
+      map.animateCamera(
+        CameraUpdateFactory.newLatLngBounds(
+          bounds = boundingBox.toLatLngBounds(),
+          bearing = bearing,
+          tilt = tilt,
+          paddingLeft = padding.calculateLeftPadding(layoutDir).roundToPx(),
+          paddingTop = padding.calculateTopPadding().roundToPx(),
+          paddingRight = padding.calculateRightPadding(layoutDir).roundToPx(),
+          paddingBottom = padding.calculateBottomPadding().roundToPx(),
+        ),
+        duration.toInt(DurationUnit.MILLISECONDS),
+        CancelableCoroutineCallback(cont),
+      )
+    }
+  }
 
   override fun positionFromScreenLocation(offset: DpOffset): Position =
     map.projection.fromScreenLocation(offset.toPointF(density)).toPosition()
