@@ -21,11 +21,11 @@ body:
       description: Which platforms should support this feature?
       multiple: true
       options:
-        - Android
-        - iOS
-        - Desktop (JVM)
-        - Browser (JS)
-        - Browser (Wasm)
+        - MapLibre Native - Android
+        - MapLibre Native - iOS
+        - MapLibre Native - Desktop (JVM)
+        - MapLibre JS - Browser (JS)
+        - MapLibre JS - Browser (WASM)
     validations:
       required: true
   - type: dropdown
