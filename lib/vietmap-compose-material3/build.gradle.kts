@@ -15,7 +15,7 @@ plugins {
   id(libs.plugins.mavenPublish.get().pluginId)
 }
 
-android { namespace = "dev.sargunv.vietmapcompose.material3" }
+android { namespace = "vn.vietmap.vietmapcompose.material3" }
 
 mavenPublishing {
   pom {
@@ -66,4 +66,4 @@ kotlin {
   }
 }
 
-compose.resources { packageOfResClass = "dev.sargunv.vietmapcompose.material3.generated" }
+compose.resources { packageOfResClass = "vn.vietmap.vietmapcompose.material3.generated" }

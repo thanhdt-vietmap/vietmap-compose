@@ -15,7 +15,7 @@ plugins {
   id(libs.plugins.mavenPublish.get().pluginId)
 }
 
-android { namespace = "dev.sargunv.vietmapcompose" }
+android { namespace = "vn.vietmap.vietmapcompose" }
 
 mavenPublishing {
   pom {
@@ -116,7 +116,7 @@ kotlin {
 }
 
 compose.resources {
-  packageOfResClass = "dev.sargunv.vietmapcompose.generated"
+  packageOfResClass = "vn.vietmap.vietmapcompose.generated"
 
   customDirectory(
     sourceSetName = "desktopMain",

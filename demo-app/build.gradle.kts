@@ -16,10 +16,10 @@ plugins {
 }
 
 android {
-  namespace = "dev.sargunv.vietmapcompose.demoapp"
+  namespace = "vn.vietmap.vietmapcompose.demoapp"
 
   defaultConfig {
-    applicationId = "dev.sargunv.vietmapcompose.demoapp"
+    applicationId = "vn.vietmap.vietmapcompose.demoapp"
     minSdk = 24
     compileSdk = project.properties["androidCompileSdk"]!!.toString().toInt()
     targetSdk = project.properties["androidTargetSdk"]!!.toString().toInt()
@@ -123,17 +123,17 @@ kotlin {
   }
 }
 
-compose.resources { packageOfResClass = "dev.sargunv.vietmapcompose.demoapp.generated" }
+compose.resources { packageOfResClass = "vn.vietmap.vietmapcompose.demoapp.generated" }
 
 composeCompiler { reportsDestination = layout.buildDirectory.dir("compose/reports") }
 
 compose.desktop {
   application {
-    mainClass = "dev.sargunv.vietmapcompose.demoapp.MainKt"
+    mainClass = "vn.vietmap.vietmapcompose.demoapp.MainKt"
 
     nativeDistributions {
       targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-      packageName = "dev.sargunv.vietmapcompose.demoapp"
+      packageName = "vn.vietmap.vietmapcompose.demoapp"
       // https://youtrack.jetbrains.com/issue/CMP-2360
       // packageVersion = project.ext["base_tag"].toString().replace("v", "")
       packageVersion = "1.0.0"
