@@ -16,10 +16,10 @@ plugins {
 }
 
 android {
-  namespace = "dev.sargunv.maplibrecompose.demoapp"
+  namespace = "dev.sargunv.vietmapcompose.demoapp"
 
   defaultConfig {
-    applicationId = "dev.sargunv.maplibrecompose.demoapp"
+    applicationId = "dev.sargunv.vietmapcompose.demoapp"
     minSdk = 24
     compileSdk = project.properties["androidCompileSdk"]!!.toString().toInt()
     targetSdk = project.properties["androidTargetSdk"]!!.toString().toInt()
@@ -123,17 +123,17 @@ kotlin {
   }
 }
 
-compose.resources { packageOfResClass = "dev.sargunv.maplibrecompose.demoapp.generated" }
+compose.resources { packageOfResClass = "dev.sargunv.vietmapcompose.demoapp.generated" }
 
 composeCompiler { reportsDestination = layout.buildDirectory.dir("compose/reports") }
 
 compose.desktop {
   application {
-    mainClass = "dev.sargunv.maplibrecompose.demoapp.MainKt"
+    mainClass = "dev.sargunv.vietmapcompose.demoapp.MainKt"
 
     nativeDistributions {
       targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-      packageName = "dev.sargunv.maplibrecompose.demoapp"
+      packageName = "dev.sargunv.vietmapcompose.demoapp"
       // https://youtrack.jetbrains.com/issue/CMP-2360
       // packageVersion = project.ext["base_tag"].toString().replace("v", "")
       packageVersion = "1.0.0"
