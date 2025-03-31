@@ -1,9 +1,9 @@
 package dev.sargunv.maplibrecompose.core.source
 
-import cocoapods.MapLibre.MLNFeatureProtocol
-import cocoapods.MapLibre.MLNVectorTileSource
-import dev.sargunv.maplibrecompose.core.util.toFeature
-import dev.sargunv.maplibrecompose.core.util.toNSPredicate
+import cocoapods.VietMap.MLNFeatureProtocol
+import cocoapods.VietMap.MLNVectorTileSource
+import dev.sargunv.VietMapcompose.core.util.toFeature
+import dev.sargunv.VietMapcompose.core.util.toNSPredicate
 import dev.sargunv.maplibrecompose.expressions.ExpressionContext
 import dev.sargunv.maplibrecompose.expressions.ast.Expression
 import dev.sargunv.maplibrecompose.expressions.dsl.const

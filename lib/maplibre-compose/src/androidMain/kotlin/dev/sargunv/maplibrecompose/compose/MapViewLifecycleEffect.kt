@@ -5,7 +5,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import dev.sargunv.maplibrecompose.core.MapViewLifecycleObserver
-import org.maplibre.android.maps.MapView
+import vn.vietmap.vietmapsdk.maps.MapView
 
 @Composable
 internal fun MapViewLifecycleEffect(mapView: MapView?) {

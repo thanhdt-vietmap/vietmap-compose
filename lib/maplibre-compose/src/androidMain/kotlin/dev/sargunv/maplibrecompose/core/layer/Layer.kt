@@ -1,8 +1,8 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import org.maplibre.android.style.layers.Layer as MlnLayer
-import org.maplibre.android.style.layers.Property
-import org.maplibre.android.style.layers.PropertyFactory
+import vn.vietmap.vietmapsdk.style.layers.Layer as MlnLayer
+import vn.vietmap.vietmapsdk.style.layers.Property
+import vn.vietmap.vietmapsdk.style.layers.PropertyFactory
 
 internal actual sealed class Layer {
   abstract val impl: MlnLayer

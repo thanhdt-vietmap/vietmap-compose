@@ -1,4 +1,4 @@
-package dev.sargunv.maplibrecompose.core.util
+package dev.sargunv.VietMapcompose.core.util
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.ImageBitmap
@@ -9,20 +9,19 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import cocoapods.MapLibre.MLNCoordinateBounds
-import cocoapods.MapLibre.MLNCoordinateBoundsMake
-import cocoapods.MapLibre.MLNFeatureProtocol
-import cocoapods.MapLibre.MLNOrnamentPosition
-import cocoapods.MapLibre.MLNOrnamentPositionBottomLeft
-import cocoapods.MapLibre.MLNOrnamentPositionBottomRight
-import cocoapods.MapLibre.MLNOrnamentPositionTopLeft
-import cocoapods.MapLibre.MLNOrnamentPositionTopRight
-import cocoapods.MapLibre.MLNShape
-import cocoapods.MapLibre.expressionWithMLNJSONObject
-import cocoapods.MapLibre.predicateWithMLNJSONObject
+import cocoapods.VietMap.MLNCoordinateBounds
+import cocoapods.VietMap.MLNCoordinateBoundsMake
+import cocoapods.VietMap.MLNFeatureProtocol
+import cocoapods.VietMap.MLNOrnamentPosition
+import cocoapods.VietMap.MLNOrnamentPositionBottomLeft
+import cocoapods.VietMap.MLNOrnamentPositionBottomRight
+import cocoapods.VietMap.MLNOrnamentPositionTopLeft
+import cocoapods.VietMap.MLNOrnamentPositionTopRight
+import cocoapods.VietMap.MLNShape
+import cocoapods.VietMap.expressionWithMLNJSONObject
+import cocoapods.VietMap.predicateWithMLNJSONObject
 import dev.sargunv.maplibrecompose.expressions.ast.BooleanLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.ColorLiteral
-import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.ast.CompiledFunctionCall
 import dev.sargunv.maplibrecompose.expressions.ast.CompiledListLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.CompiledMapLiteral
@@ -33,6 +32,7 @@ import dev.sargunv.maplibrecompose.expressions.ast.NullLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.OffsetLiteral
 import dev.sargunv.maplibrecompose.expressions.ast.StringLiteral
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
+import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.GeoJson

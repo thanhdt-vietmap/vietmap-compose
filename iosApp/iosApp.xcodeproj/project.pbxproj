@@ -112,7 +112,7 @@
 				B92378962B6B1156000C7307 /* Frameworks */,
 				7555FF79242A565900829871 /* Resources */,
 				FB29095E4E4AE33FC6A4F030 /* [CP] Embed Pods Frameworks */,
-				1DBF57571B44936782348BCD /* [CP] Copy Pods Resources */,
+				4FB136CFED019D58FDFDC514 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -170,7 +170,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1DBF57571B44936782348BCD /* [CP] Copy Pods Resources */ = {
+		4FB136CFED019D58FDFDC514 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -368,7 +368,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = LQ33A6CSK4;
+				DEVELOPMENT_TEAM = 44G4R58CHN;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -385,12 +385,12 @@
 					"-ObjC",
 					"-l\"c++\"",
 					"-framework",
-					"\"MapLibre\"",
+					"\"VietMap\"",
 					"-framework",
 					"\"DemoApp\"",
 					"-lsqlite3",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID}${TEAM_ID}";
+				PRODUCT_BUNDLE_IDENTIFIER = "vm-kotlin-jetpack";
 				PRODUCT_NAME = "${APP_NAME}";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -406,7 +406,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = LQ33A6CSK4;
+				DEVELOPMENT_TEAM = 44G4R58CHN;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -423,12 +423,12 @@
 					"-ObjC",
 					"-l\"c++\"",
 					"-framework",
-					"\"MapLibre\"",
+					"\"VietMap\"",
 					"-framework",
 					"\"DemoApp\"",
 					"-lsqlite3",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID}${TEAM_ID}";
+				PRODUCT_BUNDLE_IDENTIFIER = "vm-kotlin-jetpack";
 				PRODUCT_NAME = "${APP_NAME}";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

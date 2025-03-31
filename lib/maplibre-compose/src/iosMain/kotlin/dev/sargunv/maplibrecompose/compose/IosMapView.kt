@@ -18,7 +18,7 @@ import androidx.compose.ui.viewinterop.UIKitInteropInteractionMode
 import androidx.compose.ui.viewinterop.UIKitInteropProperties
 import androidx.compose.ui.viewinterop.UIKitView
 import co.touchlab.kermit.Logger
-import cocoapods.MapLibre.MLNMapView
+import cocoapods.VietMap.MLNMapView
 import dev.sargunv.maplibrecompose.core.IosMap
 import dev.sargunv.maplibrecompose.core.MaplibreMap
 import platform.CoreGraphics.CGRectMake

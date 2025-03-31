@@ -1,8 +1,8 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import cocoapods.MapLibre.MLNHillshadeStyleLayer
+import cocoapods.VietMap.MLNHillshadeStyleLayer
 import dev.sargunv.maplibrecompose.core.source.Source
-import dev.sargunv.maplibrecompose.core.util.toNSExpression
+import dev.sargunv.VietMapcompose.core.util.toNSExpression
 import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.value.ColorValue
 import dev.sargunv.maplibrecompose.expressions.value.FloatValue

@@ -15,6 +15,7 @@ pluginManagement {
     }
     mavenCentral()
     gradlePluginPortal()
+    maven("https://jitpack.io")
   }
 }
 
@@ -30,6 +31,7 @@ dependencyResolutionManagement {
     mavenCentral()
     // https://kevinnzou.github.io/compose-webview-multiplatform/installation/
     maven("https://jogamp.org/deployment/maven")
+    maven("https://jitpack.io")
   }
 }
 

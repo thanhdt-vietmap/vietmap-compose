@@ -13,9 +13,9 @@ import dev.sargunv.maplibrecompose.expressions.value.LineCap
 import dev.sargunv.maplibrecompose.expressions.value.LineJoin
 import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
 import dev.sargunv.maplibrecompose.expressions.value.VectorValue
-import org.maplibre.android.style.expressions.Expression as MLNExpression
-import org.maplibre.android.style.layers.LineLayer as MLNLineLayer
-import org.maplibre.android.style.layers.PropertyFactory
+import vn.vietmap.vietmapsdk.style.expressions.Expression as MLNExpression
+import vn.vietmap.vietmapsdk.style.layers.LineLayer as MLNLineLayer
+import vn.vietmap.vietmapsdk.style.layers.PropertyFactory
 
 internal actual class LineLayer actual constructor(id: String, source: Source) :
   FeatureLayer(source) {

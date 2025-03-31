@@ -3,7 +3,7 @@ package dev.sargunv.maplibrecompose.core
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import org.maplibre.android.maps.MapView
+import vn.vietmap.vietmapsdk.maps.MapView
 
 internal class MapViewLifecycleObserver(private val mapView: MapView) : LifecycleEventObserver {
   override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {

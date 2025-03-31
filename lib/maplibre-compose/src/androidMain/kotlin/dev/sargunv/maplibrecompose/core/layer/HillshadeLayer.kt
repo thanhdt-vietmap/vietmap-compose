@@ -6,8 +6,8 @@ import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.value.ColorValue
 import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 import dev.sargunv.maplibrecompose.expressions.value.IlluminationAnchor
-import org.maplibre.android.style.layers.HillshadeLayer as MLNHillshadeLayer
-import org.maplibre.android.style.layers.PropertyFactory
+import vn.vietmap.vietmapsdk.style.layers.HillshadeLayer as MLNHillshadeLayer
+import vn.vietmap.vietmapsdk.style.layers.PropertyFactory
 
 internal actual class HillshadeLayer actual constructor(id: String, actual val source: Source) :
   Layer() {

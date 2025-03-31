@@ -28,9 +28,9 @@ import dev.sargunv.maplibrecompose.expressions.value.TextTransform
 import dev.sargunv.maplibrecompose.expressions.value.TextVariableAnchorOffsetValue
 import dev.sargunv.maplibrecompose.expressions.value.TextWritingMode
 import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
-import org.maplibre.android.style.expressions.Expression as MLNExpression
-import org.maplibre.android.style.layers.PropertyFactory
-import org.maplibre.android.style.layers.SymbolLayer as MLNSymbolLayer
+import vn.vietmap.vietmapsdk.style.expressions.Expression as MLNExpression
+import vn.vietmap.vietmapsdk.style.layers.PropertyFactory
+import vn.vietmap.vietmapsdk.style.layers.SymbolLayer as MLNSymbolLayer
 
 internal actual class SymbolLayer actual constructor(id: String, source: Source) :
   FeatureLayer(source) {
@@ -202,9 +202,9 @@ internal actual class SymbolLayer actual constructor(id: String, source: Source)
   actual fun setTextVariableAnchorOffset(
     variableAnchorOffset: CompiledExpression<TextVariableAnchorOffsetValue>
   ) {
-    impl.setProperties(
-      PropertyFactory.textVariableAnchorOffset(variableAnchorOffset.toMLNExpression())
-    )
+//    impl.setProperties(
+//      PropertyFactory.textVariableAnchorOffset(variableAnchorOffset.toMLNExpression())
+//    )
   }
 
   actual fun setTextAnchor(anchor: CompiledExpression<SymbolAnchor>) {

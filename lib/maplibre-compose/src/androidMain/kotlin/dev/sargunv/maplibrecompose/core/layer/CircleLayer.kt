@@ -11,9 +11,9 @@ import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
 import dev.sargunv.maplibrecompose.expressions.value.DpValue
 import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
-import org.maplibre.android.style.expressions.Expression as MLNExpression
-import org.maplibre.android.style.layers.CircleLayer as MLNCircleLayer
-import org.maplibre.android.style.layers.PropertyFactory
+import vn.vietmap.vietmapsdk.style.expressions.Expression as MLNExpression
+import vn.vietmap.vietmapsdk.style.layers.CircleLayer as MLNCircleLayer
+import vn.vietmap.vietmapsdk.style.layers.PropertyFactory
 
 internal actual class CircleLayer actual constructor(id: String, source: Source) :
   FeatureLayer(source) {

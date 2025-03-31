@@ -1,16 +1,21 @@
 [versions]
-androidx-activity = "1.9.3"
-androidx-composeUi = "1.7.6"
-androidx-navigation = "2.9.0-alpha15"
+androidx-activity = "1.10.1"
+androidx-composeUi = "1.7.8"
+androidx-navigation = "2.8.0-alpha12"
+gson = "2.10.1"
 kermit = "2.0.5"
 kotlinx-browser = "0.3"
 kotlinx-coroutines = "1.10.1"
 ktor = "3.1.1"
-maplibre-android-sdk = "11.8.4"
-maplibre-android-plugins = "3.0.2"
-maplibre-ios = "6.9.0"
+maps-sdk-android = "3.3.0"
+mapsSdkPluginLocalizationAndroid = "2.0.0"
+okhttp = "4.10.0"
+playServicesLocation = "21.3.0"
+vietmap-ios = "2.0.0"
 maplibre-js = "4.7.1"
 spatialk = "0.3.0"
+vietmapServicesGeojsonAndroid = "1.0.0"
+vietmapServicesTurfAndroid = "1.0.2"
 webpack-html = "5.6.3"
 webpack-htmlInlineScript = "3.2.1"
 webview = "1.9.40"
@@ -30,7 +35,13 @@ tool-prettier = "3.4.2"
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-composeUi-testManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-composeUi" }
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinx-browser" }
+maps-sdk-plugin-localization-android = { module = "com.github.vietmap-company:maps-sdk-plugin-localization-android", version.ref = "mapsSdkPluginLocalizationAndroid" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+vietmap-services-geojson-android = { module = "com.github.vietmap-company:vietmap-services-geojson-android", version.ref = "vietmapServicesGeojsonAndroid" }
+vietmap-services-turf-android = { module = "com.github.vietmap-company:vietmap-services-turf-android", version.ref = "vietmapServicesTurfAndroid" }
 webview = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "webview" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
@@ -41,8 +52,7 @@ ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinxJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
-maplibre-android = { module = "org.maplibre.gl:android-sdk", version.ref = "maplibre-android-sdk" }
-maplibre-android-scalebar = { module = "org.maplibre.gl:android-plugin-scalebar-v9", version.ref = "maplibre-android-plugins" }
+maps-sdk-android = { module = "com.github.vietmap-company:maps-sdk-android", version.ref = "maps-sdk-android"}
 spatialk-geojson = { group = "io.github.dellisd.spatialk", name = "geojson", version.ref = "spatialk" }
 
 [plugins]

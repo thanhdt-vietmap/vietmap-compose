@@ -9,9 +9,9 @@ import dev.sargunv.maplibrecompose.expressions.value.DpOffsetValue
 import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 import dev.sargunv.maplibrecompose.expressions.value.ImageValue
 import dev.sargunv.maplibrecompose.expressions.value.TranslateAnchor
-import org.maplibre.android.style.expressions.Expression as MLNExpression
-import org.maplibre.android.style.layers.FillExtrusionLayer as MLNFillExtrusionLayer
-import org.maplibre.android.style.layers.PropertyFactory
+import vn.vietmap.vietmapsdk.style.expressions.Expression as MLNExpression
+import vn.vietmap.vietmapsdk.style.layers.FillExtrusionLayer as MLNFillExtrusionLayer
+import vn.vietmap.vietmapsdk.style.layers.PropertyFactory
 
 internal actual class FillExtrusionLayer actual constructor(id: String, source: Source) :
   FeatureLayer(source) {

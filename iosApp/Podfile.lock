@@ -1,22 +1,22 @@
 PODS:
   - demo_app (0.0.0):
-    - MapLibre (= 6.9.0)
-  - MapLibre (6.9.0)
+    - VietMap (= 2.0.0)
+  - VietMap (2.0.0)
 
 DEPENDENCIES:
   - demo_app (from `../demo-app`)
 
 SPEC REPOS:
   trunk:
-    - MapLibre
+    - VietMap
 
 EXTERNAL SOURCES:
   demo_app:
     :path: "../demo-app"
 
 SPEC CHECKSUMS:
-  demo_app: b238b8d5f61c098c1a1f240226fc1a1f462fc843
-  MapLibre: 9a09c08b1fe85223ead59ebfb494b79deefc296a
+  demo_app: 1b9143f2f61782dcda51587ac82fefdd3c160020
+  VietMap: 1fc4a1e27896a19bc8b8a62e2227b1e0116a698d
 
 PODFILE CHECKSUM: faffe0b5720ea7a96818a908bd93100321d4e51f
 

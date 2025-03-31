@@ -7,7 +7,7 @@ import dev.sargunv.maplibrecompose.expressions.ast.Expression
 import dev.sargunv.maplibrecompose.expressions.dsl.const
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.Feature
-import org.maplibre.android.style.sources.VectorSource as MLNVectorSource
+import vn.vietmap.vietmapsdk.style.sources.VectorSource as MLNVectorSource
 
 public actual class VectorSource : Source {
   override val impl: MLNVectorSource

@@ -25,72 +25,76 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
+import vn.vietmap.android.gestures.MoveGestureDetector
+import vn.vietmap.android.gestures.RotateGestureDetector
+import vn.vietmap.android.gestures.ShoveGestureDetector
+import vn.vietmap.android.gestures.StandardScaleGestureDetector
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import org.maplibre.android.camera.CameraPosition as MLNCameraPosition
-import org.maplibre.android.camera.CameraUpdateFactory
-import org.maplibre.android.geometry.VisibleRegion as MLNVisibleRegion
-import org.maplibre.android.gestures.MoveGestureDetector
-import org.maplibre.android.gestures.RotateGestureDetector
-import org.maplibre.android.gestures.ShoveGestureDetector
-import org.maplibre.android.gestures.StandardScaleGestureDetector
-import org.maplibre.android.log.Logger as MLNLogger
-import org.maplibre.android.maps.MapLibreMap as MLNMap
-import org.maplibre.android.maps.MapLibreMap
-import org.maplibre.android.maps.MapLibreMap.OnCameraMoveStartedListener
-import org.maplibre.android.maps.MapLibreMap.OnMoveListener
-import org.maplibre.android.maps.MapLibreMap.OnScaleListener
-import org.maplibre.android.maps.MapView
-import org.maplibre.android.maps.Style as MlnStyle
-import org.maplibre.android.style.expressions.Expression as MLNExpression
-import org.maplibre.geojson.Feature as MLNFeature
+import vn.vietmap.vietmapsdk.camera.CameraPosition as MLNCameraPosition
+import vn.vietmap.vietmapsdk.camera.CameraUpdateFactory
+//import org.maplibre.android.geometry.VisibleRegion as MLNVisibleRegion
+//import org.maplibre.android.gestures.MoveGestureDetector
+//import org.maplibre.android.gestures.RotateGestureDetector
+//import org.maplibre.android.gestures.ShoveGestureDetector
+//import org.maplibre.android.gestures.StandardScaleGestureDetector
+//import org.maplibre.android.log.Logger as MLNLogger
+import  vn.vietmap.vietmapsdk.maps.VietMapGL as MLNMap
+import  vn.vietmap.vietmapsdk.maps.VietMapGL
+import  vn.vietmap.vietmapsdk.maps.VietMapGL.OnCameraMoveStartedListener
+import  vn.vietmap.vietmapsdk.maps.VietMapGL.OnMoveListener
+import vn.vietmap.vietmapsdk.maps.VietMapGL.OnScaleListener
+import vn.vietmap.vietmapsdk.maps.MapView
+import vn.vietmap.vietmapsdk.maps.Style as MlnStyle
+import vn.vietmap.vietmapsdk.style.expressions.Expression as MLNExpression
+//import org.maplibre.geojson.Feature as MLNFeature
 
 internal class AndroidMap(
   private val mapView: MapView,
-  private val map: MapLibreMap,
-  private val scaleBar: AndroidScaleBar,
+  private val map: VietMapGL,
+//  private val scaleBar: AndroidScaleBar,
   layoutDir: LayoutDirection,
   density: Density,
   internal var callbacks: MaplibreMap.Callbacks,
-  logger: Logger?,
+//  logger: Logger?,
   styleUri: String,
 ) : StandardMaplibreMap {
 
   internal var layoutDir: LayoutDirection = layoutDir
     set(value) {
       field = value
-      scaleBar.layoutDir = value
-      scaleBar.updateLayout()
+//      scaleBar.layoutDir = value
+//      scaleBar.updateLayout()
     }
 
   internal var density: Density = density
     set(value) {
       field = value
-      scaleBar.density = value
-      scaleBar.updateLayout()
+//      scaleBar.density = value
+//      scaleBar.updateLayout()
     }
 
-  internal var logger: Logger? = logger
-    set(value) {
-      if (value != field) {
-        MLNLogger.setLoggerDefinition(KermitLoggerDefinition(value))
-        field = value
-      }
-    }
+//  internal var logger: Logger? = logger
+//    set(value) {
+//      if (value != field) {
+////        MLNLogger.setLoggerDefinition(KermitLoggerDefinition(value))
+//        field = value
+//      }
+//    }
 
   private var lastStyleUri: String = ""
 
   override fun setStyleUri(styleUri: String) {
     if (styleUri == lastStyleUri) return
     lastStyleUri = styleUri
-    logger?.i { "Setting style URI" }
+//    logger?.i { "Setting style URI" }
     callbacks.onStyleChanged(this, null)
     val builder = MlnStyle.Builder().fromUri(styleUri.correctedAndroidUri())
     map.setStyle(builder) {
-      logger?.i { "Style finished loading" }
+//      logger?.i { "Style finished loading" }
       callbacks.onStyleChanged(this, AndroidStyle(it))
     }
   }
@@ -109,7 +113,7 @@ internal class AndroidMap(
             OnCameraMoveStartedListener.REASON_API_GESTURE -> CameraMoveReason.GESTURE
             OnCameraMoveStartedListener.REASON_API_ANIMATION -> CameraMoveReason.PROGRAMMATIC
             else -> {
-              logger?.w { "Unknown camera move reason: $reason" }
+//              logger?.w { "Unknown camera move reason: $reason" }
               CameraMoveReason.UNKNOWN
             }
           },
@@ -235,10 +239,10 @@ internal class AndroidMap(
     map.uiSettings.isCompassEnabled = value.isCompassEnabled
     map.uiSettings.compassGravity = value.compassAlignment.toGravity(layoutDir)
 
-    scaleBar.enabled = value.isScaleBarEnabled
-    scaleBar.alignment = value.scaleBarAlignment
-    scaleBar.padding = value.padding
-    scaleBar.updateLayout()
+//    scaleBar.enabled = value.isScaleBarEnabled
+//    scaleBar.alignment = value.scaleBarAlignment
+//    scaleBar.padding = value.padding
+//    scaleBar.updateLayout()
 
     with(density) {
       val left =
@@ -348,7 +352,7 @@ internal class AndroidMap(
     predicate: CompiledExpression<BooleanValue>?,
   ): List<Feature> {
     // Kotlin hack to pass null to a java nullable varargs
-    val query: (PointF, MLNExpression?, Array<String>?) -> List<MLNFeature> =
+    val query: (PointF, MLNExpression?, Array<String>?) -> List<com.mapbox.geojson.Feature> =
       map::queryRenderedFeatures
     return query(offset.toPointF(density), predicate?.toMLNExpression(), layerIds?.toTypedArray())
       .map { Feature.fromJson(it.toJson()) }
@@ -360,7 +364,7 @@ internal class AndroidMap(
     predicate: CompiledExpression<BooleanValue>?,
   ): List<Feature> {
     // Kotlin hack to pass null to a java nullable varargs
-    val query: (RectF, MLNExpression?, Array<String>?) -> List<MLNFeature> =
+    val query: (RectF, MLNExpression?, Array<String>?) -> List<com.mapbox.geojson.Feature> =
       map::queryRenderedFeatures
     return query(rect.toRectF(density), predicate?.toMLNExpression(), layerIds?.toTypedArray())
       .map { Feature.fromJson(it.toJson()) }
@@ -370,7 +374,7 @@ internal class AndroidMap(
     map.projection.getMetersPerPixelAtLatitude(latitude)
 }
 
-private fun MLNVisibleRegion.toVisibleRegion() =
+private fun vn.vietmap.vietmapsdk.geometry.VisibleRegion.toVisibleRegion() =
   VisibleRegion(
     farLeft = farLeft!!.toPosition(),
     farRight = farRight!!.toPosition(),

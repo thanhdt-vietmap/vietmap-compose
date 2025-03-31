@@ -1,8 +1,8 @@
 package dev.sargunv.maplibrecompose.core.source
 
-import cocoapods.MapLibre.MLNAttributionInfo
-import cocoapods.MapLibre.MLNSource
-import cocoapods.MapLibre.MLNTileSource
+import cocoapods.VietMap.MLNAttributionInfo
+import cocoapods.VietMap.MLNSource
+import cocoapods.VietMap.MLNTileSource
 
 public actual sealed class Source {
   internal abstract val impl: MLNSource

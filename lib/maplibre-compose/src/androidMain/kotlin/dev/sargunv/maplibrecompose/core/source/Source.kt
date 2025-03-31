@@ -2,7 +2,7 @@ package dev.sargunv.maplibrecompose.core.source
 
 import android.text.Html
 import android.text.style.URLSpan
-import org.maplibre.android.style.sources.Source as MLNSource
+import vn.vietmap.vietmapsdk.style.sources.Source as MLNSource
 
 public actual sealed class Source {
   internal abstract val impl: MLNSource

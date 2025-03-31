@@ -1,9 +1,9 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import cocoapods.MapLibre.MLNSymbolStyleLayer
+import cocoapods.VietMap.MLNSymbolStyleLayer
 import dev.sargunv.maplibrecompose.core.source.Source
-import dev.sargunv.maplibrecompose.core.util.toNSExpression
-import dev.sargunv.maplibrecompose.core.util.toNSPredicate
+import dev.sargunv.VietMapcompose.core.util.toNSExpression
+import dev.sargunv.VietMapcompose.core.util.toNSPredicate
 import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.ast.NullLiteral
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
@@ -208,7 +208,7 @@ internal actual class SymbolLayer actual constructor(id: String, source: Source)
   actual fun setTextVariableAnchorOffset(
     variableAnchorOffset: CompiledExpression<TextVariableAnchorOffsetValue>
   ) {
-    impl.textVariableAnchorOffset = variableAnchorOffset.toNSExpression()
+//    impl.textVariableAnchorOffset = variableAnchorOffset.toNSExpression()
   }
 
   actual fun setTextAnchor(anchor: CompiledExpression<SymbolAnchor>) {

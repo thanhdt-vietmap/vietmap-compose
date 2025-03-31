@@ -12,11 +12,12 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.viewinterop.AndroidView
 import co.touchlab.kermit.Logger
 import dev.sargunv.maplibrecompose.core.AndroidMap
-import dev.sargunv.maplibrecompose.core.AndroidScaleBar
+//import dev.sargunv.maplibrecompose.core.AndroidScaleBar
 import dev.sargunv.maplibrecompose.core.MaplibreMap
-import org.maplibre.android.MapLibre
-import org.maplibre.android.maps.MapLibreMapOptions
-import org.maplibre.android.maps.MapView
+
+import vn.vietmap.vietmapsdk.Vietmap
+import vn.vietmap.vietmapsdk.maps.VietMapGLOptions
+import vn.vietmap.vietmapsdk.maps.MapView
 
 @Composable
 internal actual fun ComposableMapView(
@@ -58,8 +59,8 @@ internal fun AndroidMapView(
   AndroidView(
     modifier = modifier,
     factory = { context ->
-      MapLibre.getInstance(context)
-      MapView(context, MapLibreMapOptions.createFromAttributes(context).textureMode(false)).also {
+      Vietmap.getInstance(context)
+      MapView(context, VietMapGLOptions.createFromAttributes(context).textureMode(false)).also {
         mapView ->
         currentMapView = mapView
         mapView.getMapAsync { map ->
@@ -67,12 +68,12 @@ internal fun AndroidMapView(
             AndroidMap(
               mapView = mapView,
               map = map,
-              scaleBar = AndroidScaleBar(context, mapView, map),
+//              scaleBar = AndroidScaleBar(context, mapView, map),
               layoutDir = layoutDir,
               density = density,
               callbacks = callbacks,
               styleUri = styleUri,
-              logger = logger,
+//              logger = logger,
             )
 
           currentMap?.let { update(it) }
@@ -84,7 +85,7 @@ internal fun AndroidMapView(
       map.layoutDir = layoutDir
       map.density = density
       map.callbacks = callbacks
-      map.logger = logger
+//      map.logger = logger
       map.setStyleUri(styleUri)
       update(map)
     },

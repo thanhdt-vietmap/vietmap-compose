@@ -20,7 +20,7 @@ android {
 
   defaultConfig {
     applicationId = "dev.sargunv.maplibrecompose.demoapp"
-    minSdk = project.properties["androidMinSdk"]!!.toString().toInt()
+    minSdk = 24
     compileSdk = project.properties["androidCompileSdk"]!!.toString().toInt()
     targetSdk = project.properties["androidTargetSdk"]!!.toString().toInt()
     versionCode = 1
@@ -60,7 +60,7 @@ kotlin {
       baseName = "DemoApp"
       version = "0.0.0" // not using real version here because it'll pollute the git diff
     }
-    pod("MapLibre", libs.versions.maplibre.ios.get())
+    pod("VietMap", libs.versions.vietmap.ios.get())
   }
 
   compilerOptions {

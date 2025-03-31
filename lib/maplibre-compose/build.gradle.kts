@@ -59,7 +59,7 @@ kotlin {
   cocoapods {
     noPodspec()
     ios.deploymentTarget = project.properties["iosDeploymentTarget"]!!.toString()
-    pod("MapLibre", libs.versions.maplibre.ios.get())
+    pod("VietMap", libs.versions.vietmap.ios.get())
   }
 
   sourceSets {
@@ -78,8 +78,13 @@ kotlin {
     }
 
     androidMain.dependencies {
-      api(libs.maplibre.android)
-      implementation(libs.maplibre.android.scalebar)
+      api(libs.maps.sdk.android)
+      implementation(libs.maps.sdk.plugin.localization.android)
+      implementation(libs.vietmap.services.geojson.android)
+      implementation(libs.vietmap.services.turf.android)
+      implementation(libs.okhttp)
+      implementation(libs.gson)
+      implementation(libs.play.services.location)
     }
 
     desktopMain.dependencies {

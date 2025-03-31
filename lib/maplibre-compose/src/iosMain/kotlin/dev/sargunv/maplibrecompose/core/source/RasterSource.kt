@@ -1,6 +1,6 @@
 package dev.sargunv.maplibrecompose.core.source
 
-import cocoapods.MapLibre.MLNRasterTileSource
+import cocoapods.VietMap.MLNRasterTileSource
 import platform.Foundation.NSURL
 
 public actual class RasterSource : Source {

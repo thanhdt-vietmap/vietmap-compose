@@ -6,8 +6,8 @@ import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 import dev.sargunv.maplibrecompose.expressions.value.MillisecondsValue
 import dev.sargunv.maplibrecompose.expressions.value.RasterResampling
-import org.maplibre.android.style.layers.PropertyFactory
-import org.maplibre.android.style.layers.RasterLayer as MLNRasterLayer
+import vn.vietmap.vietmapsdk.style.layers.PropertyFactory
+import vn.vietmap.vietmapsdk.style.layers.RasterLayer as MLNRasterLayer
 
 internal actual class RasterLayer actual constructor(id: String, actual val source: Source) :
   Layer() {

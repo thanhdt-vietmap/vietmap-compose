@@ -6,8 +6,8 @@ import dev.sargunv.maplibrecompose.expressions.ExpressionContext
 import dev.sargunv.maplibrecompose.expressions.dsl.const
 import io.github.dellisd.spatialk.geojson.GeoJson
 import java.net.URI
-import org.maplibre.android.style.sources.GeoJsonOptions as MLNGeoJsonOptions
-import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
+import vn.vietmap.vietmapsdk.style.sources.GeoJsonOptions as MLNGeoJsonOptions
+import vn.vietmap.vietmapsdk.style.sources.GeoJsonSource as MLNGeoJsonSource
 
 public actual class GeoJsonSource : Source {
   override val impl: MLNGeoJsonSource

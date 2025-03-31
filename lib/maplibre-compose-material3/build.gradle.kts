@@ -40,7 +40,7 @@ kotlin {
   cocoapods {
     noPodspec()
     ios.deploymentTarget = project.properties["iosDeploymentTarget"]!!.toString()
-    pod("MapLibre", libs.versions.maplibre.ios.get())
+    pod("VietMap", libs.versions.vietmap.ios.get())
   }
 
   sourceSets {

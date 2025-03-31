@@ -26,11 +26,11 @@ data class StyleInfo(val name: String, val uri: String, val isDark: Boolean)
 @OptIn(ExperimentalResourceApi::class)
 val ALL_STYLES =
   listOf(
-    StyleInfo("Bright", "https://tiles.openfreemap.org/styles/bright", false),
-    StyleInfo("Liberty", "https://tiles.openfreemap.org/styles/liberty", false),
-    StyleInfo("Positron", "https://tiles.openfreemap.org/styles/positron", false),
-    StyleInfo("Fiord", "https://tiles.openfreemap.org/styles/fiord", true),
-    StyleInfo("Dark", "https://tiles.openfreemap.org/styles/dark", true),
+    StyleInfo("Bright", "https://maps.vietmap.vn/api/maps/light/styles.json?apikey=YOUR_API_KEY_HERE", false),
+    StyleInfo("Liberty", "https://maps.vietmap.vn/api/maps/light/styles.json?apikey=YOUR_API_KEY_HERE", false),
+    StyleInfo("Positron", "https://maps.vietmap.vn/api/maps/light/styles.json?apikey=YOUR_API_KEY_HERE", false),
+    StyleInfo("Fiord", "https://maps.vietmap.vn/api/maps/light/styles.json?apikey=YOUR_API_KEY_HERE", true),
+    StyleInfo("Dark", "https://maps.vietmap.vn/api/maps/light/styles.json?apikey=YOUR_API_KEY_HERE", true),
     StyleInfo("Colorful", Res.getUri("files/styles/colorful.json"), false),
     StyleInfo("Eclipse", Res.getUri("files/styles/eclipse.json"), true),
   )

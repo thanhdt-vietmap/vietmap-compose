@@ -31,9 +31,9 @@ import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Position
 import java.net.URI
 import java.net.URISyntaxException
-import org.maplibre.android.geometry.LatLng
-import org.maplibre.android.geometry.LatLngBounds
-import org.maplibre.android.style.expressions.Expression as MLNExpression
+import vn.vietmap.vietmapsdk.geometry.LatLng
+import vn.vietmap.vietmapsdk.geometry.LatLngBounds
+import vn.vietmap.vietmapsdk.style.expressions.Expression as MLNExpression
 
 internal fun String.correctedAndroidUri(): String {
   return try {

@@ -1,5 +1,5 @@
 package dev.sargunv.maplibrecompose.core.source
 
-import cocoapods.MapLibre.MLNSource
+import cocoapods.VietMap.MLNSource
 
 public actual class UnknownSource(override val impl: MLNSource) : Source()

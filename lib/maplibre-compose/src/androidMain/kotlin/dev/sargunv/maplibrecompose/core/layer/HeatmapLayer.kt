@@ -7,9 +7,9 @@ import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import dev.sargunv.maplibrecompose.expressions.value.ColorValue
 import dev.sargunv.maplibrecompose.expressions.value.DpValue
 import dev.sargunv.maplibrecompose.expressions.value.FloatValue
-import org.maplibre.android.style.expressions.Expression as MLNExpression
-import org.maplibre.android.style.layers.HeatmapLayer as MLNHeatmapLayer
-import org.maplibre.android.style.layers.PropertyFactory
+import vn.vietmap.vietmapsdk.style.expressions.Expression as MLNExpression
+import vn.vietmap.vietmapsdk.style.layers.HeatmapLayer as MLNHeatmapLayer
+import vn.vietmap.vietmapsdk.style.layers.PropertyFactory
 
 internal actual class HeatmapLayer actual constructor(id: String, source: Source) :
   FeatureLayer(source) {

@@ -1,12 +1,13 @@
 package dev.sargunv.maplibrecompose.core
 
 import androidx.compose.ui.graphics.ImageBitmap
-import cocoapods.MapLibre.MLNRasterTileSource
-import cocoapods.MapLibre.MLNShapeSource
-import cocoapods.MapLibre.MLNSource
-import cocoapods.MapLibre.MLNStyle
-import cocoapods.MapLibre.MLNStyleLayer
-import cocoapods.MapLibre.MLNVectorTileSource
+import cocoapods.VietMap.MLNRasterTileSource
+import cocoapods.VietMap.MLNShapeSource
+import cocoapods.VietMap.MLNSource
+import cocoapods.VietMap.MLNStyle
+import cocoapods.VietMap.MLNStyleLayer
+import cocoapods.VietMap.MLNVectorTileSource
+import dev.sargunv.VietMapcompose.core.util.toUIImage
 import dev.sargunv.maplibrecompose.core.layer.Layer
 import dev.sargunv.maplibrecompose.core.layer.UnknownLayer
 import dev.sargunv.maplibrecompose.core.source.GeoJsonSource
@@ -14,7 +15,6 @@ import dev.sargunv.maplibrecompose.core.source.RasterSource
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.source.UnknownSource
 import dev.sargunv.maplibrecompose.core.source.VectorSource
-import dev.sargunv.maplibrecompose.core.util.toUIImage
 
 internal class IosStyle(style: MLNStyle, private val getScale: () -> Float) : Style {
   private var impl: MLNStyle = style

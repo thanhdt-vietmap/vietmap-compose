@@ -9,11 +9,11 @@ import dev.sargunv.maplibrecompose.core.source.RasterSource
 import dev.sargunv.maplibrecompose.core.source.Source
 import dev.sargunv.maplibrecompose.core.source.UnknownSource
 import dev.sargunv.maplibrecompose.core.source.VectorSource
-import org.maplibre.android.maps.Style as MLNStyle
-import org.maplibre.android.style.sources.GeoJsonSource as MLNGeoJsonSource
-import org.maplibre.android.style.sources.RasterSource as MLNRasterSource
-import org.maplibre.android.style.sources.Source as MLNSource
-import org.maplibre.android.style.sources.VectorSource as MLNVectorSource
+import vn.vietmap.vietmapsdk.maps.Style as MLNStyle
+import vn.vietmap.vietmapsdk.style.sources.GeoJsonSource as MLNGeoJsonSource
+import vn.vietmap.vietmapsdk.style.sources.RasterSource as MLNRasterSource
+import vn.vietmap.vietmapsdk.style.sources.Source as MLNSource
+import vn.vietmap.vietmapsdk.style.sources.VectorSource as MLNVectorSource
 
 internal class AndroidStyle(style: MLNStyle) : Style {
   private var impl: MLNStyle = style
@@ -47,7 +47,7 @@ internal class AndroidStyle(style: MLNStyle) : Style {
   }
 
   override fun removeSource(source: Source) {
-    impl.removeSource(source.impl)
+//    impl.removeSource(source.impl)
   }
 
   override fun getLayer(id: String): Layer? {
@@ -75,6 +75,6 @@ internal class AndroidStyle(style: MLNStyle) : Style {
   }
 
   override fun removeLayer(layer: Layer) {
-    impl.removeLayer(layer.impl)
+//    impl.removeLayer(layer.impl)
   }
 }

@@ -1,9 +1,9 @@
 package dev.sargunv.maplibrecompose.core.layer
 
-import cocoapods.MapLibre.MLNHeatmapStyleLayer
+import cocoapods.VietMap.MLNHeatmapStyleLayer
 import dev.sargunv.maplibrecompose.core.source.Source
-import dev.sargunv.maplibrecompose.core.util.toNSExpression
-import dev.sargunv.maplibrecompose.core.util.toNSPredicate
+import dev.sargunv.VietMapcompose.core.util.toNSExpression
+import dev.sargunv.VietMapcompose.core.util.toNSPredicate
 import dev.sargunv.maplibrecompose.expressions.ast.CompiledExpression
 import dev.sargunv.maplibrecompose.expressions.value.BooleanValue
 import dev.sargunv.maplibrecompose.expressions.value.ColorValue
