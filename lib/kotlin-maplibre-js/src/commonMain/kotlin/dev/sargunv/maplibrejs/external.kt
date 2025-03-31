@@ -112,15 +112,15 @@ public sealed external interface QueryRenderedFeaturesOptions {
 
 public sealed external interface AnyEvent
 
-/** [MapLibreEvent](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapLibreEvent/) */
-public external interface MapLibreEvent<T> : AnyEvent {
+/** [VietMapEvent](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/VietMapEvent/) */
+public external interface VietMapEvent<T> : AnyEvent {
   public val originalEvent: T
   public val target: Map
   public val type: String
 }
 
 /** [MapMouseEvent](https://maplibre.org/maplibre-gl-js/docs/API/classes/MapMouseEvent/) */
-public external class MapMouseEvent private constructor() : MapLibreEvent<MouseEvent> {
+public external class MapMouseEvent private constructor() : VietMapEvent<MouseEvent> {
   public val defaultPrevented: Boolean
   public val lngLat: LngLat
   override val originalEvent: MouseEvent
@@ -132,7 +132,7 @@ public external class MapMouseEvent private constructor() : MapLibreEvent<MouseE
 }
 
 /** [MapTouchEvent](https://maplibre.org/maplibre-gl-js/docs/API/classes/MapTouchEvent/) */
-public external class MapTouchEvent private constructor() : MapLibreEvent<TouchEvent> {
+public external class MapTouchEvent private constructor() : VietMapEvent<TouchEvent> {
   public val defaultPrevented: Boolean
   public val lngLat: LngLat
   public val lngLats: Array<LngLat>
@@ -146,7 +146,7 @@ public external class MapTouchEvent private constructor() : MapLibreEvent<TouchE
 }
 
 /** [MapWheelEvent](https://maplibre.org/maplibre-gl-js/docs/API/classes/MapWheelEvent/) */
-public external class MapWheelEvent private constructor() : MapLibreEvent<WheelEvent> {
+public external class MapWheelEvent private constructor() : VietMapEvent<WheelEvent> {
   public val defaultPrevented: Boolean
   override val originalEvent: WheelEvent
   override val target: Map

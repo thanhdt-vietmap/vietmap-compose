@@ -8,7 +8,7 @@ library provides a way to add additional data to the map at runtime.
 
 A map style primarily consists of sources and layers. Sources contain the data
 included on the map, and layers configure how that data is displayed. With
-MapLibre Compose, you can dynamically configure sources and layers with
+VietMap Compose, you can dynamically configure sources and layers with
 `@Composable` functions:
 
 ```kotlin
@@ -23,11 +23,11 @@ style, but you can also declare new sources:
 ```
 
 The full breadth of layer styling options available is out of scope for this
-guide; see the [MapLibre Style Specification][spec-layers] for more information.
+guide; see the [VietMap Style Specification][spec-layers] for more information.
 
 ## Expressions
 
-MapLibre styles support expressions, which define a formula for computing the
+VietMap styles support expressions, which define a formula for computing the
 value of a property at runtime. The [expressions specification][spec-layers] is
 based on JSON, but this library provides a Kotlin DSL for expressing these
 formulas with some type safety. Where suitable, Compose types like `Dp`,

@@ -31,7 +31,7 @@ tasks.withType<MkdocsTask>().configureEach {
   )
 }
 
-dokka { moduleName = "MapLibre Compose API Reference" }
+dokka { moduleName = "VietMap Compose API Reference" }
 
 tasks.register("generateDocs") {
   dependsOn("dokkaGenerate", "mkdocsBuild")

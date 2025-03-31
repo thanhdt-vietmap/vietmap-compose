@@ -96,7 +96,7 @@ public fun const(list: List<Number>): Literal<VectorValue<Number>, *> =
  * parameter.
  *
  * The offset is measured in a multipler of the text size (EM). It's in [Offset] instead of [offset]
- * because of technical limitations in MapLibre.
+ * because of technical limitations in VietMap.
  */
 public fun textVariableAnchorOffset(
   vararg pairs: Pair<SymbolAnchor, Offset>

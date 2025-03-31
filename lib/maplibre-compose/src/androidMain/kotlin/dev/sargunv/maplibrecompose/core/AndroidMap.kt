@@ -101,7 +101,7 @@ internal class AndroidMap(
 
   init {
     map.addOnCameraMoveStartedListener { reason ->
-      // MapLibre doesn't have docs on these reasons, and even though they're named like Google's:
+      // VietMap doesn't have docs on these reasons, and even though they're named like Google's:
       // https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap.OnCameraMoveStartedListener#constants
       // they don't quite work the way the Google ones are documented. In particular,
       // REASON_DEVELOPER_ANIMATION is never used, and REASON_API_ANIMATION is used when the

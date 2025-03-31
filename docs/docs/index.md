@@ -2,8 +2,8 @@
 
 ## Introduction
 
-MapLibre Compose is a [Compose Multiplatform][compose] wrapper around the
-[MapLibre][maplibre] SDKs for rendering interactive maps. You can use it to add
+VietMap Compose is a [Compose Multiplatform][compose] wrapper around the
+[VietMap][maplibre] SDKs for rendering interactive maps. You can use it to add
 maps to your Compose UIs on Android, iOS, Desktop, and Web.
 
 ## Usage
@@ -14,8 +14,8 @@ maps to your Compose UIs on Android, iOS, Desktop, and Web.
 
 ## Status
 
-A large subset of MapLibre's features are already supported, but the full
-breadth of the MapLibre SDKs is not yet covered. What is already supported may
+A large subset of VietMap's features are already supported, but the full
+breadth of the VietMap SDKs is not yet covered. What is already supported may
 have bugs. API stability is not yet guaranteed; we're still exploring how best
 to express an interactive map API in Compose.
 
@@ -24,7 +24,7 @@ We don't yet support Wasm because one of our dependencies,
 
 | Feature                                           |        Android         |          iOS           |            Desktop (JVM)            |      Web (JS)       | Web (Wasm) |
 | :------------------------------------------------ | :--------------------: | :--------------------: | :---------------------------------: | :-----------------: | :--------: |
-| Renderer                                          | [MapLibre Native][MLN] | [MapLibre Native][MLN] | [MapLibre JS][MLJS] in [KCEF][kcef] | [MapLibre JS][MLJS] |    :x:     |
+| Renderer                                          | [VietMap Native][MLN] | [VietMap Native][MLN] | [VietMap JS][MLJS] in [KCEF][kcef] | [VietMap JS][MLJS] |    :x:     |
 | Load Compose resource URIs                        |   :white_check_mark:   |   :white_check_mark:   |         :white_check_mark:          | :white_check_mark:  |    :x:     |
 | Configure ornaments (compass, logo, attribution)  |   :white_check_mark:   |   :white_check_mark:   |         :white_check_mark:          | :white_check_mark:  |    :x:     |
 | Configure gestures (pan, zoom, rotate, pitch)     |   :white_check_mark:   |   :white_check_mark:   |         :white_check_mark:          | :white_check_mark:  |    :x:     |

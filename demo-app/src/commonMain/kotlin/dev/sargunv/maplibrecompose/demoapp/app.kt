@@ -87,7 +87,7 @@ fun DemoApp(navController: NavHostController = rememberNavController()) {
 
 @Composable
 private fun DemoMenu(navigate: (demo: Demo) -> Unit) {
-  Scaffold(topBar = { TopAppBar(title = { Text("MapLibre Compose Demos") }) }) { padding ->
+  Scaffold(topBar = { TopAppBar(title = { Text("VietMap Compose Demos") }) }) { padding ->
     Column(
       modifier =
         Modifier.consumeWindowInsets(padding).padding(padding).verticalScroll(rememberScrollState())

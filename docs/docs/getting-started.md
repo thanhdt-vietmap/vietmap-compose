@@ -58,30 +58,30 @@ commonMain.dependencies {
 
 ## Set up iOS
 
-For iOS, you'll additionally need to add the MapLibre framework to your build.
+For iOS, you'll additionally need to add the VietMap framework to your build.
 The easiest way to do this in Kotlin Multiplatform is with the [CocoaPods Gradle
 plugin][kotlin-cocoapods]:
 
 ```kotlin title="build.gradle.kts"
 cocoapods {
-  pod("MapLibre", "{{ gradle.maplibre_ios_version }}")
+  pod("VietMap", "{{ gradle.maplibre_ios_version }}")
 }
 ```
 
 ## Set up Vulkan on Android (Optional)
 
-By default, we ship with the standard version of MapLibre for Android, which
+By default, we ship with the standard version of VietMap for Android, which
 uses the OpenGL backend. If you'd prefer to use the Vulkan backend, you can
 update your build.
 
-First, add the Vulkan build of MapLibre to your version catalog:
+First, add the Vulkan build of VietMap to your version catalog:
 
 ```toml title="libs.versions.toml"
 [libraries]
 maplibre-android-vulkan = { module = "org.maplibre.gl:android-sdk-vulkan", version = "{{ gradle.maplibre_android_version }}" }
 ```
 
-Then, exclude the standard MapLibre build from your dependency tree, and add the
+Then, exclude the standard VietMap build from your dependency tree, and add the
 Vulkan build to your Android dependencies:
 
 ```kotlin title="build.gradle.kts"
@@ -102,7 +102,7 @@ androidMain.dependencies {
 
     Web support is not yet at feature parity with Android and iOS. Check the [status table](index.md#status) for more info.
 
-For Web, you'll additionally need to add the MapLibre CSS to your page. The
+For Web, you'll additionally need to add the VietMap CSS to your page. The
 easiest way to do this is via the CDN:
 
 ```kotlin title="index.html"

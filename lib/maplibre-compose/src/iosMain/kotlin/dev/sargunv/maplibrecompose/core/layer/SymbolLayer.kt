@@ -72,7 +72,7 @@ internal actual class SymbolLayer actual constructor(id: String, source: Source)
   }
 
   actual fun setIconOverlap(overlap: CompiledExpression<StringValue>) {
-    // TODO: warn not implemented by MapLibre-native iOS yet
+    // TODO: warn not implemented by VietMap-native iOS yet
     // impl.iconOverlap = overlap.toNSExpression()
   }
 
@@ -248,7 +248,7 @@ internal actual class SymbolLayer actual constructor(id: String, source: Source)
   }
 
   actual fun setTextOverlap(overlap: CompiledExpression<SymbolOverlap>) {
-    // not implemented by MapLibre-native iOS yet
+    // not implemented by VietMap-native iOS yet
     // impl.textOverlap = overlap.toNSExpression()
   }
 

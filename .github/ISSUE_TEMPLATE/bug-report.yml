@@ -40,7 +40,7 @@ body:
     id: library-version
     attributes:
       label: Library Version
-      description: What version of MapLibre Compose are you using?
+      description: What version of VietMap Compose are you using?
       placeholder: e.g. 1.0.0
     validations:
       required: true

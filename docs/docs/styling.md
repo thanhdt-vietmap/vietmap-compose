@@ -2,11 +2,11 @@
 
 ## Acquiring a style
 
-Every MapLibre map requires a style to be displayed. The style is a JSON object
+Every VietMap map requires a style to be displayed. The style is a JSON object
 that describes what data to display and how to display it. Typically, vector
 tile providers create styles designed to work with their data, and provide them
 as a URI. You can also create your own styles using [Maputnik][maputnik], a
-visual style editor for MapLibre styles.
+visual style editor for VietMap styles.
 
 There are a variety of free and commercial map tile providers available. See the
 [awesome-maplibre][awesome-maplibre] repository for a list of tile providers.
@@ -25,7 +25,7 @@ To use a style, you can pass the `styleUri` of your chosen style to the
 
 ## Dark mode
 
-You can select a style at runtime based on regular Compose logic. MapLibre will
+You can select a style at runtime based on regular Compose logic. VietMap will
 automatically animate the transition between styles. This is handy if you have a
 light and a dark mode style:
 

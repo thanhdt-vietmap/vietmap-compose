@@ -21,18 +21,18 @@ body:
       description: Which platforms should support this feature?
       multiple: true
       options:
-        - MapLibre Native - Android
-        - MapLibre Native - iOS
-        - MapLibre Native - Desktop (JVM)
-        - MapLibre JS - Browser (JS)
-        - MapLibre JS - Browser (WASM)
+        - VietMap Native - Android
+        - VietMap Native - iOS
+        - VietMap Native - Desktop (JVM)
+        - VietMap JS - Browser (JS)
+        - VietMap JS - Browser (WASM)
     validations:
       required: true
   - type: dropdown
     id: maplibre_support
     attributes:
-      label: MapLibre Native/JS Support
-      description: Is this feature already supported by MapLibre Native or JS?
+      label: VietMap Native/JS Support
+      description: Is this feature already supported by VietMap Native or JS?
       options:
         - "Yes"
         - "No"
@@ -42,8 +42,8 @@ body:
   - type: textarea
     id: maplibre_docs
     attributes:
-      label: MapLibre Documentation Links
-      description: If the feature exists in MapLibre, please provide links to relevant documentation
+      label: VietMap Documentation Links
+      description: If the feature exists in VietMap, please provide links to relevant documentation
       placeholder: |
         - Android: https://maplibre.org/maplibre-native/android/api/...
         - iOS: https://maplibre.org/maplibre-native/ios/latest/documentation/maplibre/...

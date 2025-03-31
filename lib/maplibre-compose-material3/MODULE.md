@@ -1,6 +1,6 @@
 # Module maplibre-compose-material3
 
-Material 3 extensions for MapLibre Compose.
+Material 3 extensions for VietMap Compose.
 
 # Package dev.sargunv.maplibrecompose.material3.controls
 

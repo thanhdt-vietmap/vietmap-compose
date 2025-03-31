@@ -4,12 +4,12 @@
 [![Documentation](https://img.shields.io/badge/Documentation-blue?logo=MaterialForMkDocs&logoColor=white)](https://sargunv.github.io/maplibre-compose/)
 [![API Reference](https://img.shields.io/badge/API_Reference-blue?logo=Kotlin&logoColor=white)](https://sargunv.github.io/maplibre-compose/api/)
 
-# MapLibre for Compose Multiplatform
+# VietMap for Compose Multiplatform
 
 ## Introduction
 
-MapLibre Compose is a [Compose Multiplatform][compose] wrapper around the
-[MapLibre][maplibre] SDKs for rendering interactive maps. You can use it to add
+VietMap Compose is a [Compose Multiplatform][compose] wrapper around the
+[VietMap][maplibre] SDKs for rendering interactive maps. You can use it to add
 maps to your Compose UIs across Android, iOS, Desktop, and Web.
 
 <p float="left">
@@ -25,8 +25,8 @@ maps to your Compose UIs across Android, iOS, Desktop, and Web.
 
 ## Status
 
-A large subset of MapLibre's features are already supported, but the full
-breadth of the MapLibre SDKs is not yet covered. What is already supported may
+A large subset of VietMap's features are already supported, but the full
+breadth of the VietMap SDKs is not yet covered. What is already supported may
 have bugs. API stability is not yet guaranteed; we're still exploring how best
 to express an interactive map API in Compose.
 

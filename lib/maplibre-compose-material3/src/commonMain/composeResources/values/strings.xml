@@ -1,5 +1,5 @@
 <resources>
-  <string name="library_name">MapLibre Compose</string>
+  <string name="library_name">VietMap Compose</string>
   <string name="attribution">Attribution</string>
   <string name="compass">Compass</string>
   <string name="meters_symbol">m</string>

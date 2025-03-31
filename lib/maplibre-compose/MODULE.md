@@ -1,6 +1,6 @@
 # Module maplibre-compose
 
-The primary entry point for MapLibre Compose.
+The primary entry point for VietMap Compose.
 
 # Package dev.sargunv.maplibrecompose.compose
 

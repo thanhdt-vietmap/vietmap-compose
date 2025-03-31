@@ -18,8 +18,8 @@ android { namespace = "dev.sargunv.maplibrecompose.expressions" }
 
 mavenPublishing {
   pom {
-    name = "MapLibre Compose Expressions"
-    description = "MapLibre expressions DSL for MapLibre Compose."
+    name = "VietMap Compose Expressions"
+    description = "VietMap expressions DSL for VietMap Compose."
     url = "https://github.com/sargunv/maplibre-compose"
   }
 }

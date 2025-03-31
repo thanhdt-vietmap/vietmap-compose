@@ -6,8 +6,8 @@ plugins {
 
 mavenPublishing {
   pom {
-    name = "MapLibre GL JS Kotlin"
-    description = "Kotlin bindings for MapLibre GL JS."
+    name = "VietMap GL JS Kotlin"
+    description = "Kotlin bindings for VietMap GL JS."
     url = "https://github.com/sargunv/maplibre-compose"
   }
 }

@@ -3,7 +3,7 @@ package dev.sargunv.maplibrecompose.expressions.ast
 import dev.sargunv.maplibrecompose.expressions.ExpressionContext
 import dev.sargunv.maplibrecompose.expressions.value.ExpressionValue
 
-/** An [Expression] representing a constant literal value of a type supported by MapLibre. */
+/** An [Expression] representing a constant literal value of a type supported by VietMap. */
 public sealed interface CompiledLiteral<out T : ExpressionValue, out L : Any?> :
   Literal<T, L>, CompiledExpression<T> {
 

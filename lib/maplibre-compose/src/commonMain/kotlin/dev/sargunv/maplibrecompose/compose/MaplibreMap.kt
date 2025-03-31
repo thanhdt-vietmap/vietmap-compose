@@ -24,11 +24,11 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
 /**
- * Displays a MapLibre based map.
+ * Displays a VietMap based map.
  *
  * @param modifier The modifier to be applied to the layout.
  * @param styleUri The URI of the map style specification JSON to use, see
- *   [MapLibre Style](https://maplibre.org/maplibre-style-spec/).
+ *   [VietMap Style](https://maplibre.org/maplibre-style-spec/).
  * @param zoomRange The allowable bounds for the camera zoom level.
  * @param pitchRange The allowable bounds for the camera pitch.
  * @param gestureSettings Defines which user map gestures are enabled.

@@ -21,7 +21,7 @@ enabled or disabled individually:
     section](./material3.md) for more information.
 
 Ornaments are built in UI elements that are displayed on the map, such as a
-compass or attribution button. They're implemented by the underlying MapLibre
+compass or attribution button. They're implemented by the underlying VietMap
 SDK, so may render differently on different platforms. You can control the
 visibility and position of these ornaments:
 
@@ -31,7 +31,7 @@ visibility and position of these ornaments:
 
 1. Insets the ornaments; useful if you have an edge-to-edge map or some UI
    elements that cover part of the map.
-2. Displays a MapLibre logo
+2. Displays a VietMap logo
 3. Possible alignments are constrained by the underlying SDK. The four corners
    are supported across platforms.
 4. Displays attribution defined in the map style.

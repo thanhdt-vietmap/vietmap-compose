@@ -4,7 +4,7 @@ import dev.sargunv.maplibrecompose.expressions.ExpressionContext
 import dev.sargunv.maplibrecompose.expressions.value.ExpressionValue
 
 /**
- * An [Expression] reduced to only those data types supported by the MapLibre SDKs. This can be
+ * An [Expression] reduced to only those data types supported by the VietMap SDKs. This can be
  * thought of as an intermediate representation between the high level expression DSL and the
  * platform-specific encoding.
  */

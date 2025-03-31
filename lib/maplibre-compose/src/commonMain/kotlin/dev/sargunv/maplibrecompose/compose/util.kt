@@ -32,7 +32,7 @@ public enum class ClickResult(internal val consumed: Boolean) {
 
 /** This annotation marks a composable for use within the context of a [MaplibreMap] `content`. */
 @Retention(AnnotationRetention.BINARY)
-@ComposableTargetMarker(description = "MapLibre Composable")
+@ComposableTargetMarker(description = "VietMap Composable")
 @Target(
   AnnotationTarget.FILE,
   AnnotationTarget.FUNCTION,

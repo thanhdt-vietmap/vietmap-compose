@@ -9,9 +9,9 @@ import dev.sargunv.maplibrecompose.expressions.value.FloatValue
 /**
  * The context used while converting a high-level [Expression] to a low-level [CompiledExpression].
  *
- * It defines how to resolve certain expressions (TextUnit, bitmaps) to their MapLibre counterparts.
- * MapLibre Compose users should not need to implement this interface; it is used internally by the
- * MapLibre Compose library.
+ * It defines how to resolve certain expressions (TextUnit, bitmaps) to their VietMap counterparts.
+ * VietMap Compose users should not need to implement this interface; it is used internally by the
+ * VietMap Compose library.
  */
 public interface ExpressionContext {
   /** The scale factor to convert EMs to the desired unit */

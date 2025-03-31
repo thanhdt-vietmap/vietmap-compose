@@ -1,3 +1,3 @@
 # Module kotlin-maplibre-js
 
-Kotlin bindings for [MapLibre GL JS](https://www.npmjs.com/package/maplibre-gl).
+Kotlin bindings for [VietMap GL JS](https://www.npmjs.com/package/maplibre-gl).

@@ -12,8 +12,8 @@ import androidx.compose.ui.unit.dp
  *
  * Note: this paarameter does not take effect on web and desktop.
  *
- * @param isLogoEnabled whether to display the MapLibre logo.
- * @param logoAlignment where to place the MapLibre logo.
+ * @param isLogoEnabled whether to display the VietMap logo.
+ * @param logoAlignment where to place the VietMap logo.
  *
  * On Android, the four corners are supported.
  *

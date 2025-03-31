@@ -19,8 +19,8 @@ android { namespace = "dev.sargunv.maplibrecompose.material3" }
 
 mavenPublishing {
   pom {
-    name = "MapLibre Compose Material 3"
-    description = "Material 3 extensions for MapLibre Compose."
+    name = "VietMap Compose Material 3"
+    description = "Material 3 extensions for VietMap Compose."
     url = "https://github.com/sargunv/maplibre-compose"
   }
 }
