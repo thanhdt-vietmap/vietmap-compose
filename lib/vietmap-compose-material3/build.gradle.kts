@@ -47,7 +47,7 @@ kotlin {
     commonMain.dependencies {
       implementation(compose.material3)
       implementation(compose.components.resources)
-      api(project(":lib:maplibre-compose"))
+      api(project(":lib:vietmap-compose"))
     }
 
     commonTest.dependencies {

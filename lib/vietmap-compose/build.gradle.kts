@@ -33,7 +33,7 @@ val desktopResources: Configuration by
 
 dependencies {
   desktopResources(
-    project(path = ":lib:maplibre-compose-webview", configuration = "jsBrowserDistribution")
+    project(":lib:vietmap-compose-webview", configuration = "jsBrowserDistribution")
   )
 }
 
@@ -74,7 +74,7 @@ kotlin {
       implementation(compose.components.resources)
       api(libs.kermit)
       api(libs.spatialk.geojson)
-      api(project(":lib:maplibre-compose-expressions"))
+      api(project(":lib:vietmap-compose-expressions"))
     }
 
     androidMain.dependencies {
@@ -94,7 +94,7 @@ kotlin {
     }
 
     jsMain.dependencies {
-      implementation(project(":lib:kotlin-maplibre-js"))
+      implementation(project(":lib:kotlin-vietmap-js"))
       implementation(project(":lib:compose-html-interop"))
     }
 

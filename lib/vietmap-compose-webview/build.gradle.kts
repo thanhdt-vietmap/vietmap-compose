@@ -14,7 +14,7 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       implementation(kotlin("stdlib-js"))
-      implementation(project(":lib:kotlin-maplibre-js"))
+      implementation(project(":lib:kotlin-vietmap-js"))
 
       implementation(devNpm("html-webpack-plugin", libs.versions.webpack.html.get()))
       implementation(
