@@ -1,6 +1,6 @@
-[![Github Actions](https://github.com/sargunv/maplibre-compose/actions/workflows/ci.yml/badge.svg)](https://github.com/sargunv/maplibre-compose/actions/workflows/ci.yml?query=branch%3Amain)
+[![Github Actions](https://github.com/thanhdt-vietmap/vietmap-compose/actions/workflows/ci.yml/badge.svg)](https://github.com/thanhdt-vietmap/vietmap-compose/actions/workflows/ci.yml?query=branch%3Amain)
 [![Maven Central Version](https://img.shields.io/maven-central/v/vn.vietmap.maplibre-compose/maplibre-compose)](https://central.sonatype.com/namespace/vn.vietmap.maplibre-compose)
-[![License](https://img.shields.io/github/license/sargunv/maplibre-compose)](https://github.com/sargunv/maplibre-compose/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/sargunv/maplibre-compose)](https://github.com/thanhdt-vietmap/vietmap-compose/blob/main/LICENSE)
 [![Documentation](https://img.shields.io/badge/Documentation-blue?logo=MaterialForMkDocs&logoColor=white)](https://sargunv.github.io/maplibre-compose/)
 [![API Reference](https://img.shields.io/badge/API_Reference-blue?logo=Kotlin&logoColor=white)](https://sargunv.github.io/maplibre-compose/api/)
 

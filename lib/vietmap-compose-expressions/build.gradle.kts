@@ -20,7 +20,7 @@ mavenPublishing {
   pom {
     name = "VietMap Compose Expressions"
     description = "VietMap expressions DSL for VietMap Compose."
-    url = "https://github.com/sargunv/maplibre-compose"
+    url = "https://github.com/thanhdt-vietmap/vietmap-compose"
   }
 }
 

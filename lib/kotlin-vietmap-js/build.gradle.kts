@@ -8,7 +8,7 @@ mavenPublishing {
   pom {
     name = "VietMap GL JS Kotlin"
     description = "Kotlin bindings for VietMap GL JS."
-    url = "https://github.com/sargunv/maplibre-compose"
+    url = "https://github.com/thanhdt-vietmap/vietmap-compose"
   }
 }
 

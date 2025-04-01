@@ -32,7 +32,7 @@ This library is published via [Maven Central][maven], and snapshot builds of
     ```kotlin title="settings.gradle.kts"
     repositories {
       maven {
-        url = uri("https://maven.pkg.github.com/sargunv/maplibre-compose")
+        url = uri("https://maven.pkg.github.com/thanhdt-vietmap/vietmap-compose")
         credentials {
           username = project.findProperty("gpr.user") as String? ?: System.getenv("GH_USERNAME")
           password = project.findProperty("gpr.key") as String? ?: System.getenv("GH_TOKEN")
@@ -175,6 +175,6 @@ to get a detailed map with all the features you'd expect, proceed to
 [gh-packages-guide]:
   https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#using-a-published-package
 [kotlin-cocoapods]: https://kotlinlang.org/docs/native-cocoapods.html
-[repo]: https://github.com/sargunv/maplibre-compose
+[repo]: https://github.com/thanhdt-vietmap/vietmap-compose
 [demotiles]: https://demotiles.maplibre.org/
 [kcef]: https://github.com/DatL4g/KCEF

@@ -4,7 +4,7 @@ site_description: VietMap Compose embeds interactive vector maps in your Compose
 site_url: https://sargunv.github.io/maplibre-compose
 
 repo_name: maplibre-compose
-repo_url: http://github.com/sargunv/maplibre-compose
+repo_url: http://github.com/thanhdt-vietmap/vietmap-compose
 edit_uri: "edit/main/docs/docs/"
 
 copyright: "Copyright &copy; 2024 Sargun Vohra"

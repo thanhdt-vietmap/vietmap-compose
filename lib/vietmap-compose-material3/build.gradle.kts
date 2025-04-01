@@ -21,7 +21,7 @@ mavenPublishing {
   pom {
     name = "VietMap Compose Material 3"
     description = "Material 3 extensions for VietMap Compose."
-    url = "https://github.com/sargunv/maplibre-compose"
+    url = "https://github.com/thanhdt-vietmap/vietmap-compose"
   }
 }
 
