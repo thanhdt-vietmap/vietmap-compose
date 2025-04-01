@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import vn.vietmap.vietmapcompose.compose.MaplibreMap
+import vn.vietmap.vietmapcompose.compose.VietMapGLCompose
 import vn.vietmap.vietmapcompose.compose.layer.Anchor
 import vn.vietmap.vietmapcompose.compose.layer.LineLayer
 import vn.vietmap.vietmapcompose.compose.rememberCameraState
@@ -49,7 +49,7 @@ object AnimatedLayerDemo : Demo {
       val styleState = rememberStyleState()
 
       Box(modifier = Modifier.fillMaxSize()) {
-        MaplibreMap(
+        VietMapGLCompose(
           styleUri = DEFAULT_STYLE,
           cameraState = cameraState,
           styleState = styleState,

@@ -7,7 +7,7 @@ import vn.vietmap.vietmapcompose.core.source.Source
 
 /**
  * Get the source with the given [id] from the base style specified via the `styleUri` parameter in
- * [MaplibreMap][vn.vietmap.vietmapcompose.compose.MaplibreMap].
+ * [MaplibreMap][vn.vietmap.vietmapcompose.compose.VietMapGLCompose].
  *
  * @throws IllegalStateException if the source does not exist
  */

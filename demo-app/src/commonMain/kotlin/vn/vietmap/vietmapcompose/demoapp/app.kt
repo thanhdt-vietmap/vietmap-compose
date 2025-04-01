@@ -60,7 +60,7 @@ private val DEMOS = buildList {
     add(AnimatedLayerDemo)
   }
   if (!Platform.isDesktop) add(CameraStateDemo)
-  if (Platform.usesMaplibreNative) add(CameraFollowDemo)
+  if (Platform.usesVietMapNative) add(CameraFollowDemo)
   if (!Platform.isDesktop) add(FrameRateDemo)
 }
 

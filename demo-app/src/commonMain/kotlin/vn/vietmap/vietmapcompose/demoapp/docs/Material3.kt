@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import vn.vietmap.vietmapcompose.compose.MaplibreMap
+import vn.vietmap.vietmapcompose.compose.VietMapGLCompose
 import vn.vietmap.vietmapcompose.compose.rememberCameraState
 import vn.vietmap.vietmapcompose.compose.rememberStyleState
 import vn.vietmap.vietmapcompose.core.OrnamentSettings
@@ -26,7 +26,7 @@ fun Material3() {
   val styleState = rememberStyleState()
 
   Box(Modifier.fillMaxSize()) {
-    MaplibreMap(
+    VietMapGLCompose(
       cameraState = cameraState,
       styleState = styleState,
       ornamentSettings = OrnamentSettings.AllDisabled,
@@ -42,7 +42,7 @@ fun Material3() {
 
   // -8<- [start:disappearing-controls]
   Box(modifier = Modifier.fillMaxSize()) {
-    MaplibreMap(
+    VietMapGLCompose(
       cameraState = cameraState,
       styleState = styleState,
       ornamentSettings = OrnamentSettings.AllDisabled,

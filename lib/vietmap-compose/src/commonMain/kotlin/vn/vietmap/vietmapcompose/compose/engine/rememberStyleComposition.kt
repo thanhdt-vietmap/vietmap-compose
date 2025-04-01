@@ -10,15 +10,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.staticCompositionLocalOf
 import co.touchlab.kermit.Logger
-import vn.vietmap.vietmapcompose.compose.MaplibreComposable
+import vn.vietmap.vietmapcompose.compose.VietMapComposable
 import vn.vietmap.vietmapcompose.core.Style
 import kotlinx.coroutines.awaitCancellation
 
 @Composable
 internal fun rememberStyleComposition(
-  maybeStyle: Style?,
-  logger: Logger?,
-  content: @Composable @MaplibreComposable () -> Unit,
+    maybeStyle: Style?,
+    logger: Logger?,
+    content: @Composable @VietMapComposable () -> Unit,
 ): State<StyleNode?> {
   val nodeState = remember { mutableStateOf<StyleNode?>(null) }
   val compositionContext = rememberCompositionContext()

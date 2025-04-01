@@ -8,7 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import vn.vietmap.vietmapcompose.compose.ClickResult
-import vn.vietmap.vietmapcompose.compose.MaplibreMap
+import vn.vietmap.vietmapcompose.compose.VietMapGLCompose
 import vn.vietmap.vietmapcompose.compose.rememberCameraState
 import vn.vietmap.vietmapcompose.core.CameraPosition
 import vn.vietmap.vietmapcompose.core.GestureSettings
@@ -19,7 +19,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun Interaction() {
   // -8<- [start:gesture-settings]
-  MaplibreMap(
+  VietMapGLCompose(
     gestureSettings =
       GestureSettings(
         isTiltGesturesEnabled = true,
@@ -31,7 +31,7 @@ fun Interaction() {
   // -8<- [end:gesture-settings]
 
   // -8<- [start:ornament-settings]
-  MaplibreMap(
+  VietMapGLCompose(
     ornamentSettings =
       OrnamentSettings(
         padding = PaddingValues(0.dp), // (1)!
@@ -53,7 +53,7 @@ fun Interaction() {
       firstPosition =
         CameraPosition(target = Position(latitude = 45.521, longitude = -122.675), zoom = 13.0)
     )
-  MaplibreMap(cameraState = camera)
+  VietMapGLCompose(cameraState = camera)
   // -8<- [end:camera]
 
   // -8<- [start:camera-animate]
@@ -67,7 +67,7 @@ fun Interaction() {
   // -8<- [end:camera-animate]
 
   // -8<- [start:click-listeners]
-  MaplibreMap(
+  VietMapGLCompose(
     cameraState = camera,
     onMapClick = { pos, offset ->
       val features = camera.queryRenderedFeatures(offset)

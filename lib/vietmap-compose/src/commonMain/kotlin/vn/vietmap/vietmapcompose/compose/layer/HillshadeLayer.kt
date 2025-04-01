@@ -2,7 +2,7 @@ package vn.vietmap.vietmapcompose.compose.layer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import vn.vietmap.vietmapcompose.compose.MaplibreComposable
+import vn.vietmap.vietmapcompose.compose.VietMapComposable
 import vn.vietmap.vietmapcompose.core.layer.HillshadeLayer
 import vn.vietmap.vietmapcompose.core.source.Source
 import vn.vietmap.vietmapcompose.expressions.ast.Expression
@@ -34,7 +34,7 @@ import vn.vietmap.vietmapcompose.expressions.value.IlluminationAnchor
  * @param exaggeration Intensity of the hillshade. A value in the range of `[0..1]`.
  */
 @Composable
-@MaplibreComposable
+@VietMapComposable
 public fun HillshadeLayer(
   id: String,
   source: Source,

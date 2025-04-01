@@ -1,7 +1,7 @@
 package vn.vietmap.vietmapcompose.compose.layer
 
 import androidx.compose.runtime.Composable
-import vn.vietmap.vietmapcompose.compose.MaplibreComposable
+import vn.vietmap.vietmapcompose.compose.VietMapComposable
 import vn.vietmap.vietmapcompose.core.layer.RasterLayer
 import vn.vietmap.vietmapcompose.core.source.Source
 import vn.vietmap.vietmapcompose.expressions.ast.Expression
@@ -36,7 +36,7 @@ import kotlin.time.Duration.Companion.milliseconds
  *   started or its coordinates are updated. A value in range `[0..infinity)`.
  */
 @Composable
-@MaplibreComposable
+@VietMapComposable
 public fun RasterLayer(
   id: String,
   source: Source,

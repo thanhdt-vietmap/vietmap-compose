@@ -11,9 +11,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.viewinterop.AndroidView
 import co.touchlab.kermit.Logger
-import vn.vietmap.vietmapcompose.core.AndroidMap
+import vn.vietmap.vietmapcompose.core.AndroidMapGLCompose
 //import vn.vietmap.vietmapcompose.core.AndroidScaleBar
-import vn.vietmap.vietmapcompose.core.MaplibreMap
+import vn.vietmap.vietmapcompose.core.VietMapGLCompose
 
 import vn.vietmap.vietmapsdk.Vietmap
 import vn.vietmap.vietmapsdk.maps.VietMapGLOptions
@@ -23,10 +23,10 @@ import vn.vietmap.vietmapsdk.maps.MapView
 internal actual fun ComposableMapView(
   modifier: Modifier,
   styleUri: String,
-  update: (map: MaplibreMap) -> Unit,
+  update: (map: VietMapGLCompose) -> Unit,
   onReset: () -> Unit,
   logger: Logger?,
-  callbacks: MaplibreMap.Callbacks,
+  callbacks: VietMapGLCompose.Callbacks,
 ) {
   AndroidMapView(
     modifier = modifier,
@@ -42,17 +42,17 @@ internal actual fun ComposableMapView(
 internal fun AndroidMapView(
   modifier: Modifier,
   styleUri: String,
-  update: (map: MaplibreMap) -> Unit,
+  update: (map: VietMapGLCompose) -> Unit,
   onReset: () -> Unit,
   logger: Logger?,
-  callbacks: MaplibreMap.Callbacks,
+  callbacks: VietMapGLCompose.Callbacks,
 ) {
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
   val currentOnReset by rememberUpdatedState(onReset)
 
   var currentMapView by remember { mutableStateOf<MapView?>(null) }
-  var currentMap by remember { mutableStateOf<AndroidMap?>(null) }
+  var currentMap by remember { mutableStateOf<AndroidMapGLCompose?>(null) }
 
   MapViewLifecycleEffect(currentMapView)
 
@@ -65,7 +65,7 @@ internal fun AndroidMapView(
         currentMapView = mapView
         mapView.getMapAsync { map ->
           currentMap =
-            AndroidMap(
+            AndroidMapGLCompose(
               mapView = mapView,
               map = map,
 //              scaleBar = AndroidScaleBar(context, mapView, map),

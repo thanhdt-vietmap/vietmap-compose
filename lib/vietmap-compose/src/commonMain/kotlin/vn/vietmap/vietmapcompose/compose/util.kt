@@ -30,7 +30,7 @@ public enum class ClickResult(internal val consumed: Boolean) {
   Pass(false),
 }
 
-/** This annotation marks a composable for use within the context of a [MaplibreMap] `content`. */
+/** This annotation marks a composable for use within the context of a [VietMapGLCompose] `content`. */
 @Retention(AnnotationRetention.BINARY)
 @ComposableTargetMarker(description = "VietMap Composable")
 @Target(
@@ -40,4 +40,4 @@ public enum class ClickResult(internal val consumed: Boolean) {
   AnnotationTarget.TYPE,
   AnnotationTarget.TYPE_PARAMETER,
 )
-public annotation class MaplibreComposable
+public annotation class VietMapComposable

@@ -83,15 +83,15 @@ import platform.darwin.NSObject
 import platform.darwin.NSUInteger
 import platform.darwin.sel_registerName
 
-internal class IosMap(
-  private var mapView: MLNMapView,
-  internal var size: CValue<CGSize>,
-  internal var layoutDir: LayoutDirection,
-  internal var density: Density,
-  internal var insetPadding: PaddingValues,
-  internal var callbacks: MaplibreMap.Callbacks,
-  internal var logger: Logger?,
-) : StandardMaplibreMap {
+internal class IosMapGLCompose(
+    private var mapView: MLNMapView,
+    internal var size: CValue<CGSize>,
+    internal var layoutDir: LayoutDirection,
+    internal var density: Density,
+    internal var insetPadding: PaddingValues,
+    internal var callbacks: VietMapGLCompose.Callbacks,
+    internal var logger: Logger?,
+) : StandardVietMapGLCompose {
 
   // hold strong references to things that the sdk keeps weak references to
   private val gestures = mutableListOf<Gesture<*>>()
@@ -103,13 +103,13 @@ internal class IosMap(
     addGestures(
       Gesture(UITapGestureRecognizer()) {
         if (state != UIGestureRecognizerStateEnded) return@Gesture
-        val point = locationInView(this@IosMap.mapView).toDpOffset()
-        callbacks.onClick(this@IosMap, positionFromScreenLocation(point), point)
+        val point = locationInView(this@IosMapGLCompose.mapView).toDpOffset()
+        callbacks.onClick(this@IosMapGLCompose, positionFromScreenLocation(point), point)
       },
       Gesture(UILongPressGestureRecognizer()) {
         if (state != UIGestureRecognizerStateBegan) return@Gesture
-        val point = locationInView(this@IosMap.mapView).toDpOffset()
-        callbacks.onLongClick(this@IosMap, positionFromScreenLocation(point), point)
+        val point = locationInView(this@IosMapGLCompose.mapView).toDpOffset()
+        callbacks.onLongClick(this@IosMapGLCompose, positionFromScreenLocation(point), point)
       },
     )
 
@@ -121,7 +121,7 @@ internal class IosMap(
     mapView.delegate = delegate
   }
 
-  private class LoggingBlockHandler(private val map: IosMap) : MLNLoggingBlockHandler {
+  private class LoggingBlockHandler(private val map: IosMapGLCompose) : MLNLoggingBlockHandler {
     override fun invoke(level: MLNLoggingLevel, path: String?, line: NSUInteger, message: String?) {
       when (level) {
         MLNLoggingLevelFault -> map.logger?.a { "$message" }
@@ -135,7 +135,7 @@ internal class IosMap(
     }
   }
 
-  private class Delegate(private val map: IosMap) : NSObject(), MLNMapViewDelegateProtocol {
+  private class Delegate(private val map: IosMapGLCompose) : NSObject(), MLNMapViewDelegateProtocol {
 
     val timeSource = TimeSource.Monotonic
     var lastFrameTime = timeSource.markNow()

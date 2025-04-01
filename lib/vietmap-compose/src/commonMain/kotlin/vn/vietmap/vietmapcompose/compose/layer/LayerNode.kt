@@ -5,13 +5,13 @@ import androidx.compose.runtime.ComposeNode
 import androidx.compose.runtime.Updater
 import androidx.compose.runtime.key
 import vn.vietmap.vietmapcompose.compose.FeaturesClickHandler
-import vn.vietmap.vietmapcompose.compose.MaplibreComposable
+import vn.vietmap.vietmapcompose.compose.VietMapComposable
 import vn.vietmap.vietmapcompose.compose.engine.LayerNode
 import vn.vietmap.vietmapcompose.compose.engine.MapNodeApplier
 import vn.vietmap.vietmapcompose.core.layer.Layer
 
 @Composable
-@MaplibreComposable
+@VietMapComposable
 internal fun <T : Layer> LayerNode(
   factory: () -> T,
   update: Updater<LayerNode<T>>.() -> Unit,

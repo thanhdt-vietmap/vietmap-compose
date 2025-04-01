@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.safeContent
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import vn.vietmap.vietmapcompose.compose.MaplibreMap
+import vn.vietmap.vietmapcompose.compose.VietMapGLCompose
 import vn.vietmap.vietmapcompose.compose.rememberCameraState
 import vn.vietmap.vietmapcompose.compose.rememberStyleState
 import vn.vietmap.vietmapcompose.core.CameraPosition
@@ -34,7 +34,7 @@ object EdgeToEdgeDemo : Demo {
 
     Scaffold(topBar = { DemoAppBar(this, navigateUp, alpha = 0.5f) }) { padding ->
       Box(modifier = Modifier.consumeWindowInsets(WindowInsets.safeContent).fillMaxSize()) {
-        MaplibreMap(
+        VietMapGLCompose(
           styleUri = DEFAULT_STYLE,
           cameraState = cameraState,
           styleState = styleState,

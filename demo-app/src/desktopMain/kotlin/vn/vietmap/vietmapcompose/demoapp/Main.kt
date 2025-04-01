@@ -7,7 +7,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.singleWindowApplication
 import vn.vietmap.vietmapcompose.compose.KcefProvider
-import vn.vietmap.vietmapcompose.compose.MaplibreContextProvider
+import vn.vietmap.vietmapcompose.compose.VietMapContextProvider
 
 // TODO This should enable support for blending Compose over Swing views
 // but it's just crashing on launch
@@ -19,7 +19,7 @@ fun main() {
   singleWindowApplication {
     KcefProvider(
       loading = { Text("Performing first time setup ...") },
-      content = { MaplibreContextProvider { DemoApp() } },
+      content = { VietMapContextProvider { DemoApp() } },
     )
   }
 }

@@ -40,13 +40,13 @@ import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import org.w3c.dom.HTMLElement
 
-internal class JsMap(
-  parent: HTMLElement,
-  internal var layoutDir: LayoutDirection,
-  internal var density: Density,
-  internal var callbacks: MaplibreMap.Callbacks,
-  internal var logger: Logger?,
-) : StandardMaplibreMap {
+internal class JsMapGLCompose(
+    parent: HTMLElement,
+    internal var layoutDir: LayoutDirection,
+    internal var density: Density,
+    internal var callbacks: VietMapGLCompose.Callbacks,
+    internal var logger: Logger?,
+) : StandardVietMapGLCompose {
   private val impl = Map(MapOptions(parent, disableAttributionControl = true))
 
   val timeSource = TimeSource.Monotonic

@@ -14,7 +14,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @Composable
 @OptIn(ExperimentalResourceApi::class)
-public fun FrameWindowScope.MaplibreContextProvider(content: @Composable () -> Unit) {
+public fun FrameWindowScope.VietMapContextProvider(content: @Composable () -> Unit) {
   val refreshRate = window.graphicsConfiguration.device.displayMode.refreshRate
   var webviewHtml by remember { mutableStateOf<String?>(null) }
 
@@ -25,14 +25,14 @@ public fun FrameWindowScope.MaplibreContextProvider(content: @Composable () -> U
 
   if (webviewHtml == null) return
 
-  val context = remember(refreshRate, webviewHtml) { MaplibreContext(refreshRate, webviewHtml!!) }
+  val context = remember(refreshRate, webviewHtml) { VietMapContext(refreshRate, webviewHtml!!) }
 
-  CompositionLocalProvider(LocalMaplibreContext provides context) { content() }
+  CompositionLocalProvider(LocalVietMapContext provides context) { content() }
 }
 
-internal data class MaplibreContext(val refreshRate: Int, val webviewHtml: String)
+internal data class VietMapContext(val refreshRate: Int, val webviewHtml: String)
 
-internal val LocalMaplibreContext =
-  compositionLocalOf<MaplibreContext> {
-    error("No MaplibreContext provided; wrap your app with MaplibreContextProvider")
+internal val LocalVietMapContext =
+  compositionLocalOf<VietMapContext> {
+    error("No VietMapContext provided; wrap your app with VietMapContextProvider")
   }

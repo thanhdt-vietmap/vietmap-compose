@@ -11,7 +11,7 @@ import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import kotlin.time.Duration
 
-internal class WebviewMap(private val bridge: WebviewBridge) : MaplibreMap {
+internal class WebviewMapGLCompose(private val bridge: WebviewBridge) : VietMapGLCompose {
   suspend fun init() {
     bridge.callVoid("init")
   }

@@ -51,16 +51,16 @@ import vn.vietmap.vietmapsdk.maps.Style as MlnStyle
 import vn.vietmap.vietmapsdk.style.expressions.Expression as MLNExpression
 //import org.maplibre.geojson.Feature as MLNFeature
 
-internal class AndroidMap(
+internal class AndroidMapGLCompose(
   private val mapView: MapView,
   private val map: VietMapGL,
 //  private val scaleBar: AndroidScaleBar,
   layoutDir: LayoutDirection,
   density: Density,
-  internal var callbacks: MaplibreMap.Callbacks,
+  internal var callbacks: VietMapGLCompose.Callbacks,
 //  logger: Logger?,
   styleUri: String,
-) : StandardMaplibreMap {
+) : StandardVietMapGLCompose {
 
   internal var layoutDir: LayoutDirection = layoutDir
     set(value) {
@@ -127,7 +127,7 @@ internal class AndroidMap(
     map.addOnMoveListener(
       object : OnMoveListener {
         override fun onMoveBegin(detector: MoveGestureDetector) {
-          callbacks.onCameraMoveStarted(this@AndroidMap, CameraMoveReason.GESTURE)
+          callbacks.onCameraMoveStarted(this@AndroidMapGLCompose, CameraMoveReason.GESTURE)
         }
 
         override fun onMove(detector: MoveGestureDetector) {}
@@ -138,7 +138,7 @@ internal class AndroidMap(
     map.addOnScaleListener(
       object : OnScaleListener {
         override fun onScaleBegin(detector: StandardScaleGestureDetector) {
-          callbacks.onCameraMoveStarted(this@AndroidMap, CameraMoveReason.GESTURE)
+          callbacks.onCameraMoveStarted(this@AndroidMapGLCompose, CameraMoveReason.GESTURE)
         }
 
         override fun onScale(detector: StandardScaleGestureDetector) {}
@@ -149,7 +149,7 @@ internal class AndroidMap(
     map.addOnShoveListener(
       object : MLNMap.OnShoveListener {
         override fun onShoveBegin(detector: ShoveGestureDetector) {
-          callbacks.onCameraMoveStarted(this@AndroidMap, CameraMoveReason.GESTURE)
+          callbacks.onCameraMoveStarted(this@AndroidMapGLCompose, CameraMoveReason.GESTURE)
         }
 
         override fun onShove(detector: ShoveGestureDetector) {}
@@ -160,7 +160,7 @@ internal class AndroidMap(
     map.addOnRotateListener(
       object : MLNMap.OnRotateListener {
         override fun onRotateBegin(detector: RotateGestureDetector) {
-          callbacks.onCameraMoveStarted(this@AndroidMap, CameraMoveReason.GESTURE)
+          callbacks.onCameraMoveStarted(this@AndroidMapGLCompose, CameraMoveReason.GESTURE)
         }
 
         override fun onRotate(detector: RotateGestureDetector) {}

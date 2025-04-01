@@ -14,9 +14,9 @@ import vn.vietmap.vietmapcompose.compose.engine.LayerNode
 import vn.vietmap.vietmapcompose.compose.engine.rememberStyleComposition
 import vn.vietmap.vietmapcompose.core.CameraMoveReason
 import vn.vietmap.vietmapcompose.core.GestureSettings
-import vn.vietmap.vietmapcompose.core.MaplibreMap
+import vn.vietmap.vietmapcompose.core.VietMapGLCompose
 import vn.vietmap.vietmapcompose.core.OrnamentSettings
-import vn.vietmap.vietmapcompose.core.StandardMaplibreMap
+import vn.vietmap.vietmapcompose.core.StandardVietMapGLCompose
 import vn.vietmap.vietmapcompose.core.Style
 import vn.vietmap.vietmapcompose.core.util.PlatformUtils
 import io.github.dellisd.spatialk.geojson.Position
@@ -88,7 +88,7 @@ import kotlinx.coroutines.launch
  * - [Anchor.At][vn.vietmap.vietmapcompose.compose.layer.Anchor.Companion.At]
  */
 @Composable
-public fun MaplibreMap(
+public fun VietMapGLCompose(
   modifier: Modifier = Modifier,
   styleUri: String = "https://demotiles.maplibre.org/style.json",
   zoomRange: ClosedRange<Float> = 0f..20f,
@@ -102,35 +102,35 @@ public fun MaplibreMap(
   onFrame: (framesPerSecond: Double) -> Unit = {},
   isDebugEnabled: Boolean = false,
   maximumFps: Int = PlatformUtils.getSystemRefreshRate().roundToInt(),
-  logger: Logger? = remember { Logger.withTag("maplibre-compose") },
-  content: @Composable @MaplibreComposable () -> Unit = {},
+  logger: Logger? = remember { Logger.withTag("vietmap-compose") },
+  content: @Composable @VietMapComposable () -> Unit = {},
 ) {
   var rememberedStyle by remember { mutableStateOf<Style?>(null) }
   val styleComposition by rememberStyleComposition(rememberedStyle, logger, content)
 
   val callbacks =
     remember(cameraState, styleState, styleComposition) {
-      object : MaplibreMap.Callbacks {
-        override fun onStyleChanged(map: MaplibreMap, style: Style?) {
-          map as StandardMaplibreMap
+      object : VietMapGLCompose.Callbacks {
+        override fun onStyleChanged(map: VietMapGLCompose, style: Style?) {
+          map as StandardVietMapGLCompose
           styleState.attach(style)
           rememberedStyle = style
           cameraState.metersPerDpAtTargetState.value =
             map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
         }
 
-        override fun onCameraMoveStarted(map: MaplibreMap, reason: CameraMoveReason) {
+        override fun onCameraMoveStarted(map: VietMapGLCompose, reason: CameraMoveReason) {
           cameraState.moveReasonState.value = reason
         }
 
-        override fun onCameraMoved(map: MaplibreMap) {
-          map as StandardMaplibreMap
+        override fun onCameraMoved(map: VietMapGLCompose) {
+          map as StandardVietMapGLCompose
           cameraState.positionState.value = map.getCameraPosition()
           cameraState.metersPerDpAtTargetState.value =
             map.metersPerDpAtLatitude(map.getCameraPosition().target.latitude)
         }
 
-        override fun onCameraMoveEnded(map: MaplibreMap) {}
+        override fun onCameraMoveEnded(map: VietMapGLCompose) {}
 
         private fun layerNodesInOrder(): List<LayerNode<*>> {
           val layerNodes =
@@ -140,8 +140,8 @@ public fun MaplibreMap(
           return layers.asReversed().mapNotNull { layer -> layerNodes[layer.id] }
         }
 
-        override fun onClick(map: MaplibreMap, latLng: Position, offset: DpOffset) {
-          map as StandardMaplibreMap
+        override fun onClick(map: VietMapGLCompose, latLng: Position, offset: DpOffset) {
+          map as StandardVietMapGLCompose
           if (onMapClick(latLng, offset).consumed) return
           layerNodesInOrder().find { node ->
             val handle = node.onClick ?: return@find false
@@ -155,8 +155,8 @@ public fun MaplibreMap(
           }
         }
 
-        override fun onLongClick(map: MaplibreMap, latLng: Position, offset: DpOffset) {
-          map as StandardMaplibreMap
+        override fun onLongClick(map: VietMapGLCompose, latLng: Position, offset: DpOffset) {
+          map as StandardVietMapGLCompose
           if (onMapLongClick(latLng, offset).consumed) return
           layerNodesInOrder().find { node ->
             val handle = node.onLongClick ?: return@find false
@@ -183,7 +183,7 @@ public fun MaplibreMap(
     styleUri = styleUri,
     update = { map ->
       when (map) {
-        is StandardMaplibreMap -> {
+        is StandardVietMapGLCompose -> {
           cameraState.map = map
           map.setDebugEnabled(isDebugEnabled)
           map.setMinZoom(zoomRange.start.toDouble())

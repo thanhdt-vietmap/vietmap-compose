@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import vn.vietmap.vietmapcompose.compose.ClickResult
-import vn.vietmap.vietmapcompose.compose.MaplibreMap
+import vn.vietmap.vietmapcompose.compose.VietMapGLCompose
 import vn.vietmap.vietmapcompose.compose.layer.CircleLayer
 import vn.vietmap.vietmapcompose.compose.layer.SymbolLayer
 import vn.vietmap.vietmapcompose.compose.rememberCameraState
@@ -68,7 +68,7 @@ object ClusteredPointsDemo : Demo {
       val coroutineScope = rememberCoroutineScope()
 
       Box(modifier = Modifier.fillMaxSize()) {
-        MaplibreMap(
+        VietMapGLCompose(
           styleUri = DEFAULT_STYLE,
           cameraState = cameraState,
           styleState = styleState,

@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import vn.vietmap.vietmapcompose.compose.FeaturesClickHandler
-import vn.vietmap.vietmapcompose.compose.MaplibreComposable
+import vn.vietmap.vietmapcompose.compose.VietMapComposable
 import vn.vietmap.vietmapcompose.core.layer.CircleLayer
 import vn.vietmap.vietmapcompose.core.source.Source
 import vn.vietmap.vietmapcompose.expressions.ast.Expression
@@ -58,7 +58,7 @@ import vn.vietmap.vietmapcompose.expressions.value.TranslateAnchor
  * @param onLongClick Function to call when any feature in this layer has been long-clicked.
  */
 @Composable
-@MaplibreComposable
+@VietMapComposable
 public fun CircleLayer(
   id: String,
   source: Source,

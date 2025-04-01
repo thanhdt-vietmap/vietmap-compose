@@ -13,18 +13,18 @@ import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
-import vn.vietmap.vietmapcompose.core.MaplibreMap
+import vn.vietmap.vietmapcompose.core.VietMapGLCompose
 import vn.vietmap.vietmapcompose.core.WebviewBridge
-import vn.vietmap.vietmapcompose.core.WebviewMap
+import vn.vietmap.vietmapcompose.core.WebviewMapGLCompose
 
 @Composable
 internal actual fun ComposableMapView(
-  modifier: Modifier,
-  styleUri: String,
-  update: (map: MaplibreMap) -> Unit,
-  onReset: () -> Unit,
-  logger: Logger?,
-  callbacks: MaplibreMap.Callbacks,
+    modifier: Modifier,
+    styleUri: String,
+    update: (map: VietMapGLCompose) -> Unit,
+    onReset: () -> Unit,
+    logger: Logger?,
+    callbacks: VietMapGLCompose.Callbacks,
 ) =
   DesktopMapView(
     modifier = modifier,
@@ -37,14 +37,14 @@ internal actual fun ComposableMapView(
 
 @Composable
 internal fun DesktopMapView(
-  modifier: Modifier,
-  styleUri: String,
-  update: suspend (map: MaplibreMap) -> Unit,
-  onReset: () -> Unit,
-  logger: Logger?,
-  callbacks: MaplibreMap.Callbacks,
+    modifier: Modifier,
+    styleUri: String,
+    update: suspend (map: VietMapGLCompose) -> Unit,
+    onReset: () -> Unit,
+    logger: Logger?,
+    callbacks: VietMapGLCompose.Callbacks,
 ) {
-  val data = LocalMaplibreContext.current.webviewHtml
+  val data = LocalVietMapContext.current.webviewHtml
   val state = rememberWebViewStateWithHTMLData(data)
   val navigator = rememberWebViewNavigator()
   val jsBridge = rememberWebViewJsBridge(navigator)
@@ -60,7 +60,7 @@ internal fun DesktopMapView(
 
   if (state.isLoading) return
 
-  val map = remember(state) { WebviewMap(WebviewBridge(state.nativeWebView, "WebviewMapBridge")) }
+  val map = remember(state) { WebviewMapGLCompose(WebviewBridge(state.nativeWebView, "WebviewMapBridge")) }
 
   LaunchedEffect(map) { map.init() }
 

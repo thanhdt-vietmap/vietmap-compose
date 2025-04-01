@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import vn.vietmap.vietmapcompose.compose.FeaturesClickHandler
-import vn.vietmap.vietmapcompose.compose.MaplibreComposable
+import vn.vietmap.vietmapcompose.compose.VietMapComposable
 import vn.vietmap.vietmapcompose.core.layer.SymbolLayer
 import vn.vietmap.vietmapcompose.core.source.Source
 import vn.vietmap.vietmapcompose.expressions.Defaults
@@ -376,7 +376,7 @@ import vn.vietmap.vietmapcompose.expressions.value.TranslateAnchor
  * @param onLongClick Function to call when any feature in this layer has been long-clicked.
  */
 @Composable
-@MaplibreComposable
+@VietMapComposable
 public fun SymbolLayer(
   id: String,
   source: Source,

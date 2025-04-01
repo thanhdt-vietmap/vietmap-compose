@@ -2,7 +2,7 @@ package vn.vietmap.vietmapcompose.compose.layer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import vn.vietmap.vietmapcompose.compose.MaplibreComposable
+import vn.vietmap.vietmapcompose.compose.VietMapComposable
 import vn.vietmap.vietmapcompose.core.layer.BackgroundLayer
 import vn.vietmap.vietmapcompose.expressions.ast.Expression
 import vn.vietmap.vietmapcompose.expressions.dsl.const
@@ -30,7 +30,7 @@ import vn.vietmap.vietmapcompose.expressions.value.ImageValue
  *   be evaluated only at integer zoom levels.
  */
 @Composable
-@MaplibreComposable
+@VietMapComposable
 public fun BackgroundLayer(
   id: String,
   minZoom: Float = 0.0f,

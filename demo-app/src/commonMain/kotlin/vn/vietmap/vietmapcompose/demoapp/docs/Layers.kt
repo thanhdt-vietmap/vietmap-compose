@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import vn.vietmap.vietmapcompose.compose.ClickResult
-import vn.vietmap.vietmapcompose.compose.MaplibreMap
+import vn.vietmap.vietmapcompose.compose.VietMapGLCompose
 import vn.vietmap.vietmapcompose.compose.layer.Anchor
 import vn.vietmap.vietmapcompose.compose.layer.CircleLayer
 import vn.vietmap.vietmapcompose.compose.layer.LineLayer
@@ -25,13 +25,13 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 @OptIn(ExperimentalResourceApi::class)
 fun Layers() {
   // -8<- [start:simple]
-  MaplibreMap(styleUri = "https://tiles.openfreemap.org/styles/liberty") {
+  VietMapGLCompose(styleUri = "https://tiles.openfreemap.org/styles/liberty") {
     val tiles = getBaseSource(id = "openmaptiles")
     CircleLayer(id = "example", source = tiles, sourceLayer = "poi")
   }
   // -8<- [end:simple]
 
-  MaplibreMap {
+  VietMapGLCompose {
     val amtrakStations =
       rememberGeoJsonSource(
         id = "amtrak-stations",

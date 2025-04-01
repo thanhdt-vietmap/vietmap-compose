@@ -9,8 +9,8 @@ import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
 import vn.vietmap.vietmapcompose.core.CameraMoveReason
 import vn.vietmap.vietmapcompose.core.CameraPosition
-import vn.vietmap.vietmapcompose.core.MaplibreMap
-import vn.vietmap.vietmapcompose.core.StandardMaplibreMap
+import vn.vietmap.vietmapcompose.core.VietMapGLCompose
+import vn.vietmap.vietmapcompose.core.StandardVietMapGLCompose
 import vn.vietmap.vietmapcompose.core.VisibleRegion
 import vn.vietmap.vietmapcompose.expressions.ExpressionContext
 import vn.vietmap.vietmapcompose.expressions.ast.Expression
@@ -31,16 +31,16 @@ public fun rememberCameraState(firstPosition: CameraPosition = CameraPosition())
 
 /** Use this class to access information about the map in relation to the camera. */
 public class CameraState internal constructor(firstPosition: CameraPosition) {
-  internal var map: MaplibreMap? = null
+  internal var map: VietMapGLCompose? = null
     set(map) {
       if (map != null && map !== field) {
-        (map as StandardMaplibreMap).setCameraPosition(position)
+        (map as StandardVietMapGLCompose).setCameraPosition(position)
         mapAttachSignal.trySend(map)
       }
       field = map
     }
 
-  private val mapAttachSignal = Channel<MaplibreMap>()
+  private val mapAttachSignal = Channel<VietMapGLCompose>()
 
   internal val positionState = mutableStateOf(firstPosition)
   internal val moveReasonState = mutableStateOf(CameraMoveReason.NONE)
@@ -98,15 +98,15 @@ public class CameraState internal constructor(firstPosition: CameraPosition) {
     map.animateCameraPosition(boundingBox, bearing, tilt, padding, duration)
   }
 
-  private fun requireMap(): StandardMaplibreMap {
+  private fun requireMap(): StandardVietMapGLCompose {
     check(map != null) {
       "Map requested before it was initialized; try calling awaitInitialization() first"
     }
-    return map as? StandardMaplibreMap ?: error("Desktop not supported yet")
+    return map as? StandardVietMapGLCompose ?: error("Desktop not supported yet")
   }
 
-  private fun <T> maybeMap(block: (StandardMaplibreMap) -> T): T? {
-    return map?.let { block(it as? StandardMaplibreMap ?: error("Desktop not supported yet")) }
+  private fun <T> maybeMap(block: (StandardVietMapGLCompose) -> T): T? {
+    return map?.let { block(it as? StandardVietMapGLCompose ?: error("Desktop not supported yet")) }
   }
 
   /**

@@ -19,20 +19,20 @@ import androidx.compose.ui.viewinterop.UIKitInteropProperties
 import androidx.compose.ui.viewinterop.UIKitView
 import co.touchlab.kermit.Logger
 import cocoapods.VietMap.MLNMapView
-import vn.vietmap.vietmapcompose.core.IosMap
-import vn.vietmap.vietmapcompose.core.MaplibreMap
+import vn.vietmap.vietmapcompose.core.IosMapGLCompose
+import vn.vietmap.vietmapcompose.core.VietMapGLCompose
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSURL
 
 @Composable
 internal actual fun ComposableMapView(
-  modifier: Modifier,
-  styleUri: String,
-  update: (map: MaplibreMap) -> Unit,
-  onReset: () -> Unit,
-  logger: Logger?,
-  callbacks: MaplibreMap.Callbacks,
+    modifier: Modifier,
+    styleUri: String,
+    update: (map: VietMapGLCompose) -> Unit,
+    onReset: () -> Unit,
+    logger: Logger?,
+    callbacks: VietMapGLCompose.Callbacks,
 ) {
   IosMapView(
     modifier = modifier,
@@ -47,12 +47,12 @@ internal actual fun ComposableMapView(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun IosMapView(
-  modifier: Modifier,
-  styleUri: String,
-  update: (map: MaplibreMap) -> Unit,
-  onReset: () -> Unit,
-  logger: Logger?,
-  callbacks: MaplibreMap.Callbacks,
+    modifier: Modifier,
+    styleUri: String,
+    update: (map: VietMapGLCompose) -> Unit,
+    onReset: () -> Unit,
+    logger: Logger?,
+    callbacks: VietMapGLCompose.Callbacks,
 ) {
   MeasuredBox(modifier = modifier.fillMaxSize()) { x, y, width, height ->
     val layoutDir = LocalLayoutDirection.current
@@ -60,7 +60,7 @@ internal fun IosMapView(
     val insetPadding = WindowInsets.safeDrawing.asPaddingValues()
 
     val currentOnReset by rememberUpdatedState(onReset)
-    var currentMap by remember { mutableStateOf<IosMap?>(null) }
+    var currentMap by remember { mutableStateOf<IosMapGLCompose?>(null) }
 
     UIKitView(
       modifier = modifier.fillMaxSize(),
@@ -79,7 +79,7 @@ internal fun IosMapView(
           )
           .also { mapView ->
             currentMap =
-              IosMap(
+              IosMapGLCompose(
                 mapView = mapView,
                 size = CGSizeMake(width.value.toDouble(), height.value.toDouble()),
                 layoutDir = layoutDir,

@@ -14,7 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.em
 import vn.vietmap.vietmapcompose.compose.ClickResult
-import vn.vietmap.vietmapcompose.compose.MaplibreMap
+import vn.vietmap.vietmapcompose.compose.VietMapGLCompose
 import vn.vietmap.vietmapcompose.compose.layer.SymbolLayer
 import vn.vietmap.vietmapcompose.compose.rememberCameraState
 import vn.vietmap.vietmapcompose.compose.rememberStyleState
@@ -54,7 +54,7 @@ object MarkersDemo : Demo {
       var selectedFeature by remember { mutableStateOf<Feature?>(null) }
 
       Box(modifier = Modifier.fillMaxSize()) {
-        MaplibreMap(
+        VietMapGLCompose(
           styleUri = DEFAULT_STYLE,
           cameraState = cameraState,
           styleState = styleState,

@@ -5,7 +5,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
-import vn.vietmap.vietmapcompose.compose.MaplibreComposable
+import vn.vietmap.vietmapcompose.compose.VietMapComposable
 
 internal val LocalAnchor: ProvidableCompositionLocal<Anchor> = compositionLocalOf { Anchor.Top }
 
@@ -53,12 +53,12 @@ public sealed interface Anchor {
   public companion object {
     /** The layers specified in [block] are put at the top, i.e. in front of all other layers. */
     @Composable
-    @MaplibreComposable
+    @VietMapComposable
     public fun Top(block: @Composable () -> Unit): Unit = At(Top, block)
 
     /** The layers specified in [block] are put at the bottom, i.e. behind of all other layers. */
     @Composable
-    @MaplibreComposable
+    @VietMapComposable
     public fun Bottom(block: @Composable () -> Unit): Unit = At(Bottom, block)
 
     /**
@@ -66,7 +66,7 @@ public sealed interface Anchor {
      * front of it.
      */
     @Composable
-    @MaplibreComposable
+    @VietMapComposable
     public fun Above(layerId: String, block: @Composable () -> Unit): Unit =
       At(Above(layerId), block)
 
@@ -75,7 +75,7 @@ public sealed interface Anchor {
      * it.
      */
     @Composable
-    @MaplibreComposable
+    @VietMapComposable
     public fun Below(layerId: String, block: @Composable () -> Unit): Unit =
       At(Below(layerId), block)
 
@@ -84,13 +84,13 @@ public sealed interface Anchor {
      * instead of it.
      */
     @Composable
-    @MaplibreComposable
+    @VietMapComposable
     public fun Replace(layerId: String, block: @Composable () -> Unit): Unit =
       At(Replace(layerId), block)
 
     /** The layers specified in [block] are put at the given [Anchor]. */
     @Composable
-    @MaplibreComposable
+    @VietMapComposable
     public fun At(anchor: Anchor, block: @Composable () -> Unit) {
       CompositionLocalProvider(LocalAnchor provides anchor) { block() }
     }

@@ -17,7 +17,7 @@ styles.
 ## Using a style
 
 To use a style, you can pass the `styleUri` of your chosen style to the
-`MaplibreMap` composable:
+`VietMapGL` composable:
 
 ```kotlin
 -8<- "demo-app/src/commonMain/kotlin/dev/sargunv/vietmapcompose/demoapp/docs/Styling.kt:simple"

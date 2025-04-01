@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import vn.vietmap.vietmapcompose.compose.MaplibreMap
+import vn.vietmap.vietmapcompose.compose.VietMapGLCompose
 import vn.vietmap.vietmapcompose.compose.rememberCameraState
 import vn.vietmap.vietmapcompose.compose.rememberStyleState
 import vn.vietmap.vietmapcompose.core.CameraPosition
@@ -42,7 +42,7 @@ object CameraStateDemo : Demo {
         val styleState = rememberStyleState()
 
         Box(modifier = Modifier.weight(1f)) {
-          MaplibreMap(
+          VietMapGLCompose(
             styleUri = DEFAULT_STYLE,
             cameraState = cameraState,
             styleState = styleState,

@@ -12,19 +12,19 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import co.touchlab.kermit.Logger
 import vn.vietmap.composehtmlinterop.HtmlElement
-import vn.vietmap.vietmapcompose.core.JsMap
-import vn.vietmap.vietmapcompose.core.MaplibreMap
+import vn.vietmap.vietmapcompose.core.JsMapGLCompose
+import vn.vietmap.vietmapcompose.core.VietMapGLCompose
 import kotlinx.browser.document
 import org.w3c.dom.HTMLElement
 
 @Composable
 internal actual fun ComposableMapView(
-  modifier: Modifier,
-  styleUri: String,
-  update: (map: MaplibreMap) -> Unit,
-  onReset: () -> Unit,
-  logger: Logger?,
-  callbacks: MaplibreMap.Callbacks,
+    modifier: Modifier,
+    styleUri: String,
+    update: (map: VietMapGLCompose) -> Unit,
+    onReset: () -> Unit,
+    logger: Logger?,
+    callbacks: VietMapGLCompose.Callbacks,
 ) =
   WebMapView(
     modifier = modifier,
@@ -37,14 +37,14 @@ internal actual fun ComposableMapView(
 
 @Composable
 internal fun WebMapView(
-  modifier: Modifier,
-  styleUri: String,
-  update: (map: MaplibreMap) -> Unit,
-  onReset: () -> Unit,
-  logger: Logger?,
-  callbacks: MaplibreMap.Callbacks,
+    modifier: Modifier,
+    styleUri: String,
+    update: (map: VietMapGLCompose) -> Unit,
+    onReset: () -> Unit,
+    logger: Logger?,
+    callbacks: VietMapGLCompose.Callbacks,
 ) {
-  var maybeMap by remember { mutableStateOf<JsMap?>(null) }
+  var maybeMap by remember { mutableStateOf<JsMapGLCompose?>(null) }
 
   val layoutDir = LocalLayoutDirection.current
   val density = LocalDensity.current
@@ -62,7 +62,7 @@ internal fun WebMapView(
     },
     update = { element ->
       val map =
-        maybeMap ?: JsMap(element, layoutDir, density, callbacks, logger).also { maybeMap = it }
+        maybeMap ?: JsMapGLCompose(element, layoutDir, density, callbacks, logger).also { maybeMap = it }
       map.setStyleUri(styleUri)
       map.layoutDir = layoutDir
       map.density = density

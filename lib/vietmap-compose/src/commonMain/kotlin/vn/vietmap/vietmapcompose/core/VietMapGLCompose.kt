@@ -10,7 +10,7 @@ import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
 import kotlin.time.Duration
 
-internal interface MaplibreMap {
+internal interface VietMapGLCompose {
   suspend fun animateCameraPosition(finalPosition: CameraPosition, duration: Duration)
 
   suspend fun animateCameraPosition(
@@ -66,23 +66,23 @@ internal interface MaplibreMap {
   suspend fun asyncMetersPerDpAtLatitude(latitude: Double): Double
 
   interface Callbacks {
-    fun onStyleChanged(map: MaplibreMap, style: Style?)
+    fun onStyleChanged(map: VietMapGLCompose, style: Style?)
 
-    fun onCameraMoveStarted(map: MaplibreMap, reason: CameraMoveReason)
+    fun onCameraMoveStarted(map: VietMapGLCompose, reason: CameraMoveReason)
 
-    fun onCameraMoved(map: MaplibreMap)
+    fun onCameraMoved(map: VietMapGLCompose)
 
-    fun onCameraMoveEnded(map: MaplibreMap)
+    fun onCameraMoveEnded(map: VietMapGLCompose)
 
-    fun onClick(map: MaplibreMap, latLng: Position, offset: DpOffset)
+    fun onClick(map: VietMapGLCompose, latLng: Position, offset: DpOffset)
 
-    fun onLongClick(map: MaplibreMap, latLng: Position, offset: DpOffset)
+    fun onLongClick(map: VietMapGLCompose, latLng: Position, offset: DpOffset)
 
     fun onFrame(fps: Double)
   }
 }
 
-internal interface StandardMaplibreMap : MaplibreMap {
+internal interface StandardVietMapGLCompose : VietMapGLCompose {
   override suspend fun asyncSetStyleUri(styleUri: String) = setStyleUri(styleUri)
 
   override suspend fun asyncSetDebugEnabled(enabled: Boolean) = setDebugEnabled(enabled)
