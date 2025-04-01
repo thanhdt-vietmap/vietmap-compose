@@ -1,4 +1,4 @@
-package vn.vietmap.maplibrejs
+package vn.vietmap.vietmapjs
 
 import org.w3c.dom.HTMLElement
 

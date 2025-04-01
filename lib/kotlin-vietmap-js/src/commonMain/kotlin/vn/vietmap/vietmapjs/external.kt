@@ -1,6 +1,6 @@
 @file:JsModule("maplibre-gl")
 
-package vn.vietmap.maplibrejs
+package vn.vietmap.vietmapjs
 
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement

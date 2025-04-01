@@ -6,10 +6,10 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import vn.vietmap.maplibrejs.LngLat
-import vn.vietmap.maplibrejs.LngLatBounds
-import vn.vietmap.maplibrejs.PaddingOptions
-import vn.vietmap.maplibrejs.Point
+import vn.vietmap.vietmapjs.LngLat
+import vn.vietmap.vietmapjs.LngLatBounds
+import vn.vietmap.vietmapjs.PaddingOptions
+import vn.vietmap.vietmapjs.Point
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Position
 

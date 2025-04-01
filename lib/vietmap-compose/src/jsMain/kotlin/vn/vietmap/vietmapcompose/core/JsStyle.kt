@@ -3,7 +3,7 @@ package vn.vietmap.vietmapcompose.core
 import androidx.compose.ui.graphics.ImageBitmap
 import vn.vietmap.vietmapcompose.core.layer.Layer
 import vn.vietmap.vietmapcompose.core.source.Source
-import vn.vietmap.maplibrejs.Map as MlJsMap
+import vn.vietmap.vietmapjs.Map as MlJsMap
 
 internal class JsStyle(internal val impl: MlJsMap) : Style {
 

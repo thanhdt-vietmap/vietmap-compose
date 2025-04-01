@@ -3,13 +3,13 @@
 
 package vn.vietmap.vietmapcompose.webview
 
-import vn.vietmap.maplibrejs.AttributionControl
-import vn.vietmap.maplibrejs.LogoControl
-import vn.vietmap.maplibrejs.Map
-import vn.vietmap.maplibrejs.MapOptions
-import vn.vietmap.maplibrejs.NavigationControl
-import vn.vietmap.maplibrejs.NavigationControlOptions
-import vn.vietmap.maplibrejs.ScaleControl
+import vn.vietmap.vietmapjs.AttributionControl
+import vn.vietmap.vietmapjs.LogoControl
+import vn.vietmap.vietmapjs.Map
+import vn.vietmap.vietmapjs.MapOptions
+import vn.vietmap.vietmapjs.NavigationControl
+import vn.vietmap.vietmapjs.NavigationControlOptions
+import vn.vietmap.vietmapjs.ScaleControl
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 

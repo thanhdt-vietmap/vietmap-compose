@@ -17,21 +17,20 @@ import vn.vietmap.vietmapcompose.core.util.toPoint
 import vn.vietmap.vietmapcompose.core.util.toPosition
 import vn.vietmap.vietmapcompose.expressions.ast.CompiledExpression
 import vn.vietmap.vietmapcompose.expressions.value.BooleanValue
-import vn.vietmap.maplibrejs.AttributionControl
-import vn.vietmap.maplibrejs.EaseToOptions
-import vn.vietmap.maplibrejs.FitBoundsOptions
-import vn.vietmap.maplibrejs.JumpToOptions
-import vn.vietmap.maplibrejs.LngLat
-import vn.vietmap.maplibrejs.LogoControl
-import vn.vietmap.maplibrejs.Map
-import vn.vietmap.maplibrejs.MapLibreEvent
-import vn.vietmap.maplibrejs.MapMouseEvent
-import vn.vietmap.maplibrejs.MapOptions
-import vn.vietmap.maplibrejs.NavigationControl
-import vn.vietmap.maplibrejs.NavigationControlOptions
-import vn.vietmap.maplibrejs.Point
-import vn.vietmap.maplibrejs.QueryRenderedFeaturesOptions
-import vn.vietmap.maplibrejs.ScaleControl
+import vn.vietmap.vietmapjs.AttributionControl
+import vn.vietmap.vietmapjs.EaseToOptions
+import vn.vietmap.vietmapjs.FitBoundsOptions
+import vn.vietmap.vietmapjs.JumpToOptions
+import vn.vietmap.vietmapjs.LngLat
+import vn.vietmap.vietmapjs.LogoControl
+import vn.vietmap.vietmapjs.Map
+import vn.vietmap.vietmapjs.MapMouseEvent
+import vn.vietmap.vietmapjs.MapOptions
+import vn.vietmap.vietmapjs.NavigationControl
+import vn.vietmap.vietmapjs.NavigationControlOptions
+import vn.vietmap.vietmapjs.Point
+import vn.vietmap.vietmapjs.QueryRenderedFeaturesOptions
+import vn.vietmap.vietmapjs.ScaleControl
 import io.github.dellisd.spatialk.geojson.BoundingBox
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.Position
@@ -39,6 +38,7 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import org.w3c.dom.HTMLElement
+import vn.vietmap.vietmapjs.VietMapEvent
 
 internal class JsMapGLCompose(
     parent: HTMLElement,
@@ -65,7 +65,7 @@ internal class JsMapGLCompose(
     impl.on("moveend") { callbacks.onCameraMoveEnded(this) }
 
     impl.on("movestart") {
-      val event = it.unsafeCast<MapLibreEvent<Any?>>()
+      val event = it.unsafeCast<VietMapEvent<Any?>>()
       if (event.originalEvent != null) callbacks.onCameraMoveStarted(this, CameraMoveReason.GESTURE)
       else callbacks.onCameraMoveStarted(this, CameraMoveReason.PROGRAMMATIC)
     }
