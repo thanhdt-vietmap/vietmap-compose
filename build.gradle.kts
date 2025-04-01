@@ -17,7 +17,7 @@ mkdocs {
 
 tasks.withType<MkdocsTask>().configureEach {
   val releaseVersion = ext["base_tag"].toString().replace("v", "")
-  val snapshotVersion = "${ext["next_patch_version"]}-SNAPSHOT"
+  val snapshotVersion = "${ext["next_patch_version"]}"
   extras.set(
     mapOf(
       "release_version" to releaseVersion,
