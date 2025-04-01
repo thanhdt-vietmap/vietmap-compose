@@ -22,8 +22,6 @@ tasks.withType<MkdocsTask>().configureEach {
     mapOf(
       "release_version" to releaseVersion,
       "snapshot_version" to snapshotVersion,
-//      "maplibre_android_version" to libs.versions.maplibre.android.sdk.get(),
-//      "maplibre_ios_version" to libs.versions.maplibre.ios.get(),
       "vietmap_ios_version" to libs.versions.vietmap.ios.get(),
       "vietmap_android_version" to libs.versions.maps.sdk.android.get(),
       "maplibre_js_version" to libs.versions.maplibre.js.get()

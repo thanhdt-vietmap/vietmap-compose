@@ -64,7 +64,7 @@ plugin][kotlin-cocoapods]:
 
 ```kotlin title="build.gradle.kts"
 cocoapods {
-  pod("VietMap", "{{ gradle.maplibre_ios_version }}")
+  pod("VietMap", "{{ gradle.vietmap_ios_version }}")
 }
 ```
 

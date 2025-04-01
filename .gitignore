@@ -17,3 +17,5 @@ iosApp/*.xcodeproj/*
 !iosApp/*.xcworkspace/xcshareddata/
 **/xcshareddata/WorkspaceSettings.xcsettings
 iosApp/Pods
+image.png
+key.gpg
