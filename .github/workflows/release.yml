@@ -10,7 +10,7 @@ jobs:
     runs-on: "macos-latest"
     environment:
       name: "maven-central"
-      url: "https://central.sonatype.com/namespace/vn.vietmap.vietmap-compose"
+      url: "https://central.sonatype.com/namespace/io.github.thanhdt-vietmap"
     steps:
       - uses: "actions/checkout@v4"
         with:
