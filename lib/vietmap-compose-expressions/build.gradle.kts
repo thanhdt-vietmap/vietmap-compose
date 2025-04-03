@@ -14,7 +14,7 @@ plugins {
   id(libs.plugins.mavenPublish.get().pluginId)
 }
 
-android { namespace = "vn.vietmap.vietmapcompose.expressions" }
+android { namespace = "io.github.thanhdt-vietmap.expressions" }
 
 mavenPublishing {
   pom {
