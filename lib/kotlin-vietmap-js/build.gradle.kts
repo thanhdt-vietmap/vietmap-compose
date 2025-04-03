@@ -10,6 +10,7 @@ mavenPublishing {
     description = "Kotlin bindings for VietMap GL JS."
     url = "https://github.com/thanhdt-vietmap/vietmap-compose"
   }
+  version = "1.0.0"
 }
 
 kotlin {

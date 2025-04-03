@@ -16,6 +16,8 @@ mavenPublishing {
     description = "Include an HTML element in a Compose Web UI."
     url = "https://github.com/thanhdt-vietmap/vietmap-compose"
   }
+
+  version = "1.0.0" // Or whatever your non-snapshot version is
 }
 
 kotlin {
@@ -36,3 +38,5 @@ kotlin {
     }
   }
 }
+
+compose.resources { packageOfResClass = "vn.vietmap.composehtmlinterop.generated" }
