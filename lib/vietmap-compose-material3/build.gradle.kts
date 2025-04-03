@@ -15,7 +15,7 @@ plugins {
   id(libs.plugins.mavenPublish.get().pluginId)
 }
 
-android { namespace = "io.github.thanhdt-vietmap.material3" }
+android { namespace = "vn.vietmap.vietmapcompose.material3" }
 
 mavenPublishing {
   pom {

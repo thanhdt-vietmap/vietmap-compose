@@ -6,7 +6,7 @@ plugins {
   id("maven-publish")
 }
 
-group = "vn.vietmap.vietmap-compose"
+group = "io.github.thanhdt-vietmap"
 
 kotlin {
   explicitApi()
