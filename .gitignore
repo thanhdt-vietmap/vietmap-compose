@@ -19,3 +19,5 @@ iosApp/*.xcodeproj/*
 iosApp/Pods
 image.png
 key.gpg
+gpg_key.png
+gpg_key.txt
