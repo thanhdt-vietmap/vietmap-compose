@@ -10,8 +10,8 @@ import cocoapods.VietMap.MLNShapeSourceOptionMaximumZoomLevel
 import cocoapods.VietMap.MLNShapeSourceOptionMaximumZoomLevelForClustering
 import cocoapods.VietMap.MLNShapeSourceOptionMinimumZoomLevel
 import cocoapods.VietMap.MLNShapeSourceOptionSimplificationTolerance
-import vn.vietmap.VietMapcompose.core.util.toMLNShape
-import vn.vietmap.VietMapcompose.core.util.toNSExpression
+import vn.vietmap.vietmapcompose.core.util.toMLNShape
+import vn.vietmap.vietmapcompose.core.util.toNSExpression
 import vn.vietmap.vietmapcompose.expressions.ExpressionContext
 import vn.vietmap.vietmapcompose.expressions.ast.FunctionCall
 import io.github.dellisd.spatialk.geojson.GeoJson

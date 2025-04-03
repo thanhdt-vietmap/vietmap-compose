@@ -22,7 +22,7 @@ mavenPublishing {
     description = "VietMap expressions DSL for VietMap Compose."
     url = "https://github.com/thanhdt-vietmap/vietmap-compose"
   }
-  version = "1.0.0"
+  version = "1.0.1"
 }
 
 kotlin {

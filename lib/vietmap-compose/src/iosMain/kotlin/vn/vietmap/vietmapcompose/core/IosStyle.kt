@@ -7,7 +7,7 @@ import cocoapods.VietMap.MLNSource
 import cocoapods.VietMap.MLNStyle
 import cocoapods.VietMap.MLNStyleLayer
 import cocoapods.VietMap.MLNVectorTileSource
-import vn.vietmap.VietMapcompose.core.util.toUIImage
+import vn.vietmap.vietmapcompose.core.util.toUIImage
 import vn.vietmap.vietmapcompose.core.layer.Layer
 import vn.vietmap.vietmapcompose.core.layer.UnknownLayer
 import vn.vietmap.vietmapcompose.core.source.GeoJsonSource

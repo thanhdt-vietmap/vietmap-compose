@@ -17,7 +17,7 @@ mavenPublishing {
     url = "https://github.com/thanhdt-vietmap/vietmap-compose"
   }
 
-  version = "1.0.0" // Or whatever your non-snapshot version is
+  version = "1.0.1" // Or whatever your non-snapshot version is
 }
 
 kotlin {

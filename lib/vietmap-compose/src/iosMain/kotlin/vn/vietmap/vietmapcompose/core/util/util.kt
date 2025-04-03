@@ -1,4 +1,4 @@
-package vn.vietmap.VietMapcompose.core.util
+package vn.vietmap.vietmapcompose.core.util
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.ImageBitmap

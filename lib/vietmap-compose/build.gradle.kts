@@ -23,7 +23,7 @@ mavenPublishing {
     description = "Add interactive vector tile maps to your Compose app"
     url = "https://github.com/thanhdt-vietmap/vietmap-compose"
   }
-  version = "1.0.0"
+  version = "1.0.1"
 }
 
 val desktopResources: Configuration by
