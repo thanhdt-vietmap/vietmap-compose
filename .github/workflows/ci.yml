@@ -15,7 +15,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
         with:
           fetch-depth: 0
       - uses: "./.github/actions/setup"
@@ -30,7 +30,7 @@ jobs:
   check-podspec:
     runs-on: "macos-latest"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
         with:
           fetch-depth: 0
       - uses: "./.github/actions/setup"
@@ -41,7 +41,7 @@ jobs:
   lint-android:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
         with:
           fetch-depth: 0
       - uses: "./.github/actions/setup"
@@ -55,7 +55,7 @@ jobs:
           - 24
           - 35
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
         with:
           fetch-depth: 0
       - uses: "./.github/actions/setup"
@@ -68,7 +68,7 @@ jobs:
   test-ios:
     runs-on: "macos-latest"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
         with:
           fetch-depth: 0
       - uses: "./.github/actions/setup"
@@ -77,7 +77,7 @@ jobs:
   build-docs:
     runs-on: "macos-latest"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
         with:
           fetch-depth: 0
       - uses: "./.github/actions/setup"
@@ -89,7 +89,7 @@ jobs:
   build-android-app:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v5"
         with:
           fetch-depth: 0
       - uses: "./.github/actions/setup"
